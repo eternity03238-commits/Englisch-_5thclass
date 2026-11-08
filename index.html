@@ -1,0 +1,1865 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F0C29">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Wort-Galaxie">
+<style>:root{color-scheme:dark;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Wort-Galaxie</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Lexend:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one narrow cockpit column floating over a live starfield; screens swap in place, feedback slides up from the bottom */
+:root{
+  --sky:#0F0C29; --sky-2:#1B1646; --panel:#221C55; --panel-2:#2D266D; --line:#3E3592;
+  --ink:#F6F3FF; --muted:#A9A2DA; --dim:#6E67A6;
+  --flame:#FFB43F; --flame-2:#FF7547; --good:#3FE0A2; --good-ink:#06281B; --bad:#FF6F8F; --bad-ink:#2E0612; --ice:#82D9FF;
+  --f-display:"Bungee","Arial Black",Impact,sans-serif;
+  --f-body:"Lexend","Trebuchet MS",system-ui,sans-serif;
+  --r:18px;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--sky);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+#stars,#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#stars{z-index:0}
+#fx{z-index:60}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(120% 60% at 80% -10%,rgba(255,117,71,.18),transparent 60%),radial-gradient(90% 50% at -10% 110%,rgba(130,217,255,.12),transparent 60%)}
+#app{position:relative;z-index:1;max-width:560px;margin:0 auto;min-height:100%;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px 120px}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.display{font-family:var(--f-display);font-weight:400;letter-spacing:.02em}
+.label{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:600}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;align-items:center;gap:10px}
+.spacer{flex:1}
+.muted{color:var(--muted)}
+.center{text-align:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:16px;font-weight:700;font-size:1.02rem;transition:transform .12s ease}
+.btn:active{transform:translateY(2px) scale(.98)}
+.btn-main{background:linear-gradient(180deg,var(--flame),var(--flame-2));color:#2A0F00;box-shadow:0 5px 0 #B4441F,0 10px 30px rgba(255,117,71,.35)}
+.btn-soft{background:var(--panel-2);border:2px solid var(--line)}
+.btn-ghost{background:transparent;border:2px solid var(--line);color:var(--muted)}
+.btn-good{background:var(--good);color:var(--good-ink);box-shadow:0 5px 0 #1A9A69}
+.btn-bad{background:var(--bad);color:var(--bad-ink);box-shadow:0 5px 0 #B23456}
+.btn-ice{background:var(--ice);color:#06263A;box-shadow:0 5px 0 #2D7FA8}
+.btn-block{width:100%}
+.btn[disabled]{opacity:.5;cursor:default}
+.icon{width:22px;height:22px;flex:none}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:var(--panel);border:1.5px solid var(--line);font-weight:600;font-size:.9rem;font-variant-numeric:tabular-nums}
+.panel{background:var(--panel);border:2px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px}
+.field,.answer,select.field{width:100%;min-height:56px;border-radius:14px;border:2px solid var(--line);background:var(--sky-2);color:var(--ink);font:inherit;font-size:1.15rem;padding:0 16px}
+.answer{font-size:1.25rem;font-weight:600;min-height:60px}
+.field::placeholder,.answer::placeholder{color:var(--dim)}
+.answer.shake{animation:shake .4s;border-color:var(--bad)}
+.tip{border-left:4px solid var(--flame);background:rgba(255,180,63,.08);border-radius:4px 12px 12px 4px;padding:10px 12px;font-size:.92rem}
+.tip b{color:var(--flame)}
+.seg{display:flex;background:var(--sky-2);border:2px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;min-height:42px;border-radius:10px;font-weight:600;font-size:.9rem;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--ink);box-shadow:inset 0 0 0 2px var(--ice)}
+[hidden]{display:none!important}
+
+/* onboarding */
+.hero-logo{font-family:var(--f-display);font-size:clamp(2.4rem,11vw,3.6rem);line-height:.95;color:var(--flame);text-shadow:0 4px 0 #8E2E16,0 0 40px rgba(255,180,63,.35)}
+.hero-logo span{display:block;color:var(--ice);text-shadow:0 4px 0 #1C4E78,0 0 40px rgba(130,217,255,.3)}
+.onb-rocket{width:120px;margin:10px auto 0;animation:hover 3s ease-in-out infinite}
+.swatches{display:flex;gap:12px;flex-wrap:wrap}
+.swatch{width:56px;height:56px;border-radius:16px;border:3px solid transparent;background:var(--panel);display:grid;place-items:center}
+.swatch[aria-pressed="true"]{border-color:var(--ink);background:var(--panel-2)}
+.swatch svg{width:26px;height:44px}
+
+/* home */
+.topbar{display:flex;align-items:center;gap:10px}
+.avatar{width:46px;height:46px;border-radius:14px;background:var(--panel);border:2px solid var(--line);display:grid;place-items:center;flex:none}
+.avatar svg{width:20px;height:36px}
+.who{min-width:0}
+.who b{display:block;font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who small{color:var(--muted);font-size:.8rem}
+.xpbar{height:12px;border-radius:999px;background:var(--sky-2);border:1.5px solid var(--line);overflow:hidden}
+.xpbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ice),var(--good));border-radius:999px;transition:width .8s cubic-bezier(.2,.9,.3,1.2)}
+.testcard{display:flex;flex-direction:column;gap:10px;padding:14px 16px;border-radius:20px;background:linear-gradient(135deg,rgba(255,111,143,.18),rgba(255,180,63,.12));border:2px solid rgba(255,111,143,.55)}
+.testcard .count{font-family:var(--f-display);font-size:2rem;line-height:1;color:var(--bad);font-variant-numeric:tabular-nums}
+.testcard .bar{height:10px;border-radius:999px;background:var(--sky-2);overflow:hidden}
+.testcard .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--bad),var(--flame));border-radius:999px}
+.daydots{display:flex;gap:6px}
+.daydots span{flex:1;text-align:center;font-size:.7rem;font-weight:700;padding:6px 0;border-radius:8px;background:var(--sky-2);color:var(--dim)}
+.daydots span.now{background:var(--flame);color:#2A0F00}
+.daydots span.past{background:rgba(63,224,162,.2);color:var(--good)}
+.stage{position:relative;height:270px;display:grid;place-items:center}
+.planet{position:relative;width:170px;height:170px;border-radius:50%;z-index:1;
+  background:radial-gradient(circle at 32% 28%,#FFE3A1 0,#FFB04F 28%,#F06A45 55%,#9A2F5C 82%,#5B1A4E 100%);
+  box-shadow:0 0 60px rgba(255,140,70,.45),inset -22px -18px 40px rgba(40,6,40,.55)}
+.planet::after{content:"";position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 62% 40%,rgba(90,20,60,.35) 0 9%,transparent 10%),radial-gradient(circle at 40% 68%,rgba(90,20,60,.3) 0 6%,transparent 7%),radial-gradient(circle at 72% 72%,rgba(90,20,60,.28) 0 4%,transparent 5%)}
+.ring{position:absolute;width:290px;height:74px;border-radius:50%;border:5px solid rgba(130,217,255,.55);transform:rotate(-14deg)}
+.ring.back{clip-path:inset(0 0 50% 0);z-index:0}
+.ring.front{clip-path:inset(50% 0 0 0);z-index:2}
+.orbit{position:absolute;width:256px;height:256px;border-radius:50%;border:1.5px dashed rgba(169,162,218,.25);animation:orbit 14s linear infinite;z-index:3}
+.orbit .mini{position:absolute;top:-22px;left:50%;width:24px;height:44px;margin-left:-12px;transform:rotate(90deg)}
+.stage-label{position:absolute;bottom:0;left:0;right:0;text-align:center}
+.stage-label .display{font-size:1.1rem;color:var(--flame)}
+.conquered{position:absolute;right:4px;top:10px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3A3480,#16123A);border:2px dashed var(--line);display:grid;place-items:center;font-size:.62rem;color:var(--muted);text-align:center;line-height:1.1;font-weight:700}
+.mission-btn{width:100%;padding:18px 20px;border-radius:22px;text-align:left;display:flex;align-items:center;gap:14px;
+  background:linear-gradient(180deg,var(--flame),var(--flame-2));color:#2A0F00;box-shadow:0 6px 0 #B4441F,0 14px 40px rgba(255,117,71,.35);position:relative;overflow:hidden}
+.mission-btn::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);animation:shine 3.2s ease-in-out infinite}
+.mission-btn:active{transform:translateY(3px);box-shadow:0 3px 0 #B4441F}
+.mission-btn b{display:block;font-family:var(--f-display);font-weight:400;font-size:1.3rem;line-height:1.1}
+.mission-btn small{display:block;font-weight:600;opacity:.85;margin-top:3px}
+.mission-btn .go{margin-left:auto;width:44px;height:44px;border-radius:50%;background:rgba(42,15,0,.15);display:grid;place-items:center;flex:none}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{background:var(--panel);border:2px solid var(--line);border-radius:var(--r);padding:14px;text-align:left;display:flex;flex-direction:column;gap:6px;min-height:104px}
+.tile:active{transform:scale(.98)}
+.tile .ti{width:34px;height:34px;border-radius:10px;display:grid;place-items:center}
+.tile b{font-size:1rem}
+.tile small{color:var(--muted);font-size:.8rem;line-height:1.3}
+.tile.locked{opacity:.7}
+.t-red .ti{background:rgba(255,111,143,.18);color:var(--bad)}
+.t-ice .ti{background:rgba(130,217,255,.15);color:var(--ice)}
+.t-flame .ti{background:rgba(255,180,63,.16);color:var(--flame)}
+.t-good .ti{background:rgba(63,224,162,.15);color:var(--good)}
+.foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:6px}
+.foot .btn{min-height:42px;font-size:.88rem;padding:0 14px;border-radius:12px}
+
+/* mission */
+.mbar{display:flex;align-items:center;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;padding-block:6px;background:linear-gradient(var(--sky) 70%,transparent)}
+.mbar .close{width:42px;height:42px;border-radius:12px;background:var(--panel);display:grid;place-items:center;flex:none}
+.prog{flex:1;height:14px;border-radius:999px;background:var(--sky-2);border:1.5px solid var(--line);overflow:hidden;position:relative}
+.prog i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,var(--flame),var(--good));border-radius:999px;transition:width .5s ease}
+.combo{min-width:62px;justify-content:center}
+.combo.hot{border-color:var(--flame);color:var(--flame);animation:pulse .6s ease}
+.card{background:var(--panel);border:2px solid var(--line);border-radius:24px;padding:22px 18px;display:flex;flex-direction:column;gap:16px;margin-top:12px;animation:pop .35s cubic-bezier(.2,.9,.3,1.3)}
+.ask{font-size:.95rem;color:var(--muted);font-weight:600}
+.stagebadge{align-self:flex-start;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:999px;background:var(--sky-2);color:var(--ice);border:1.5px solid var(--line)}
+.big{font-size:clamp(1.7rem,8vw,2.4rem);font-weight:700;line-height:1.15;word-break:break-word}
+.de-big{font-size:clamp(1.4rem,6.5vw,1.9rem);font-weight:700;line-height:1.2}
+.ipa{font-family:"Lucida Sans Unicode","Arial Unicode MS",var(--f-body);color:var(--ice);font-size:1rem}
+.speak{width:52px;height:52px;border-radius:50%;background:var(--sky-2);border:2px solid var(--line);display:grid;place-items:center;flex:none;color:var(--ice)}
+.speak.lg{width:104px;height:104px;margin:4px auto;background:radial-gradient(circle at 35% 30%,#3A3290,#1B1646);border-color:var(--ice);box-shadow:0 0 30px rgba(130,217,255,.25)}
+.speak.lg .icon{width:44px;height:44px}
+.speak.playing{animation:pulse .8s ease infinite}
+.example{background:var(--sky-2);border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start}
+.example p{margin:0}
+.example .de{color:var(--muted);font-size:.9rem}
+.sentence{font-size:1.25rem;line-height:1.6;font-weight:600}
+.sentence .blank{display:inline-block;min-width:90px;border-bottom:3px solid var(--flame);color:var(--flame)}
+.hint-line{font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.2em;color:var(--ice);text-align:center;font-size:1.2rem;min-height:1.4em}
+.mic{width:120px;height:120px;border-radius:50%;margin:4px auto;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,var(--flame),var(--flame-2));color:#2A0F00;box-shadow:0 6px 0 #B4441F,0 0 40px rgba(255,117,71,.4)}
+.mic .icon{width:52px;height:52px}
+.mic.listening{animation:pulse 1s ease infinite;background:radial-gradient(circle at 35% 30%,var(--good),#1BA772)}
+.heard{text-align:center;color:var(--muted);min-height:1.4em}
+.copy-target{font-size:1.5rem;font-weight:700;color:var(--ice);text-align:center;letter-spacing:.02em}
+/* sentence puzzle */
+.answer-line{min-height:70px;display:flex;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:10px;border-radius:16px;border:2px dashed var(--line);background:var(--sky-2)}
+.answer-line .end{align-self:center;font-size:1.3rem;font-weight:700;color:var(--muted)}
+.tiles-pool{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.wtile{min-height:46px;padding:0 14px;border-radius:12px;background:var(--panel-2);border:2px solid var(--line);font-weight:700;font-size:1.05rem;box-shadow:0 4px 0 #120E33}
+.wtile:active{transform:translateY(3px);box-shadow:0 1px 0 #120E33}
+.wtile.placed{background:var(--panel);border-color:var(--ice);box-shadow:none}
+.wtile.used{visibility:hidden}
+
+/* feedback sheet */
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:40;transform:translateY(110%);transition:transform .35s cubic-bezier(.2,.9,.3,1.1);
+  padding:18px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet:not(.show){visibility:hidden;transition:transform .35s,visibility 0s .35s}
+.sheet.show{transform:none}
+.sheet.ok{background:#123F33;border-top:3px solid var(--good)}
+.sheet.no{background:#45162A;border-top:3px solid var(--bad)}
+.sheet-in{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.sheet h3{font-family:var(--f-display);font-weight:400;font-size:1.35rem}
+.sheet.ok h3{color:var(--good)}
+.sheet.no h3{color:var(--bad)}
+.sheet .sol{display:flex;align-items:center;gap:12px}
+.sheet .sol b{font-size:1.15rem}
+.sheet .sol small{display:block;color:var(--muted)}
+.sheet .yours{font-size:.9rem;color:var(--muted)}
+.sheet .yours s{color:var(--bad)}
+
+/* flashcards */
+.fc{display:grid;perspective:1200px;margin-top:10px}
+.fc-inner{display:grid;transition:transform .5s cubic-bezier(.3,.8,.3,1);transform-style:preserve-3d}
+.fc.flipped .fc-inner{transform:rotateY(180deg)}
+.fc-face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:26px;padding:26px 20px;min-height:300px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;text-align:center;
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));border:2px solid var(--line);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.fc-back{transform:rotateY(180deg);border-color:var(--ice)}
+.fc-face .big{font-size:clamp(1.8rem,9vw,2.6rem)}
+.rate{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rate .btn{min-height:64px;font-size:1.1rem}
+.deck{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:12px 14px}
+.deck:active{transform:scale(.99)}
+.deck b{display:block}
+.deck small{color:var(--muted);font-size:.82rem}
+.deck .n{margin-left:auto;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ice)}
+.deck.hot{border-color:var(--bad);background:linear-gradient(90deg,rgba(255,111,143,.14),var(--panel))}
+.deck[disabled]{opacity:.45}
+.dot{width:14px;height:14px;border-radius:50%;flex:none}
+
+/* boss */
+.boss-box{display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,rgba(255,111,143,.12),transparent);border:2px solid rgba(255,111,143,.35);border-radius:20px;padding:10px 14px;margin-top:10px}
+.alien{width:84px;height:84px;flex:none;animation:hover 2.4s ease-in-out infinite}
+.alien.hit{animation:hit .45s ease}
+.hp{height:16px;border-radius:999px;background:var(--sky-2);border:1.5px solid var(--line);overflow:hidden}
+.hp i{display:block;height:100%;background:linear-gradient(90deg,var(--bad),var(--flame));transition:width .4s ease}
+.shields{display:flex;gap:4px;color:var(--ice)}
+.shields .off{opacity:.2}
+
+/* summary, lists, parents */
+.trophy{text-align:center;padding-top:10px}
+.stars-row{display:flex;justify-content:center;gap:8px;margin:8px 0}
+.stars-row svg{width:56px;height:56px}
+.stars-row .s{animation:starIn .5s cubic-bezier(.2,.9,.3,1.5) both}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:12px 8px;text-align:center}
+.stat b{display:block;font-family:var(--f-display);font-weight:400;font-size:1.45rem;color:var(--flame);font-variant-numeric:tabular-nums}
+.stat small{color:var(--muted);font-size:.75rem}
+details.pl{background:var(--panel);border:2px solid var(--line);border-radius:16px;overflow:hidden}
+details.pl summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 14px;font-weight:700}
+details.pl summary::-webkit-details-marker{display:none}
+details.pl summary .n{margin-left:auto;color:var(--muted);font-weight:600;font-size:.85rem;font-variant-numeric:tabular-nums}
+details.pl[open] summary{border-bottom:1.5px solid var(--line)}
+.wlist{display:flex;flex-direction:column}
+.witem{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(62,53,146,.6)}
+.witem:last-child{border-bottom:0}
+.witem .txt{flex:1;min-width:0}
+.witem .txt b{display:block}
+.witem .txt small{color:var(--muted)}
+.witem.unknown .txt b{color:var(--dim)}
+.dots{display:flex;gap:3px;flex:none}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--flame)}
+.witem .speak{width:38px;height:38px}
+.badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.bdg{background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}
+.bdg .e{font-size:2.2rem;filter:grayscale(1) opacity(.35)}
+.bdg.got{border-color:var(--flame);background:linear-gradient(180deg,rgba(255,180,63,.12),var(--panel))}
+.bdg.got .e{filter:none}
+.bdg small{color:var(--muted);font-size:.78rem}
+.panel textarea{width:100%;min-height:90px;border-radius:12px;border:2px solid var(--line);background:var(--sky-2);color:var(--ink);font:inherit;font-size:.8rem;padding:10px;word-break:break-all}
+.cal{display:flex;gap:4px;flex-wrap:wrap}
+.cal i{width:18px;height:18px;border-radius:5px;background:var(--sky-2);border:1px solid var(--line)}
+.cal i.on{background:var(--good);border-color:var(--good)}
+.problem{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.problem:last-child{border-bottom:0}
+.problem span{color:var(--bad);font-weight:700;font-variant-numeric:tabular-nums;flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 10px;border-radius:999px;font-size:.85rem;font-weight:600;background:rgba(255,111,143,.14);border:1.5px solid rgba(255,111,143,.45);color:var(--bad)}
+.chip.ok{background:rgba(63,224,162,.14);border-color:rgba(63,224,162,.45);color:var(--good)}
+.pin{font-size:2rem;letter-spacing:.6em;text-align:center;font-weight:700}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));transform:translate(-50%,-150%);z-index:70;background:linear-gradient(180deg,var(--flame),var(--flame-2));color:#2A0F00;font-weight:700;padding:12px 20px;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:transform .4s cubic-bezier(.2,.9,.3,1.3);max-width:calc(100% - 32px);text-align:center}
+.toast.show{transform:translate(-50%,0)}
+.xpfloat{position:fixed;z-index:65;font-family:var(--f-display);color:var(--flame);font-size:1.4rem;pointer-events:none;animation:floatup 1s ease-out forwards;text-shadow:0 2px 0 #6E2410}
+
+@keyframes hover{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@keyframes shine{0%,60%{left:-60%}100%{left:130%}}
+@keyframes pop{from{opacity:.4;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes hit{0%{transform:translateX(0);filter:none}30%{transform:translateX(10px) rotate(6deg);filter:brightness(2.2)}60%{transform:translateX(-6px)}100%{transform:none}}
+@keyframes starIn{from{transform:scale(0) rotate(-90deg)}to{transform:none}}
+@keyframes floatup{from{opacity:1;transform:translateY(0) scale(.8)}to{opacity:0;transform:translateY(-70px) scale(1.2)}}
+@keyframes flicker{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.7)}}
+.fire{transform-origin:32px 86px;animation:flicker .18s linear infinite}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media (max-width:380px){.tiles{gap:8px}.tile{padding:12px}.planet{width:140px;height:140px}.ring{width:240px;height:62px}.orbit{width:216px;height:216px}}
+</style>
+
+</head>
+<body>
+<div id="nojs" style="position:relative;z-index:99;max-width:520px;margin:40px auto;padding:24px 20px;border-radius:18px;background:#221C55;border:2px solid #82D9FF;color:#F6F3FF;font:16px/1.5 system-ui,sans-serif;text-align:center">
+<b style="font-size:1.3rem;color:#FFB43F">Wort-Galaxie</b><br><br>
+Diese Lern-App startet nur in einem richtigen Browser (Safari oder Chrome), nicht in einer Datei-Vorschau.<br><br>
+Bitte öffne sie über den Link, den du bekommen hast.
+</div>
+<canvas id="stars" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<main id="app">
+  <section id="s-onboard" class="stack" hidden>
+    <div class="center" style="padding-top:18px">
+      <div class="hero-logo">Wort-<span>Galaxie</span></div>
+      <div class="onb-rocket" id="onbRocket"></div>
+    </div>
+    <div class="panel">
+      <span class="label">Pilot-Ausweis</span>
+      <h2 style="font-size:1.35rem">Willkommen an Bord! Wie heißt du?</h2>
+      <input id="nameIn" class="field" maxlength="20" placeholder="Dein Name" autocomplete="off">
+      <span class="label" style="margin-top:4px">Wähle deine Rakete</span>
+      <div class="swatches" id="swatches"></div>
+    </div>
+    <p class="muted" style="margin:0">Elf Planeten voller englischer Wörter warten auf dich. Jeden Tag eine kurze Mission: Wörter lernen, Sätze bauen, laut sprechen.</p>
+    <button class="btn btn-main btn-block" data-act="onboardGo">Abheben!</button>
+  </section>
+
+  <section id="s-home" class="stack" hidden>
+    <div class="topbar">
+      <div class="avatar" id="hAvatar"></div>
+      <div class="who"><b id="hName"></b><small id="hRank"></small></div>
+      <div class="spacer"></div>
+      <span class="pill" title="Tage hintereinander"><span aria-hidden="true">🔥</span><span id="hStreak">0</span></span>
+      <span class="pill" title="Level">Lv <span id="hLevel">1</span></span>
+    </div>
+    <div>
+      <div class="row" style="justify-content:space-between;margin-bottom:5px"><span class="label">Erfahrung</span><span class="label" id="hXpTxt"></span></div>
+      <div class="xpbar"><i id="hXp"></i></div>
+    </div>
+    <div id="testCard"></div>
+    <div id="backupCard"></div>
+    <div class="stage">
+      <div class="conquered" id="hConq"></div>
+      <div class="ring back"></div>
+      <div class="planet" id="hPlanetBall"></div>
+      <div class="ring front"></div>
+      <div class="orbit"><div class="mini" id="hMini"></div></div>
+      <div class="stage-label">
+        <div class="display" id="hPlanet"></div>
+        <div class="muted" style="font-size:.85rem" id="hUnit"></div>
+      </div>
+    </div>
+    <button class="mission-btn" data-act="startDaily" id="missionBtn">
+      <div><b id="mTitle">Tagesmission</b><small id="mSub"></small></div>
+      <span class="go"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    </button>
+    <div class="tiles">
+      <button class="tile t-ice" data-act="openDeck" data-mode="kid">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h11a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2zm-3 4v13a1 1 0 001 1h12v-2H6V7z" opacity=".9"/></svg></span>
+        <b>Karteikarten</b><small>Schnell durchgehen</small>
+      </button>
+      <button class="tile t-good" data-act="openDeck" data-mode="mama">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 11a4 4 0 110-8 4 4 0 010 8zm8 1a3 3 0 110-6 3 3 0 010 6zM2 20c0-3.3 2.7-6 6-6s6 2.7 6 6zm12.5 0c0-2-.8-3.8-2.1-5.1A5 5 0 0122 19v1z"/></svg></span>
+        <b>Mama fragt ab</b><small>Zählt doppelt!</small>
+      </button>
+      <button class="tile t-flame" data-act="startSentences">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h8v6H3zm10 0h8v6h-8zM3 13h5v6H3zm7 0h11v6H10z"/></svg></span>
+        <b>Satzwerkstatt</b><small id="sentSub">Sätze bauen</small>
+      </button>
+      <button class="tile t-red" data-act="startBoss" id="bossTile">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-4.4 0-8 3.4-8 8v9l2.5-2 2 2 2-2 1.5 2 1.5-2 2 2 2-2L20 19v-9c0-4.6-3.6-8-8-8zm-3 10.5a2 2 0 110-4 2 2 0 010 4zm6 0a2 2 0 110-4 2 2 0 010 4z"/></svg></span>
+        <b>Bosskampf</b><small id="bossSub"></small>
+      </button>
+      <button class="tile t-ice" data-act="openMap">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 6.9H22l-6 4.4 2.3 7L12 16l-6.3 4.3 2.3-7-6-4.4h7.6z"/></svg></span>
+        <b>Sternenkarte</b><small id="mapSub"></small>
+      </button>
+      <button class="tile t-flame" data-act="openBadges">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 00-4 12.7V22l4-2 4 2v-7.3A7 7 0 0012 2zm0 3l1.5 3 3.3.5-2.4 2.3.6 3.3L12 12.6 9 14.1l.6-3.3-2.4-2.3 3.3-.5z"/></svg></span>
+        <b>Abzeichen</b><small id="badgeSub"></small>
+      </button>
+    </div>
+    <div class="foot">
+      <button class="btn btn-ghost" data-act="toggleSound" id="soundBtn"></button>
+      <button class="btn btn-ghost" data-act="toggleSlow" id="slowBtn"></button>
+      <button class="btn btn-ghost" data-act="openParents">Für Eltern</button>
+    </div>
+  </section>
+
+  <section id="s-mission" hidden>
+    <div class="mbar">
+      <button class="close" data-act="quit" aria-label="Beenden"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="prog"><i id="progBar"></i></div>
+      <span class="pill combo" id="combo"><span aria-hidden="true">🔥</span><span id="comboN">0</span></span>
+    </div>
+    <div id="bossBox" class="boss-box" hidden>
+      <svg class="alien" id="alien" viewBox="0 0 100 100" aria-label="Der Wortfresser">
+        <path d="M50 8C26 8 12 26 12 48c0 14 4 26 4 34l10-6 8 8 8-8 8 8 8-8 8 8 8-8 10 6c0-8 4-20 4-34C88 26 74 8 50 8z" fill="#7A3FD6"/>
+        <path d="M50 8C26 8 12 26 12 48c0 3 .2 6 .6 9C20 34 34 22 50 22s30 12 37.4 35c.4-3 .6-6 .6-9C88 26 74 8 50 8z" fill="#9A63F0"/>
+        <circle cx="36" cy="44" r="11" fill="#fff"/><circle cx="64" cy="44" r="11" fill="#fff"/>
+        <circle cx="38" cy="46" r="5" fill="#160A2E"/><circle cx="62" cy="46" r="5" fill="#160A2E"/>
+        <path d="M32 64q18 14 36 0" stroke="#160A2E" stroke-width="5" fill="#FF6F8F" stroke-linecap="round"/>
+        <path d="M38 66l4 6 4-6M54 66l4 6 4-6" fill="#fff"/>
+        <path d="M30 14l-6-10M70 14l6-10" stroke="#9A63F0" stroke-width="4" stroke-linecap="round"/><circle cx="23" cy="3" r="3" fill="#FFB43F"/><circle cx="77" cy="3" r="3" fill="#FFB43F"/>
+      </svg>
+      <div style="flex:1;min-width:0" class="stack">
+        <div class="row" style="gap:6px"><b class="display" style="font-size:.95rem;color:var(--bad)">Wortfresser</b><span class="spacer"></span><span class="shields" id="shields"></span></div>
+        <div class="hp"><i id="hpBar" style="width:100%"></i></div>
+        <small class="muted">Triff ihn mit richtig geschriebenen Wörtern!</small>
+      </div>
+    </div>
+    <div id="card"></div>
+  </section>
+
+  <section id="s-deck" class="stack" hidden></section>
+  <section id="s-cards" class="stack" hidden></section>
+  <section id="s-pin" class="stack" hidden></section>
+  <section id="s-summary" class="stack" hidden></section>
+  <section id="s-map" class="stack" hidden></section>
+  <section id="s-badges" class="stack" hidden></section>
+  <section id="s-parents" class="stack" hidden></section>
+</main>
+
+<div class="sheet" id="sheet" role="dialog" aria-live="assertive"><div class="sheet-in" id="sheetIn"></div></div>
+
+<script>
+(() => {
+"use strict";
+try{ document.getElementById("nojs").remove(); }catch(e){}
+/* ============ PLANETEN ============ */
+const PLANETS = [
+  {id:"haus", name:"Haus & Wohnen", planet:"Planet Dachboden", src:"Hefter, 06.11.", hue:0},
+  {id:"u1",   name:"Unit 1: At home with friends", planet:"Planet Heimat", src:"Englischbuch S. 231–233", hue:35},
+  {id:"ich",  name:"Ich & Hobbys", planet:"Planet Steckbrief", src:"Hefter", hue:75},
+  {id:"fam",  name:"Familie", planet:"Planet Familie", src:"Hefter, Interview", hue:110},
+  {id:"sch",  name:"Schulsachen", planet:"Planet Federmappe", src:"Hefter, Arbeitsblatt", hue:150},
+  {id:"sea",  name:"Strand & Brighton", planet:"Planet Brighton", src:"Hefter", hue:190},
+  {id:"far",  name:"Farben & Wochentage", planet:"Planet Regenbogen", src:"Hefter", hue:225},
+  {id:"tie",  name:"Tiere & Eigenschaften", planet:"Planet Zoo", src:"Hefter", hue:260},
+  {id:"ver",  name:"Tun-Wörter", planet:"Planet Action", src:"Hefter", hue:295},
+  {id:"zim",  name:"Mein Zimmer", planet:"Planet Kuschelzimmer", src:"Arbeitsblätter Bedroom 1 und 2", hue:320},
+  {id:"hal",  name:"Halloween", planet:"Planet Grusel", src:"Arbeitsblatt", hue:345}
+];
+const PMAP = Object.fromEntries(PLANETS.map(p=>[p.id,p]));
+const GRAM = {id:"gram", name:"Grammatik-Werkzeuge", planet:"Werkzeugkiste"};
+
+/* ============ WÖRTER ============ */
+const U1 = [
+ {id:"u1-01",u:"u1",sec:1,en:"at home",de:"daheim, zu Hause",ipa:"ˌæt ˈhəʊm",ex:"I'm at home today.",exDe:"Ich bin heute zu Hause.",tip:"„Nach Hause gehen“ heißt ohne at: <b>go home</b>."},
+ {id:"u1-02",u:"u1",sec:1,en:"everyone",de:"jeder; alle",ipa:"ˈevriwʌn",ex:"Everyone likes pizza.",exDe:"Alle mögen Pizza."},
+ {id:"u1-03",u:"u1",sec:1,en:"This is ...",de:"Dies ist ... / Das ist ...",ipa:"ˈðɪs ɪz",ex:"This is my dog, Max.",exDe:"Das ist mein Hund Max.",core:"this is",say:"This is"},
+ {id:"u1-04",u:"u1",sec:1,en:"street",de:"die Straße",ipa:"striːt",ex:"I live in Park Street.",exDe:"Ich wohne in der Parkstraße.",tip:"Bei Hausnummern sagt man <b>at</b>: It's at 5 Park Street.",grp:"str"},
+ {id:"u1-05",u:"u1",sec:1,en:"It's called ...",de:"Er/Sie/Es heißt ...",ipa:"ɪts kɔːld",ex:"My cat? It's called Tiger.",exDe:"Meine Katze? Sie heißt Tiger.",tip:"Bei Tieren und Dingen sagt man <b>it</b>, egal ob auf Deutsch er, sie oder es.",core:"it's called",say:"It's called",alt:["it is called"]},
+ {id:"u1-06",u:"u1",sec:1,en:"road",de:"die Straße (Landstraße; Straße in Orten)",ipa:"rəʊd",ex:"The car is on the road.",exDe:"Das Auto ist auf der Straße.",grp:"str"},
+ {id:"u1-07",u:"u1",sec:1,en:"car",de:"das Auto",ipa:"kɑː",ex:"Dad's car is red.",exDe:"Papas Auto ist rot."},
+ {id:"u1-08",u:"u1",sec:1,en:"house",de:"das Haus",ipa:"haʊs",ex:"Our house is big.",exDe:"Unser Haus ist groß."},
+ {id:"u1-09",u:"u1",sec:1,en:"a lot of",de:"viel ..., viele ...",ipa:"ə ˈlɒt əv",ex:"I have a lot of books.",exDe:"Ich habe viele Bücher.",grp:"lot"},
+ {id:"u1-10",u:"u1",sec:1,en:"lots of",de:"viel ..., viele ... (lots of)",ipa:"ˈlɒts əv",ex:"There are lots of cats here.",exDe:"Hier gibt es viele Katzen.",grp:"lot"},
+ {id:"u1-11",u:"u1",sec:1,en:"postman",de:"der Briefträger, der Postbote",ipa:"ˈpəʊstmən",ex:"The postman is at the door.",exDe:"Der Postbote ist an der Tür."},
+ {id:"u1-12",u:"u1",sec:1,en:"morning",de:"der Morgen, der Vormittag",ipa:"ˈmɔːnɪŋ",ex:"I go to school in the morning.",exDe:"Am Morgen gehe ich zur Schule."},
+ {id:"u1-13",u:"u1",sec:1,en:"doorbell",de:"die Türklingel, die Türglocke",ipa:"ˈdɔːbel",ex:"Ding-dong! That's the doorbell.",exDe:"Ding-dong! Das ist die Türklingel."},
+ {id:"u1-14",u:"u1",sec:1,en:"bell",de:"die Klingel, die Glocke",ipa:"bel",ex:"The school bell rings.",exDe:"Die Schulglocke klingelt."},
+ {id:"u1-15",u:"u1",sec:1,en:"maybe",de:"vielleicht",ipa:"ˈmeɪbi",ex:"Maybe we can play later.",exDe:"Vielleicht können wir später spielen.",tip:"<b>maybe</b> = vielleicht. „Wahrscheinlich“ heißt <b>probably</b>."},
+ {id:"u1-16",u:"u1",sec:1,en:"dad",de:"der Papa, der Vati",ipa:"dæd",ex:"My dad likes football.",exDe:"Mein Papa mag Fußball.",tip:"Sprichst du ihn an, schreibst du groß: <b>Dad</b>, come here! Sonst klein: my <b>dad</b>."},
+ {id:"u1-17",u:"u1",sec:1,en:"mum",de:"die Mama, die Mutti",ipa:"mʌm",ex:"My mum is at work.",exDe:"Meine Mama ist bei der Arbeit.",tip:"Als Anrede groß: <b>Mum</b>, look! Sonst klein: my <b>mum</b>."},
+ {id:"u1-18",u:"u1",sec:1,en:"(to) come",de:"kommen",ipa:"kʌm",ex:"Come in, please!",exDe:"Komm bitte herein!",core:"come"},
+ {id:"u1-19",u:"u1",sec:1,en:"so",de:"also; deshalb, daher",ipa:"səʊ",ex:"It's cold, so I'm at home.",exDe:"Es ist kalt, deshalb bin ich zu Hause."},
+ {id:"u1-20",u:"u1",sec:1,en:"you're",de:"du bist",ipa:"jɔː",ex:"You're my best friend.",exDe:"Du bist mein bester Freund.",alt:["you are"]},
+ {id:"u1-21",u:"u1",sec:1,en:"her class",de:"ihre Klasse",ipa:"hɜː",ex:"Lily is in her class.",exDe:"Lily ist in ihrer Klasse.",tip:"I – my · you – your · he – his · <b>she – her</b> · we – our · they – their"},
+
+ {id:"u1-22",u:"u1",sec:2,en:"upstairs",de:"oben; nach oben (im Haus)",ipa:"ˌʌpˈsteəz",ex:"My room is upstairs.",exDe:"Mein Zimmer ist oben."},
+ {id:"u1-23",u:"u1",sec:2,en:"downstairs",de:"unten; nach unten (im Haus)",ipa:"ˌdaʊnˈsteəz",ex:"The kitchen is downstairs.",exDe:"Die Küche ist unten."},
+ {id:"u1-24",u:"u1",sec:2,en:"room",de:"das Zimmer, der Raum",ipa:"ruːm",ex:"This is my room.",exDe:"Das ist mein Zimmer."},
+ {id:"u1-25",u:"u1",sec:2,en:"why?",de:"warum?",ipa:"waɪ",ex:"Why are you sad?",exDe:"Warum bist du traurig?",core:"why",say:"Why?"},
+ {id:"u1-26",u:"u1",sec:2,en:"an hour",de:"eine Stunde",ipa:"ən ˈaʊə",ex:"The film is an hour long.",exDe:"Der Film ist eine Stunde lang.",tip:"Das h hört man nicht: [ˈaʊə]. Deshalb sagt man <b>an</b> hour, nicht a hour."},
+ {id:"u1-27",u:"u1",sec:2,en:"for",de:"für",ipa:"fɔː, fə",ex:"This is for you!",exDe:"Das ist für dich!"},
+ {id:"u1-28",u:"u1",sec:2,en:"It/He/She isn't here.",de:"Es/Er/Sie ist nicht hier.",ipa:"ˈɪznt hɪə",ex:"Sorry, Tom isn't here.",exDe:"Tut mir leid, Tom ist nicht hier.",tip:"<b>isn't</b> ist die Kurzform von <b>is not</b>.",say:"She isn't here.",core:"isn't here",alt:["it isn't here","he isn't here","she isn't here","it is not here","he is not here","she is not here","isn't here","is not here"]},
+ {id:"u1-29",u:"u1",sec:2,en:"here",de:"hier; hierher",ipa:"hɪə",ex:"Come here, please.",exDe:"Komm bitte her."},
+ {id:"u1-30",u:"u1",sec:2,en:"Sorry.",de:"Verzeihung. / Entschuldigung.",ipa:"ˈsɒri",ex:"Sorry, I'm late.",exDe:"Entschuldigung, ich bin zu spät.",core:"sorry",say:"Sorry."},
+ {id:"u1-31",u:"u1",sec:2,en:"Who?",de:"Wer?",ipa:"huː",ex:"Who is that?",exDe:"Wer ist das?",tip:"Vorsicht Falle: <b>who</b> = wer, <b>where</b> = wo / wohin.",core:"who",say:"Who?"},
+ {id:"u1-32",u:"u1",sec:2,en:"brother",de:"der Bruder",ipa:"ˈbrʌðə",ex:"My brother is ten.",exDe:"Mein Bruder ist zehn."},
+ {id:"u1-33",u:"u1",sec:2,en:"sister",de:"die Schwester",ipa:"ˈsɪstə",ex:"My sister is funny.",exDe:"Meine Schwester ist lustig."},
+ {id:"u1-34",u:"u1",sec:2,en:"Yes, I am.",de:"Ja, das bin ich.",ipa:"jes aɪ æm",ex:"Are you Ben? – Yes, I am.",exDe:"Bist du Ben? – Ja, das bin ich.",core:"Yes, I am",say:"Yes, I am."},
+ {id:"u1-35",u:"u1",sec:2,en:"See you.",de:"Bis gleich. / Bis bald.",ipa:"ˈsiː juː",ex:"Bye, Lena! See you.",exDe:"Tschüss Lena! Bis bald.",core:"see you",say:"See you."},
+ {id:"u1-36",u:"u1",sec:2,en:"You're lucky.",de:"Du hast Glück.",ipa:"jɔː ˈlʌki",ex:"A new bike? You're lucky!",exDe:"Ein neues Fahrrad? Du hast Glück!",core:"you're lucky",say:"You're lucky.",alt:["you are lucky"]},
+ {id:"u1-37",u:"u1",sec:2,en:"sure",de:"sicher",ipa:"ʃʊə, ʃɔː",ex:"Are you sure?",exDe:"Bist du sicher?"},
+ {id:"u1-38",u:"u1",sec:2,en:"smile",de:"das Lächeln",ipa:"smaɪl",ex:"She has a nice smile.",exDe:"Sie hat ein schönes Lächeln."},
+ {id:"u1-39",u:"u1",sec:2,en:"sometimes",de:"manchmal",ipa:"ˈsʌmtaɪmz",ex:"Sometimes I play chess.",exDe:"Manchmal spiele ich Schach."},
+ {id:"u1-40",u:"u1",sec:2,en:"weird",de:"seltsam, komisch",ipa:"wɪəd",ex:"That's weird!",exDe:"Das ist komisch!"},
+ {id:"u1-41",u:"u1",sec:2,en:"at school",de:"in der Schule",ipa:"ət ˈskuːl",ex:"I'm at school now.",exDe:"Ich bin jetzt in der Schule.",tip:"Englisch <b>at</b> school, Deutsch <b>in der</b> Schule."},
+ {id:"u1-42",u:"u1",sec:2,en:"she's (she is)",de:"sie ist ...",ipa:"ʃiːz",ex:"She's my friend.",exDe:"Sie ist meine Freundin.",core:"she's",say:"She's",alt:["she is"]},
+ {id:"u1-43",u:"u1",sec:2,en:"they aren't",de:"sie sind nicht",ipa:"ðeɪ ɑːnt",ex:"They aren't at home.",exDe:"Sie sind nicht zu Hause.",alt:["they are not"]},
+ {id:"u1-44",u:"u1",sec:2,en:"they're",de:"sie sind",ipa:"ðeə",ex:"They're my parents.",exDe:"Das sind meine Eltern.",alt:["they are"]},
+ {id:"u1-45",u:"u1",sec:2,en:"divorced",de:"geschieden",ipa:"dɪˈvɔːst",ex:"Her parents are divorced.",exDe:"Ihre Eltern sind geschieden."},
+ {id:"u1-46",u:"u1",sec:2,en:"parents",de:"die Eltern",ipa:"ˈpeərənts",ex:"My parents are nice.",exDe:"Meine Eltern sind nett.",tip:"<b>parents</b> gibt es nur in der Mehrzahl."},
+ {id:"u1-47",u:"u1",sec:2,en:"(to) listen",de:"zuhören, horchen",ipa:"ˈlɪsn",ex:"Listen to the song!",exDe:"Hör dir den Song an!",tip:"Das t hört man nicht. <b>Listen to me</b> = Hör mir zu.",core:"listen"},
+ {id:"u1-48",u:"u1",sec:2,en:"phone",de:"das (Mobil-)Telefon, das Handy",ipa:"fəʊn",ex:"Where's my phone?",exDe:"Wo ist mein Handy?",tip:"„Handy“ klingt englisch, ist es aber nicht! Auf Englisch sagt man <b>phone</b> oder <b>mobile</b>."},
+
+ {id:"u1-49",u:"u1",sec:3,en:"message",de:"die Nachricht, die SMS",ipa:"ˈmesɪdʒ",ex:"I have a new message.",exDe:"Ich habe eine neue Nachricht.",tip:"Man sagt auch <b>text message</b> oder einfach <b>text</b>."},
+ {id:"u1-50",u:"u1",sec:3,en:"free",de:"frei",ipa:"friː",ex:"Are you free today?",exDe:"Hast du heute frei?"},
+ {id:"u1-51",u:"u1",sec:3,en:"(to) hang out",de:"abhängen, rumhängen",ipa:"ˌhæŋ ˈaʊt",ex:"Let's hang out at the park.",exDe:"Lass uns im Park abhängen.",tip:"Das ist Umgangssprache, also für Freunde, nicht für Lehrer.",core:"hang out"},
+ {id:"u1-52",u:"u1",sec:3,en:"at my place",de:"bei mir",ipa:"ət maɪ ˈpleɪs",ex:"Let's play at my place.",exDe:"Lass uns bei mir spielen."},
+ {id:"u1-53",u:"u1",sec:3,en:"place",de:"der Ort, der Platz, die Stelle",ipa:"pleɪs",ex:"This is a nice place.",exDe:"Das ist ein schöner Ort."},
+ {id:"u1-54",u:"u1",sec:3,en:"(to) know",de:"kennen",ipa:"nəʊ",ex:"I know your sister.",exDe:"Ich kenne deine Schwester.",tip:"Das <b>k</b> spricht man nicht: [nəʊ].",core:"know"},
+ {id:"u1-55",u:"u1",sec:3,en:"primary school",de:"die Grundschule",ipa:"ˈpraɪməri skuːl",ex:"My little brother is at primary school.",exDe:"Mein kleiner Bruder ist in der Grundschule."},
+ {id:"u1-56",u:"u1",sec:3,en:"again",de:"wieder; noch einmal",ipa:"əˈɡen",ex:"Can you say that again, please?",exDe:"Kannst du das bitte noch einmal sagen?",tip:"Super Satz für den Unterricht, wenn du etwas nicht verstanden hast!"},
+ {id:"u1-57",u:"u1",sec:3,en:"Good morning.",de:"Guten Morgen.",ipa:"ɡʊd ˈmɔːnɪŋ",ex:"Good morning, Mrs Brown!",exDe:"Guten Morgen, Frau Brown!",core:"good morning",say:"Good morning."},
+ {id:"u1-58",u:"u1",sec:3,en:"Here's ... / Here are ...",de:"Hier ist ... / Hier sind ...",ipa:"hɪəz, hɪər ɑː",ex:"Here's your cake!",exDe:"Hier ist dein Kuchen!",tip:"Ein Ding: <b>Here's</b> (= Here is). Mehrere: <b>Here are</b>.",core:"here's",say:"Here's, here are",alt:["here's","here is","here are"]},
+ {id:"u1-59",u:"u1",sec:3,en:"parcel",de:"das Paket, das Päckchen",ipa:"ˈpɑːsl",ex:"A parcel for you!",exDe:"Ein Paket für dich!"},
+ {id:"u1-60",u:"u1",sec:3,en:"very big",de:"sehr groß",ipa:"ˈveri bɪɡ",ex:"The elephant is very big.",exDe:"Der Elefant ist sehr groß."},
+ {id:"u1-61",u:"u1",sec:3,en:"(to) understand",de:"verstehen",ipa:"ˌʌndəˈstænd",ex:"Sorry, I don't understand.",exDe:"Entschuldigung, ich verstehe das nicht.",core:"understand"},
+ {id:"u1-62",u:"u1",sec:3,en:"father",de:"der Vater",ipa:"ˈfɑːðə",ex:"My father is tall.",exDe:"Mein Vater ist groß."},
+ {id:"u1-63",u:"u1",sec:3,en:"mother",de:"die Mutter",ipa:"ˈmʌðə",ex:"My mother likes cats.",exDe:"Meine Mutter mag Katzen."},
+ {id:"u1-64",u:"u1",sec:3,en:"useful",de:"nützlich",ipa:"ˈjuːsfl",ex:"A phone is useful.",exDe:"Ein Handy ist nützlich."},
+ {id:"u1-65",u:"u1",sec:3,en:"phrase",de:"der Satz, der Ausdruck, die Redewendung",ipa:"freɪz",ex:"Learn this phrase!",exDe:"Lerne diesen Ausdruck!"},
+ {id:"u1-66",u:"u1",sec:3,en:"grandma",de:"die Oma; die Großmutter",ipa:"ˈɡrænmɑː",ex:"Grandma makes great cakes.",exDe:"Oma backt tolle Kuchen.",tip:"<b>grand-</b> = Groß-: grandmother, grandfather."},
+ {id:"u1-67",u:"u1",sec:3,en:"grandpa",de:"der Opa; der Großvater",ipa:"ˈɡrænpɑː",ex:"Grandpa is seventy.",exDe:"Opa ist siebzig."},
+ {id:"u1-68",u:"u1",sec:3,en:"aunt",de:"die Tante",ipa:"ɑːnt",ex:"My aunt lives in London.",exDe:"Meine Tante wohnt in London.",tip:"Die Schwester von Mama oder Papa."},
+ {id:"u1-69",u:"u1",sec:3,en:"uncle",de:"der Onkel",ipa:"ˈʌŋkl",ex:"My uncle has a dog.",exDe:"Mein Onkel hat einen Hund.",tip:"Der Bruder von Mama oder Papa."},
+ {id:"u1-70",u:"u1",sec:3,en:"cousin",de:"der Cousin, die Cousine",ipa:"ˈkʌzn",ex:"My cousin is eleven.",exDe:"Mein Cousin ist elf.",tip:"Betonung auf der 1. Silbe: <b>COU</b>sin [ˈkʌzn]."},
+ {id:"u1-71",u:"u1",sec:3,en:"some",de:"einige, ein paar; etwas",ipa:"sʌm",ex:"Here are some apples.",exDe:"Hier sind ein paar Äpfel."},
+ {id:"u1-72",u:"u1",sec:3,en:"English",de:"Englisch; englisch",ipa:"ˈɪŋɡlɪʃ",ex:"I speak English.",exDe:"Ich spreche Englisch.",tip:"<b>English</b> schreibt man immer groß!"},
+ {id:"u1-73",u:"u1",sec:3,en:"word",de:"das Wort",ipa:"wɜːd",ex:"What's this word?",exDe:"Was ist das für ein Wort?"},
+ {id:"u1-74",u:"u1",sec:3,en:"like",de:"wie (wie Wörter in anderen Sprachen)",ipa:"laɪk",ex:"You're cool, like me.",exDe:"Du bist cool, so wie ich.",tip:"<b>like</b> = wie (beim Vergleichen). Aber: I like = ich mag."},
+ {id:"u1-75",u:"u1",sec:3,en:"other",de:"andere(r, s)",ipa:"ˈʌðə",ex:"Where are the other kids?",exDe:"Wo sind die anderen Kinder?"},
+ {id:"u1-76",u:"u1",sec:3,en:"language",de:"die Sprache",ipa:"ˈlæŋɡwɪdʒ",ex:"English is a cool language.",exDe:"Englisch ist eine coole Sprache."}
+];
+/* Weitere Vokabeln aus Hefter und Arbeitsblättern.
+   Format je Zeile: englisch | deutsch | Beispielsatz | Übersetzung | Tipp (optional) | weitere richtige Antworten mit ; (optional) */
+const RAW = {
+haus:`chimney|der Schornstein|There is a bird on the chimney.|Auf dem Schornstein sitzt ein Vogel.
+roof|das Dach|The cat is on the roof.|Die Katze ist auf dem Dach.
+bathroom|das Badezimmer, das Bad|The bathroom is upstairs.|Das Bad ist oben.|<b>bath</b> + <b>room</b> = bathroom
+attic|der Dachboden|There is a ladder in the attic.|Auf dem Dachboden ist eine Leiter.|Zwei t: a<b>tt</b>ic
+bedroom|das Schlafzimmer|My bedroom is small.|Mein Schlafzimmer ist klein.|<b>bed</b> + <b>room</b> = bedroom
+dining room|das Esszimmer|We eat in the dining room.|Wir essen im Esszimmer.
+kitchen|die Küche|Mum is in the kitchen.|Mama ist in der Küche.|Achtung: ki<b>tch</b>en mit t-c-h
+ladder|die Leiter|Dad is on the ladder.|Papa ist auf der Leiter.|Zwei d: la<b>dd</b>er
+furniture|die Möbel|Our furniture is new.|Unsere Möbel sind neu.|<b>furniture</b> hat nie ein -s. Man sagt: Our furniture <b>is</b> new.
+shelf|das Regal|My books are on the shelf.|Meine Bücher sind im Regal.|Mehrzahl: one shelf, two <b>shelves</b>
+bin|der Mülleimer|Put it in the bin, please.|Wirf es bitte in den Mülleimer.
+drawer|die Schublade|My pencils are in the drawer.|Meine Stifte sind in der Schublade.|Achtung: <b>drawer</b> heißt Schublade. Die Kommode heißt <b>chest of drawers</b>.
+shower|die Dusche|The shower is in the bathroom.|Die Dusche ist im Bad.
+living room|das Wohnzimmer|We watch TV in the living room.|Wir schauen im Wohnzimmer fern.
+study|das Arbeitszimmer|Dad works in the study.|Papa arbeitet im Arbeitszimmer.
+library|die Bibliothek, die Bücherei|I read books in the library.|Ich lese Bücher in der Bücherei.`,
+
+ich:`Welcome to ...|Willkommen in ...|Welcome to Leipzig!|Willkommen in Leipzig!
+My name is ...|Ich heiße ... / Mein Name ist ...|My name is Tom.|Ich heiße Tom.
+I'm ... years old.|Ich bin ... Jahre alt.|I'm ten years old.|Ich bin zehn Jahre alt.|<b>years</b> schreibt man mit <b>y</b>, nicht mit J.|I am ... years old
+I'm from ...|Ich komme aus ...|I'm from Leipzig.|Ich komme aus Leipzig.||I am from ...
+I'm good.|Mir geht es gut.|How are you? – I'm good.|Wie geht es dir? – Mir geht es gut.||I am good;I'm fine
+(to) spell|buchstabieren|I can spell my name.|Ich kann meinen Namen buchstabieren.
+name|der Name|What's your name?|Wie heißt du?
+favourite|Lieblings-|My favourite colour is green.|Meine Lieblingsfarbe ist grün.|Britisch mit <b>ou</b>: fav<b>ou</b>rite
+colour|die Farbe|What colour is your bike?|Welche Farbe hat dein Fahrrad?|Britisch mit <b>ou</b>: col<b>ou</b>r
+animal|das Tier|A dog is a nice animal.|Ein Hund ist ein schönes Tier.
+hobby|das Hobby|My hobby is swimming.|Mein Hobby ist Schwimmen.
+swimming|das Schwimmen|I like swimming.|Ich schwimme gern.|Zwei m: swi<b>mm</b>ing
+music|die Musik|I listen to music.|Ich höre Musik.
+book|das Buch|I'm reading a book.|Ich lese gerade ein Buch.
+girl|das Mädchen|The girl is my sister.|Das Mädchen ist meine Schwester.
+boy|der Junge|The boy is in my class.|Der Junge ist in meiner Klasse.
+city|die (Groß-)Stadt|Leipzig is a big city.|Leipzig ist eine große Stadt.
+in town|in der Stadt|Mum is in town.|Mama ist in der Stadt.
+too|auch; zu|I'm ten, too.|Ich bin auch zehn.
+nice|schön, nett|You are nice.|Du bist nett.
+funny|lustig|My hamster is funny.|Mein Hamster ist lustig.
+palace|der Palast, das Schloss|The palace is white.|Der Palast ist weiß.
+boring|langweilig|The film is boring.|Der Film ist langweilig.
+I'm|ich bin (Kurzform von I am)|I'm at school.|Ich bin in der Schule.|<b>I'm</b> = I am. Verneint: <b>I'm not</b> (nicht: I'm don't!)|I am
+he's|er ist (Kurzform von he is)|He's my brother.|Er ist mein Bruder.|<b>he's</b> = he is. Verneint: <b>he isn't</b>|he is
+it's|es ist (Kurzform von it is)|It's big.|Es ist groß.|<b>it's</b> = it is. Verneint: <b>it isn't</b>|it is
+we're|wir sind (Kurzform von we are)|We're at home.|Wir sind zu Hause.|<b>we're</b> = we are. Verneint: <b>we aren't</b>|we are`,
+
+fam:`family|die Familie|I like a big family.|Ich mag eine große Familie.
+siblings|die Geschwister|I have got two siblings.|Ich habe zwei Geschwister.
+grandparents|die Großeltern|My grandparents live in Dresden.|Meine Großeltern wohnen in Dresden.|<b>grand</b> + <b>parents</b>
+(to be) related to|verwandt sein mit|I'm related to Lena.|Ich bin mit Lena verwandt.||related to
+(to be) married|verheiratet sein|My grandparents are married.|Meine Großeltern sind verheiratet.|Zwei r: ma<b>rr</b>ied|married
+(to) break up|sich trennen, Schluss machen|They break up.|Sie trennen sich.
+wife|die Ehefrau|She is his wife.|Sie ist seine Frau.
+husband|der Ehemann|He is her husband.|Er ist ihr Mann.
+(to be) dead|tot sein|The spider is dead.|Die Spinne ist tot.||dead`,
+
+sch:`pen|der Füller|My pen is blue.|Mein Füller ist blau.
+pencil|der Bleistift|Can I have a pencil, please?|Kann ich bitte einen Bleistift haben?
+biro|der Kugelschreiber, der Kuli|My biro is red.|Mein Kuli ist rot.
+ruler|das Lineal|My ruler is long.|Mein Lineal ist lang.
+rubber|der Radiergummi|Can I have your rubber, please?|Kann ich bitte deinen Radiergummi haben?|In Großbritannien <b>rubber</b>, in Amerika <b>eraser</b>. Beides ist richtig.|eraser
+sharpener|der Anspitzer|Where is my sharpener?|Wo ist mein Anspitzer?
+a pair of scissors|eine Schere|I need a pair of scissors.|Ich brauche eine Schere.|<b>sc</b>i<b>ss</b>ors: mit sc und ss|scissors
+folder|die Mappe, der Schnellhefter|My folder is green.|Meine Mappe ist grün.
+crayons|die Buntstifte (Wachsmalstifte)|I draw with crayons.|Ich male mit Buntstiften.
+felt-tips|die Filzstifte|My felt-tips are new.|Meine Filzstifte sind neu.||felt tips
+a sheet of paper|ein Blatt Papier|Can I have a sheet of paper, please?|Kann ich bitte ein Blatt Papier haben?||sheet of paper
+pencil case|das Federmäppchen|My pencil case is in my school bag.|Mein Federmäppchen ist in meiner Schultasche.
+school bag|die Schultasche|My school bag is black.|Meine Schultasche ist schwarz.
+a pair of compasses|ein Zirkel|I need a pair of compasses.|Ich brauche einen Zirkel.||compasses
+exercise book|das Heft|Write it in your exercise book.|Schreib es in dein Heft.
+protractor|das Geodreieck, der Winkelmesser|My protractor is in my pencil case.|Mein Geodreieck ist in meinem Federmäppchen.
+blackboard|die Tafel|The teacher writes on the blackboard.|Die Lehrerin schreibt an die Tafel.`,
+
+sea:`pier|die Seebrücke|The pier is very long.|Die Seebrücke ist sehr lang.
+beach|der Strand|They are on the beach.|Sie sind am Strand.|Im Satz klein: on the <b>beach</b>
+sea|das Meer|The sea is blue.|Das Meer ist blau.|Nicht verwechseln: <b>sea</b> = Meer, <b>see</b> = sehen
+by the sea|am Meer|Brighton is by the sea.|Brighton liegt am Meer.
+sky|der Himmel|The sky is blue.|Der Himmel ist blau.
+in the sky|am Himmel|There is a seagull in the sky.|Am Himmel ist eine Möwe.
+sand|der Sand|The sand is yellow.|Der Sand ist gelb.
+stone|der Stein|I have got a nice stone.|Ich habe einen schönen Stein.
+seagull|die Möwe|Scout is a seagull.|Scout ist eine Möwe.|<b>sea</b> + <b>gull</b> = seagull (nicht: seegull)
+houses|die Häuser|There are a lot of houses.|Es gibt viele Häuser.|one house, two houses
+colourful|bunt|The houses are colourful.|Die Häuser sind bunt.|<b>colour</b> + <b>ful</b>, nur ein l am Ende
+little|klein|My little brother is six.|Mein kleiner Bruder ist sechs.
+big|groß|Brighton has got a big pier.|Brighton hat eine große Seebrücke.
+happy|glücklich, froh|The people are happy.|Die Leute sind glücklich.
+people|die Leute, die Menschen|There are a lot of people on the beach.|Am Strand sind viele Leute.|<b>people</b> ist schon Mehrzahl: people <b>are</b>
+park|der Park|We play in the park.|Wir spielen im Park.`,
+
+far:`black|schwarz|My cat is black.|Meine Katze ist schwarz.
+red|rot|The car is red.|Das Auto ist rot.
+yellow|gelb|The sand is yellow.|Der Sand ist gelb.
+green|grün|My folder is green.|Meine Mappe ist grün.
+white|weiß|The palace is white.|Der Palast ist weiß.|<b>wh</b>ite wie <b>wh</b>y (nicht: wihte)
+blue|blau|The sky is blue.|Der Himmel ist blau.
+brown|braun|My dog is brown.|Mein Hund ist braun.
+pink|rosa, pink|Her pencil case is pink.|Ihr Federmäppchen ist rosa.
+purple|lila|My favourite colour is purple.|Meine Lieblingsfarbe ist lila.|Endet auf <b>-le</b>: purp<b>le</b> (nicht: purpel)
+golden|golden|The crown is golden.|Die Krone ist golden.
+grey|grau|The sky is grey.|Der Himmel ist grau.|Britisch mit <b>e</b>: gr<b>e</b>y
+orange|orange|The pumpkin is orange.|Der Kürbis ist orange.
+silver|silbern|My pen is silver.|Mein Füller ist silbern.
+Monday|Montag|On Monday I go to school.|Am Montag gehe ich in die Schule.|Wochentage schreibt man im Englischen <b>immer groß</b>.
+Tuesday|Dienstag|On Tuesday I have got English.|Am Dienstag habe ich Englisch.
+Wednesday|Mittwoch|Today is Wednesday.|Heute ist Mittwoch.|Das erste d hört man nicht: We<b>d</b>nesday
+Thursday|Donnerstag|On Thursday I go swimming.|Am Donnerstag gehe ich schwimmen.
+Friday|Freitag|Friday is cool.|Freitag ist cool.
+Saturday|Samstag|On Saturday I'm at home.|Am Samstag bin ich zu Hause.
+Sunday|Sonntag|On Sunday we visit grandma.|Am Sonntag besuchen wir Oma.`,
+
+tie:`pet|das Haustier|My pet is a rabbit.|Mein Haustier ist ein Kaninchen.
+rabbit|das Kaninchen|The rabbit is cute.|Das Kaninchen ist süß.
+hamster|der Hamster|I have got a funny hamster.|Ich habe einen lustigen Hamster.
+snake|die Schlange|The snake is long.|Die Schlange ist lang.
+guinea pig|das Meerschweinchen|My guinea pig is cute.|Mein Meerschweinchen ist süß.
+cat|die Katze|The cat is on the roof.|Die Katze ist auf dem Dach.
+spider|die Spinne|A spider is scary.|Eine Spinne ist gruselig.
+ferret|das Frettchen|A ferret is cool.|Ein Frettchen ist cool.
+platypus|das Schnabeltier|A platypus is a weird animal.|Ein Schnabeltier ist ein komisches Tier.
+elephant|der Elefant|An elephant is very big.|Ein Elefant ist sehr groß.|Mit <b>ph</b>: ele<b>ph</b>ant
+cute|süß, niedlich|My guinea pig is cute.|Mein Meerschweinchen ist süß.
+scary|gruselig, unheimlich|The spider is scary.|Die Spinne ist gruselig.
+cool|cool|Platypuses are cool.|Schnabeltiere sind cool.`,
+
+ver:`(to) think|denken|I think it's cool.|Ich denke, es ist cool.
+(to) watch|(an)schauen|I watch TV.|Ich schaue fern.
+(to) draw|zeichnen, malen|I draw a cat.|Ich male eine Katze.
+(to) read|lesen|I'm reading a book.|Ich lese gerade ein Buch.
+(to) write|schreiben|I write a word.|Ich schreibe ein Wort.|Das <b>w</b> hört man nicht: [raɪt]
+(to) talk|sich unterhalten, reden|We talk at school.|Wir unterhalten uns in der Schule.|Das <b>l</b> hört man nicht: [tɔːk]
+(to) speak|sprechen|I speak English.|Ich spreche Englisch.`,
+
+zim:`bed|das Bett|My bed is big.|Mein Bett ist groß.
+sheet|das Bettlaken|The sheet is white.|Das Bettlaken ist weiß.
+pillow|das Kopfkissen|My pillow is soft.|Mein Kopfkissen ist weich.
+blanket|die Decke|The blanket is blue.|Die Decke ist blau.
+dressing table|der Schminktisch|Mum's dressing table has got a mirror.|Mamas Schminktisch hat einen Spiegel.
+chest of drawers|die Kommode|My T-shirts are in the chest of drawers.|Meine T-Shirts sind in der Kommode.|In Amerika sagt man <b>dresser</b>.|dresser
+armchair|der Sessel|Grandpa is in the armchair.|Opa sitzt im Sessel.|<b>arm</b> + <b>chair</b>
+wardrobe|der Kleiderschrank|My clothes are in the wardrobe.|Meine Kleider sind im Kleiderschrank.
+rug|der Teppich, der Vorleger|There is a rug next to my bed.|Neben meinem Bett liegt ein Teppich.
+lamp|die Lampe|The lamp is on my desk.|Die Lampe steht auf meinem Schreibtisch.
+desk|der Schreibtisch|I do my homework at my desk.|Ich mache meine Hausaufgaben am Schreibtisch.
+chair|der Stuhl|There is a chair at my desk.|An meinem Schreibtisch steht ein Stuhl.
+mirror|der Spiegel|There is a mirror in my room.|In meinem Zimmer ist ein Spiegel.|Zwei r: mi<b>rr</b>or
+cushion|das (Sofa-)Kissen|The cushion is red.|Das Kissen ist rot.|<b>pillow</b> = Kopfkissen im Bett, <b>cushion</b> = Kissen auf Sofa oder Sessel
+stool|der Hocker|I sit on a stool.|Ich sitze auf einem Hocker.
+bookcase|das Bücherregal|My bookcase is full.|Mein Bücherregal ist voll.|<b>book</b> + <b>case</b> (mit c, nicht k)
+pyjamas|der Schlafanzug|My pyjamas are blue.|Mein Schlafanzug ist blau.|Immer Mehrzahl: my pyjamas <b>are</b> …
+dressing gown|der Bademantel|My dressing gown is warm.|Mein Bademantel ist warm.|In Amerika sagt man <b>robe</b>.|robe;bathrobe
+cosmetics|die Kosmetik, die Schminke|The cosmetics are on the dressing table.|Die Schminke liegt auf dem Schminktisch.
+comb|der Kamm|Where is my comb?|Wo ist mein Kamm?|Das <b>b</b> hört man nicht: [kəʊm]
+hairbrush|die Haarbürste|My hairbrush is pink.|Meine Haarbürste ist rosa.|<b>comb</b> = Kamm (mit Zinken), <b>hairbrush</b> = Bürste
+alarm clock|der Wecker|My alarm clock is loud.|Mein Wecker ist laut.
+chest|die Truhe|My toys are in the chest.|Meine Spielsachen sind in der Truhe.
+photograph|das Foto|There is a photograph of my family.|Da ist ein Foto von meiner Familie.|Mit <b>ph</b> vorne und hinten: <b>ph</b>otogra<b>ph</b>|photo
+painting|das Gemälde, das Bild|The painting is nice.|Das Bild ist schön.
+hanger|der Kleiderbügel|My jacket is on the hanger.|Meine Jacke hängt auf dem Bügel.
+poster|das Poster|There is a poster on the wall.|An der Wand hängt ein Poster.
+slippers|die Hausschuhe|My slippers are under the bed.|Meine Hausschuhe sind unter dem Bett.
+computer|der Computer|The computer is on the desk.|Der Computer steht auf dem Schreibtisch.
+television|der Fernseher|The television is in the living room.|Der Fernseher ist im Wohnzimmer.|Kurz: <b>TV</b>|TV
+curtain|der Vorhang|The curtain is green.|Der Vorhang ist grün.`,
+
+hal:`skeleton|das Skelett|The skeleton is scary.|Das Skelett ist gruselig.
+spiderweb|das Spinnennetz|There is a spiderweb in the attic.|Auf dem Dachboden ist ein Spinnennetz.|<b>spider</b> + <b>web</b>|spider web;cobweb
+ghost|das Gespenst, der Geist|There is a ghost in the house.|Im Haus ist ein Gespenst.|Mit <b>gh</b>: <b>gh</b>ost
+bat|die Fledermaus|The bat is black.|Die Fledermaus ist schwarz.
+pumpkin|der Kürbis|The pumpkin is orange.|Der Kürbis ist orange.
+haunted house|das Spukhaus|The haunted house is scary.|Das Spukhaus ist gruselig.
+gravestone|der Grabstein|The gravestone is grey.|Der Grabstein ist grau.
+witch|die Hexe|The witch is in the kitchen.|Die Hexe ist in der Küche.|Nicht verwechseln: <b>witch</b> = Hexe, <b>which</b> = welche
+zombie|der Zombie|The zombie is green.|Der Zombie ist grün.
+jack-o'-lantern|die Kürbislaterne|The jack-o'-lantern is orange.|Die Kürbislaterne ist orange.||jack o lantern;jack-o-lantern
+vampire|der Vampir|The vampire is scary.|Der Vampir ist gruselig.
+sweets|die Süßigkeiten|I have got a lot of sweets.|Ich habe viele Süßigkeiten.|In Amerika sagt man <b>candy</b>.|candy
+mummy|die Mumie|The mummy is in the haunted house.|Die Mumie ist im Spukhaus.|Lustig: <b>mummy</b> heißt auch Mama!`
+};
+
+/* Sätze für die Satzwerkstatt. tr = Fallen-Bausteine im Satz-Puzzle, alt = weitere richtige Lösungen */
+const SENT = [
+ {id:"g1",pl:"gram",en:"I'm ten years old.",de:"Ich bin zehn Jahre alt.",tr:["is","Jears"],alt:["I am ten years old."],tip:"<b>years</b> mit y. Nach <b>I</b> kommt immer <b>am</b>."},
+ {id:"g2",pl:"gram",en:"She is my aunt.",de:"Sie ist meine Tante.",tr:["her","are"],alt:["She's my aunt."]},
+ {id:"g3",pl:"gram",en:"They are on the beach.",de:"Sie sind am Strand.",tr:["Their","is"],alt:["They're on the beach."],tip:"<b>they</b> = sie, <b>their</b> = ihr/ihre"},
+ {id:"g4",pl:"gram",en:"He isn't a postman.",de:"Er ist kein Briefträger.",tr:["don't","is"],alt:["He is not a postman.","He's not a postman."],tip:"Mit <b>is/are/am</b> verneint man mit <b>not</b>: isn't, aren't, I'm not. Niemals <b>is don't</b>."},
+ {id:"g5",pl:"gram",en:"I don't have a cousin.",de:"Ich habe keinen Cousin.",tr:["I'm","isn't"],alt:["I haven't got a cousin.","I have not got a cousin.","I do not have a cousin."],tip:"Bei <b>have</b> verneint man mit <b>don't</b>: I don't have … Niemals <b>I'm don't</b>."},
+ {id:"g6",pl:"gram",en:"They aren't divorced.",de:"Sie sind nicht geschieden.",tr:["don't","doing"],alt:["They are not divorced.","They're not divorced."],tip:"<b>are</b> + not = <b>aren't</b>"},
+ {id:"g7",pl:"gram",en:"My uncle isn't divorced.",de:"Mein Onkel ist nicht geschieden.",tr:["don't","are"],alt:["My uncle is not divorced."]},
+ {id:"g8",pl:"gram",en:"Their names are Max and Moritz.",de:"Ihre Namen sind Max und Moritz.",tr:["They","is"],tip:"<b>their</b> = ihre (gehört ihnen). Mehrere Namen: names <b>are</b>"},
+ {id:"g9",pl:"gram",en:"Their class is nice.",de:"Ihre Klasse ist schön.",tr:["They","are"]},
+ {id:"g10",pl:"gram",en:"Her favourite book is blue.",de:"Ihr Lieblingsbuch ist blau.",tr:["He","His"],tip:"<b>she → her</b>, <b>he → his</b>"},
+ {id:"g11",pl:"gram",en:"His sister is ten.",de:"Seine Schwester ist zehn.",tr:["He","Her"],tip:"<b>he → his</b> = sein/seine"},
+ {id:"g12",pl:"gram",en:"I have got two cousins.",de:"Ich habe zwei Cousins.",tr:["am","has"],alt:["I have two cousins.","I've got two cousins."]},
+ {id:"g13",pl:"gram",en:"My pet is called Tiger.",de:"Mein Haustier heißt Tiger.",tr:["are","name"],alt:["My pet's called Tiger."]},
+ {id:"g14",pl:"gram",en:"We are at school.",de:"Wir sind in der Schule.",tr:["in","is"],alt:["We're at school."],tip:"Englisch <b>at</b> school"},
+ {id:"g15",pl:"gram",en:"I'm not at home.",de:"Ich bin nicht zu Hause.",tr:["don't","isn't"],alt:["I am not at home."],tip:"<b>I'm not</b> – niemals I'm don't"},
+ {id:"g16",pl:"gram",en:"There are two cats in the garden.",de:"Im Garten sind zwei Katzen.",tr:["is","cat"],alt:["There're two cats in the garden."],tip:"Eins: <b>there is</b>. Mehrere: <b>there are</b>."},
+
+ {id:"h1",pl:"haus",en:"There is a ladder in the attic.",de:"Auf dem Dachboden ist eine Leiter.",tr:["are","on"],alt:["There's a ladder in the attic."]},
+ {id:"h2",pl:"haus",en:"There are two bedrooms upstairs.",de:"Oben sind zwei Schlafzimmer.",tr:["is","bedroom"]},
+ {id:"h3",pl:"haus",en:"The kitchen is downstairs.",de:"Die Küche ist unten.",tr:["are","upstairs"]},
+ {id:"h4",pl:"haus",en:"The chimney is on the roof.",de:"Der Schornstein ist auf dem Dach.",tr:["in","are"]},
+ {id:"h5",pl:"haus",en:"We eat in the dining room.",de:"Wir essen im Esszimmer.",tr:["are","living"]},
+ {id:"h6",pl:"haus",en:"My books are on the shelf.",de:"Meine Bücher sind im Regal.",tr:["is","in"],tip:"Englisch: <b>on</b> the shelf (auf dem Regal)"},
+ {id:"h7",pl:"haus",en:"The shower is in the bathroom.",de:"Die Dusche ist im Bad.",tr:["are","kitchen"]},
+ {id:"h8",pl:"haus",en:"The bin is in the kitchen.",de:"Der Mülleimer ist in der Küche.",tr:["are","on"]},
+ {id:"h9",pl:"haus",en:"There isn't a study in our house.",de:"In unserem Haus gibt es kein Arbeitszimmer.",tr:["don't","are"],alt:["There is not a study in our house.","There's no study in our house."]},
+ {id:"h10",pl:"haus",en:"Our furniture is new.",de:"Unsere Möbel sind neu.",tr:["are","furnitures"],tip:"<b>furniture</b> ist Einzahl: furniture <b>is</b>"},
+ {id:"h11",pl:"haus",en:"My pencils are in the drawer.",de:"Meine Stifte sind in der Schublade.",tr:["is","on"]},
+ {id:"h12",pl:"haus",en:"Dad is in the living room.",de:"Papa ist im Wohnzimmer.",tr:["are","dad"],tip:"Wenn du über ihn sprichst, klein: <b>my dad</b>. Als Name groß: <b>Dad</b> is …"},
+
+ {id:"u1",pl:"u1",en:"My room is upstairs.",de:"Mein Zimmer ist oben.",tr:["are","downstairs"]},
+ {id:"u2",pl:"u1",en:"The postman is at the door.",de:"Der Briefträger ist an der Tür.",tr:["on","are"]},
+ {id:"u3",pl:"u1",en:"You are lucky.",de:"Du hast Glück.",tr:["have","is"],alt:["You're lucky."],tip:"Englisch sagt man: Du <b>bist</b> glücklich dran = You <b>are</b> lucky."},
+ {id:"u4",pl:"u1",en:"I'm at home.",de:"Ich bin zu Hause.",tr:["in","Home"],alt:["I am at home."],tip:"<b>home</b> klein schreiben"},
+ {id:"u5",pl:"u1",en:"I see a lot of cars.",de:"Ich sehe viele Autos.",tr:["much","car"],alt:["I see lots of cars."]},
+ {id:"u6",pl:"u1",en:"Sorry, I don't understand.",de:"Entschuldigung, ich verstehe das nicht.",tr:["isn't","am"],alt:["Sorry, I do not understand.","Sorry I don't understand."]},
+ {id:"u7",pl:"u1",en:"Can you say that again, please?",de:"Kannst du das bitte noch einmal sagen?",tr:["Do","is"],alt:["Can you say that again please?"]},
+ {id:"u8",pl:"u1",en:"Who is that?",de:"Wer ist das?",tr:["Where","are"],alt:["Who's that?"],tip:"<b>who</b> = wer, <b>where</b> = wo"},
+
+ {id:"i1",pl:"ich",en:"My name is {N}.",de:"Ich heiße {N}.",tr:["am","Name"],alt:["I'm {N}.","I am {N}."]},
+ {id:"i2",pl:"ich",en:"I'm from Leipzig.",de:"Ich komme aus Leipzig.",tr:["am","is"],alt:["I am from Leipzig."]},
+ {id:"i3",pl:"ich",en:"My hobby is swimming.",de:"Mein Hobby ist Schwimmen.",tr:["are","swim"]},
+ {id:"i4",pl:"ich",en:"My favourite colour is green.",de:"Meine Lieblingsfarbe ist grün.",tr:["are","color"]},
+ {id:"i5",pl:"ich",en:"I can spell my name.",de:"Ich kann meinen Namen buchstabieren.",tr:["am","name's"]},
+ {id:"f1",pl:"fam",en:"My aunt is from Berlin.",de:"Meine Tante kommt aus Berlin.",tr:["are","for"]},
+ {id:"f2",pl:"fam",en:"My grandparents are married.",de:"Meine Großeltern sind verheiratet.",tr:["is","has"]},
+ {id:"f3",pl:"fam",en:"I have got two siblings.",de:"Ich habe zwei Geschwister.",tr:["am","sibling"],alt:["I have two siblings.","I've got two siblings."]},
+ {id:"f4",pl:"fam",en:"She is his wife.",de:"Sie ist seine Frau.",tr:["her","he"],alt:["She's his wife."]},
+ {id:"s1",pl:"sch",en:"Can I have your rubber, please?",de:"Kann ich bitte deinen Radiergummi haben?",tr:["you","is"],alt:["Can I have your eraser, please?","Can I have your rubber please?"]},
+ {id:"s2",pl:"sch",en:"My pencil case is in my school bag.",de:"Mein Federmäppchen ist in meiner Schultasche.",tr:["are","on"]},
+ {id:"s3",pl:"sch",en:"I need a pair of scissors.",de:"Ich brauche eine Schere.",tr:["two","is"],alt:["I need scissors."]},
+ {id:"e1",pl:"sea",en:"The sky is blue.",de:"Der Himmel ist blau.",tr:["are","sea"]},
+ {id:"e2",pl:"sea",en:"There are a lot of people on the beach.",de:"Am Strand sind viele Leute.",tr:["is","peoples"],alt:["There are lots of people on the beach."]},
+ {id:"e3",pl:"sea",en:"Brighton is by the sea.",de:"Brighton liegt am Meer.",tr:["on","see"]},
+ {id:"e4",pl:"sea",en:"There is a seagull in the sky.",de:"Am Himmel ist eine Möwe.",tr:["are","on"],alt:["There's a seagull in the sky."]},
+ {id:"c1",pl:"far",en:"On Monday I go to school.",de:"Am Montag gehe ich in die Schule.",tr:["monday","in"],alt:["I go to school on Monday."],tip:"Wochentage immer groß: <b>Monday</b>"},
+ {id:"c2",pl:"far",en:"The palace is white.",de:"Der Palast ist weiß.",tr:["are","wihte"]},
+ {id:"t1",pl:"tie",en:"A spider is scary.",de:"Eine Spinne ist gruselig.",tr:["are","An"]},
+ {id:"t2",pl:"tie",en:"My guinea pig is cute.",de:"Mein Meerschweinchen ist süß.",tr:["are","have"]},
+ {id:"t3",pl:"tie",en:"An elephant is very big.",de:"Ein Elefant ist sehr groß.",tr:["A","much"],tip:"Vor a, e, i, o, u am Anfang sagt man <b>an</b>: an elephant"},
+ {id:"v1",pl:"ver",en:"I listen to music.",de:"Ich höre Musik.",tr:["am","hear"]},
+ {id:"v2",pl:"ver",en:"I'm reading a book.",de:"Ich lese gerade ein Buch.",tr:["read","is"],alt:["I am reading a book."]},
+ {id:"v3",pl:"ver",en:"We speak English.",de:"Wir sprechen Englisch.",tr:["english","are"],tip:"Sprachen schreibt man groß: <b>English</b>"},
+ {id:"z1",pl:"zim",en:"There is a mirror in my room.",de:"In meinem Zimmer ist ein Spiegel.",tr:["are","on"],alt:["There's a mirror in my room."]},
+ {id:"z2",pl:"zim",en:"My pyjamas are blue.",de:"Mein Schlafanzug ist blau.",tr:["is","Pyjamas"],tip:"<b>pyjamas</b> ist immer Mehrzahl: are"},
+ {id:"z3",pl:"zim",en:"The lamp is on my desk.",de:"Die Lampe steht auf meinem Schreibtisch.",tr:["are","in"]},
+ {id:"x1",pl:"hal",en:"The witch is scary.",de:"Die Hexe ist gruselig.",tr:["are","which"]},
+ {id:"x2",pl:"hal",en:"There is a ghost in the haunted house.",de:"Im Spukhaus ist ein Gespenst.",tr:["are","on"],alt:["There's a ghost in the haunted house."]}
+];
+
+const W = [];
+PLANETS.forEach(p=>{
+  if (p.id==="u1"){ U1.forEach(w=>{ w.pl="u1"; W.push(w); }); return; }
+  (RAW[p.id]||"").split("\n").map(l=>l.trim()).filter(Boolean).forEach((line,i)=>{
+    const [en,de,ex,exDe,tip,alt] = line.split("|");
+    W.push({id:p.id+"-"+String(i+1).padStart(2,"0"), pl:p.id, en, de, ex:ex||"", exDe:exDe||"", tip:tip||"", alt: alt ? alt.split(";") : []});
+  });
+});
+const WMAP = Object.fromEntries(W.map(w=>[w.id,w]));
+const SMAP = Object.fromEntries(SENT.map(s=>[s.id,s]));
+
+/* ============ HELPERS ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const rnd = n => Math.floor(Math.random()*n);
+const shuffle = a => { a=a.slice(); for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; };
+const pad = n => String(n).padStart(2,"0");
+const dstr = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const today = () => dstr(new Date());
+const addDays = (s,n) => { const [y,m,d]=s.split("-").map(Number); const t=new Date(y,m-1,d); t.setDate(t.getDate()+n); return dstr(t); };
+const dayDiff = (a,b) => { const p=s=>{const [y,m,d]=s.split("-").map(Number); return Date.UTC(y,m-1,d);}; return Math.round((p(b)-p(a))/864e5); };
+const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+const wdOf = s => { const [y,m,d]=s.split("-").map(Number); return WD[new Date(y,m-1,d).getDay()]; };
+const INTERVAL = [0,1,3,7,14,30];
+const LEVEL_XP = 150;
+const RANKS = [[1,"Kadett"],[3,"Pilot"],[5,"Navigator"],[8,"Kommandant"],[12,"Sternenkapitän"],[17,"Galaxie-Legende"]];
+const escRe = s => s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+
+/* ============ STATE ============ */
+const KEY = "wortgalaxie-v2", OLDKEY = "wortgalaxie-v1";
+const blank = () => ({v:2,name:"",rocket:0,xp:0,words:{},sent:{},days:[],streak:0,lastDay:null,badges:[],boss:{},test:null,pin:null,
+  stats:{missions:0,answers:0,right:0,bestCombo:0,say:0,sentRight:0,mama:0,cards:0},settings:{sound:true,slow:false},created:today()});
+function load(){
+  let s=null;
+  try { s = JSON.parse(localStorage.getItem(KEY)); } catch(e) {}
+  if (s) return Object.assign(blank(), s, {stats:Object.assign(blank().stats,s.stats||{}),settings:Object.assign(blank().settings,s.settings||{})});
+  let old=null; try { old = JSON.parse(localStorage.getItem(OLDKEY)); } catch(e) {}
+  if (old && old.name){
+    const n = blank();
+    ["name","rocket","xp","days","streak","lastDay"].forEach(k=>{ if(old[k]!==undefined) n[k]=old[k]; });
+    n.badges = (old.badges||[]).filter(b=>["first","perfect","combo10","streak3","streak7"].includes(b));
+    n.settings = Object.assign(n.settings, old.settings||{});
+    n.migrated = true;
+    return n;
+  }
+  return null;
+}
+let S = load();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
+const fillN = x => String(x).replace(/\{N\}/g, (S && S.name) || "Tom");
+
+/* ============ TEXT CHECKS ============ */
+const CONTR = {"it's":"it is","here's":"here is","you're":"you are","they're":"they are","she's":"she is","he's":"he is","we're":"we are",
+  "isn't":"is not","aren't":"are not","i'm":"i am","don't":"do not","doesn't":"does not","that's":"that is","what's":"what is","where's":"where is",
+  "let's":"let us","there's":"there is","haven't":"have not","i've":"i have","who's":"who is","pet's":"pet is","there're":"there are"};
+function norm(s){
+  s = String(s||"").toLowerCase().replace(/[’‘`´]/g,"'").replace(/\(to( be)?\)/g," ").replace(/\([^)]*\)/g," ")
+      .replace(/\.\.\.|…/g," ").replace(/[.,!?;:"–]/g," ").replace(/-/g," ").replace(/\s+/g," ").trim();
+  s = s.replace(/^to (be )?/,"");
+  return s.split(" ").map(t=>CONTR[t]||t).join(" ");
+}
+const cleanEn = en => en.replace(/\(to( be)?\)\s*/,"").replace(/\s*\([^)]*\)/g,"").replace(/\s*(\.\.\.|…)/g,"").trim();
+const sayText = w => w.say || cleanEn(w.en).replace(/\s*\/\s*/g,", ");
+const showEn = w => w.en;
+function coreOf(w){ if (w.core) return w.core; if (/\/|\.\.\.|…/.test(w.en)) return null; return cleanEn(w.en).replace(/[.?!]$/,""); }
+function lev(a,b){
+  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  let prev=Array.from({length:n+1},(_,i)=>i);
+  for(let i=1;i<=m;i++){ const cur=[i]; for(let j=1;j<=n;j++){ cur[j]=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1)); } prev=cur; }
+  return prev[n];
+}
+function frameRe(raw){
+  if (!/\.\.\.|…/.test(raw)) return null;
+  const parts = raw.split(/\.\.\.|…/).map(p=>norm(p));
+  let src = "^";
+  parts.forEach((p,i)=>{ if (i>0) src += "(?: .+?)?"; if (p) src += (i>0 ? " ?" : "") + escRe(p); });
+  return new RegExp(src+"$");
+}
+function answerForms(w){
+  const raws = w.en.split(" / ").concat(w.alt||[]);
+  const exact = new Set(), res = [];
+  raws.forEach(r=>{ const re=frameRe(r); if (re) res.push(re); else { const n=norm(r); if(n) exact.add(n); } });
+  if (w.core) exact.add(norm(w.core));
+  return {exact,res};
+}
+function checkWord(w, input){
+  const n = norm(input); if (!n) return {ok:false};
+  const {exact,res} = answerForms(w);
+  if (exact.has(n) || res.some(r=>r.test(n))) return {ok:true};
+  for (const a of exact) if (a.length>=5 && lev(a,n)<=1) return {ok:true,typo:true};
+  return {ok:false};
+}
+function capNote(w, input){
+  const t = input.trim(); if (!t) return "";
+  const target = cleanEn(w.en.split(" / ")[0]);
+  const tUpper = /^[A-Z]/.test(target), iUpper = /^[A-ZÄÖÜ]/.test(t);
+  if (iUpper && !tUpper) return `Im Englischen schreibt man <b>${esc(target)}</b> klein.`;
+  if (!iUpper && tUpper && !/^I\b|^I'/.test(target)) return `<b>${esc(target)}</b> schreibt man groß.`;
+  return "";
+}
+function similar(a,b){ a=norm(a); b=norm(b); if(!a||!b) return 0; return 1 - lev(a,b)/Math.max(a.length,b.length); }
+
+function sentTargets(s){ return [s.en].concat(s.alt||[]).map(fillN); }
+function sentTokens(s){ return fillN(s.en).replace(/[.!?]$/,"").split(" "); }
+function sentEnd(s){ const m = fillN(s.en).match(/[.!?]$/); return m ? m[0] : ""; }
+function checkSentence(s, input){
+  const raw = input.trim(); const n = norm(raw);
+  if (!n) return {ok:false};
+  const targets = sentTargets(s);
+  let ok = targets.some(t=>norm(t)===n), typo=false;
+  if (!ok) for (const t of targets){ const nt=norm(t); if (nt.length>=14 && lev(nt,n)<=1){ ok=true; typo=true; break; } }
+  if (!ok) return {ok:false};
+  const allowed = new Set(["i","i'm","i've"]);
+  targets.forEach(t=>t.split(/\s+/).forEach(x=>{ const c=x.replace(/[.,!?]/g,""); if (/^[A-Z]/.test(c)) allowed.add(c.toLowerCase()); }));
+  const words = raw.split(/\s+/);
+  let cap = "";
+  words.forEach((wd,i)=>{ const c = wd.replace(/[.,!?]/g,""); if (!c) return;
+    if (i===0 && /^[a-z]/.test(c)) cap = cap || `Der Satz fängt mit einem <b>Großbuchstaben</b> an.`;
+    if (i>0 && /^[A-ZÄÖÜ]/.test(c) && !allowed.has(c.toLowerCase())) cap = cap || `Fast! Aber <b>${esc(c)}</b> schreibt man im Englischen klein: <b>${esc(c.toLowerCase())}</b>.`;
+    if (i>0 && /^[a-z]/.test(c) && allowed.has(c.toLowerCase()) && c.toLowerCase()!=="i'm" && targets.some(t=>t.includes(c[0].toUpperCase()+c.slice(1)))) cap = cap || `<b>${esc(c[0].toUpperCase()+c.slice(1))}</b> schreibt man groß.`;
+  });
+  if (cap) return {ok:false, cap};
+  return {ok:true, typo};
+}
+
+/* ============ SOUND & SPEECH ============ */
+let AC = null;
+function sfx(kind){
+  if (!S || !S.settings.sound) return;
+  try {
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const seq = {good:[660,990],bad:[260,190],level:[523,659,784,1047],hit:[880],tap:[520],win:[523,659,784,1047,1319],flip:[420,560]}[kind]||[440];
+    const t0 = AC.currentTime;
+    seq.forEach((f,i)=>{
+      const o=AC.createOscillator(), g=AC.createGain(), t=t0+i*.09;
+      o.type = kind==="bad"?"triangle":kind==="hit"?"sawtooth":"sine";
+      o.frequency.setValueAtTime(f,t);
+      if (kind==="hit") o.frequency.exponentialRampToValueAtTime(70,t+.3);
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(kind==="hit"?.12:kind==="flip"?.08:.2,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.3);
+      o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.33);
+    });
+  } catch(e) {}
+}
+const HAS_TTS = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+let VOICE = null;
+function pickVoice(){
+  if (!HAS_TTS) return;
+  const vs = speechSynthesis.getVoices() || [];
+  VOICE = vs.find(v=>/en[-_]GB/i.test(v.lang) && /female|serena|kate|martha|google uk/i.test(v.name))
+       || vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
+}
+if (HAS_TTS){ pickVoice(); try{ speechSynthesis.onvoiceschanged = pickVoice; }catch(e){} }
+function speak(text, slow, btn){
+  if (!HAS_TTS || !text) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-GB"; if (VOICE) u.voice = VOICE;
+    u.rate = slow ? .55 : (S && S.settings.slow ? .72 : .9);
+    if (btn){ btn.classList.add("playing"); u.onend = u.onerror = () => btn.classList.remove("playing"); }
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let srOK = !!SR;
+
+/* ============ VISUAL FX ============ */
+const starC = $("#stars"), sctx = starC.getContext("2d");
+const fxC = $("#fx"), fctx = fxC.getContext("2d");
+const RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+let stars=[], parts=[], shoot=null, warp=1, VW=0, VH=0;
+function resize(){
+  const DPR = Math.min(2, window.devicePixelRatio||1); VW = innerWidth; VH = innerHeight;
+  [starC,fxC].forEach(c=>{ c.width=VW*DPR; c.height=VH*DPR; });
+  sctx.setTransform(DPR,0,0,DPR,0,0); fctx.setTransform(DPR,0,0,DPR,0,0);
+  const n = Math.round(VW*VH/2600);
+  stars = Array.from({length:n},()=>({x:Math.random()*VW,y:Math.random()*VH,z:Math.random()*.85+.15,t:Math.random()*6.28}));
+  if (RM) drawStars(0);
+}
+function drawStars(t){
+  sctx.clearRect(0,0,VW,VH);
+  for (const s of stars){
+    if (!RM){ s.y += s.z*.12*warp; if (s.y>VH){ s.y=-2; s.x=Math.random()*VW; } }
+    const a = .35 + .65*Math.abs(Math.sin(t/900*s.z + s.t));
+    sctx.fillStyle = s.z>.8 ? `rgba(255,214,150,${a})` : `rgba(220,215,255,${a})`;
+    const sz = s.z*1.7, len = warp>1.5 ? s.z*warp*3 : 0;
+    sctx.fillRect(s.x, s.y-len, sz, sz+len);
+  }
+  if (!RM){
+    if (!shoot && Math.random()<.004) shoot={x:Math.random()*VW*.8,y:Math.random()*VH*.4,l:0};
+    if (shoot){
+      shoot.l += 14; const x=shoot.x+shoot.l, y=shoot.y+shoot.l*.45;
+      const g = sctx.createLinearGradient(x-90,y-40,x,y); g.addColorStop(0,"rgba(255,255,255,0)"); g.addColorStop(1,"rgba(255,255,255,.9)");
+      sctx.strokeStyle=g; sctx.lineWidth=2; sctx.beginPath(); sctx.moveTo(x-90,y-40); sctx.lineTo(x,y); sctx.stroke();
+      if (shoot.l>VW*.6) shoot=null;
+    }
+  }
+}
+function burst(x,y,n,colors){
+  if (RM) return;
+  colors = colors || ["#FFB43F","#FF7547","#3FE0A2","#82D9FF","#F6F3FF"];
+  for (let i=0;i<n;i++){ const a=Math.random()*6.28, v=2+Math.random()*6;
+    parts.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v-2,life:1,c:colors[rnd(colors.length)],s:3+Math.random()*4,r:Math.random()*6}); }
+}
+function confetti(){ for(let i=0;i<5;i++) setTimeout(()=>burst(Math.random()*VW, VH*.3*Math.random()+40, 40),i*160); }
+function loop(t){
+  if (!RM) drawStars(t);
+  warp += (1-warp)*.04;
+  fctx.clearRect(0,0,VW,VH);
+  parts = parts.filter(p=>p.life>0);
+  for (const p of parts){ p.x+=p.vx; p.y+=p.vy; p.vy+=.18; p.vx*=.98; p.life-=.016; p.r+=.1;
+    fctx.globalAlpha=Math.max(0,p.life); fctx.fillStyle=p.c; fctx.save(); fctx.translate(p.x,p.y); fctx.rotate(p.r); fctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6); fctx.restore(); }
+  fctx.globalAlpha=1;
+  requestAnimationFrame(loop);
+}
+addEventListener("resize", resize); resize(); requestAnimationFrame(loop);
+function centerOf(el){ const r=el.getBoundingClientRect(); return [r.left+r.width/2, r.top+r.height/2]; }
+function floatXP(el, txt){
+  const [x,y] = el ? centerOf(el) : [VW/2,VH/2];
+  const d = document.createElement("div"); d.className="xpfloat"; d.textContent=txt; d.style.left=(x-30)+"px"; d.style.top=(y-20)+"px";
+  document.body.appendChild(d); setTimeout(()=>d.remove(),1000);
+}
+let toastT;
+function toast(msg){ const t=$("#toast"); t.innerHTML=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2800); }
+
+/* ============ ICONS ============ */
+const ROCKET_COLORS = ["#FF6F8F","#82D9FF","#3FE0A2","#FFB43F"];
+const rocketSVG = c => `<svg viewBox="0 0 64 122" aria-hidden="true"><path d="M32 4C18 20 13 46 16 80h32c3-34-2-60-16-76z" fill="${c}"/><path d="M32 4c6 7 10 16 12 26H20c2-10 6-19 12-26z" fill="#F6F3FF" opacity=".9"/><circle cx="32" cy="50" r="9" fill="#BFE9FF" stroke="#F6F3FF" stroke-width="3"/><path d="M16 64 3 92l15-5zM48 64l13 28-15-5z" fill="${c}" opacity=".75"/><path d="M23 80h18l-3 8H26z" fill="#4A4380"/><path class="fire" d="M26 88q6 30 6 32 0-2 6-32z" fill="#FFB43F"/><path class="fire" d="M29 88q3 18 3 20 0-2 3-20z" fill="#FFF1C2"/></svg>`;
+const I = {
+  speaker:`<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 9v6h4l5 4V5L8 9zM16 8.5a5 5 0 010 7l-1.2-1.2a3.3 3.3 0 000-4.6zM18.6 6a8.5 8.5 0 010 12l-1.2-1.2a6.8 6.8 0 000-9.6z"/></svg>`,
+  turtle:`<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7c-4 0-7 2.7-7.6 6H3v2h2c.8 1 2.2 1.6 3 1.6l-.7 1.9h2.2l.6-1.6h3.8l.6 1.6h2.2l-.7-1.9c.8 0 2-.6 2.8-1.6H21c1.1 0 2-.9 2-2s-.9-2-2-2h-2.2C17.4 8.3 15 7 12 7z"/></svg>`,
+  mic:`<svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3zm5-3a5 5 0 01-10 0H5a7 7 0 006 6.9V21h2v-3.1A7 7 0 0019 11z"/></svg>`,
+  close:`<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>`,
+  star:(on,i)=>`<svg class="s" style="animation-delay:${i*.18}s" viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z" fill="${on?"#FFB43F":"#2D266D"}" stroke="${on?"#FFE3A1":"#3E3592"}" stroke-width="1.2"/></svg>`,
+  shield:on=>`<svg width="18" height="20" viewBox="0 0 24 26" class="${on?"":"off"}"><path d="M12 1l10 4v7c0 6.5-4.3 11.5-10 13C6.3 23.5 2 18.5 2 12V5z" fill="currentColor"/></svg>`
+};
+const planetDot = p => `<span class="dot" style="background:radial-gradient(circle at 35% 30%,#FFE3A1,#F06A45 60%,#5B1A4E);filter:hue-rotate(${p.hue||0}deg)"></span>`;
+
+/* ============ PROGRESS LOGIC ============ */
+const level = () => Math.floor(S.xp/LEVEL_XP)+1;
+const rank = l => RANKS.filter(r=>l>=r[0]).pop()[1];
+const st = id => S.words[id];
+const ss = id => S.sent[id];
+const introduced = () => W.filter(w=>st(w.id));
+const isSafe = w => st(w.id) && st(w.id).b>=3;
+function testActive(){ return !!(S.test && S.test.pl && S.test.date && dayDiff(today(), S.test.date) >= 0); }
+const isTestWord = w => testActive() && w.pl===S.test.pl;
+function dueWords(){
+  const t = today();
+  return W.filter(w=>{ const s=st(w.id); if(!s) return false; if (s.due<=t) return true; return isTestWord(w) && s.last!==t; })
+    .sort((a,b)=> (isTestWord(b)-isTestWord(a)) || (st(a.id).b-st(b.id).b) || (st(a.id).due<st(b.id).due?-1:1));
+}
+function newWords(){
+  const order = PLANETS.map(p=>p.id);
+  const tp = testActive() ? S.test.pl : null;
+  return W.filter(w=>!st(w.id)).sort((a,b)=>{
+    const pa = a.pl===tp ? -1 : order.indexOf(a.pl), pb = b.pl===tp ? -1 : order.indexOf(b.pl);
+    return pa-pb;
+  });
+}
+function planNew(dueCount){
+  if (testActive()){
+    const left = W.filter(w=>w.pl===S.test.pl && !st(w.id)).length;
+    if (left) return Math.min(8, left);
+  }
+  return dueCount>=16 ? 2 : dueCount>=10 ? 4 : 6;
+}
+function focusPlanet(){
+  if (testActive()) return PMAP[S.test.pl];
+  return PLANETS.find(p=>W.some(w=>w.pl===p.id && !isSafe(w))) || PLANETS[0];
+}
+function planetStats(pid){
+  const ws = W.filter(w=>w.pl===pid);
+  return {total:ws.length, seen:ws.filter(w=>st(w.id)).length, safe:ws.filter(isSafe).length};
+}
+function addXP(n){
+  const before = level(); S.xp += n; save();
+  if (level()>before){ sfx("level"); confetti(); setTimeout(()=>toast(`Level ${level()}! Du bist jetzt <b>${rank(level())}</b>`),300); }
+}
+function markDay(){
+  const t = today();
+  if (S.lastDay===t) return;
+  S.streak = (S.lastDay===addDays(t,-1)) ? S.streak+1 : 1;
+  S.lastDay = t; if (!S.days.includes(t)) S.days.push(t);
+  if (S.days.length>150) S.days = S.days.slice(-150);
+}
+/* src: "mission" | "kid" | "mama".  noPromote: Hilfe benutzt oder in dieser Runde schon falsch. */
+function updateWord(w, ok, src, noPromote){
+  const t = today();
+  let s = S.words[w.id];
+  S.stats.answers++; if (ok) S.stats.right++;
+  if (!s){
+    if (src==="mama" && ok){ S.words[w.id] = {b:3,due:addDays(t,INTERVAL[3]),up:t,r:1,w:0,last:t}; save(); return; }
+    S.words[w.id] = {b:1,due:addDays(t,1),up:t,r:ok?1:0,w:ok?0:1,last:t}; save(); return;
+  }
+  s.last = t;
+  if (ok){
+    s.r++;
+    if (src!=="kid" && !noPromote && s.up!==t){ s.b = Math.min(5, s.b+1); s.up = t; s.due = addDays(t, INTERVAL[s.b]); }
+  } else {
+    s.w++; s.b = 1; s.due = addDays(t,1);
+  }
+  save();
+}
+function updateSent(s, ok, noPromote){
+  const t = today();
+  let x = S.sent[s.id] || (S.sent[s.id] = {b:0,due:t,up:null,r:0,w:0});
+  x.last = t;
+  if (ok){ x.r++; S.stats.sentRight++; if (!noPromote && x.up!==t){ x.b=Math.min(5,x.b+1); x.up=t; x.due=addDays(t,INTERVAL[x.b]); } }
+  else { x.w++; x.b = Math.max(0, Math.min(x.b,1)); x.due = addDays(t,1); }
+  save();
+}
+function sentUnlocked(s){
+  if (s.pl==="gram") return true;
+  const ws = W.filter(w=>w.pl===s.pl);
+  return ws.filter(w=>st(w.id)).length >= Math.min(3, ws.length);
+}
+function pickSentences(n, only){
+  const t = today(), tp = testActive() ? S.test.pl : null;
+  let c = SENT.filter(s=>sentUnlocked(s) && (!only || s.pl===only));
+  const pri = s => (s.pl===tp ? 0 : s.pl==="gram" ? 1 : 2);
+  const due = shuffle(c.filter(s=>ss(s.id) && ss(s.id).due<=t && ss(s.id).up!==t)).sort((a,b)=>pri(a)-pri(b));
+  const fresh = shuffle(c.filter(s=>!ss(s.id))).sort((a,b)=>pri(a)-pri(b));
+  let out = due.concat(fresh).slice(0,n);
+  if (only && out.length<n) out = out.concat(pickSentences(n-out.length).filter(s=>!out.includes(s)));
+  if (!only && n>=2 && out.length && !out.some(s=>s.pl==="gram")){
+    const g = due.concat(fresh).find(s=>s.pl==="gram"); if (g) out[out.length-1] = g;
+  }
+  return out;
+}
+const BADGES = [
+  {id:"first",e:"🚀",n:"Erster Start",d:"Erste Mission geschafft"},
+  {id:"perfect",e:"💎",n:"Fehlerfrei",d:"Eine Mission ohne Fehler"},
+  {id:"combo10",e:"🔥",n:"Feuerschweif",d:"10 richtige Antworten am Stück"},
+  {id:"streak3",e:"📅",n:"Drei Tage Kurs",d:"3 Tage hintereinander geübt"},
+  {id:"streak7",e:"🌟",n:"Wochen-Pilot",d:"7 Tage hintereinander geübt"},
+  {id:"words50",e:"🛰️",n:"Sammler",d:"50 Wörter kennengelernt"},
+  {id:"safe50",e:"🏅",n:"Gedächtnis-Profi",d:"50 Wörter sicher im Kopf"},
+  {id:"planet",e:"🪐",n:"Planet erobert",d:"Alle Wörter eines Planeten sicher"},
+  {id:"sent20",e:"🧩",n:"Satz-Baumeister",d:"20 Sätze richtig gebaut"},
+  {id:"mama",e:"🤝",n:"Team-Player",d:"3-mal von Mama oder Papa abgefragt"},
+  {id:"boss",e:"👾",n:"Wortfresser besiegt",d:"Einen Bosskampf gewonnen"}
+];
+function checkBadges(ctx){
+  const got = [];
+  const give = id => { if(!S.badges.includes(id)){ S.badges.push(id); got.push(id); } };
+  if (S.stats.missions>=1) give("first");
+  if (ctx && ctx.perfect) give("perfect");
+  if (S.stats.bestCombo>=10) give("combo10");
+  if (S.streak>=3) give("streak3");
+  if (S.streak>=7) give("streak7");
+  if (introduced().length>=50) give("words50");
+  if (W.filter(isSafe).length>=50) give("safe50");
+  if (PLANETS.some(p=>{ const x=planetStats(p.id); return x.total && x.safe===x.total; })) give("planet");
+  if (S.stats.sentRight>=20) give("sent20");
+  if (S.stats.mama>=3) give("mama");
+  if (Object.values(S.boss).some(Boolean)) give("boss");
+  save(); return got;
+}
+
+/* ============ SCREENS ============ */
+const SCREENS = ["onboard","home","mission","deck","cards","pin","summary","map","badges","parents"];
+function show(name){
+  SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
+  hideSheet(); window.scrollTo(0,0);
+  if (name==="home") renderHome();
+}
+let pickRocket = 0;
+function renderOnboard(){
+  $("#onbRocket").innerHTML = rocketSVG(ROCKET_COLORS[pickRocket]);
+  $("#swatches").innerHTML = ROCKET_COLORS.map((c,i)=>`<button class="swatch" data-act="pickRocket" data-i="${i}" aria-pressed="${i===pickRocket}" aria-label="Rakete ${i+1}">${rocketSVG(c)}</button>`).join("");
+}
+
+function renderTestCard(){
+  const box = $("#testCard");
+  if (!testActive()){ box.innerHTML = ""; return; }
+  const p = PMAP[S.test.pl], st_ = planetStats(p.id), d = dayDiff(today(), S.test.date);
+  const startD = S.test.start || today();
+  const span = Math.max(1, dayDiff(startD, S.test.date));
+  const days = []; for (let i=0;i<=Math.min(span,6);i++) days.push(addDays(S.test.date, -Math.min(span,6)+i));
+  const left = st_.total - st_.seen;
+  const plan = d===0 ? "Heute ist Test! Kurz aufwärmen mit den Karteikarten." :
+    left>0 ? `Heute: ${Math.min(8,left)} neue Test-Wörter lernen.` :
+    d===1 ? "Generalprobe: Mama fragt alle Wörter ab." :
+    "Heute: wiederholen und Sätze bauen.";
+  const learned = W.filter(w=>w.pl===p.id && st(w.id) && st(w.id).b>=2).length;
+  box.innerHTML = `<div class="testcard">
+    <div class="row" style="align-items:flex-end">
+      <div><span class="label" style="color:var(--bad)">Test-Countdown</span><div style="font-weight:700;font-size:1.05rem">${esc(p.name)}</div></div>
+      <span class="spacer"></span>
+      <div class="center"><div class="count">${d===0?"HEUTE":d}</div><small class="muted">${d===0?"":d===1?"Tag":"Tage"}</small></div>
+    </div>
+    <div class="daydots">${days.map(x=>`<span class="${x===today()?"now":x<today()?"past":""}">${x===S.test.date?"Test":wdOf(x)}</span>`).join("")}</div>
+    <div class="row" style="justify-content:space-between"><small class="muted">${learned} von ${st_.total} Wörtern gelernt</small><small class="muted">${st_.seen} gesehen</small></div>
+    <div class="bar"><i style="width:${Math.round(learned/st_.total*100)}%"></i></div>
+    <div style="font-weight:600">${plan}</div>
+    <div class="row"><button class="btn btn-soft" style="flex:1" data-act="startTest">Test-Training</button><button class="btn btn-soft" style="flex:1" data-act="testCards">Karteikarten</button></div>
+  </div>`;
+}
+function backupCode(){ try { return btoa(unescape(encodeURIComponent(JSON.stringify(Object.assign({},S,{pin:null}))))); } catch(e){ return ""; } }
+function renderBackup(){
+  const box = $("#backupCard");
+  const need = introduced().length>0 && (!S.lastBackup || dayDiff(S.lastBackup, today())>=7);
+  box.innerHTML = need ? `<div class="panel" style="flex-direction:row;align-items:center;border-color:var(--ice)">
+      <span style="font-size:1.6rem" aria-hidden="true">💾</span>
+      <div style="flex:1;min-width:0"><b>Sicherung fällig</b><div class="muted" style="font-size:.85rem">Schick deinen Spielstand an Mama, damit nichts verloren geht.</div></div>
+      <button class="btn btn-ice" data-act="sendBackup" style="min-height:44px;padding:0 14px">Senden</button></div>` : "";
+}
+function renderHome(){
+  const l = level();
+  $("#hAvatar").innerHTML = rocketSVG(ROCKET_COLORS[S.rocket]);
+  $("#hMini").innerHTML = rocketSVG(ROCKET_COLORS[S.rocket]);
+  $("#hName").textContent = S.name || "Pilot";
+  $("#hRank").textContent = rank(l);
+  $("#hStreak").textContent = S.streak && (S.lastDay===today()||S.lastDay===addDays(today(),-1)) ? S.streak : 0;
+  $("#hLevel").textContent = l;
+  const inLvl = S.xp % LEVEL_XP;
+  $("#hXpTxt").textContent = `${inLvl} / ${LEVEL_XP} XP`;
+  requestAnimationFrame(()=>{ $("#hXp").style.width = (inLvl/LEVEL_XP*100)+"%"; });
+  renderTestCard();
+  renderBackup();
+  const p = focusPlanet(), ps = planetStats(p.id);
+  $("#hPlanetBall").style.filter = `hue-rotate(${p.hue}deg)`;
+  $("#hPlanet").textContent = p.planet;
+  $("#hUnit").textContent = `${p.name} · ${ps.seen}/${ps.total} entdeckt · ${ps.safe} sicher`;
+  const conq = PLANETS.filter(x=>{ const s=planetStats(x.id); return s.safe===s.total; }).length;
+  $("#hConq").innerHTML = `${conq}/${PLANETS.length}<br>erobert`;
+  const due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
+  if (due===0 && nw===0){
+    $("#mTitle").textContent = "Mission erfüllt!";
+    $("#mSub").textContent = "Für heute ist alles geschafft. Bau noch ein paar Sätze!";
+    $("#missionBtn").dataset.act = "startSentences";
+  } else {
+    $("#mTitle").textContent = S.lastDay===today() ? "Weiter trainieren" : "Tagesmission";
+    const bits = []; if (nw) bits.push(`${nw} neue Wörter`); if (due) bits.push(`${Math.min(due,12)} Wiederholungen`); bits.push("3 Sätze");
+    $("#mSub").textContent = bits.join(" · ") + " · ca. 10 Min.";
+    $("#missionBtn").dataset.act = "startDaily";
+  }
+  const bossOk = ps.seen===ps.total;
+  $("#bossTile").classList.toggle("locked", !bossOk);
+  $("#bossSub").textContent = S.boss[p.id] ? "Besiegt! Revanche?" : bossOk ? `Kampf um ${p.planet}` : `Erst alle Wörter lernen (${ps.seen}/${ps.total})`;
+  $("#badgeSub").textContent = `${S.badges.length} von ${BADGES.length}`;
+  $("#mapSub").textContent = `${introduced().length} von ${W.length} Wörtern`;
+  $("#sentSub").textContent = `${SENT.filter(sentUnlocked).length} Sätze freigeschaltet`;
+  $("#soundBtn").textContent = S.settings.sound ? "Ton: an" : "Ton: aus";
+  $("#slowBtn").textContent = S.settings.slow ? "Sprechtempo: langsam" : "Sprechtempo: normal";
+  if (S.migrated){ S.migrated = false; save(); setTimeout(()=>toast("Neue Wort-Galaxie! Jetzt mit 245 Wörtern und Satzwerkstatt."),600); }
+}
+
+/* ============ MISSIONS ============ */
+let M = null;
+function buildWordQueue(news, reviews){
+  const q = [], revs = shuffle(reviews);
+  for (let i=0;i<news.length;i+=2){
+    const g = news.slice(i,i+2);
+    g.forEach(w=>q.push({kind:"intro",w}));
+    revs.splice(0,2).forEach(w=>q.push({kind:"word",w}));
+    g.forEach(w=>q.push({kind:"word",w,fresh:true}));
+  }
+  revs.forEach(w=>q.push({kind:"word",w}));
+  return q;
+}
+function startDaily(){
+  const dueAll = dueWords();
+  const nws = newWords().slice(0, planNew(dueAll.length));
+  const q = buildWordQueue(nws, dueAll.slice(0,12));
+  pickSentences(3).forEach(s=>q.push({kind:"sent",s}));
+  if (!q.length){ toast("Alles geschafft für heute!"); return; }
+  begin("daily", q);
+}
+function startTest(){
+  if (!testActive()) return startDaily();
+  const pl = S.test.pl, ws = W.filter(w=>w.pl===pl);
+  const nws = ws.filter(w=>!st(w.id)).slice(0,8);
+  const rev = shuffle(ws.filter(w=>st(w.id) && st(w.id).last!==today())).slice(0,14);
+  const rev2 = rev.length ? rev : shuffle(ws.filter(w=>st(w.id))).slice(0,10);
+  const q = buildWordQueue(nws, rev2);
+  pickSentences(4, pl).forEach(s=>q.push({kind:"sent",s}));
+  begin("test", q);
+}
+function startSentences(){
+  const list = pickSentences(6);
+  if (!list.length){ toast("Lerne erst ein paar Wörter, dann werden Sätze freigeschaltet!"); return; }
+  begin("sent", list.map(s=>({kind:"sent",s})));
+}
+function startBoss(){
+  const p = focusPlanet(), ws = W.filter(w=>w.pl===p.id);
+  if (!ws.every(w=>st(w.id))){ toast(`Der Wortfresser wartet noch. Lerne zuerst alle Wörter von ${esc(p.planet)}!`); return; }
+  const pick = shuffle(ws).slice(0,14).map(w=>({kind:"word",w,boss:true}));
+  begin("boss", pick, {hp:10,max:10,shields:3,pl:p.id});
+}
+function begin(mode, queue, boss){
+  M = {mode, queue, boss:boss||null, i:0, right:0, wrong:0, combo:0, best:0, xp:0, wrongSet:new Set(), lastType:null,
+       newCount:queue.filter(q=>q.kind==="intro").length, sentOk:0, sentTotal:0, missed:[]};
+  $("#bossBox").hidden = mode!=="boss";
+  show("mission"); renderBoss(); next();
+}
+function next(){
+  if (M.mode==="boss" && (M.boss.hp<=0 || M.boss.shields<=0)) return finish();
+  if (M.i >= M.queue.length) return finish();
+  const it = M.queue[M.i];
+  $("#progBar").style.width = (M.i/M.queue.length*100)+"%";
+  renderCombo();
+  if (it.kind==="intro") renderIntro(it.w);
+  else if (it.kind==="sent") renderSentence(it);
+  else renderWord(it);
+}
+function renderCombo(){
+  $("#comboN").textContent = M.combo;
+  const c = $("#combo"); c.classList.toggle("hot", M.combo>=3);
+}
+function renderBoss(){
+  if (!M || !M.boss) return;
+  $("#hpBar").style.width = (M.boss.hp/M.boss.max*100)+"%";
+  $("#shields").innerHTML = [0,1,2].map(i=>I.shield(i<M.boss.shields)).join("");
+}
+const card = () => $("#card");
+function speakerBtn(text, cls, slow){ return `<button class="speak ${cls||""}" data-act="say" data-t="${esc(text)}" ${slow?'data-slow="1"':""} aria-label="${slow?"Langsam anhören":"Anhören"}">${slow?I.turtle:I.speaker}</button>`; }
+function exampleBox(w){ return w.ex ? `<div class="example">${speakerBtn(w.ex)}<div><p>${esc(w.ex)}</p><p class="de">${esc(w.exDe)}</p></div></div>` : ""; }
+function inputForm(ph){ return `<form id="typeForm" autocomplete="off"><input id="ans" class="answer" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" placeholder="${ph}" aria-label="Antwort"></form>`; }
+function focusAns(){ setTimeout(()=>{ try{ $("#ans").focus({preventScroll:true}); }catch(e){} }, 150); }
+function bindForm(fn){ const f=$("#typeForm"); if (f) f.addEventListener("submit", e=>{ e.preventDefault(); fn(); }); }
+
+function renderIntro(w){
+  const p = PMAP[w.pl];
+  card().innerHTML = `<div class="card">
+    <span class="stagebadge">Stufe 1 · Kennenlernen · ${esc(p.name)}</span>
+    <div class="row" style="align-items:flex-start">
+      <div style="flex:1;min-width:0"><div class="big">${esc(showEn(w))}</div>${w.ipa?`<div class="ipa">[${esc(w.ipa)}]</div>`:""}</div>
+      <div class="row" style="gap:8px">${speakerBtn(sayText(w))}${speakerBtn(sayText(w),"",true)}</div>
+    </div>
+    <div class="de-big" style="color:var(--flame)">${esc(w.de)}</div>
+    ${exampleBox(w)}
+    ${w.tip?`<div class="tip"><b>Tipp:</b> ${w.tip}</div>`:""}
+    <div class="ask">Sprich es laut nach. Dann schreib es einmal ab:</div>
+    ${inputForm("Abschreiben …")}
+    <button class="btn btn-main btn-block" data-act="copyCheck">Fertig</button>
+  </div>`;
+  bindForm(copyCheck);
+  setTimeout(()=>speak(sayText(w)), 250);
+}
+function copyCheck(){
+  const it = M.queue[M.i], w = it.w, inp = $("#ans"), v = inp.value;
+  const target = norm(w.en.split(" / ")[0]);
+  const n = norm(v);
+  const ok = n && (n===target || lev(n,target)<=1 || checkWord(w,v).ok);
+  if (!ok){ inp.classList.remove("shake"); void inp.offsetWidth; inp.classList.add("shake"); sfx("bad"); inp.placeholder = "Schau genau hin und schreib es ab"; return; }
+  if (!st(w.id)){ S.words[w.id] = {b:1,due:addDays(today(),1),up:today(),r:0,w:0,last:today()}; save(); }
+  sfx("tap"); addXP(3); M.xp += 3; floatXP(inp,"+3");
+  M.i++; next();
+}
+
+function pickType(w, it){
+  if (it.type) return it.type;
+  if (it.fresh) return "type";
+  const s = st(w.id), b = s ? s.b : 1;
+  let opts = b<=1 ? ["type","listen"] : b===2 ? ["type","gap","listen"] : ["type","gap","say","type"];
+  if (it.boss) opts = ["type","listen","type"];
+  opts = opts.filter(t=>feasible(t,w));
+  const notSame = opts.filter(t=>t!==M.lastType);
+  const pool = notSame.length ? notSame : opts;
+  return pool.length ? pool[rnd(pool.length)] : "type";
+}
+function feasible(t,w){
+  if (t==="listen") return HAS_TTS;
+  if (t==="say") return srOK;
+  if (t==="gap") return gapMatch(w)!==null;
+  return true;
+}
+function gapMatch(w){
+  const c = coreOf(w); if (!c || !w.ex) return null;
+  const re = new RegExp("(^|[^A-Za-z'])(" + escRe(c) + ")(?![A-Za-z])","i");
+  const m = w.ex.match(re); if (!m) return null;
+  const start = m.index + m[1].length;
+  return {before:w.ex.slice(0,start), word:m[2], after:w.ex.slice(start+m[2].length)};
+}
+function renderWord(it){
+  const w = it.w, type = it.type = pickType(w, it);
+  M.lastType = type; M.answered = false; M.hintUsed = false;
+  const head = it.retry ? `<span class="stagebadge" style="color:var(--flame)">Nochmal üben</span>` : `<span class="stagebadge">${type==="say"?"Sagen":type==="gap"?"Im Satz":type==="listen"?"Hören & Schreiben":"Schreiben"}</span>`;
+  let html = "";
+  if (type==="type"){
+    html = `${head}<div class="ask">Wie heißt das auf Englisch?</div><div class="de-big">${esc(w.de)}</div>
+      <div class="hint-line" id="hintLine"></div>
+      ${inputForm("Auf Englisch schreiben …")}
+      <button class="btn btn-main btn-block" data-act="typeCheck">Prüfen</button>
+      <div class="row"><button class="btn btn-ghost" data-act="hint" style="flex:1">Tipp</button><button class="btn btn-ghost" data-act="skip" style="flex:1">Weiß nicht</button></div>`;
+  } else if (type==="listen"){
+    html = `${head}<div class="ask center">Hör zu und schreib das Wort auf:</div>
+      ${speakerBtn(sayText(w),"lg")}<div class="center">${speakerBtn(sayText(w),"",true)}</div>
+      <div class="muted center">${esc(w.de)}</div>
+      ${inputForm("Was hast du gehört?")}
+      <button class="btn btn-main btn-block" data-act="typeCheck">Prüfen</button>
+      <button class="btn btn-ghost btn-block" data-act="skip">Weiß nicht</button>`;
+    setTimeout(()=>speak(sayText(w)), 300);
+  } else if (type==="gap"){
+    const g = gapMatch(w); M.gap = g;
+    html = `${head}<div class="ask">Welches Wort fehlt? (${esc(w.de)})</div>
+      <div class="sentence">${esc(g.before)}<span class="blank">&nbsp;?&nbsp;</span>${esc(g.after)}</div>
+      <div class="muted" style="font-size:.9rem">${esc(w.exDe)}</div>
+      ${inputForm("Fehlendes Wort …")}
+      <button class="btn btn-main btn-block" data-act="typeCheck">Prüfen</button>
+      <button class="btn btn-ghost btn-block" data-act="skip">Weiß nicht</button>`;
+  } else if (type==="say"){
+    M.sayTries = 0;
+    html = `${head}<div class="ask center">Funkspruch! Sag es laut auf Englisch:</div>
+      <div class="de-big center">${esc(w.de)}</div>
+      <button class="mic" id="micBtn" data-act="listen" aria-label="Sprechen">${I.mic}</button>
+      <div class="heard" id="heard">Tippe aufs Mikro und sprich.</div>
+      <button class="btn btn-ghost btn-block" data-act="skip">Weiß nicht</button>`;
+  }
+  card().innerHTML = `<div class="card">${html}</div>`;
+  if (type!=="say"){ bindForm(doTypeCheck); focusAns(); }
+}
+function doTypeCheck(){
+  if (M.answered) return;
+  const it = M.queue[M.i], w = it.w, inp = $("#ans"), val = inp.value;
+  if (!val.trim()){ inp.focus(); return; }
+  let res = checkWord(w, val);
+  if (!res.ok && it.type==="gap" && M.gap){ const n=norm(val), g=norm(M.gap.word); if (n===g) res={ok:true}; else if (g.length>=5 && lev(n,g)<=1) res={ok:true,typo:true}; }
+  inp.blur();
+  resolveWord(res.ok, {typo:res.typo, cap: res.ok ? capNote(w,val) : "", given: val});
+}
+
+/* ---------- Sentences ---------- */
+function renderSentence(it){
+  const s = it.s, x = ss(s.id);
+  const type = it.type || (it.type = (x && x.b>=2) ? "translate" : "puzzle");
+  M.answered = false;
+  const badge = it.retry ? `<span class="stagebadge" style="color:var(--flame)">Nochmal üben</span>` : `<span class="stagebadge">Satzwerkstatt · ${type==="puzzle"?"Satz-Puzzle":"Übersetzen"}</span>`;
+  if (type==="puzzle"){
+    const toks = sentTokens(s), traps = (s.tr||[]).slice(0,2);
+    M.pz = {target:toks, tiles:shuffle(toks.concat(traps).map((t,i)=>({t,i,used:false}))), line:[]};
+    card().innerHTML = `<div class="card">${badge}
+      <div class="ask">Bau den Satz auf Englisch:</div>
+      <div class="de-big">${esc(fillN(s.de))}</div>
+      <div class="answer-line" id="aLine"></div>
+      <div class="tiles-pool" id="pool"></div>
+      <div class="muted center" style="font-size:.85rem">Achtung: Zwei Bausteine sind Fallen!</div>
+      <button class="btn btn-main btn-block" data-act="pzCheck">Prüfen</button>
+      <button class="btn btn-ghost btn-block" data-act="skip">Weiß nicht</button></div>`;
+    drawPuzzle();
+  } else {
+    card().innerHTML = `<div class="card">${badge}
+      <div class="ask">Schreib den Satz auf Englisch:</div>
+      <div class="de-big">${esc(fillN(s.de))}</div>
+      ${inputForm("Englischer Satz …")}
+      <div class="muted" style="font-size:.85rem">Achte auf Groß- und Kleinschreibung und den Punkt am Ende.</div>
+      <button class="btn btn-main btn-block" data-act="sentCheck">Prüfen</button>
+      <button class="btn btn-ghost btn-block" data-act="skip">Weiß nicht</button></div>`;
+    bindForm(doSentCheck); focusAns();
+  }
+}
+function drawPuzzle(){
+  const pz = M.pz, s = M.queue[M.i].s;
+  $("#aLine").innerHTML = pz.line.map((ti,k)=>`<button class="wtile placed" data-act="pzBack" data-k="${k}">${esc(pz.tiles[ti].t)}</button>`).join("") + (pz.line.length?`<span class="end">${esc(sentEnd(s))}</span>`:"");
+  $("#pool").innerHTML = pz.tiles.map((t,k)=>`<button class="wtile ${t.used?"used":""}" data-act="pzTap" data-k="${k}" ${t.used?"disabled":""}>${esc(t.t)}</button>`).join("");
+}
+function doSentCheck(){
+  if (M.answered) return;
+  const it = M.queue[M.i], val = $("#ans").value;
+  if (!val.trim()){ $("#ans").focus(); return; }
+  const res = checkSentence(it.s, val);
+  $("#ans").blur();
+  resolveSent(res.ok, {typo:res.typo, cap:res.cap, given:val});
+}
+
+/* ---------- Resolve ---------- */
+function resolveWord(ok, opts={}){
+  if (M.answered) return; M.answered = true;
+  const it = M.queue[M.i], w = it.w;
+  updateWord(w, ok, "mission", M.wrongSet.has(w.id) || M.hintUsed || it.fresh);
+  afterAnswer(ok, it, opts);
+  if (!ok){ M.wrongSet.add(w.id); if (!M.missed.includes(w.en)) M.missed.push(w.en); }
+  showSheet(ok, {en:showEn(w), de:w.de, say:sayText(w), tip: !ok && w.tip ? w.tip : "", ...opts});
+}
+function resolveSent(ok, opts={}){
+  if (M.answered) return; M.answered = true;
+  const it = M.queue[M.i], s = it.s;
+  M.sentTotal++; if (ok) M.sentOk++;
+  updateSent(s, ok, it.retry);
+  afterAnswer(ok, it, opts);
+  const tip = s.tip || "";
+  showSheet(ok, {en:fillN(s.en), de:fillN(s.de), say:fillN(s.en), tip: ok ? "" : tip, ...opts});
+}
+function afterAnswer(ok, it, opts){
+  let gain = 0;
+  if (ok){
+    M.right++; M.combo++; M.best = Math.max(M.best,M.combo); S.stats.bestCombo = Math.max(S.stats.bestCombo, M.combo);
+    gain = (it.kind==="sent" ? 15 : 10) + Math.min(M.combo,10) - (M.hintUsed?6:0);
+    M.xp += gain; addXP(gain);
+    sfx(M.mode==="boss"?"hit":"good"); warp = 7;
+    const el = $("#card .card");
+    if (el){ const [x,y]=centerOf(el); burst(x,y,M.combo>=5?60:34); floatXP(el,"+"+gain); }
+    if (M.mode==="boss"){ M.boss.hp--; const a=$("#alien"); a.classList.remove("hit"); void a.offsetWidth; a.classList.add("hit"); const [x,y]=centerOf(a); burst(x,y,30,["#9A63F0","#FF6F8F","#FFB43F"]); renderBoss(); }
+  } else {
+    M.wrong++; M.combo = 0; sfx("bad");
+    if (navigator.vibrate) try{ navigator.vibrate(60); }catch(e){}
+    if (M.mode==="boss"){ M.boss.shields--; renderBoss(); }
+    else if (!it.retry){
+      const pos = Math.min(M.i+4, M.queue.length);
+      const again = it.kind==="sent" ? {kind:"sent", s:it.s, retry:true, type:"puzzle"} : {kind:"word", w:it.w, retry:true, type:"type"};
+      M.queue.splice(pos,0,again);
+    }
+  }
+  renderCombo();
+}
+const PRAISE = ["Super!","Klasse!","Volltreffer!","Stark!","Genau!","Wow!","Perfekt!","Raketenstark!"];
+function showSheet(ok, o){
+  const sh = $("#sheet");
+  sh.className = "sheet show " + (ok?"ok":"no");
+  const title = ok ? (o.typo ? "Fast perfekt!" : M.combo>=5 ? `${M.combo}er-Combo!` : PRAISE[rnd(PRAISE.length)])
+              : o.cap ? "Fast!" : (M.mode==="boss" ? "Autsch, Schild verloren!" : "Knapp daneben!");
+  const sub = ok ? (o.typo ? "Kleiner Tippfehler. Richtig geschrieben:" : "") : "Richtig ist:";
+  const yours = !ok && o.given && o.given.trim() ? `<div class="yours">Du hast geschrieben: <s>${esc(o.given)}</s></div>` : "";
+  const note = o.cap ? `<div class="tip"><b>Achtung:</b> ${o.cap}</div>` : "";
+  $("#sheetIn").innerHTML = `<h3>${title}</h3>${sub?`<div class="muted">${sub}</div>`:""}
+    <div class="sol">${speakerBtn(o.say)}<div style="min-width:0"><b>${esc(o.en)}</b><small>${esc(o.de)}</small></div></div>
+    ${yours}${note}${o.tip?`<div class="tip"><b>Merke:</b> ${o.tip}</div>`:""}
+    ${!ok && M.mode!=="boss"?`<div class="muted" style="font-size:.9rem">Kommt gleich nochmal dran.</div>`:""}
+    <button class="btn ${ok?"btn-good":"btn-bad"} btn-block" data-act="cont" id="contBtn">Weiter</button>`;
+  setTimeout(()=>speak(o.say), ok?150:350);
+  setTimeout(()=>{ try{ $("#contBtn").focus({preventScroll:true}); }catch(e){} }, 380);
+}
+function hideSheet(){ $("#sheet").className = "sheet"; }
+
+/* ---------- Speech recognition ---------- */
+let REC = null;
+function startListening(){
+  const it = M.queue[M.i], w = it.w;
+  const fallback = () => { srOK = false; it.type = "type"; renderWord(it); toast("Das Mikro geht hier nicht. Schreib das Wort stattdessen."); };
+  if (!SR) return fallback();
+  try {
+    if (REC) { try{ REC.abort(); }catch(e){} }
+    REC = new SR(); REC.lang = "en-GB"; REC.interimResults = false; REC.maxAlternatives = 5;
+    const mic = $("#micBtn"), heard = $("#heard");
+    mic.classList.add("listening"); heard.textContent = "Ich höre zu …";
+    REC.onresult = e => {
+      mic.classList.remove("listening");
+      const alts = Array.from(e.results[0]).map(a=>a.transcript);
+      const {exact} = answerForms(w);
+      const targets = [...exact].concat([norm(sayText(w))]);
+      const best = Math.max(...alts.flatMap(a=>targets.map(t=>similar(a,t))));
+      if (best >= .75){ S.stats.say++; save(); resolveWord(true, {}); }
+      else {
+        M.sayTries++;
+        heard.innerHTML = `Ich habe <b>„${esc(alts[0]||"…")}“</b> verstanden. Versuch's nochmal!`;
+        if (M.sayTries>=3) resolveWord(false, {});
+      }
+    };
+    REC.onerror = e => {
+      mic.classList.remove("listening");
+      if (["not-allowed","service-not-allowed","audio-capture","network","language-not-supported"].includes(e.error)) fallback();
+      else heard.textContent = e.error==="no-speech" ? "Ich habe nichts gehört. Tipp nochmal aufs Mikro!" : "Hat nicht geklappt. Versuch's nochmal!";
+    };
+    REC.start();
+  } catch(e){ fallback(); }
+}
+
+/* ---------- Finish ---------- */
+function finish(){
+  hideSheet();
+  const total = M.right + M.wrong, acc = total ? M.right/total : 1;
+  let win = null;
+  if (M.mode==="boss"){ win = M.boss.hp<=0; if (win){ S.boss[M.boss.pl] = true; addXP(100); M.xp += 100; } }
+  S.stats.missions++; markDay(); save();
+  const newB = checkBadges({perfect: M.mode!=="boss" && total>=6 && M.wrong===0});
+  const starsN = M.mode==="boss" ? (win ? M.boss.shields : 0) : acc>=.9?3:acc>=.7?2:1;
+  if (M.mode!=="boss" || win){ setTimeout(confetti,200); sfx("win"); }
+  const titles = M.mode==="boss" ? (win ? ["Wortfresser besiegt!","Der Planet gehört dir!"] : ["Der Wortfresser ist entkommen!","Übe noch ein bisschen und fordere ihn erneut heraus."])
+    : M.mode==="sent" ? ["Satzwerkstatt fertig!", `${M.sentOk} von ${M.sentTotal} Sätzen beim ersten Versuch richtig`]
+    : M.mode==="test" ? ["Test-Training geschafft!", "Morgen wieder, dann sitzt es."]
+    : ["Mission erfüllt!", M.newCount ? `${M.newCount} neue Wörter entdeckt` : "Alle Wiederholungen geschafft"];
+  $("#s-summary").innerHTML = `<div class="trophy">
+      <div style="width:110px;margin:0 auto;animation:hover 3s ease-in-out infinite">${rocketSVG(ROCKET_COLORS[S.rocket])}</div>
+      <h1 class="display" style="font-size:clamp(1.5rem,7vw,2.1rem);color:var(--flame);margin-top:8px">${titles[0]}</h1>
+      <p class="muted" style="margin:6px 0 0">${titles[1]}</p>
+      <div class="stars-row">${[0,1,2].map(i=>I.star(i<starsN,i)).join("")}</div>
+    </div>
+    <div class="statgrid">
+      <div class="stat"><b id="xpCount">+0</b><small>XP</small></div>
+      <div class="stat"><b>${Math.round(acc*100)}%</b><small>richtig</small></div>
+      <div class="stat"><b>${M.best}</b><small>beste Combo</small></div>
+    </div>
+    ${M.missed.length?`<div class="panel"><span class="label">Diese Wörter üben wir morgen nochmal</span><div class="chips">${M.missed.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div></div>`:""}
+    ${S.streak>0?`<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.8rem" aria-hidden="true">🔥</span><div><b>${S.streak} ${S.streak===1?"Tag":"Tage"} in Folge</b><div class="muted" style="font-size:.88rem">Komm morgen wieder, damit dein Feuer nicht ausgeht!</div></div></div>`:""}
+    ${newB.length?`<div class="panel"><span class="label">Neues Abzeichen!</span>${newB.map(id=>{const b=BADGES.find(x=>x.id===id);return `<div class="row"><span style="font-size:2rem">${b.e}</span><div><b>${esc(b.n)}</b><div class="muted" style="font-size:.85rem">${esc(b.d)}</div></div></div>`;}).join("")}</div>`:""}
+    <button class="btn btn-main btn-block" data-act="home">Zurück zur Basis</button>`;
+  show("summary");
+  const target = M.xp, el = $("#xpCount"); let v = 0;
+  const step = () => { v = Math.min(target, v + Math.max(1, Math.ceil(target/40))); el.textContent = "+"+v; if (v<target) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+  M = null;
+}
+
+/* ============ KARTEIKARTEN & MAMA-ABFRAGE ============ */
+const DK = {mode:"kid", dir:"de", size:20};
+let C = null, pinUntil = 0, pinNext = null;
+function deckOptions(){
+  const t = today(), out = [];
+  if (testActive()){ const p=PMAP[S.test.pl]; out.push({key:"test", name:`Test: ${p.name}`, sub:"Alle Wörter für den Test", ids:W.filter(w=>w.pl===p.id).map(w=>w.id), hot:true}); }
+  const wrong = W.filter(w=>st(w.id) && st(w.id).w>0 && st(w.id).b<=2);
+  out.push({key:"wrong", name:"Fehlerwörter", sub:"Wörter, die zuletzt falsch waren", ids:wrong.map(w=>w.id)});
+  out.push({key:"due", name:"Heute fällig", sub:"Was heute wiederholt werden soll", ids:dueWords().map(w=>w.id)});
+  const recent = W.filter(w=>st(w.id) && st(w.id).last && dayDiff(st(w.id).last,t)<=3);
+  out.push({key:"recent", name:"Zuletzt gelernt", sub:"Die letzten 3 Tage", ids:recent.map(w=>w.id)});
+  PLANETS.forEach(p=>{ const ps=planetStats(p.id); out.push({key:p.id, name:p.name, sub:`${ps.seen}/${ps.total} gesehen · ${ps.safe} sicher`, ids:W.filter(w=>w.pl===p.id).map(w=>w.id), planet:p}); });
+  return out;
+}
+function openDeck(mode){
+  DK.mode = mode;
+  if (mode==="mama" && !pinOk()){ return askPin(()=>openDeck("mama")); }
+  renderDeck();
+}
+function renderDeck(){
+  const mama = DK.mode==="mama";
+  const opts = deckOptions();
+  $("#s-deck").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <h1 class="display" style="font-size:1.6rem;color:${mama?"var(--good)":"var(--ice)"}">${mama?"Mama fragt ab":"Karteikarten"}</h1>
+    <p class="muted" style="margin:0">${mama
+      ? "So geht's: Lies das deutsche Wort vor. Er antwortet laut auf Englisch. Dann umdrehen und ehrlich bewerten. Falsche Karten kommen in derselben Runde wieder, bis sie sitzen. Was hier richtig ist, zählt in der App als geprüft."
+      : "Schau die Karte an, sag die Antwort laut, dann umdrehen. Falsche Karten kommen wieder, bis du sie kannst."}</p>
+    <div class="seg" role="group" aria-label="Richtung">
+      <button data-act="dkDir" data-v="de" aria-pressed="${DK.dir==="de"}">Deutsch → Englisch</button>
+      <button data-act="dkDir" data-v="en" aria-pressed="${DK.dir==="en"}">Englisch → Deutsch</button>
+    </div>
+    <div class="seg" role="group" aria-label="Anzahl">
+      <button data-act="dkSize" data-v="10" aria-pressed="${DK.size===10}">10 Karten</button>
+      <button data-act="dkSize" data-v="20" aria-pressed="${DK.size===20}">20 Karten</button>
+      <button data-act="dkSize" data-v="999" aria-pressed="${DK.size===999}">Alle</button>
+    </div>
+    <div class="stack" style="gap:8px">${opts.map((o,i)=>`<button class="deck ${o.hot?"hot":""}" data-act="startCards" data-i="${i}" ${o.ids.length?"":"disabled"}>
+        ${o.planet?planetDot(o.planet):`<span class="dot" style="background:${o.hot?"var(--bad)":o.key==="wrong"?"var(--flame)":"var(--ice)"}"></span>`}
+        <div style="min-width:0"><b>${esc(o.name)}</b><small>${esc(o.sub)}</small></div><span class="n">${o.ids.length}</span></button>`).join("")}</div>`;
+  show("deck");
+}
+function startCards(i){
+  const o = deckOptions()[i]; if (!o || !o.ids.length) return;
+  const weight = id => { const s=st(id); return s ? (s.b*3 - s.w*2 + Math.random()*3) : (Math.random()*3 - 1); };
+  let ids = o.ids.slice().sort((a,b)=>weight(a)-weight(b)).slice(0, DK.size);
+  ids = shuffle(ids);
+  C = {mode:DK.mode, dir:DK.dir, deck:o.name, queue:ids.slice(), i:0, first:{}, total:ids.length, flipped:false};
+  if (C.mode==="mama"){ S.stats.mama++; } else { S.stats.cards++; }
+  save();
+  renderCard();
+  show("cards");
+}
+function renderCard(){
+  if (C.i >= C.queue.length) return finishCards();
+  const w = WMAP[C.queue[C.i]];
+  const known = Object.values(C.first).filter(Boolean).length, wrongN = Object.values(C.first).filter(v=>v===false).length;
+  const left = new Set(C.queue.slice(C.i)).size;
+  const front = C.dir==="de"
+    ? `<span class="label">Deutsch</span><div class="de-big" style="font-size:clamp(1.6rem,8vw,2.2rem)">${esc(w.de)}</div><div class="muted">${C.mode==="mama"?"Wie heißt das auf Englisch?":"Sag es laut auf Englisch!"}</div>`
+    : `<span class="label">Englisch</span><div class="big">${esc(showEn(w))}</div>${speakerBtn(sayText(w))}<div class="muted">Was heißt das auf Deutsch?</div>`;
+  const back = `<span class="label">${C.dir==="de"?"Englisch":"Deutsch"}</span>
+    ${C.dir==="de" ? `<div class="big">${esc(showEn(w))}</div>${w.ipa?`<div class="ipa">[${esc(w.ipa)}]</div>`:""}<div class="row" style="justify-content:center">${speakerBtn(sayText(w))}${speakerBtn(sayText(w),"",true)}</div>` : `<div class="de-big">${esc(w.de)}</div>`}
+    ${w.ex?`<div class="muted" style="font-size:.95rem">${esc(w.ex)}</div>`:""}
+    ${w.tip?`<div class="tip" style="text-align:left">${w.tip}</div>`:""}`;
+  $("#s-cards").innerHTML = `<div class="mbar">
+      <button class="close" data-act="cardsQuit" aria-label="Beenden">${I.close}</button>
+      <div class="prog"><i style="width:${Math.round((C.total-left)/C.total*100)}%;background:linear-gradient(90deg,var(--ice),var(--good))"></i></div>
+      <span class="pill">${left} übrig</span>
+    </div>
+    <div class="row" style="justify-content:space-between"><span class="label">${C.mode==="mama"?"Mama fragt ab":"Karteikarten"} · ${esc(C.deck)}</span><small class="muted"><span style="color:var(--good)">✓ ${known}</span> · <span style="color:var(--bad)">✗ ${wrongN}</span></small></div>
+    <div class="fc ${C.flipped?"flipped":""}" id="fc"><div class="fc-inner">
+      <div class="fc-face fc-front">${front}</div>
+      <div class="fc-face fc-back">${back}</div>
+    </div></div>
+    <div id="fcBtns">${C.flipped
+      ? `<div class="rate"><button class="btn btn-bad" data-act="rate" data-ok="0">✗ ${C.mode==="mama"?"Falsch":"Nochmal"}</button><button class="btn btn-good" data-act="rate" data-ok="1">✓ ${C.mode==="mama"?"Richtig":"Gewusst"}</button></div>`
+      : `<button class="btn btn-ice btn-block" data-act="flip" style="min-height:64px">Umdrehen</button>`}</div>
+    ${C.first[w.id]===false?`<p class="muted center" style="margin:0">Diese Karte war vorhin falsch. Jetzt nochmal!</p>`:""}`;
+  if (C.dir==="en" && !C.flipped) setTimeout(()=>speak(sayText(w)),200);
+}
+function flipCard(){
+  if (!C || C.flipped) return;
+  C.flipped = true; sfx("flip");
+  const w = WMAP[C.queue[C.i]];
+  $("#fc").classList.add("flipped");
+  $("#fcBtns").innerHTML = `<div class="rate"><button class="btn btn-bad" data-act="rate" data-ok="0">✗ ${C.mode==="mama"?"Falsch":"Nochmal"}</button><button class="btn btn-good" data-act="rate" data-ok="1">✓ ${C.mode==="mama"?"Richtig":"Gewusst"}</button></div>`;
+  if (C.dir==="de") setTimeout(()=>speak(sayText(w)),250);
+}
+function rateCard(ok, btn){
+  const id = C.queue[C.i], w = WMAP[id];
+  if (!(id in C.first)){
+    C.first[id] = ok;
+    updateWord(w, ok, C.mode==="mama" ? "mama" : "kid", false);
+    if (ok){ addXP(C.mode==="mama"?6:2); }
+  }
+  if (ok){ sfx("good"); if (btn){ const [x,y]=centerOf(btn); burst(x,y,16); } }
+  else {
+    sfx("bad");
+    const pos = Math.min(C.i+4, C.queue.length);
+    C.queue.splice(pos, 0, id);
+  }
+  C.i++; C.flipped = false;
+  renderCard();
+}
+function finishCards(){
+  const knownIds = Object.keys(C.first).filter(id=>C.first[id]), wrongIds = Object.keys(C.first).filter(id=>!C.first[id]);
+  markDay(); save();
+  const newB = checkBadges({});
+  const mama = C.mode==="mama";
+  $("#s-cards").innerHTML = `<div class="trophy">
+      <h1 class="display" style="font-size:clamp(1.5rem,7vw,2rem);color:${mama?"var(--good)":"var(--ice)"};margin-top:10px">${mama?"Abfrage fertig!":"Stapel geschafft!"}</h1>
+      <p class="muted" style="margin:6px 0 0">${esc(C.deck)}</p>
+    </div>
+    <div class="statgrid" style="grid-template-columns:1fr 1fr">
+      <div class="stat"><b style="color:var(--good)">${knownIds.length}</b><small>sofort gewusst</small></div>
+      <div class="stat"><b style="color:var(--bad)">${wrongIds.length}</b><small>geübt, bis es saß</small></div>
+    </div>
+    ${wrongIds.length?`<div class="panel"><span class="label">Kommen in den nächsten Missionen wieder</span><div class="chips">${wrongIds.map(id=>`<span class="chip">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
+    ${mama && knownIds.length?`<div class="panel"><span class="label">Von dir geprüft und gewusst</span><div class="chips">${knownIds.map(id=>`<span class="chip ok">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
+    ${newB.length?`<div class="panel"><span class="label">Neues Abzeichen!</span>${newB.map(id=>{const b=BADGES.find(x=>x.id===id);return `<div class="row"><span style="font-size:2rem">${b.e}</span><b>${esc(b.n)}</b></div>`;}).join("")}</div>`:""}
+    <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Noch ein Stapel</button><button class="btn btn-main" style="flex:1" data-act="home">Zur Basis</button></div>`;
+  sfx("win"); confetti(); window.scrollTo(0,0);
+  C = null;
+}
+
+/* ============ PIN ============ */
+const pinOk = () => Date.now() < pinUntil;
+function askPin(then){
+  pinNext = then;
+  const setting = !S.pin;
+  $("#s-pin").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <div class="panel" style="margin-top:20px">
+      <span class="label">Nur für Eltern</span>
+      <h2 style="font-size:1.3rem">${setting?"Eltern-PIN festlegen":"Eltern-PIN eingeben"}</h2>
+      <p class="muted" style="margin:0">${setting?"Wähle 4 Ziffern. Damit kann nur ein Erwachsener die Abfrage bewerten und die Einstellungen ändern.":"Gib die 4-stellige PIN ein."}</p>
+      <form id="pinForm" autocomplete="off"><input id="pinIn" class="field pin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" aria-label="PIN"></form>
+      <div id="pinMsg" class="muted"></div>
+      <button class="btn btn-main btn-block" data-act="pinGo">${setting?"PIN speichern":"Weiter"}</button>
+    </div>`;
+  show("pin");
+  $("#pinForm").addEventListener("submit", e=>{ e.preventDefault(); pinGo(); });
+  setTimeout(()=>{ try{ $("#pinIn").focus(); }catch(e){} },150);
+}
+function pinGo(){
+  const v = ($("#pinIn").value||"").trim();
+  if (!/^\d{4}$/.test(v)){ $("#pinMsg").textContent = "Bitte genau 4 Ziffern eingeben."; return; }
+  if (!S.pin){ S.pin = v; save(); }
+  else if (S.pin !== v){ $("#pinMsg").textContent = "Die PIN stimmt nicht."; $("#pinIn").value=""; return; }
+  pinUntil = Date.now() + 15*60*1000;
+  const f = pinNext; pinNext = null; if (f) f();
+}
+
+/* ============ MAP / BADGES / PARENTS ============ */
+function wordRows(p, all){
+  return W.filter(w=>w.pl===p.id).map(w=>{
+    const s = st(w.id);
+    if (!s && !all) return `<div class="witem unknown"><div class="txt"><b>???</b><small>Noch nicht entdeckt</small></div></div>`;
+    return `<div class="witem"><div class="txt"><b>${esc(w.en)}</b><small>${esc(w.de)}</small></div>
+      <div class="dots" aria-label="${s?`Stufe ${s.b} von 5`:"noch nicht gelernt"}">${[1,2,3,4,5].map(i=>`<i class="${s&&i<=s.b?"on":""}"></i>`).join("")}</div>${speakerBtn(sayText(w))}</div>`;
+  }).join("");
+}
+function renderMap(all){
+  $("#s-map").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="${all?"openParents":"home"}">Zurück</button></div>
+    <h1 class="display" style="font-size:1.6rem;color:var(--ice)">${all?"Alle Wörter":"Sternenkarte"}</h1>
+    <p class="muted" style="margin:0">${all?`${W.length} Wörter aus Buch, Hefter und Arbeitsblättern. Die Punkte zeigen, wie fest ein Wort sitzt.`:"Tippe auf einen Planeten. Bei 5 Punkten sitzt ein Wort bombenfest."}</p>
+    ${PLANETS.map(p=>{ const ps=planetStats(p.id); return `<details class="pl" ${testActive()&&S.test.pl===p.id?"open":""}><summary>${planetDot(p)}<span>${esc(p.name)}<br><small class="muted" style="font-weight:500">${esc(p.planet)}${all&&p.src?" · "+esc(p.src):""}</small></span><span class="n">${ps.safe} sicher · ${ps.seen}/${ps.total}</span></summary><div class="wlist">${wordRows(p, all)}</div></details>`; }).join("")}`;
+  show("map");
+}
+function renderBadges(){
+  $("#s-badges").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <h1 class="display" style="font-size:1.6rem;color:var(--flame)">Abzeichen</h1>
+    <div class="badges">${BADGES.map(b=>`<div class="bdg ${S.badges.includes(b.id)?"got":""}"><span class="e" aria-hidden="true">${b.e}</span><b>${esc(b.n)}</b><small>${esc(b.d)}</small></div>`).join("")}</div>`;
+  show("badges");
+}
+function openParents(){ if (S.pin && !pinOk()) return askPin(renderParents); renderParents(); }
+function renderParents(){
+  const intro = introduced(), safe = W.filter(isSafe).length, master = W.filter(w=>st(w.id)&&st(w.id).b>=5).length;
+  const problems = intro.filter(w=>st(w.id).w>0).sort((a,b)=>(st(b.id).w-st(b.id).r*.3)-(st(a.id).w-st(a.id).r*.3)).slice(0,12);
+  const sentProb = SENT.filter(s=>ss(s.id) && ss(s.id).w>0).sort((a,b)=>ss(b.id).w-ss(a.id).w).slice(0,6);
+  const days = []; for (let i=27;i>=0;i--) days.push(addDays(today(),-i));
+  const accRate = S.stats.answers ? Math.round(S.stats.right/S.stats.answers*100) : 0;
+  const t = S.test || {};
+  $("#s-parents").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <h1 style="font-size:1.4rem">Elternbereich</h1>
+    <div class="panel"><span class="label">Nächster Test</span>
+      <label class="muted" for="testPl" style="font-size:.85rem">Thema</label>
+      <select id="testPl" class="field">${PLANETS.map(p=>`<option value="${p.id}" ${t.pl===p.id?"selected":""}>${esc(p.name)}</option>`).join("")}</select>
+      <label class="muted" for="testDate" style="font-size:.85rem">Datum</label>
+      <input id="testDate" class="field" type="date" value="${t.date||addDays(today(),5)}">
+      <div class="row"><button class="btn btn-main" style="flex:1" data-act="testSave">Test speichern</button>${S.test?`<button class="btn btn-ghost" data-act="testClear">Entfernen</button>`:""}</div>
+      <div id="testMsg" class="muted" style="font-size:.9rem">${testActive()?`Aktiv: ${esc(PMAP[t.pl].name)} am ${t.date.split("-").reverse().join(".")}. Bis dahin kommen diese Wörter jeden Tag dran.`:"Kein Test eingetragen."}</div>
+    </div>
+    <div class="statgrid">
+      <div class="stat"><b>${intro.length}</b><small>von ${W.length} gelernt</small></div>
+      <div class="stat"><b>${safe}</b><small>sicher (Stufe 3+)</small></div>
+      <div class="stat"><b>${master}</b><small>gemeistert</small></div>
+      <div class="stat"><b>${S.days.length}</b><small>Übungstage</small></div>
+      <div class="stat"><b>${accRate}%</b><small>Trefferquote</small></div>
+      <div class="stat"><b>${S.stats.mama}</b><small>Abfragen von dir</small></div>
+    </div>
+    <div class="panel"><span class="label">So lernt die App</span>
+      <p style="margin:0">Es zählt nur, was Friedrich selbst schreibt oder sagt. Antippen gibt es nicht mehr. Ein Wort steigt höchstens einmal pro Tag eine Stufe auf, nach 1, 3, 7, 14 und 30 Tagen kommt es wieder. Falsch heißt: zurück auf Stufe 1.</p>
+      <p style="margin:0">Deine Abfrage zählt am meisten. Was er bei dir zum ersten Mal sofort weiß, springt direkt auf Stufe 3. So könnt ihr Planeten, die er schon kann, schnell einstufen.</p>
+    </div>
+    <div class="panel"><span class="label">Letzte 4 Wochen</span><div class="cal">${days.map(d=>`<i class="${S.days.includes(d)?"on":""}" title="${d}"></i>`).join("")}</div></div>
+    <div class="panel"><span class="label">Problemwörter</span>${problems.length?problems.map(w=>`<div class="problem"><div><b>${esc(w.en)}</b> <span class="muted" style="font-weight:400">${esc(w.de)}</span></div><span>${st(w.id).w}× falsch</span></div>`).join(""):`<p class="muted" style="margin:0">Noch keine.</p>`}</div>
+    <div class="panel"><span class="label">Schwierige Sätze</span>${sentProb.length?sentProb.map(s=>`<div class="problem"><div>${esc(fillN(s.en))}</div><span>${ss(s.id).w}×</span></div>`).join(""):`<p class="muted" style="margin:0">Noch keine.</p>`}</div>
+    <button class="btn btn-soft btn-block" data-act="openAll">Alle ${W.length} Wörter ansehen</button>
+    <div class="panel"><span class="label">Fortschritt sichern</span>
+      <p style="margin:0" class="muted">Der Fortschritt liegt nur in diesem Browser. Mit dem Code übertragen Sie ihn auf ein anderes Gerät.</p>
+      <textarea id="expCode" readonly></textarea>
+      <button class="btn btn-soft" data-act="copyCode">Code kopieren</button>
+      <span class="label" style="margin-top:6px">Code einfügen</span>
+      <textarea id="impCode" placeholder="Gesicherten Code hier einfügen"></textarea>
+      <button class="btn btn-soft" data-act="importCode">Fortschritt laden</button>
+      <div id="impMsg" class="muted"></div>
+    </div>
+    <div class="panel"><span class="label">Eltern-PIN</span><button class="btn btn-ghost" data-act="pinReset">${S.pin?"PIN ändern":"PIN festlegen"}</button></div>
+    <div class="panel"><span class="label">Neu starten</span><div id="resetBox"><button class="btn btn-ghost" data-act="resetAsk">Alle Daten löschen</button></div></div>`;
+  $("#expCode").value = backupCode();
+  show("parents");
+}
+
+/* ============ EVENTS ============ */
+const ACT = {
+  pickRocket: b => { pickRocket = +b.dataset.i; renderOnboard(); sfx("tap"); },
+  onboardGo: () => {
+    const n = $("#nameIn").value.trim();
+    if (!n){ $("#nameIn").focus(); toast("Wie heißt du, Pilot?"); return; }
+    S = blank(); S.name = n; S.rocket = pickRocket; presetTest(); save(); sfx("level"); warp = 12; confetti(); show("home");
+    setTimeout(()=>toast(`Willkommen an Bord, ${esc(n)}!`),400);
+  },
+  startDaily, startTest, startSentences, startBoss,
+  testCards: () => { DK.mode="kid"; const i = deckOptions().findIndex(o=>o.key==="test"); if (i>=0) startCards(i); },
+  openDeck: b => openDeck(b.dataset.mode),
+  dkDir: b => { DK.dir = b.dataset.v; renderDeck(); },
+  dkSize: b => { DK.size = +b.dataset.v; renderDeck(); },
+  startCards: b => startCards(+b.dataset.i),
+  flip: flipCard,
+  rate: b => rateCard(b.dataset.ok==="1", b),
+  cardsQuit: () => { if (C && Object.keys(C.first).length) finishCards(); else { C=null; show("home"); } },
+  openMap: () => renderMap(false), openAll: () => renderMap(true), openBadges: renderBadges, openParents,
+  home: () => show("home"),
+  toggleSound: () => { S.settings.sound = !S.settings.sound; save(); renderHome(); },
+  toggleSlow: () => { S.settings.slow = !S.settings.slow; save(); renderHome(); speak("Hello! This is my speed."); },
+  say: b => speak(b.dataset.t, !!b.dataset.slow, b),
+  copyCheck, typeCheck: doTypeCheck, sentCheck: doSentCheck,
+  hint: () => {
+    const w = M.queue[M.i].w, c = cleanEn(w.en.split(" / ")[0]);
+    M.hintUsed = true;
+    $("#hintLine").textContent = [...c].map((ch,i)=> i===0 ? ch : /[A-Za-z]/.test(ch) ? "_" : ch).join(" ");
+  },
+  skip: () => { const it = M.queue[M.i]; if (it.kind==="sent") resolveSent(false,{}); else resolveWord(false,{}); },
+  listen: () => startListening(),
+  pzTap: b => {
+    const pz = M.pz, k = +b.dataset.k; if (M.answered || pz.tiles[k].used) return;
+    pz.tiles[k].used = true; pz.line.push(k); sfx("tap"); drawPuzzle();
+  },
+  pzBack: b => { const pz = M.pz, k = +b.dataset.k; if (M.answered) return; const ti = pz.line.splice(k,1)[0]; pz.tiles[ti].used = false; drawPuzzle(); },
+  pzCheck: () => {
+    const pz = M.pz; if (!pz.line.length || M.answered) return;
+    const built = pz.line.map(k=>pz.tiles[k].t).join(" ");
+    resolveSent(built === pz.target.join(" "), {given: built + sentEnd(M.queue[M.i].s)});
+  },
+  cont: () => { hideSheet(); M.i++; setTimeout(next, 120); },
+  quit: () => { if (REC) try{REC.abort();}catch(e){} if (HAS_TTS) speechSynthesis.cancel(); const had = M && (M.right+M.wrong)>0; if (had){ markDay(); save(); } M = null; show("home"); },
+  pinGo,
+  sendBackup: async () => {
+    const code = backupCode(), text = `Wort-Galaxie Sicherung von ${S.name} (${today().split("-").reverse().join(".")}):\n${code}`;
+    const done = msg => { S.lastBackup = today(); save(); renderBackup(); toast(msg); };
+    try { if (navigator.share){ await navigator.share({title:"Wort-Galaxie Sicherung", text}); return done("Gesendet! Danke!"); } } catch(e){ if (e && e.name==="AbortError") return; }
+    try { await navigator.clipboard.writeText(text); done("Kopiert! Jetzt in WhatsApp an Mama einfügen."); }
+    catch(e){ toast("Kopieren ging nicht. Mama findet den Code unter „Für Eltern“."); }
+  },
+  pinReset: () => { S.pin = null; save(); askPin(renderParents); },
+  testSave: () => {
+    const pl = $("#testPl").value, date = $("#testDate").value;
+    if (!date || dayDiff(today(), date) < 0){ $("#testMsg").textContent = "Bitte ein Datum ab heute wählen."; return; }
+    S.test = {pl, date, start: today()}; save(); renderParents(); toast("Test gespeichert");
+  },
+  testClear: () => { S.test = null; save(); renderParents(); },
+  copyCode: b => {
+    const t = $("#expCode");
+    const done = () => { b.textContent = "Kopiert!"; setTimeout(()=>b.textContent="Code kopieren",1800); };
+    try { navigator.clipboard.writeText(t.value).then(done, ()=>{ t.select(); b.textContent="Markiert, jetzt kopieren"; }); }
+    catch(e){ t.select(); b.textContent="Markiert, jetzt kopieren"; }
+  },
+  importCode: () => {
+    const msg = $("#impMsg");
+    try {
+      const data = JSON.parse(decodeURIComponent(escape(atob($("#impCode").value.trim()))));
+      if (!data || typeof data.words!=="object") throw 0;
+      const pin = S.pin; S = Object.assign(blank(), data, {pin}); save(); msg.textContent = `Geladen: ${Object.keys(S.words).length} Wörter, ${S.xp} XP.`;
+    } catch(e){ msg.textContent = "Der Code ist ungültig. Bitte vollständig kopieren und erneut einfügen."; }
+  },
+  resetAsk: () => { $("#resetBox").innerHTML = `<p style="margin:0 0 8px">Wirklich alles löschen? Fortschritt, XP und Abzeichen gehen verloren.</p><div class="row"><button class="btn btn-ghost" data-act="openParents" style="flex:1">Abbrechen</button><button class="btn btn-bad" data-act="resetDo" style="flex:1">Ja, löschen</button></div>`; },
+  resetDo: () => { try{ localStorage.removeItem(KEY); localStorage.removeItem(OLDKEY); }catch(e){} S = null; pickRocket = 0; renderOnboard(); show("onboard"); }
+};
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
+  const f = ACT[b.dataset.act]; if (f) f(b, e);
+});
+$("#nameIn").addEventListener("keydown", e=>{ if (e.key==="Enter") ACT.onboardGo(); });
+
+/* Voreingestellter Test: Haus-Vokabeln vom 06.11., Test am 13.11.2026 (änderbar im Elternbereich) */
+function presetTest(){ if (!S.test && dayDiff(today(),"2026-11-13")>=0) S.test = {pl:"haus", date:"2026-11-13", start: today()}; }
+
+/* ============ BOOT ============ */
+try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); } catch(e) {}
+if (S && S.name){ presetTest(); save(); show("home"); } else { renderOnboard(); show("onboard"); }
+})();
+</script>
+
+</body>
+</html>
