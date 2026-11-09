@@ -343,6 +343,29 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 @keyframes flash{0%,90%,93%,100%{opacity:0}91%,94%{opacity:.75}}
 @keyframes hopfly{0%,100%{transform:translateY(0)}50%{transform:translateY(-60px) rotate(-6deg)}}
 
+/* journal & album */
+.pcgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pc{position:relative;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:14px;background:#FFFDF6;border:2px solid #E8D9A8;box-shadow:var(--shadow);text-align:left;min-width:0}
+.pc svg{width:100%;height:auto;border-radius:9px;display:block}
+.pc span{font-family:var(--f-display);font-weight:700;color:var(--navy);padding:0 2px}
+.pc em{position:absolute;right:-6px;top:-8px;font-style:normal;font-weight:700;font-size:.72rem;background:var(--flame-2);color:#fff;padding:3px 8px;border-radius:999px;transform:rotate(8deg);box-shadow:var(--shadow)}
+.pc.new{animation:pop .5s}
+.pc.locked{background:rgba(255,255,255,.6);border-style:dashed;border-color:var(--line);box-shadow:none}
+.pc.locked .pcq{aspect-ratio:16/10;border-radius:9px;background:var(--panel-2);display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:2rem;color:var(--dim)}
+.pc.locked span{color:var(--muted)}
+.pc small{color:var(--muted);font-size:.78rem;padding:0 2px}
+.newdot{display:inline-block;margin-left:6px;font-size:.75rem;background:var(--flame-2);color:#fff;padding:2px 8px;border-radius:999px}
+.album{background:#FFFDF6;border:2px solid #E8D9A8;border-radius:22px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;
+  background-image:repeating-linear-gradient(0deg,transparent 0 27px,rgba(232,217,168,.35) 27px 28px)}
+.stkgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 8px}
+.stkcell{display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;min-width:0}
+.stkcell b{font-size:.8rem;color:var(--navy);line-height:1.2}
+.stkcell small{font-size:.7rem;color:var(--muted);line-height:1.2}
+.stkcell.locked b{color:var(--dim)}
+.stk{width:72px;height:72px;display:block;transform:rotate(var(--r,0deg));filter:drop-shadow(0 3px 2px rgba(14,42,71,.18))}
+.stk.empty{filter:none;transform:none}
+.stk.fly{animation:stickfly .9s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes stickfly{0%{transform:translate(60px,-80px) scale(2.2) rotate(40deg);opacity:0}60%{opacity:1}100%{transform:rotate(var(--r,0deg))}}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes flap{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
 @keyframes zz{0%{opacity:0;transform:translate(0,0)}30%{opacity:1}100%{opacity:0;transform:translate(10px,-18px)}}
@@ -433,6 +456,10 @@ Bitte öffne sie über den Link, den du bekommen hast.
     <div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
     <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Extras</h1>
     <div class="tiles">
+      <button class="tile t-ice" data-act="openJournal">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2zm6 0v12m6-10v12" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></span>
+        <b>Reisetagebuch</b><small>Postkarten aus jeder Stadt</small>
+      </button>
       <button class="tile t-good" data-act="openWardrobe">
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 3l4 2 4-2 5 4-3 4-2-1v11H8V10l-2 1-3-4z"/></svg></span>
         <b>Kleiderschrank</b><small id="wardSub"></small>
@@ -467,12 +494,13 @@ Bitte öffne sie über den Link, den du bekommen hast.
       </button>
       <button class="tile t-flame" data-act="openBadges">
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a7 7 0 00-4 12.7V22l4-2 4 2v-7.3A7 7 0 0012 2zm0 3l1.5 3 3.3.5-2.4 2.3.6 3.3L12 12.6 9 14.1l.6-3.3-2.4-2.3 3.3-.5z"/></svg></span>
-        <b>Diplome</b><small id="badgeSub"></small>
+        <b>Stickeralbum</b><small id="badgeSub"></small>
       </button>
     </div>
   </section>
   <section id="s-wardrobe" class="stack" hidden></section>
   <section id="s-place" class="stack" hidden></section>
+  <section id="s-journal" class="stack" hidden></section>
   <section id="s-deck" class="stack" hidden></section>
   <section id="s-cards" class="stack" hidden></section>
   <section id="s-pin" class="stack" hidden></section>
@@ -1409,7 +1437,7 @@ function addXP(n){
 function addKm(n){
   const before = S.km; S.km += n; save();
   const passed = STOPS.filter(s=>s[1]>before && s[1]<=S.km).pop();
-  if (passed) setTimeout(()=>{ toast(`${esc(G())} ist in <b>${passed[0]}</b> gelandet!`); confetti(); sfx("gull"); }, 900);
+  if (passed) setTimeout(()=>{ toast(`${esc(G())} ist in <b>${passed[0]}</b> gelandet! Neue Postkarte im Reisetagebuch.`); confetti(); sfx("gull"); }, 900);
 }
 function markDay(){
   const t = today();
@@ -1508,7 +1536,7 @@ function checkBadges(ctx){
 }
 
 /* ============ BILDSCHIRME ============ */
-const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place"];
+const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal"];
 function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
@@ -1550,7 +1578,9 @@ function renderFlight(){
       ${STOPS.map(s=>`<span class="stop ${km>=s[1]?"on":""} ${s[0]==="Brighton"?"goal":""}" style="left:${pos(s[1])}" title="${s[0]}"></span>`).join("")}
       <span class="plane" style="left:${pos(km)}">${I.flyer(GC())}</span></div>
     <div class="row" style="justify-content:space-between"><small class="muted">Leipzig</small><small class="muted" style="color:#C4551A;font-weight:700">Brighton</small><small class="muted">Edinburgh</small></div>
-    ${S.reward?`<div class="tip"><b>Belohnung:</b> Wenn ${esc(G())} in Brighton landet: ${esc(S.reward)}</div>`:""}`;
+    ${S.reward?`<div class="tip"><b>Belohnung:</b> Wenn ${esc(G())} in Brighton landet: ${esc(S.reward)}</div>`:""}
+    ${(()=>{ const got = CITIES.filter(c=>S.km>=c.km), seen = S.pcSeen||["Leipzig"], nNew = got.filter(c=>!seen.includes(c.n)).length;
+      return `<button class="btn btn-soft btn-block" data-act="openJournal">Reisetagebuch · ${got.length} von ${CITIES.length} Postkarten${nNew?` <span class="newdot">${nNew} neu</span>`:""}</button>`; })()}`;
 }
 function backupCode(){ try { return btoa(unescape(encodeURIComponent(JSON.stringify(Object.assign({},S,{pin:null}))))); } catch(e){ return ""; } }
 function reportText(withCode){
@@ -2041,7 +2071,7 @@ function finish(){
     </div>
     ${M.missed.length?`<div class="panel"><span class="label">Diese Wörter üben wir morgen nochmal</span><div class="chips">${M.missed.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div></div>`:""}
     ${slept?`<div class="panel" style="flex-direction:row;align-items:center"><div style="width:56px;flex:none">${myGull({sleep:true})}</div><div><b>Tagesziel erreicht!</b><div class="muted" style="font-size:.88rem">${esc(G())} ist müde und schläft jetzt. Morgen geht's weiter.</div></div></div>`:""}
-    ${newB.length?`<div class="panel"><span class="label">Neues Abzeichen!</span>${newB.map(id=>{const b=BADGES.find(x=>x.id===id);return `<div class="row"><span style="font-size:2rem">${b.e}</span><div><b>${esc(b.n)}</b><div class="muted" style="font-size:.85rem">${esc(b.d)}</div></div></div>`;}).join("")}</div>`:""}
+    ${stickerPanel(newB)}
     ${accPanel(newAccessories())}
     <button class="btn btn-main btn-block" data-act="home">Zurück zum Hafen</button>`;
   show("summary");
@@ -2174,7 +2204,7 @@ function finishCards(){
     </div>
     ${wrongIds.length?`<div class="panel"><span class="label">Kommen in den nächsten Stunden wieder</span><div class="chips">${wrongIds.map(id=>`<span class="chip">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
     ${mama && knownIds.length?`<div class="panel"><span class="label">Geprüft und gewusst</span><div class="chips">${knownIds.map(id=>`<span class="chip ok">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
-    ${newB.length?`<div class="panel"><span class="label">Neues Abzeichen!</span>${newB.map(id=>{const b=BADGES.find(x=>x.id===id);return `<div class="row"><span style="font-size:2rem">${b.e}</span><b>${esc(b.n)}</b></div>`;}).join("")}</div>`:""}
+    ${stickerPanel(newB)}
     ${accPanel(newAccessories())}
     <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Noch ein Stapel</button><button class="btn btn-main" style="flex:1" data-act="home">Zum Hafen</button></div>`;
   sfx("win"); confetti(); window.scrollTo(0,0);
@@ -2245,15 +2275,159 @@ function renderMap(all){
     ${PLANETS.map(p=>{ const ps=placeStats(p.id); return `<details class="pl" ${testActive()&&S.test.pl===p.id?"open":""}><summary>${placeDot(p)}<span style="min-width:0">${esc(p.place)}<br><small class="muted" style="font-weight:500">${esc(p.name)}${all&&p.src?" · "+esc(p.src):""}</small></span><span class="n">${ps.safe} sicher<br>${ps.seen}/${ps.total}</span></summary><div class="wlist">${wordRows(p, all)}</div></details>`; }).join("")}`;
   show("map");
 }
+/* ============ REISETAGEBUCH: Postkarten aus jeder Stadt ============ */
+const CITIES = [
+  {n:"Leipzig",   km:0,    x:330,y:118, en:"Leipzig is famous for music. Bach worked here.",            de:"Leipzig ist berühmt für Musik. Bach hat hier gearbeitet."},
+  {n:"Hannover",  km:260,  x:292,y:98,  en:"Hanover has a big zoo and beautiful gardens.",              de:"Hannover hat einen großen Zoo und wunderschöne Gärten."},
+  {n:"Köln",      km:500,  x:262,y:140, en:"Cologne has a very big church with two towers.",            de:"Köln hat eine sehr große Kirche mit zwei Türmen."},
+  {n:"Brüssel",   km:710,  x:224,y:152, en:"In Brussels people love waffles and chocolate.",            de:"In Brüssel lieben die Leute Waffeln und Schokolade."},
+  {n:"Calais",    km:920,  x:186,y:146, en:"From Calais you can see England on a sunny day.",          de:"Von Calais aus kann man an sonnigen Tagen England sehen."},
+  {n:"Dover",     km:960,  x:164,y:138, en:"Dover has white cliffs by the sea.",                        de:"Dover hat weiße Klippen am Meer."},
+  {n:"London",    km:1080, x:140,y:122, en:"Big Ben is the name of the bell, not the tower!",          de:"Big Ben ist der Name der Glocke, nicht des Turms!"},
+  {n:"Brighton",  km:1170, x:132,y:146, en:"Brighton has a pier, a palace and a lot of seagulls.",     de:"Brighton hat eine Seebrücke, einen Palast und viele Möwen."},
+  {n:"Oxford",    km:1290, x:112,y:114, en:"Oxford is a very old town with a famous university.",      de:"Oxford ist eine sehr alte Stadt mit einer berühmten Universität."},
+  {n:"York",      km:1580, x:126,y:66,  en:"York has old city walls. You can walk on them.",           de:"York hat alte Stadtmauern. Man kann darauf spazieren gehen."},
+  {n:"Edinburgh", km:1900, x:108,y:28,  en:"Edinburgh has a castle on a big rock.",                    de:"Edinburgh hat eine Burg auf einem großen Felsen."}
+];
+function cityArt(name){
+  const ink = "#16406B";
+  const bg = (sky, ground) => `<rect width="160" height="100" fill="${sky}"/><rect y="76" width="160" height="24" fill="${ground}"/>`;
+  switch(name){
+    case "Leipzig": return bg("#CDEBFF","#B6D98A") + `<rect x="58" y="44" width="44" height="32" fill="#F3E5CF" stroke="${ink}" stroke-width="1.5"/><rect x="70" y="18" width="20" height="58" fill="#E9D7B8" stroke="${ink}" stroke-width="1.5"/><path d="M68 20L80 4L92 20z" fill="#5F8F6E" stroke="${ink}" stroke-width="1.5"/><circle cx="80" cy="30" r="5" fill="#fff" stroke="${ink}"/><rect x="76" y="58" width="8" height="18" fill="${ink}"/>
+      <path d="M118 30v20" stroke="${ink}" stroke-width="2.5"/><circle cx="114" cy="50" r="5" fill="${ink}"/><path d="M118 30l12 4v16" stroke="${ink}" stroke-width="2.5" fill="none"/><circle cx="126" cy="50" r="5" fill="${ink}"/><path d="M34 34v16" stroke="#EF4D67" stroke-width="2.5"/><circle cx="30" cy="50" r="4.5" fill="#EF4D67"/>`;
+    case "Hannover": return bg("#D6F0FF","#9ACF6B") + `<rect x="30" y="50" width="8" height="26" fill="#8A5A35"/><circle cx="34" cy="42" r="18" fill="#4FA64D"/><circle cx="22" cy="54" r="10" fill="#5DB85A"/>
+      <path d="M96 76V54h30v22M100 54l4-30h8l-2 30" fill="#F2C14E" stroke="${ink}" stroke-width="1.5"/><circle cx="106" cy="22" r="6" fill="#F2C14E" stroke="${ink}" stroke-width="1.5"/><circle cx="108" cy="21" r="1.4" fill="${ink}"/><circle cx="104" cy="62" r="3" fill="#C98A12"/><circle cx="116" cy="66" r="3" fill="#C98A12"/><circle cx="108" cy="40" r="2.5" fill="#C98A12"/>
+      <circle cx="140" cy="70" r="5" fill="#EF4D67"/><circle cx="62" cy="72" r="4" fill="#F2B632"/><circle cx="72" cy="70" r="4" fill="#E25C8A"/>`;
+    case "Köln": return bg("#D9ECF7","#C7C2B5") + `<rect x="48" y="40" width="64" height="36" fill="#8C8577" stroke="${ink}" stroke-width="1.5"/><rect x="50" y="22" width="16" height="54" fill="#7D7668" stroke="${ink}" stroke-width="1.5"/><rect x="94" y="22" width="16" height="54" fill="#7D7668" stroke="${ink}" stroke-width="1.5"/>
+      <path d="M50 22L58 0L66 22zM94 22L102 0L110 22z" fill="#6B6458" stroke="${ink}" stroke-width="1.5"/><path d="M74 76V58q6-10 12 0v18" fill="#3E3A33"/><circle cx="80" cy="48" r="6" fill="#9FD3F0" stroke="${ink}"/><path d="M56 34h4M100 34h4M56 46h4M100 46h4" stroke="#C7E6F7" stroke-width="3"/>
+      <path d="M0 88q40-6 80 0t80 0" stroke="#7FB8D9" stroke-width="5" fill="none"/>`;
+    case "Brüssel": return bg("#FFF1D6","#E8C99A") + `<rect x="44" y="20" width="72" height="56" rx="10" fill="#F2C06A" stroke="#B7802F" stroke-width="2.5"/>
+      ${[0,1,2,3].map(i=>`<path d="M${58+i*15} 22v52" stroke="#D99A3E" stroke-width="3"/><path d="M46 ${34+i*12}h68" stroke="#D99A3E" stroke-width="3"/>`).join("")}
+      <path d="M50 30q14 10 24 0t24 4 16-2" stroke="#5A3218" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="108" cy="26" r="5" fill="#EF4D67"/><circle cx="114" cy="22" r="4" fill="#EF4D67"/>`;
+    case "Calais": return `<rect width="160" height="100" fill="#CDEBFF"/><rect y="56" width="160" height="44" fill="#38AEDB"/><path d="M0 56h70l6-6h40l4 6h40" fill="#F4F7FA" stroke="#C9D6E0"/>
+      <path d="M90 76h40l-6 8H96z" fill="#EF4D67" stroke="${ink}" stroke-width="1.5"/><rect x="100" y="66" width="22" height="10" fill="#fff" stroke="${ink}" stroke-width="1.5"/><rect x="108" y="58" width="6" height="8" fill="${ink}"/>
+      <path d="M0 90q20-6 40 0t40 0 40 0 40 0" stroke="#fff" stroke-opacity=".5" stroke-width="3" fill="none"/><circle cx="28" cy="20" r="10" fill="#FFD23F"/>`;
+    case "Dover": return `<rect width="160" height="100" fill="#CDEBFF"/><rect y="70" width="160" height="30" fill="#38AEDB"/><path d="M40 30h120v44H30z" fill="#FBFCFD" stroke="#C9D6E0" stroke-width="2"/><path d="M40 30q60-8 120 0" stroke="#7CC46A" stroke-width="8" fill="none"/>
+      <path d="M60 40v28M80 38v30M104 40v28M128 38v30" stroke="#E2E9EF" stroke-width="2"/><rect x="132" y="12" width="8" height="18" fill="#fff" stroke="${ink}" stroke-width="1.5"/><rect x="131" y="8" width="10" height="5" fill="#EF4D67"/>
+      <path d="M0 86q20-6 40 0t40 0 40 0 40 0" stroke="#fff" stroke-opacity=".5" stroke-width="3" fill="none"/>`;
+    case "London": return bg("#D9ECF7","#9AA8B6") + `<rect x="42" y="22" width="22" height="54" fill="#D9B77A" stroke="${ink}" stroke-width="1.5"/><path d="M40 22L53 2L66 22z" fill="#5A6B7C" stroke="${ink}" stroke-width="1.5"/><circle cx="53" cy="34" r="7" fill="#fff" stroke="${ink}" stroke-width="1.5"/><path d="M53 34v-4M53 34h3" stroke="${ink}" stroke-width="1.5"/>
+      <rect x="82" y="44" width="58" height="30" rx="6" fill="#E8392E" stroke="${ink}" stroke-width="1.5"/><rect x="86" y="48" width="50" height="8" fill="#CFEAF7"/><rect x="86" y="60" width="50" height="8" fill="#CFEAF7"/><circle cx="94" cy="76" r="5" fill="${ink}"/><circle cx="128" cy="76" r="5" fill="${ink}"/>`;
+    case "Brighton": return `<rect width="160" height="100" fill="#CDEBFF"/><rect y="60" width="160" height="40" fill="#38AEDB"/><rect y="78" width="70" height="22" fill="#F2DDA8"/>
+      <rect x="40" y="54" width="120" height="5" fill="#9C6B44"/>${[0,1,2,3,4,5].map(i=>`<path d="M${48+i*20} 59v41" stroke="#7A5233" stroke-width="3"/>`).join("")}
+      <rect x="118" y="38" width="30" height="16" fill="#fff" stroke="${ink}" stroke-width="1.5"/><path d="M116 40q17-22 34 0z" fill="#F2B632" stroke="${ink}" stroke-width="1.5"/>
+      <path d="M30 22q8-8 14 0 6-8 14 0" stroke="${ink}" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M70 14q6-6 10 0 4-6 10 0" stroke="${ink}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+    case "Oxford": return bg("#D9ECF7","#B6D98A") + `<rect x="46" y="44" width="68" height="32" fill="#E9D7B8" stroke="${ink}" stroke-width="1.5"/><path d="M58 44q22-34 44 0z" fill="#B9C3CC" stroke="${ink}" stroke-width="1.5"/><path d="M80 14v-8" stroke="${ink}" stroke-width="2"/>
+      ${[0,1,2,3].map(i=>`<rect x="${52+i*16}" y="52" width="6" height="16" fill="#9FD3F0" stroke="${ink}"/>`).join("")}<path d="M118 66l14-6 14 6v12l-14-6-14 6z" fill="#8E6AD8" stroke="${ink}" stroke-width="1.5"/><path d="M132 60v12" stroke="#fff" stroke-width="1.5"/>`;
+    case "York": return bg("#D9ECF7","#9ACF6B") + `<rect x="0" y="46" width="160" height="30" fill="#D9C7A3" stroke="${ink}" stroke-width="1.5"/>${[...Array(10)].map((_,i)=>`<rect x="${i*17}" y="38" width="10" height="9" fill="#D9C7A3" stroke="${ink}" stroke-width="1.5"/>`).join("")}
+      <rect x="62" y="24" width="36" height="52" fill="#E3D3B0" stroke="${ink}" stroke-width="1.5"/>${[0,1,2,3].map(i=>`<rect x="${62+i*10}" y="16" width="6" height="9" fill="#E3D3B0" stroke="${ink}" stroke-width="1.5"/>`).join("")}<path d="M72 76V56q8-10 16 0v20z" fill="${ink}"/>
+      <circle cx="30" cy="40" r="3" fill="#EF4D67"/><path d="M30 43v6" stroke="${ink}" stroke-width="2"/>`;
+    case "Edinburgh": return `<rect width="160" height="100" fill="#D9ECF7"/><path d="M0 100V70q30-4 40-30 20-10 50-6 30 4 40 26 20 6 30 10v30z" fill="#7D7466"/><path d="M40 40q20-10 50-6" stroke="#5F584D" stroke-width="3" fill="none"/>
+      <rect x="54" y="18" width="46" height="20" fill="#B7AE9E" stroke="${ink}" stroke-width="1.5"/><rect x="48" y="10" width="12" height="28" fill="#A69C8B" stroke="${ink}" stroke-width="1.5"/><rect x="94" y="12" width="12" height="26" fill="#A69C8B" stroke="${ink}" stroke-width="1.5"/>
+      ${[0,1,2,3].map(i=>`<rect x="${58+i*10}" y="12" width="6" height="7" fill="#B7AE9E" stroke="${ink}"/>`).join("")}<path d="M54 10V0M54 0l10 3-10 3" stroke="${ink}" stroke-width="1.5" fill="#1F5BB5"/>`;
+  }
+  return "";
+}
+const LBL = {Edinburgh:[8,3,"start"],York:[8,3,"start"],Oxford:[-7,-4,"end"],London:[8,12,"start"],Brighton:[-8,6,"end"],Dover:[0,15,"middle"],Calais:[6,-6,"start"],"Brüssel":[0,15,"middle"],"Köln":[0,15,"middle"],Hannover:[0,-8,"middle"],Leipzig:[0,15,"middle"]};
+function journalMap(){
+  const ink = "#16406B";
+  const pts = CITIES.map(c=>[c.x,c.y]);
+  /* Position der Möwe entlang der Route */
+  let px = pts[0][0], py = pts[0][1];
+  for (let i=0;i<CITIES.length-1;i++){
+    const a = CITIES[i], b = CITIES[i+1];
+    if (S.km >= b.km) { px = b.x; py = b.y; continue; }
+    if (S.km >= a.km){ const t = (S.km-a.km)/(b.km-a.km); px = a.x + (b.x-a.x)*t; py = a.y + (b.y-a.y)*t; }
+    break;
+  }
+  const done = CITIES.filter(c=>S.km>=c.km);
+  return `<svg viewBox="0 0 360 200" style="display:block;width:100%;height:auto;border-radius:18px" role="img" aria-label="Reisekarte von Leipzig nach Edinburgh">
+    <rect width="360" height="200" fill="#BFE6F7"/>
+    <path d="M150 160q-2-20 12-34 14-6 22 4 10-4 26 2 30-10 60-6 40-2 60 6 20 4 30 6V200H150z" fill="#CFE8B8" stroke="#9CC488" stroke-width="2"/>
+    <path d="M206 112q14-20 40-22 30-8 60-2 26 4 54 0V60q-30-14-60-6-28-8-50 8-18 10-30 18-12 14-14 32z" fill="#CFE8B8" stroke="#9CC488" stroke-width="2"/>
+    <path d="M100 6q18-8 30 6 6 16-4 26 18 8 20 30 4 22-6 36 22 12 26 26 4 14-12 22-22 6-44 2-18-4-24-16 10-12 4-24-12-10-6-26 4-14-8-22-6-18 8-30 6-8 16-10z" fill="#D8EDC4" stroke="#9CC488" stroke-width="2"/>
+    <path d="M50 70q10-12 24-8 8 12 0 24-12 8-22 0-8-8-2-16z" fill="#D8EDC4" stroke="#9CC488" stroke-width="2"/>
+    <text x="350" y="190" text-anchor="end" font-family="Fredoka, sans-serif" font-size="11" fill="#5E8A54" font-weight="700">Deutschland</text>
+    <text x="40" y="140" font-family="Fredoka, sans-serif" font-size="11" fill="#5E8A54" font-weight="700">England</text>
+    <polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="5 5"/>
+    <polyline points="${done.map(c=>c.x+","+c.y).concat(done.length<CITIES.length?[px.toFixed(1)+","+py.toFixed(1)]:[]).join(" ")}" fill="none" stroke="#0B95C2" stroke-width="3.5"/>
+    ${CITIES.map(c=>`<circle cx="${c.x}" cy="${c.y}" r="${c.n==="Brighton"?6:4.5}" fill="${S.km>=c.km?"#0B95C2":"#fff"}" stroke="${c.n==="Brighton"?"#FF8A3D":ink}" stroke-width="2"/>`).join("")}
+    ${CITIES.map(c=>{ const L = LBL[c.n] || [0,-8,"middle"]; return `<text x="${c.x+L[0]}" y="${c.y+L[1]}" text-anchor="${L[2]}" font-family="Fredoka, sans-serif" font-size="9" font-weight="600" fill="${ink}" paint-order="stroke" stroke="#fff" stroke-width="2.5">${c.n}</text>`; }).join("")}
+    <g transform="translate(${(px-20).toFixed(1)},${(py-30).toFixed(1)})">${I.flyer(GC()).replace('<svg ','<svg width="40" height="27" ')}</g>
+  </svg>`;
+}
+function renderJournal(){
+  S.pcSeen = S.pcSeen || ["Leipzig"];
+  const got = CITIES.filter(c=>S.km>=c.km);
+  const next = CITIES.find(c=>S.km<c.km);
+  $("#s-journal").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Reisetagebuch</h1>
+    <div class="panel" style="padding:10px">${journalMap()}
+      <div class="row" style="justify-content:space-between;padding:0 4px"><b>${S.km} km geflogen</b><small class="muted">${next?`Nächste Postkarte: ${next.n} in ${next.km-S.km} km`:"Alle Postkarten gesammelt!"}</small></div></div>
+    <p class="muted" style="margin:0">Aus jeder Stadt schickt ${esc(G())} eine Postkarte mit etwas Spannendem auf Englisch. Tipp eine Karte an, um sie umzudrehen.</p>
+    <div class="pcgrid">${CITIES.map((c,i)=>{
+      const ok = S.km>=c.km, isNew = ok && !S.pcSeen.includes(c.n);
+      return ok ? `<button class="pc ${isNew?"new":""}" data-act="openPc" data-i="${i}"><svg viewBox="0 0 160 100" aria-hidden="true">${cityArt(c.n)}</svg><span>${esc(c.n)}</span>${isNew?`<em>neu</em>`:""}</button>`
+                : `<div class="pc locked"><div class="pcq">?</div><span>${esc(c.n)}</span><small>noch ${c.km-S.km} km</small></div>`;
+    }).join("")}</div>`;
+  show("journal");
+}
+function renderPostcardBig(i){
+  const c = CITIES[i];
+  S.pcSeen = S.pcSeen || []; if (!S.pcSeen.includes(c.n)){ S.pcSeen.push(c.n); save(); }
+  $("#s-journal").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="openJournal">Zurück</button></div>
+    <div class="fc" id="pcfc"><div class="fc-inner">
+      <div class="fc-face" style="padding:14px;min-height:260px"><svg viewBox="0 0 160 100" style="width:100%;border-radius:14px" aria-hidden="true">${cityArt(c.n)}</svg>
+        <div class="display" style="font-size:1.6rem;color:var(--navy)">Greetings from ${esc(c.n)}!</div><small class="muted">Tippe auf „Umdrehen“</small></div>
+      <div class="fc-face fc-back" style="min-height:260px;background:#FFFDF6;border-color:#E8D9A8;align-items:stretch;text-align:left">
+        <div class="row"><span class="label">Postkarte aus ${esc(c.n)}</span><span class="spacer"></span><span style="width:46px">${myGull()}</span></div>
+        <p style="margin:0;font-family:var(--f-display);font-size:1.3rem;line-height:1.35;color:var(--navy)">Dear ${esc(S.name)},<br>${esc(c.en)}<br>Love, ${esc(G())}</p>
+        <p class="muted" style="margin:0">${esc(c.de)}</p>
+        <div class="row">${speakerBtn("Dear "+S.name+". "+c.en+" Love, "+G())}${speakerBtn(c.en,"",true)}</div>
+      </div>
+    </div></div>
+    <button class="btn btn-ice btn-block" data-act="flipPc" style="min-height:58px">Umdrehen</button>`;
+  show("journal");
+}
+
+/* ============ STICKERALBUM ============ */
+const STK = {
+  first:   ["#F7E9C9", `<path d="M40 16c12 0 20 18 20 30s-9 20-20 20-20-8-20-20 8-30 20-30z" fill="#fff" stroke="#16406B" stroke-width="3"/><path d="M22 44l7-5 5 5 6-6 6 6 6-5 7 5" stroke="#EF4D67" stroke-width="3.5" fill="none" stroke-linejoin="round"/>`],
+  perfect: ["#D9F1FB", `<path d="M22 32l8-12h20l8 12-18 26z" fill="#7FD3F2" stroke="#16406B" stroke-width="3" stroke-linejoin="round"/><path d="M22 32h36M32 20l8 38 8-38" stroke="#16406B" stroke-width="2" fill="none"/>`],
+  combo10: ["#FFE3D3", `<path d="M40 14c4 12 18 16 16 32-1 10-8 18-16 18s-16-8-16-18c0-8 6-12 8-20 2 6 6 8 8 10 2-8 0-16 0-22z" fill="#FF8A3D" stroke="#C4551A" stroke-width="3" stroke-linejoin="round"/><path d="M40 40c4 6 8 8 7 14-1 5-4 8-7 8s-7-3-7-8c0-4 4-8 7-14z" fill="#FFD23F"/>`],
+  streak3: ["#E7F0FB", `<rect x="18" y="20" width="44" height="40" rx="6" fill="#fff" stroke="#16406B" stroke-width="3"/><path d="M18 30h44" stroke="#EF4D67" stroke-width="7"/><path d="M28 14v10M52 14v10" stroke="#16406B" stroke-width="3.5" stroke-linecap="round"/><text x="40" y="54" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="20" fill="#16406B">3</text>`],
+  streak7: ["#FFF3C4", `<path d="M40 14l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="#F2B632" stroke="#C98A12" stroke-width="3" stroke-linejoin="round"/><text x="40" y="47" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="14" fill="#fff">7</text>`],
+  words50: ["#DDF2FA", `<path d="M14 30q10-10 22-2l6-6v16l-6-6q-12 8-22-2z" fill="#0B95C2"/><path d="M30 48q10-10 22-2l6-6v16l-6-6q-12 8-22-2z" fill="#1FB97E"/><path d="M18 60q8-8 18-2l5-5v13l-5-5q-10 7-18-1z" fill="#FF8A3D"/>`],
+  safe50:  ["#FFF0D6", `<path d="M30 14l10 14 10-14" stroke="#EF4D67" stroke-width="6" fill="none"/><circle cx="40" cy="46" r="17" fill="#F2B632" stroke="#C98A12" stroke-width="3"/><text x="40" y="52" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="15" fill="#fff">50</text>`],
+  diplom:  ["#FFF6DF", `<rect x="16" y="22" width="48" height="34" rx="4" fill="#fff" stroke="#16406B" stroke-width="3"/><path d="M24 32h22M24 40h28M24 48h16" stroke="#8DA5B9" stroke-width="3" stroke-linecap="round"/><circle cx="54" cy="52" r="8" fill="#EF4D67"/><path d="M50 58l-2 10 6-4 6 4-2-10" fill="#EF4D67"/>`],
+  sent20:  ["#E9E2FA", `<path d="M20 24h14a6 6 0 0012 0h14v14a6 6 0 010 12v14H46a6 6 0 00-12 0H20V50a6 6 0 000-12z" fill="#8E6AD8" stroke="#4E3A8A" stroke-width="3" stroke-linejoin="round"/>`],
+  fix10:   ["#FFE9DC", `<circle cx="36" cy="36" r="15" fill="#E3F5FC" stroke="#16406B" stroke-width="4"/><path d="M47 47l14 14" stroke="#16406B" stroke-width="7" stroke-linecap="round"/><path d="M30 36l5 5 8-9" stroke="#1FB97E" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`],
+  mama:    ["#FFE4E8", `<path d="M40 62C22 50 14 40 14 30a12 12 0 0126-6 12 12 0 0126 6c0 10-8 20-26 32z" fill="#EF4D67" stroke="#B52A43" stroke-width="3" stroke-linejoin="round"/><path d="M26 30q2-6 8-6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`],
+  post:    ["#E2F4FB", `<rect x="14" y="22" width="52" height="36" rx="4" fill="#fff" stroke="#16406B" stroke-width="3"/><path d="M14 24l26 20 26-20" stroke="#16406B" stroke-width="3" fill="none"/><rect x="50" y="26" width="10" height="12" fill="#F2B632"/>`],
+  brighton:["#FFF0DC", `<circle cx="40" cy="36" r="20" fill="none" stroke="#0B95C2" stroke-width="3.5"/>${[0,1,2,3,4,5].map(i=>{ const a=i*Math.PI/3; return `<path d="M40 36l${(20*Math.cos(a)).toFixed(1)} ${(20*Math.sin(a)).toFixed(1)}" stroke="#0B95C2" stroke-width="2"/><circle cx="${(40+20*Math.cos(a)).toFixed(1)}" cy="${(36+20*Math.sin(a)).toFixed(1)}" r="4.5" fill="${["#EF4D67","#F2B632","#1FB97E"][i%3]}"/>`; }).join("")}<path d="M40 36l-12 28M40 36l12 28" stroke="#16406B" stroke-width="3.5"/>`],
+  boss:    ["#FFE4E1", `<path d="M18 28q-8-4-6-14 6 2 8 8l-4 1q5 0 6 6zM62 28q8-4 6-14-6 2-8 8l4 1q-5 0-6 6z" fill="#E8574A"/><ellipse cx="40" cy="46" rx="22" ry="14" fill="#F06B57" stroke="#C9443F" stroke-width="3"/><circle cx="33" cy="30" r="4" fill="#fff" stroke="#16406B" stroke-width="1.5"/><circle cx="47" cy="30" r="4" fill="#fff" stroke="#16406B" stroke-width="1.5"/><path d="M33 34v6M47 34v6" stroke="#C9443F" stroke-width="2.5"/><path d="M34 50q6 4 12 0" stroke="#7A1F1A" stroke-width="2.5" fill="none" stroke-linecap="round"/>`]
+};
+function sticker(id, got, cls){
+  const [bg, art] = STK[id] || ["#eee",""];
+  const rot = (id.charCodeAt(0)*7 + id.length*13)%14 - 7;
+  return got ? `<svg class="stk ${cls||""}" viewBox="0 0 80 80" style="--r:${rot}deg" aria-hidden="true"><circle cx="40" cy="40" r="37" fill="#fff"/><circle cx="40" cy="40" r="32" fill="${bg}"/>${art}</svg>`
+             : `<svg class="stk empty" viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="34" fill="none" stroke="#BCDCEC" stroke-width="3" stroke-dasharray="6 5"/><text x="40" y="48" text-anchor="middle" font-family="Fredoka,sans-serif" font-weight="700" font-size="24" fill="#BCDCEC">?</text></svg>`;
+}
+function stickerPanel(ids){
+  return ids.length ? `<div class="panel"><span class="label">Neuer Sticker fürs Album!</span>${ids.map(id=>{const b=BADGES.find(x=>x.id===id);return `<div class="row"><div style="width:64px;flex:none">${sticker(id,true,"fly")}</div><div><b>${esc(b.n)}</b><div class="muted" style="font-size:.85rem">${esc(b.d)}</div></div></div>`;}).join("")}</div>` : "";
+}
 function renderBadges(){
   $("#s-badges").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
-    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Diplome</h1>
-    <p class="muted" style="margin:0">Für jeden Ort gibt es ein Diplom, wenn alle Wörter sicher sitzen.</p>
-    <div class="stack" style="gap:8px">${PLANETS.map(p=>{ const ps=placeStats(p.id), got=ps.safe===ps.total; return `<div class="diploma ${got?"got":""}"><span class="seal">${got?"✓":ps.safe}</span><div style="min-width:0"><b>${esc(p.place)}</b><div class="muted" style="font-size:.82rem">${got?`Diplom für ${esc(S.name)} und ${esc(G())}`:`${ps.safe} von ${ps.total} Wörtern sicher`}</div></div></div>`; }).join("")}</div>
-    <h2 class="display" style="font-size:1.4rem;color:var(--navy);margin-top:6px">Abzeichen</h2>
-    <div class="badges">${BADGES.map(b=>`<div class="bdg ${S.badges.includes(b.id)?"got":""}"><span class="e" aria-hidden="true">${b.e}</span><b>${esc(b.n)}</b><small>${esc(b.d)}</small></div>`).join("")}</div>`;
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Stickeralbum</h1>
+    <div class="album">
+      <div class="row" style="justify-content:space-between"><span class="label">Sticker</span><b style="color:var(--navy)">${S.badges.length} von ${BADGES.length}</b></div>
+      <div class="stkgrid">${BADGES.map(b=>{ const got = S.badges.includes(b.id); return `<div class="stkcell ${got?"":"locked"}">${sticker(b.id, got)}<b>${esc(b.n)}</b><small>${esc(b.d)}</small></div>`; }).join("")}</div>
+    </div>
+    <h2 class="display" style="font-size:1.4rem;color:var(--navy);margin-top:6px">Diplome</h2>
+    <p class="muted" style="margin:0">Für jeden Ort am Hafen gibt es ein Diplom, wenn alle Wörter sicher sitzen.</p>
+    <div class="stack" style="gap:8px">${PLANETS.map(p=>{ const ps=placeStats(p.id), got=ps.safe===ps.total; return `<div class="diploma ${got?"got":""}"><span class="seal">${got?"✓":ps.safe}</span><div style="min-width:0"><b>${esc(p.place)}</b><div class="muted" style="font-size:.82rem">${got?`Diplom für ${esc(S.name)} und ${esc(G())}`:`${ps.safe} von ${ps.total} Wörtern sicher`}</div></div></div>`; }).join("")}</div>`;
   show("badges");
 }
+
 function openParents(){ if (S.pin && !pinOk()) return askPin(renderParents); renderParents(); }
 function renderParents(){
   const intro = introduced(), safe = W.filter(isSafe).length, master = W.filter(w=>st(w.id)&&st(w.id).b>=5).length;
@@ -2337,6 +2511,8 @@ const ACT = {
   startDaily, startTest, startSentences, startFix, openPost,
   startBoss: () => startBoss(),
   openExtras: renderExtras, openWardrobe: renderWardrobe,
+  openJournal: renderJournal, openPc: b => renderPostcardBig(+b.dataset.i),
+  flipPc: () => { const f=$("#pcfc"); if (f){ f.classList.toggle("flipped"); sfx("flip"); } },
   openPlace: b => renderPlace(b.dataset.pid),
   placeCards: b => startDeckKey("kid", b.dataset.pid),
   placeMama: b => startDeckKey("mama", b.dataset.pid),
