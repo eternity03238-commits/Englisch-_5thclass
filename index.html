@@ -86,23 +86,11 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .who{min-width:0}
 .who b{display:block;font-family:var(--f-display);font-size:1.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--navy)}
 .who small{color:var(--muted);font-size:.8rem}
-.scene{position:relative;border-radius:28px;overflow:hidden;height:310px;border:2px solid var(--line);box-shadow:var(--shadow);
-  background:linear-gradient(180deg,#9AD8FF 0,#CFEFFF 60%,#3FB4D9 60%,#1E8DB8 100%)}
-.scene .sun{position:absolute;right:18px;top:96px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle,#FFF6C2,#FFD45A 60%,rgba(255,212,90,0) 72%)}
-.scene .wave{position:absolute;left:-10%;right:-10%;height:30px;border-radius:50%;background:rgba(255,255,255,.35)}
-.scene .wave.w1{top:62%;animation:drift 7s ease-in-out infinite}
-.scene .wave.w2{top:76%;animation:drift 9s ease-in-out infinite reverse;background:rgba(255,255,255,.2)}
-.scene .post{position:absolute;left:50%;bottom:0;width:52px;height:96px;margin-left:-26px;border-radius:8px 8px 0 0;background:linear-gradient(90deg,#8A5A35,#B57E4F 45%,#8A5A35)}
-.scene .post::before{content:"";position:absolute;left:-6px;right:-6px;top:-8px;height:14px;border-radius:7px;background:#C99363}
-.scene .gullwrap{position:absolute;left:50%;bottom:76px;width:150px;margin-left:-82px}
-.bubble{position:absolute;left:12px;top:12px;max-width:calc(100% - 24px);background:#fff;border-radius:18px;padding:10px 12px;font-weight:600;color:var(--navy);box-shadow:0 6px 18px rgba(14,42,71,.18);display:flex;gap:8px;align-items:center}
-.bubble::after{content:"";position:absolute;bottom:-10px;left:50%;border:10px solid transparent;border-top-color:#fff;border-bottom:0}
-.bubble .en{font-family:var(--f-display);font-size:1.05rem;line-height:1.25}
-.bubble .speak{width:38px;height:38px}
-.stagebar{position:absolute;left:12px;right:12px;bottom:10px;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.9);border-radius:14px;padding:8px 12px}
-.stagebar b{font-family:var(--f-display);color:var(--navy);white-space:nowrap}
-.minibar{flex:1;height:10px;border-radius:999px;background:#DCEBF3;overflow:hidden;min-width:30px}
-.minibar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--ice),var(--good));transition:width .8s}
+.bubble{position:absolute;left:10px;top:10px;max-width:calc(100% - 118px);background:rgba(255,255,255,.95);border-radius:16px;padding:7px 10px;font-weight:600;color:var(--navy);box-shadow:0 6px 18px rgba(14,42,71,.18);display:flex;gap:8px;align-items:center}
+.bubble .who-says{display:block;font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.bubble .en{font-family:var(--f-display);font-size:.98rem;line-height:1.2}
+.bubble small{display:block;font-size:.74rem;line-height:1.25}
+.bubble .speak{width:34px;height:34px}
 .route{position:relative;height:34px}
 .route .track{position:absolute;left:8px;right:8px;top:15px;height:4px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--line) 0 8px,transparent 8px 14px)}
 .route .done{position:absolute;left:8px;top:15px;height:4px;border-radius:2px;background:var(--ice)}
@@ -283,6 +271,78 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .toast.show{transform:translate(-50%,0)}
 .xpfloat{position:fixed;z-index:65;font-family:var(--f-display);font-weight:700;color:#D9621B;font-size:1.4rem;pointer-events:none;animation:floatup 1s ease-out forwards;text-shadow:0 2px 0 #fff}
 
+/* harbor home */
+.harbor-wrap{position:relative;height:300px;border-radius:28px;overflow:hidden;border:2px solid var(--line);box-shadow:var(--shadow);background:#9AD8FF}
+.harbor{position:absolute;inset:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.harbor::-webkit-scrollbar{display:none}
+.harbor-in{position:relative;height:100%;width:1235px}
+.harbor-in svg.world{display:block;width:100%;height:100%}
+.world .bld{cursor:pointer}
+.world .bld:active{opacity:.85}
+.world .cl{animation:cloud 60s linear infinite}
+.world .cl.c2{animation-duration:85s}
+.world .cl.c3{animation-duration:110s}
+.world .wv{animation:wave 6s ease-in-out infinite}
+.world .wv.v2{animation-duration:8s;animation-direction:reverse}
+.world .rain{animation:rain .6s linear infinite}
+.world .wheel{transform-box:fill-box;transform-origin:center;animation:spin 30s linear infinite}
+.world .beam{transform-box:view-box;animation:beam 5s ease-in-out infinite}
+.world .twinkle{animation:twinkle 3s ease-in-out infinite}
+.hgull{position:absolute;width:74px;cursor:pointer;transition:left 1.2s cubic-bezier(.5,0,.3,1),top 1.2s}
+.hgull.flying{animation:hopfly 1.2s ease-in-out}
+.harbor-wrap .bubble{z-index:3}
+.swipehint{position:absolute;right:10px;top:12px;z-index:3;background:rgba(255,255,255,.85);color:var(--navy);font-weight:700;font-size:.72rem;padding:4px 9px;border-radius:999px;pointer-events:none;transition:opacity .6s}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:2}
+.harbor-wrap.storm3 .flash{animation:flash 7s infinite}
+.stagebar{display:flex;align-items:center;gap:10px;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:8px 12px;box-shadow:var(--shadow)}
+.stagebar b{font-family:var(--f-display);color:var(--navy);white-space:nowrap}
+.stagebar small{font-size:.78rem;text-align:right;line-height:1.2}
+.minibar{flex:1;height:10px;border-radius:999px;background:#DCEBF3;overflow:hidden;min-width:30px}
+.minibar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--ice),var(--good));transition:width .8s}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bigbtn{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px 16px;border-radius:20px;color:#fff;min-height:96px}
+.bigbtn b{font-family:var(--f-display);font-size:1.2rem;line-height:1.1}
+.bigbtn small{font-size:.8rem;opacity:.95;line-height:1.25}
+.bigbtn .icon{width:26px;height:26px}
+.bigbtn:active{transform:translateY(3px)}
+.b-good{background:linear-gradient(180deg,#2FCB8E,#17A570);box-shadow:0 5px 0 #0F7E54}
+.b-ice{background:linear-gradient(180deg,#22AEDB,#0A88B3);box-shadow:0 5px 0 #086A8C}
+/* gull life */
+.gull .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+.gull .head{transform-box:fill-box;transform-origin:30% 85%;animation:tilt 9s ease-in-out infinite}
+.gull.happy .bob{animation:hop .45s ease-in-out 2}
+.gull.confused .head{animation:conf 1s ease-in-out}
+.gmini{position:relative}
+.gmini .fish{position:absolute;left:50%;top:-6px;width:30px;margin-left:-15px;animation:fishup 1s ease-out forwards;pointer-events:none}
+.gmini .qm{position:absolute;right:-4px;top:-10px;font-family:var(--f-display);font-weight:700;font-size:1.6rem;color:var(--bad);animation:pop .3s}
+/* wardrobe & place */
+.ward-hero{width:190px;margin:0 auto}
+.acc{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:10px 12px;box-shadow:var(--shadow)}
+.acc .pv{width:54px;flex:none}
+.acc b{display:block;color:var(--navy)}
+.acc small{color:var(--muted);font-size:.82rem}
+.acc .st{margin-left:auto;font-weight:700;font-size:.8rem;padding:4px 10px;border-radius:999px;background:var(--panel-2);color:var(--muted);flex:none}
+.acc.on{border-color:var(--good);background:#F0FBF6}
+.acc.on .st{background:var(--good);color:#fff}
+.acc.locked{opacity:.6}
+.place-head{display:flex;align-items:center;gap:12px}
+.place-head .dot{width:22px;height:22px}
+.bar{height:12px;border-radius:999px;background:#DCEBF3;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+@keyframes tilt{0%,78%,100%{transform:rotate(0)}82%,90%{transform:rotate(-9deg)}}
+@keyframes conf{0%,100%{transform:rotate(0)}30%,70%{transform:rotate(16deg)}}
+@keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes fishup{0%{opacity:0;transform:translateY(20px) rotate(-20deg)}30%{opacity:1}100%{opacity:0;transform:translateY(-30px) rotate(20deg)}}
+@keyframes cloud{from{transform:translateX(-200px)}to{transform:translateX(1500px)}}
+@keyframes wave{0%,100%{transform:translateX(0)}50%{transform:translateX(-24px)}}
+@keyframes rain{from{transform:translateY(-40px)}to{transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes beam{0%,100%{opacity:.25}50%{opacity:.7}}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes flash{0%,90%,93%,100%{opacity:0}91%,94%{opacity:.75}}
+@keyframes hopfly{0%,100%{transform:translateY(0)}50%{transform:translateY(-60px) rotate(-6deg)}}
+
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 @keyframes flap{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
 @keyframes zz{0%{opacity:0;transform:translate(0,0)}30%{opacity:1}100%{opacity:0;transform:translate(10px,-18px)}}
@@ -321,21 +381,62 @@ Bitte öffne sie über den Link, den du bekommen hast.
       <span class="pill" title="Level">Lv <span id="hLevel">1</span></span>
     </div>
     <div id="introCard"></div>
-    <div class="scene" id="scene">
-      <div class="sun"></div><div class="wave w1"></div><div class="wave w2"></div>
-      <div class="post"></div>
-      <div class="gullwrap" id="hGull"></div>
+    <div class="harbor-wrap" id="harborWrap">
+      <div class="harbor" id="harbor"><div class="harbor-in" id="harborIn"></div></div>
       <div class="bubble" id="hBubble"></div>
-      <div class="stagebar"><b id="hStage"></b><div class="minibar"><i id="hStageBar"></i></div><small class="muted" id="hStageTxt" style="font-size:.75rem;line-height:1.2;text-align:right"></small></div>
+      <span class="swipehint" id="swipeHint">← wischen →</span>
+      <div class="flash"></div>
     </div>
+    <div class="stagebar"><b id="hStage"></b><div class="minibar"><i id="hStageBar"></i></div><small class="muted" id="hStageTxt"></small></div>
     <div id="testCard"></div>
     <button class="lesson-btn" data-act="startDaily" id="lessonBtn">
       <div><b id="lTitle"></b><small id="lSub"></small></div>
       <span class="go"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </button>
+    <div class="duo">
+      <button class="bigbtn b-good" data-act="openDeck" data-mode="mama"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 3.9.9 5.5L12 14.6l-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/><path d="M6 19h12v3H6z"/></svg><b>Möwen-Prüfung</b><small>mit Mama, Papa, Oma …</small></button>
+      <button class="bigbtn b-ice" data-act="openExtras"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z"/></svg><b>Extras</b><small>Spiele, Karte, Kleiderschrank</small></button>
+    </div>
     <div class="panel" id="flightCard"></div>
     <div id="backupCard"></div>
+    <div class="foot">
+      <button class="btn btn-ghost" data-act="toggleSound" id="soundBtn"></button>
+      <button class="btn btn-ghost" data-act="toggleSlow" id="slowBtn"></button>
+      <button class="btn btn-ghost" data-act="openParents">Für Eltern</button>
+    </div>
+  </section>
+
+  <section id="s-mission" hidden>
+    <div class="mbar">
+      <button class="close" data-act="quit" aria-label="Beenden"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <div class="prog"><i id="progBar"></i></div>
+      <span class="pill combo" id="combo"><span aria-hidden="true">🔥</span><span id="comboN">0</span></span>
+    </div>
+    <div id="bossBox" class="boss-box" hidden>
+      <svg class="crab" id="crab" viewBox="0 0 120 100" aria-label="Krabbe Kneifer">
+        <path d="M20 30q-14-6-10-22 10 2 14 12l-6 2q8 0 10 10z" fill="#E8574A"/><path d="M100 30q14-6 10-22-10 2-14 12l6 2q-8 0-10 10z" fill="#E8574A"/>
+        <path d="M22 70l-14 10M28 76l-10 16M98 70l14 10M92 76l10 16" stroke="#C9443F" stroke-width="5" stroke-linecap="round"/>
+        <ellipse cx="60" cy="62" rx="40" ry="26" fill="#F06B57"/><ellipse cx="60" cy="56" rx="32" ry="16" fill="#F7896F"/>
+        <path d="M46 34v-12M74 34v-12" stroke="#C9443F" stroke-width="4"/><circle cx="46" cy="20" r="7" fill="#fff"/><circle cx="74" cy="20" r="7" fill="#fff"/><circle cx="47" cy="21" r="3.5" fill="#0E2A47"/><circle cx="73" cy="21" r="3.5" fill="#0E2A47"/>
+        <path d="M48 70q12 8 24 0" stroke="#7A1F1A" stroke-width="4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <div style="flex:1;min-width:0" class="stack">
+        <div class="row" style="gap:6px"><b class="display" style="color:#B52A43">Krabbe Kneifer</b><span class="spacer"></span><span class="shields" id="shields"></span></div>
+        <div class="hp"><i id="hpBar" style="width:100%"></i></div>
+        <small class="muted">Kneifer klaut Wörter! Hol sie mit richtigen Antworten zurück.</small>
+      </div>
+    </div>
+    <div id="card"></div>
+  </section>
+
+  <section id="s-extras" class="stack" hidden>
+    <div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Extras</h1>
     <div class="tiles">
+      <button class="tile t-good" data-act="openWardrobe">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 3l4 2 4-2 5 4-3 4-2-1v11H8V10l-2 1-3-4z"/></svg></span>
+        <b>Kleiderschrank</b><small id="wardSub"></small>
+      </button>
       <button class="tile t-ice" data-act="openDeck" data-mode="kid">
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h11a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2zm-3 4v13a1 1 0 001 1h12v-2H6V7z"/></svg></span>
         <b>Karteikarten</b><small>Schnell durchgehen</small>
@@ -369,36 +470,9 @@ Bitte öffne sie über den Link, den du bekommen hast.
         <b>Diplome</b><small id="badgeSub"></small>
       </button>
     </div>
-    <div class="foot">
-      <button class="btn btn-ghost" data-act="toggleSound" id="soundBtn"></button>
-      <button class="btn btn-ghost" data-act="toggleSlow" id="slowBtn"></button>
-      <button class="btn btn-ghost" data-act="openParents">Für Eltern</button>
-    </div>
   </section>
-
-  <section id="s-mission" hidden>
-    <div class="mbar">
-      <button class="close" data-act="quit" aria-label="Beenden"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-      <div class="prog"><i id="progBar"></i></div>
-      <span class="pill combo" id="combo"><span aria-hidden="true">🔥</span><span id="comboN">0</span></span>
-    </div>
-    <div id="bossBox" class="boss-box" hidden>
-      <svg class="crab" id="crab" viewBox="0 0 120 100" aria-label="Krabbe Kneifer">
-        <path d="M20 30q-14-6-10-22 10 2 14 12l-6 2q8 0 10 10z" fill="#E8574A"/><path d="M100 30q14-6 10-22-10 2-14 12l6 2q-8 0-10 10z" fill="#E8574A"/>
-        <path d="M22 70l-14 10M28 76l-10 16M98 70l14 10M92 76l10 16" stroke="#C9443F" stroke-width="5" stroke-linecap="round"/>
-        <ellipse cx="60" cy="62" rx="40" ry="26" fill="#F06B57"/><ellipse cx="60" cy="56" rx="32" ry="16" fill="#F7896F"/>
-        <path d="M46 34v-12M74 34v-12" stroke="#C9443F" stroke-width="4"/><circle cx="46" cy="20" r="7" fill="#fff"/><circle cx="74" cy="20" r="7" fill="#fff"/><circle cx="47" cy="21" r="3.5" fill="#0E2A47"/><circle cx="73" cy="21" r="3.5" fill="#0E2A47"/>
-        <path d="M48 70q12 8 24 0" stroke="#7A1F1A" stroke-width="4" fill="none" stroke-linecap="round"/>
-      </svg>
-      <div style="flex:1;min-width:0" class="stack">
-        <div class="row" style="gap:6px"><b class="display" style="color:#B52A43">Krabbe Kneifer</b><span class="spacer"></span><span class="shields" id="shields"></span></div>
-        <div class="hp"><i id="hpBar" style="width:100%"></i></div>
-        <small class="muted">Kneifer klaut Wörter! Hol sie mit richtigen Antworten zurück.</small>
-      </div>
-    </div>
-    <div id="card"></div>
-  </section>
-
+  <section id="s-wardrobe" class="stack" hidden></section>
+  <section id="s-place" class="stack" hidden></section>
   <section id="s-deck" class="stack" hidden></section>
   <section id="s-cards" class="stack" hidden></section>
   <section id="s-pin" class="stack" hidden></section>
@@ -1006,8 +1080,42 @@ let toastT;
 function toast(msg){ const t=$("#toast"); t.innerHTML=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2800); }
 
 /* ============ DIE EIGENE MÖWE ============ */
+const ACC = [
+  {id:"sun",     slot:"eyes", n:"Sonnenbrille",   how:"3 Tage hintereinander üben",   ok:()=>S.streak>=3 || S.badges.includes("streak3")},
+  {id:"bow",     slot:"neck", n:"Fliege",         how:"3 Möwen-Prüfungen machen",     ok:()=>S.stats.mama>=3},
+  {id:"pack",    slot:"back", n:"Reiserucksack",  how:"300 km fliegen",               ok:()=>S.km>=300},
+  {id:"sailor",  slot:"hat",  n:"Matrosenmütze",  how:"10 Fehler der Möwe finden",    ok:()=>S.stats.fixRight>=10},
+  {id:"phones",  slot:"hat",  n:"Kopfhörer",      how:"20 Sätze richtig bauen",       ok:()=>S.stats.sentRight>=20},
+  {id:"star",    slot:"eyes", n:"Sternenbrille",  how:"Das erste Diplom holen",       ok:()=>PLANETS.some(p=>{ const x=placeStats(p.id); return x.safe===x.total; })},
+  {id:"captain", slot:"hat",  n:"Kapitänsmütze",  how:"Level 5 erreichen",            ok:()=>level()>=5},
+  {id:"crown",   slot:"hat",  n:"Krone",          how:"Krabbe Kneifer besiegen",      ok:()=>Object.values(S.boss).some(Boolean)}
+];
+const SLOTS = [["hat","Kopf"],["eyes","Augen"],["neck","Hals"],["back","Rücken"]];
+const accUnlocked = () => ACC.filter(a=>{ try { return a.ok(); } catch(e){ return false; } });
+function newAccessories(){
+  S.accSeen = S.accSeen || [];
+  const fresh = accUnlocked().filter(a=>!S.accSeen.includes(a.id));
+  fresh.forEach(a=>S.accSeen.push(a.id));
+  if (fresh.length) save();
+  return fresh;
+}
+function accSVG(id){
+  switch(id){
+    case "sun": return `<rect x="148" y="65" width="22" height="14" rx="6" fill="#0E2A47"/><path d="M149 70H127" stroke="#0E2A47" stroke-width="3" stroke-linecap="round"/><path d="M153 69h8" stroke="#fff" stroke-width="2" opacity=".55" stroke-linecap="round"/>`;
+    case "star": return `<path d="M159 61l3.2 6.6 7.3 1-5.3 5 1.3 7.2-6.5-3.4-6.5 3.4 1.3-7.2-5.3-5 7.3-1z" fill="#F2B632" stroke="#0E2A47" stroke-width="2" stroke-linejoin="round"/><path d="M150 71H127" stroke="#0E2A47" stroke-width="3" stroke-linecap="round"/>`;
+    case "sailor": return `<path d="M127 60q22-24 46 0z" fill="#fff" stroke="#16406B" stroke-width="2.5"/><rect x="124" y="57" width="52" height="7" rx="3.5" fill="#16406B"/><circle cx="150" cy="40" r="4" fill="#EF4D67"/>`;
+    case "phones": return `<path d="M132 82q-6-38 30-34" stroke="#16406B" stroke-width="5" fill="none" stroke-linecap="round"/><rect x="124" y="72" width="16" height="22" rx="7" fill="#EF4D67" stroke="#16406B" stroke-width="2"/>`;
+    case "captain": return `<path d="M126 58q24-18 48 0l2 8h-52z" fill="#16406B"/><rect x="122" y="62" width="56" height="7" rx="3.5" fill="#0E2A47"/><circle cx="150" cy="53" r="4.5" fill="#F2B632"/><path d="M174 66q8 1 10 5" stroke="#0E2A47" stroke-width="4" stroke-linecap="round"/>`;
+    case "crown": return `<path d="M130 60l3-20 9 10 8-15 8 15 9-10 3 20z" fill="#F2B632" stroke="#C98A12" stroke-width="2" stroke-linejoin="round"/><circle cx="142" cy="54" r="2.5" fill="#EF4D67"/><circle cx="158" cy="54" r="2.5" fill="#0B95C2"/>`;
+    case "bow": return `<path d="M116 103l12 7-12 7zM140 103l-12 7 12 7z" fill="#EF4D67" stroke="#B52A43" stroke-width="1.5" stroke-linejoin="round"/><circle cx="128" cy="110" r="3.5" fill="#B52A43"/>`;
+    case "pack": return `<rect x="58" y="90" width="36" height="32" rx="9" fill="#C77B3B" stroke="#7A4A2A" stroke-width="2"/><rect x="62" y="97" width="28" height="8" rx="3" fill="#E39A57"/><path d="M92 98q14 2 22 12" stroke="#7A4A2A" stroke-width="3" fill="none"/>`;
+  }
+  return "";
+}
 function gullSVG(stage, color, opts={}){
   const c = color || GULL_COLORS[0], sleep = !!opts.sleep;
+  const wear = opts.wear===false ? {} : (opts.wear || (S && S.wear) || {});
+  const acc = (slot, tf) => wear[slot] ? `<g transform="${tf}">${accSVG(wear[slot])}</g>` : "";
   const zz = sleep ? `<text class="zz" x="170" y="44" font-size="22">z</text><text class="zz" x="184" y="24" font-size="15" style="animation-delay:.8s">z</text>` : "";
   const legs = `<path d="M90 158v22M112 158v22" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/><path d="M82 182h16M104 182h16" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/>`;
   if (stage===0){
@@ -1019,25 +1127,29 @@ function gullSVG(stage, color, opts={}){
     </g></svg>`;
   }
   if (stage===1){
+    const eye = sleep ? `<path d="M132 80q6 5 12 0" stroke="#0E2A47" stroke-width="3" fill="none" stroke-linecap="round"/>`
+                      : `<g class="eye"><circle cx="138" cy="79" r="7" fill="#0E2A47"/><circle cx="140.5" cy="76.5" r="2.3" fill="#fff"/></g>`;
     return `<svg class="gull ${sleep?"sleep":""}" viewBox="0 0 200 200" role="img" aria-label="Möwen-Küken"><g class="bob">
       <ellipse cx="100" cy="190" rx="40" ry="7" fill="rgba(14,42,71,.15)"/>
       <path d="M90 162v20M110 162v20" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/><path d="M82 184h16M102 184h16" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/>
       <circle cx="98" cy="124" r="46" fill="#C9D3DC"/><circle cx="92" cy="132" r="32" fill="#DFE6EC"/>
       <path class="wing" d="M58 118q-14 18 2 32 10-6 12-18z" fill="#AEBBC7"/>
-      <circle cx="130" cy="84" r="30" fill="#D6DEE6"/>
+      ${acc("back","translate(4,14)")}
       <path d="M112 100q18 12 36 0l3 9q-22 14-42 0z" fill="${c}"/>
-      ${sleep?`<path d="M132 80q6 5 12 0" stroke="#0E2A47" stroke-width="3" fill="none" stroke-linecap="round"/>`:`<circle cx="138" cy="79" r="7" fill="#0E2A47"/><circle cx="140.5" cy="76.5" r="2.3" fill="#fff"/>`}
-      <path d="M157 86l18 5-18 6z" fill="#3B4652"/>
+      ${acc("neck","translate(2,-2)")}
+      <g class="head"><circle cx="130" cy="84" r="30" fill="#D6DEE6"/>${eye}
+        <path d="M157 86l18 5-18 6z" fill="#3B4652"/>
+        ${acc("eyes","translate(-20,6)")}${acc("hat","translate(-20,2)")}</g>
       ${zz}
     </g></svg>`;
   }
   const young = stage===2;
   const body = young ? "#F1EADF" : "#FFFFFF", wing = young ? "#B7A58A" : "#A9B9C8", head = young ? "#ECE3D4" : "#FFFFFF";
-  const hat = stage>=4 ? `<path d="M126 58q24-16 48 0l2 8h-52z" fill="#16406B"/><rect x="122" y="62" width="56" height="7" rx="3" fill="#0E2A47"/><circle cx="150" cy="54" r="4.5" fill="#F2B632"/>` : "";
   const mottle = young ? `<circle cx="80" cy="128" r="4" fill="#D3C3A8"/><circle cx="104" cy="140" r="3" fill="#D3C3A8"/><circle cx="120" cy="126" r="3.5" fill="#D3C3A8"/>` : "";
   const eye = sleep ? `<path d="M152 74q6 5 12 0" stroke="#0E2A47" stroke-width="3" fill="none" stroke-linecap="round"/>`
-                    : `<circle cx="158" cy="73" r="5.5" fill="#0E2A47"/><circle cx="160" cy="71" r="1.8" fill="#fff"/>`;
-  return `<svg class="gull ${sleep?"sleep":""}" viewBox="0 0 200 200" role="img" aria-label="Möwe"><g class="bob">
+                    : `<g class="eye"><circle cx="158" cy="73" r="5.5" fill="#0E2A47"/><circle cx="160" cy="71" r="1.8" fill="#fff"/></g>`;
+  const big = stage>=4 ? ` transform="translate(-10,-12) scale(1.06)"` : "";
+  return `<svg class="gull ${sleep?"sleep":""}" viewBox="0 0 200 200" role="img" aria-label="Möwe"><g class="bob"><g${big}>
     <ellipse cx="100" cy="188" rx="48" ry="7" fill="rgba(14,42,71,.15)"/>
     ${legs}
     <path d="M46 118L12 106l12 24z" fill="${wing}"/><path d="M14 107l10 4-4 10z" fill="#2E3742"/>
@@ -1045,12 +1157,15 @@ function gullSVG(stage, color, opts={}){
     ${mottle}
     <path class="wing" d="M50 112q46-34 98-6-26 38-86 34z" fill="${wing}"/>
     <path d="M52 114q-10 8-18 2l8-10z" fill="#2E3742"/><circle cx="46" cy="110" r="2.5" fill="#fff"/>
+    ${acc("back","")}
     <path d="M118 98q16 18 40 6l2 10q-28 14-46-6z" fill="${c}"/><path d="M122 106l-8 24 10-2 5-18z" fill="${c}"/>
-    <circle cx="150" cy="80" r="28" fill="${head}" stroke="#D8E2EA" stroke-width="2"/>
-    ${eye}
-    <path d="M174 82l24 6-24 7z" fill="#FFC233"/><circle cx="190" cy="90.5" r="2.6" fill="#E8574A"/>
-    ${hat}${zz}
-  </g></svg>`;
+    ${acc("neck","")}
+    <g class="head"><circle cx="150" cy="80" r="28" fill="${head}" stroke="#D8E2EA" stroke-width="2"/>
+      ${eye}
+      <path d="M174 82l24 6-24 7z" fill="#FFC233"/><circle cx="190" cy="90.5" r="2.6" fill="#E8574A"/>
+      ${acc("eyes","")}${acc("hat","")}</g>
+    ${zz}
+  </g></g></svg>`;
 }
 function gullStage(){
   if (!S) return 0;
@@ -1067,6 +1182,164 @@ function gullLine(){
     return gullStage()===0 ? {en:"…", de:"Im Ei wartet deine Möwe. Die erste Unterrichtsstunde lässt sie schlüpfen!"} : {en:"Hello!", de:`Mehr kann ${G()} noch nicht. Bring ihr Englisch bei!`};
   }
   return {en: pool[rnd(pool.length)], de:""};
+}
+
+/* ============ DIE HAFENWELT ============ */
+const WX = {haus:70,u1:195,ich:320,fam:445,sch:570,sea:700,far:830,tie:955,ver:1080,zim:1205,hal:1330};
+const SHORT = {haus:"Haus",u1:"Freunde",ich:"Steckbrief",fam:"Picknick",sch:"Schule",sea:"Seebrücke",far:"Strandhütten",tie:"Tierpark",ver:"Riesenrad",zim:"Leuchtturm",hal:"Spukschloss"};
+const HK = 300/340, HW = Math.round(1400*HK);
+function sceneMood(){
+  const h = new Date().getHours();
+  const tod = h<6||h>=21 ? "night" : h<10 ? "morning" : h<17 ? "day" : "evening";
+  let storm = 0, rainbow = false;
+  if (testActive()){
+    const d = dayDiff(today(), S.test.date), rd = testReadiness();
+    if (rd && rd.t.startsWith("Grün")){ storm = 0; rainbow = tod!=="night"; }
+    else storm = d<=1 ? 3 : d<=2 ? 2 : 1;
+  }
+  return {tod, storm, rainbow};
+}
+function worldSVG(m){
+  const night = m.tod==="night";
+  const SKY = {
+    night:["#0B1F3F","#2A4A7A"], morning:["#FFC6A5","#C9EBFF"], day:["#7FCBFF","#DDF3FF"], evening:["#6B5AA8","#FF9E6B"]
+  }[m.tod];
+  const stormSky = night ? ["#141E2E","#2E3D52"] : ["#6F8196","#AEBBC8"];
+  const sky = m.storm>=2 ? stormSky : SKY;
+  const sea = m.storm>=2 ? (night?"#1D3550":"#4D7390") : night ? "#14385F" : m.tod==="evening" ? "#3E6FA8" : "#38AEDB";
+  const sand = night ? "#9C8A63" : m.storm>=2 ? "#CDBB8F" : "#F2DDA8";
+  const win = night || m.storm>=3 ? "#FFE08A" : "#CFEAF7";
+  const ink = "#16406B";
+  let g = `<defs><linearGradient id="skyg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient></defs>
+    <rect width="1400" height="340" fill="url(#skyg)"/>`;
+  if (night) for (let i=0;i<46;i++){ const x=(i*157)%1400, y=(i*71)%170+8; g += `<circle class="${i%3?"":"twinkle"}" cx="${x}" cy="${y}" r="${i%4?1.4:2.2}" fill="#fff" opacity=".85"/>`; }
+  if (m.storm<2){
+    if (night) g += `<circle cx="1150" cy="66" r="26" fill="#FFF6D8"/><circle cx="1162" cy="58" r="22" fill="${sky[0]}"/>`;
+    else if (m.tod==="morning") g += `<circle cx="230" cy="150" r="40" fill="#FFD27A" opacity=".5"/><circle cx="230" cy="150" r="28" fill="#FFB347"/>`;
+    else if (m.tod==="evening") g += `<circle cx="1240" cy="170" r="46" fill="#FF7B5C" opacity=".45"/><circle cx="1240" cy="170" r="32" fill="#FF6A4D"/>`;
+    else g += `<circle cx="1180" cy="66" r="46" fill="#FFE58A" opacity=".45"/><circle cx="1180" cy="66" r="32" fill="#FFD23F"/>`;
+  }
+  if (m.rainbow) ["#EF4D67","#FF8A3D","#F2D23F","#3CC47C","#0B95C2","#8E6AD8"].forEach((c,i)=>{ g += `<path d="M380 200A320 170 0 0 1 1020 200" stroke="${c}" stroke-width="9" fill="none" opacity=".55" transform="translate(0,${i*9})"/>`; });
+  const nCl = [3,5,8,11][m.storm], clC = m.storm>=2 ? (night?"#3A4A60":"#5E6E80") : m.storm===1 ? "#E4EAF0" : "#FFFFFF";
+  for (let i=0;i<nCl;i++){
+    const x = (i*233)%1300 - 100, y = 20 + (i*37)%(m.storm>=2?90:110), s = .8 + (i%3)*.35;
+    g += `<g class="cl c${i%3+1}" style="animation-delay:-${(i*17)%60}s"><g transform="translate(${x},${y}) scale(${s})" fill="${clC}" opacity="${m.storm>=2?.95:.9}"><circle cx="0" cy="20" r="22"/><circle cx="26" cy="8" r="28"/><circle cx="56" cy="18" r="22"/><rect x="-4" y="20" width="64" height="22" rx="11"/></g></g>`;
+  }
+  g += `<rect y="186" width="1400" height="154" fill="${sea}"/>
+    <path class="wv" d="M-40 206q35-10 70 0t70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0" stroke="#fff" stroke-opacity=".35" stroke-width="3" fill="none"/>
+    <path class="wv v2" d="M-40 230q35-10 70 0t70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0" stroke="#fff" stroke-opacity=".22" stroke-width="3" fill="none"/>`;
+  if (m.storm>=2) g += `<path class="wv" d="M-40 196l40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14" stroke="#fff" stroke-opacity=".5" stroke-width="3" fill="none"/>`;
+  /* Boden mit Lücke für die Seebrücke, Klippe rechts */
+  g += `<path d="M0 262H640V340H0z" fill="${sand}"/><path d="M760 262H1262L1278 204H1400V340H760z" fill="${sand}"/>
+    <path d="M1262 262L1278 204H1400" stroke="#B89A66" stroke-width="3" fill="none"/>
+    <path d="M0 262H640M760 262H1262" stroke="#D8BE84" stroke-width="3"/>`;
+  const focus = focusPlace().id;
+  PLANETS.forEach(p=>{
+    const x = WX[p.id], ps = placeStats(p.id), done = ps.safe===ps.total, hue = p.hue;
+    let b = "";
+    switch(p.id){
+      case "haus": b = `<rect x="${x-44}" y="196" width="88" height="66" fill="#F6E7D0" stroke="#8A6A4A" stroke-width="2"/>
+        <path d="M${x-54} 198L${x} 150L${x+54} 198z" fill="${hue}" stroke="#8A4A1A" stroke-width="2"/><rect x="${x+20}" y="150" width="12" height="30" fill="#9C5B3B"/>
+        <circle cx="${x}" cy="176" r="8" fill="${win}" stroke="#8A6A4A" stroke-width="2"/><rect x="${x-34}" y="208" width="20" height="16" fill="${win}" stroke="#8A6A4A" stroke-width="2"/><rect x="${x+14}" y="208" width="20" height="16" fill="${win}" stroke="#8A6A4A" stroke-width="2"/><rect x="${x-9}" y="230" width="18" height="32" fill="#8A4A2A"/>`; break;
+      case "u1": [["#F28C8C",82],["#8EC9F2",96],["#F2D27A",86]].forEach(([col,h],i)=>{ const hx = x-46+i*31; b += `<rect x="${hx}" y="${262-h}" width="30" height="${h}" fill="${col}" stroke="${ink}" stroke-width="1.5"/><rect x="${hx-2}" y="${258-h}" width="34" height="6" fill="#fff" stroke="${ink}" stroke-width="1.5"/><rect x="${hx+6}" y="${272-h}" width="8" height="12" fill="${win}"/><rect x="${hx+17}" y="${272-h}" width="8" height="12" fill="${win}"/><rect x="${hx+6}" y="${292-h}" width="8" height="12" fill="${win}"/><rect x="${hx+17}" y="${292-h}" width="8" height="12" fill="${win}"/><rect x="${hx+10}" y="242" width="10" height="20" fill="${ink}"/>`; }); break;
+      case "ich": b = `<path d="M${x-30} 200V262M${x+30} 200V262" stroke="#8A5A35" stroke-width="6"/><rect x="${x-44}" y="176" width="88" height="56" rx="6" fill="#FFF8E6" stroke="#8A5A35" stroke-width="3"/>
+        <circle cx="${x-22}" cy="198" r="10" fill="${hue}"/><path d="M${x-30} 216q8-8 16 0" fill="${hue}"/><path d="M${x-4} 190h34M${x-4} 202h28M${x-4} 214h32" stroke="${ink}" stroke-width="3" stroke-linecap="round" opacity=".55"/>`; break;
+      case "fam": b = `<path d="M${x-12} 170V258" stroke="#5E5E5E" stroke-width="4"/><path d="M${x-62} 186Q${x-12} 136 ${x+38} 186z" fill="${hue}"/><path d="M${x-45} 186Q${x-12} 150 ${x+21} 186" fill="none" stroke="#fff" stroke-width="5" opacity=".7"/>
+        <rect x="${x-50}" y="252" width="74" height="10" fill="#EF4D67"/><path d="M${x-40} 252v10M${x-24} 252v10M${x-8} 252v10M${x+8} 252v10" stroke="#fff" stroke-width="3"/><rect x="${x+22}" y="238" width="26" height="20" rx="3" fill="#C9935A" stroke="#7A4A2A" stroke-width="2"/><path d="M${x+26} 238q9-12 18 0" stroke="#7A4A2A" stroke-width="3" fill="none"/>`; break;
+      case "sch": b = `<rect x="${x-50}" y="200" width="100" height="62" fill="#F3EBDD" stroke="${ink}" stroke-width="2"/><rect x="${x-54}" y="194" width="108" height="8" fill="${hue}"/><rect x="${x-12}" y="160" width="24" height="36" fill="#E7DCCB" stroke="${ink}" stroke-width="2"/><path d="M${x-16} 162L${x} 140L${x+16} 162z" fill="${hue}"/><circle cx="${x}" cy="176" r="8" fill="#fff" stroke="${ink}" stroke-width="2"/><path d="M${x} 176v-5M${x} 176h4" stroke="${ink}" stroke-width="1.5"/>
+        <rect x="${x-40}" y="212" width="16" height="16" fill="${win}" stroke="${ink}" stroke-width="1.5"/><rect x="${x+24}" y="212" width="16" height="16" fill="${win}" stroke="${ink}" stroke-width="1.5"/><rect x="${x-10}" y="232" width="20" height="30" fill="${hue}"/>`; break;
+      case "sea": b = `<rect x="${x-110}" y="226" width="220" height="8" fill="#9C6B44"/>${[...Array(9)].map((_,i)=>`<path d="M${x-100+i*25} 234V340" stroke="#7A5233" stroke-width="5"/>`).join("")}
+        <path d="M${x-110} 214H${x+110}" stroke="#fff" stroke-width="2.5"/>${[...Array(12)].map((_,i)=>`<path d="M${x-108+i*19} 214v12" stroke="#fff" stroke-width="2"/>`).join("")}
+        <rect x="${x+30}" y="190" width="54" height="36" fill="#fff" stroke="${ink}" stroke-width="2"/><path d="M${x+26} 192Q${x+57} 150 ${x+88} 192z" fill="${hue}" stroke="${ink}" stroke-width="2"/><path d="M${x+57} 158v-16" stroke="${ink}" stroke-width="2"/><path d="M${x+57} 142l14 5-14 5z" fill="#EF4D67"/><rect x="${x+40}" y="200" width="12" height="14" fill="${win}"/><rect x="${x+62}" y="200" width="12" height="14" fill="${win}"/>`; break;
+      case "far": ["#EF4D67","#F2D23F","#0B95C2","#3CC47C"].forEach((col,i)=>{ const hx = x-54+i*28; b += `<rect x="${hx}" y="222" width="24" height="40" fill="${col}" stroke="${ink}" stroke-width="1.5"/><path d="M${hx-3} 224L${hx+12} 206L${hx+27} 224z" fill="#fff" stroke="${ink}" stroke-width="1.5"/><rect x="${hx+7}" y="242" width="10" height="20" fill="#fff" opacity=".8"/>`; }); break;
+      case "tie": b = `<rect x="${x+22}" y="196" width="12" height="66" fill="#8A5A35"/><circle cx="${x+28}" cy="186" r="30" fill="#5DB85A"/><circle cx="${x+12}" cy="196" r="18" fill="#4FA64D"/>
+        <ellipse cx="${x-18}" cy="238" rx="28" ry="18" fill="#9AA8B6"/><circle cx="${x+6}" cy="226" r="14" fill="#9AA8B6"/><path d="M${x+16} 232q8 10 2 22" stroke="#9AA8B6" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="${x+9}" cy="222" r="2.5" fill="${ink}"/><path d="M${x-36} 252v10M${x-6} 252v10" stroke="#9AA8B6" stroke-width="8"/>
+        <path d="M${x-56} 244H${x+56}M${x-56} 254H${x+56}" stroke="#B57E4F" stroke-width="3"/>${[...Array(6)].map((_,i)=>`<path d="M${x-54+i*22} 238V262" stroke="#B57E4F" stroke-width="4"/>`).join("")}`; break;
+      case "ver": b = `<path d="M${x} 196L${x-36} 262M${x} 196L${x+36} 262" stroke="${ink}" stroke-width="5"/>
+        <g class="wheel"><circle cx="${x}" cy="196" r="56" fill="none" stroke="${hue}" stroke-width="5"/>${[...Array(8)].map((_,i)=>{ const a=i*Math.PI/4, cx=x+56*Math.cos(a), cy=196+56*Math.sin(a); return `<path d="M${x} 196L${cx.toFixed(1)} ${cy.toFixed(1)}" stroke="${hue}" stroke-width="2"/><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="8" fill="${["#EF4D67","#F2D23F","#3CC47C","#FF8A3D"][i%4]}" stroke="${ink}" stroke-width="1.5"/>`; }).join("")}</g><circle cx="${x}" cy="196" r="6" fill="${ink}"/>`; break;
+      case "zim": b = `${night||m.storm>=2?`<path class="beam" d="M${x} 116L${x-170} 70V150z" fill="#FFE58A" opacity=".4"/><path class="beam" d="M${x} 116L${x+170} 70V150z" fill="#FFE58A" opacity=".4"/>`:""}
+        <path d="M${x-20} 262L${x-13} 126H${x+13}L${x+20} 262z" fill="#fff" stroke="${ink}" stroke-width="2"/><path d="M${x-18.4} 230H${x+18.4}L${x+17.3} 206H${x-17.3}zM${x-16.2} 182H${x+16.2}L${x+15} 158H${x-15}z" fill="#EF4D67"/><path d="M${x-14} 136H${x+14}" stroke="${ink}"/>
+        <rect x="${x-17}" y="120" width="34" height="7" fill="${ink}"/><rect x="${x-10}" y="102" width="20" height="18" rx="2" fill="${night||m.storm>=2?"#FFE58A":"#CFEAF7"}" stroke="${ink}" stroke-width="2"/><path d="M${x-13} 102L${x} 90L${x+13} 102z" fill="#EF4D67" stroke="${ink}" stroke-width="2"/>
+        <rect x="${x+22}" y="234" width="34" height="28" fill="#F6E7D0" stroke="${ink}" stroke-width="1.5"/><path d="M${x+18} 236L${x+39} 220L${x+60} 236z" fill="${hue}"/><rect x="${x+33}" y="244" width="10" height="18" fill="${ink}"/>`; break;
+      case "hal": b = `<rect x="${x-40}" y="146" width="80" height="58" fill="#6E6390" stroke="#3E3560" stroke-width="2"/><rect x="${x-56}" y="118" width="22" height="86" fill="#7D72A0" stroke="#3E3560" stroke-width="2"/><rect x="${x+34}" y="124" width="22" height="80" fill="#7D72A0" stroke="#3E3560" stroke-width="2"/>
+        <path d="M${x-58} 120L${x-45} 96L${x-32} 120zM${x+32} 126L${x+45} 102L${x+58} 126z" fill="#3E3560"/>${[...Array(5)].map((_,i)=>`<rect x="${x-40+i*17}" y="138" width="10" height="10" fill="#6E6390" stroke="#3E3560" stroke-width="2"/>`).join("")}
+        <path d="M${x-8} 204v-22q8-10 16 0v22z" fill="#2E2650"/><rect x="${x-50}" y="140" width="8" height="12" fill="${night?"#FFE08A":"#C7D0F0"}"/><rect x="${x+41}" y="146" width="8" height="12" fill="${night?"#FFE08A":"#C7D0F0"}"/><rect x="${x-26}" y="160" width="9" height="12" fill="${night?"#FFE08A":"#C7D0F0"}"/><rect x="${x+17}" y="160" width="9" height="12" fill="${night?"#FFE08A":"#C7D0F0"}"/>
+        <path d="M${x+66} 112q6-8 12 0 6-8 12 0-6 2-12 8-6-6-12-8z" fill="#2E2650"/>`; break;
+    }
+    const isF = p.id===focus, signY = p.id==="hal" ? 212 : 274, w = 92;
+    const prog = ps.total ? ps.safe/ps.total : 0;
+    b += `<rect x="${x-w/2}" y="${signY}" width="${w}" height="34" rx="9" fill="#fff" stroke="${isF?"#FF8A3D":hue}" stroke-width="${isF?4:2}"/>
+      <text x="${x}" y="${signY+16}" text-anchor="middle" font-family="Fredoka, Trebuchet MS, sans-serif" font-weight="700" font-size="14" fill="${ink}">${SHORT[p.id]}</text>
+      <rect x="${x-34}" y="${signY+23}" width="68" height="5" rx="2.5" fill="#E3EEF5"/><rect x="${x-34}" y="${signY+23}" width="${(68*prog).toFixed(1)}" height="5" rx="2.5" fill="${hue}"/>
+      ${done?`<path transform="translate(${x+w/2-4},${signY-2})" d="M0-11l3.2 6.6 7.3 1-5.3 5 1.3 7.2L0 5.4-6.5 8.8l1.3-7.2-5.3-5 7.3-1z" fill="#F2B632" stroke="#C98A12" stroke-width="1.5"/>`:""}`;
+    g += `<g class="bld" data-act="openPlace" data-pid="${p.id}" role="button" aria-label="${esc(p.place)}"><rect x="${x-62}" y="80" width="124" height="230" fill="transparent"/>${b}</g>`;
+  });
+  /* Pfahl für die Möwe */
+  const fx = WX[focus] + 58, top = focus==="hal" ? 186 : 230, base = focus==="hal" ? 204 : 262;
+  g += `<rect x="${fx-6}" y="${top}" width="12" height="${base-top}" fill="#8A5A35"/><rect x="${fx-9}" y="${top-4}" width="18" height="7" rx="3" fill="#B57E4F"/>`;
+  if (m.storm>=3) g += `<g class="rain" opacity=".5" pointer-events="none">${[...Array(60)].map((_,i)=>{ const x=(i*97)%1400, y=(i*53)%300; return `<path d="M${x} ${y}l-8 22" stroke="#DDE8F2" stroke-width="2"/>`; }).join("")}</g>`;
+  if (night || m.storm>=2) g += `<rect width="1400" height="340" fill="#0B1F3F" opacity="${night?.15:.08}" pointer-events="none"/>`;
+  return `<svg class="world" viewBox="0 0 1400 340" preserveAspectRatio="xMidYMid slice">${g}</svg>`;
+}
+let lastFocus = null, harborScrolled = false;
+function renderHarbor(){
+  const m = sceneMood(), sleep = isAsleep(), stage = gullStage(), focus = focusPlace().id;
+  const wrap = $("#harborWrap"), hb = $("#harbor"), inner = $("#harborIn");
+  wrap.className = "harbor-wrap" + (m.storm>=3 ? " storm3" : "");
+  const fx = WX[focus] + 58, topU = focus==="hal" ? 182 : 226;
+  const gw = 74, left = fx*HK - gw/2, top = topU*HK - gw*0.91;
+  inner.innerHTML = worldSVG(m) + `<div class="hgull" id="hGullEl" data-act="openWardrobe" role="button" aria-label="${esc(G())} anziehen" style="left:${(lastFocus && lastFocus!==focus ? (WX[lastFocus]+58)*HK-gw/2 : left).toFixed(0)}px;top:${top.toFixed(0)}px">${gullSVG(stage, GC(), {sleep})}</div>`;
+  if (lastFocus && lastFocus!==focus){ const el = $("#hGullEl"); requestAnimationFrame(()=>{ el.classList.add("flying"); el.style.left = left.toFixed(0)+"px"; }); }
+  if (!harborScrolled || lastFocus!==focus){ requestAnimationFrame(()=>{ hb.scrollLeft = Math.max(0, fx*HK - hb.clientWidth/2); }); harborScrolled = true; }
+  lastFocus = focus;
+  const line = sleep ? {en:"Zzz …", de:`${G()} schläft. Morgen geht der Unterricht weiter!`}
+    : m.storm>=3 ? {en:"Oh no, a storm!", de:`Der Test kommt! Lern die Test-Wörter, dann verzieht sich der Sturm.`}
+    : m.rainbow ? {en:"I'm ready!", de:"Ihr seid bereit für den Test. Der Sturm ist weg!"}
+    : gullLine();
+  $("#hBubble").innerHTML = `<div style="min-width:0"><span class="who-says">${esc(G())} sagt</span><div class="en">${esc(line.en)}</div>${line.de?`<small class="muted">${esc(line.de)}</small>`:""}</div>${!sleep && line.en.length>3?`<button class="speak" data-act="say" data-t="${esc(line.en)}" aria-label="Anhören">${I.speaker}</button>`:""}`;
+  hb.onscroll = () => { const h=$("#swipeHint"); if (h) h.style.opacity = "0"; };
+}
+
+/* ============ KLEIDERSCHRANK ============ */
+function renderWardrobe(){
+  S.wear = S.wear || {};
+  const unl = accUnlocked().map(a=>a.id);
+  $("#s-wardrobe").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Kleiderschrank</h1>
+    <div class="ward-hero">${myGull()}</div>
+    <p class="muted center" style="margin:0">${gullStage()===0?"Erst muss das Ei schlüpfen. Mach deine erste Unterrichtsstunde!":`Zieh ${esc(G())} an! Neue Sachen schaltest du durch Üben frei.`}</p>
+    ${SLOTS.map(([slot,label])=>{ const items = ACC.filter(a=>a.slot===slot); return `<span class="label">${label}</span><div class="stack" style="gap:8px">${items.map(a=>{
+      const on = S.wear[slot]===a.id, ok = unl.includes(a.id);
+      return `<button class="acc ${on?"on":""} ${ok?"":"locked"}" data-act="wear" data-id="${a.id}" ${ok?"":"aria-disabled=\"true\""}>
+        <span class="pv">${gullSVG(Math.max(1,gullStage()), GC(), {wear:{[slot]:a.id}})}</span>
+        <div style="min-width:0"><b>${esc(a.n)}</b><small>${ok?(on?"Hat sie gerade an":"Antippen zum Anziehen"):`Gesperrt: ${esc(a.how)}`}</small></div>
+        <span class="st">${on?"An":ok?"Anziehen":"🔒"}</span></button>`; }).join("")}</div>`; }).join("")}`;
+  show("wardrobe");
+}
+
+/* ============ ORT ANSEHEN ============ */
+function renderPlace(pid){
+  const p = PMAP[pid], ps = placeStats(pid), done = ps.safe===ps.total;
+  $("#s-place").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <div class="place-head">${placeDot(p)}<div style="min-width:0"><h1 class="display" style="font-size:1.6rem;color:var(--navy)">${esc(p.place)}</h1><span class="muted">${esc(p.name)}</span></div></div>
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><b>${ps.safe} von ${ps.total} Wörtern sicher</b><small class="muted">${ps.seen} schon gesehen</small></div>
+      <div class="bar"><i style="width:${Math.round(ps.safe/ps.total*100)}%;background:${p.hue}"></i></div>
+      <small class="muted">${done?`Diplom geschafft! ${esc(G())} kann hier alles.`:`Sind alle Wörter sicher, gibt es das Diplom für ${esc(p.place)}.`}</small>
+    </div>
+    <div class="duo">
+      <button class="bigbtn b-ice" data-act="placeCards" data-pid="${pid}"><b>Karteikarten</b><small>Wörter von hier üben</small></button>
+      <button class="bigbtn b-good" data-act="placeMama" data-pid="${pid}"><b>Möwen-Prüfung</b><small>Von der Familie prüfen lassen</small></button>
+    </div>
+    <button class="btn btn-soft btn-block" data-act="placeBoss" data-pid="${pid}" ${ps.seen===ps.total?"":"disabled"}>Krabben-Duell hier${ps.seen===ps.total?"":` (erst alle ${ps.total} Wörter lernen)`}</button>
+    <details class="pl"><summary>Alle Wörter von hier<span class="n">${ps.total}</span></summary><div class="wlist">${wordRows(p, false)}</div></details>`;
+  show("place");
+}
+function startDeckKey(mode, key){
+  DK.mode = mode;
+  if (mode==="mama" && !pinOk()) return askPin(()=>startDeckKey(mode,key));
+  const i = deckOptions().findIndex(o=>o.key===key);
+  if (i>=0) startCards(i);
 }
 
 /* ============ ICONS ============ */
@@ -1235,7 +1508,7 @@ function checkBadges(ctx){
 }
 
 /* ============ BILDSCHIRME ============ */
-const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents"];
+const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place"];
 function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
@@ -1245,7 +1518,7 @@ let OB = {color:0};
 function renderOnboard(needKid){
   $("#s-onboard").innerHTML = `<div class="center" style="padding-top:8px">
       <div class="hero">Möwen<span>flug</span></div>
-      <div style="width:150px;margin:6px auto 0">${gullSVG(0, GULL_COLORS[OB.color])}</div>
+      <div style="width:150px;margin:6px auto 0">${gullSVG(S&&S.gull?Math.max(1,gullStage()):0, GULL_COLORS[OB.color])}</div>
     </div>
     <div class="panel">
       <span class="label">Ein Möwen-Ei ist bei dir gelandet!</span>
@@ -1265,36 +1538,8 @@ function renderIntro(){
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">1</b><div><b>Jeden Tag eine Unterrichtsstunde</b><div class="muted" style="font-size:.88rem">Etwa 10 Minuten. Du bringst ${esc(G())} neue Wörter bei und wiederholst alte. Jede Stunde bringt euch 50 km näher an England.</div></div></div>
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">2</b><div><b>${esc(G())} wächst mit</b><div class="muted" style="font-size:.88rem">Je mehr Wörter sicher sitzen, desto größer wird ${esc(G())}. Sie spricht nur, was du ihr beigebracht hast.</div></div></div>
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">3</b><div><b>Möwen-Prüfung mit der Familie</b><div class="muted" style="font-size:.88rem">Mama, Papa, Oma oder Opa prüfen, ob ${esc(G())} es wirklich kann. Das zählt am meisten.</div></div></div>
-    <small class="muted">Steht ein Vokabeltest an, tragen deine Eltern ihn unter „Für Eltern“ ein. Dann zieht ein Sturm auf, und ihr repariert bis zum Test den Leuchtturm.</small>
+    <small class="muted">Wisch über den Hafen und tipp auf die Orte: Jeder ist ein Thema. Tipp auf deine Möwe, um sie anzuziehen. Steht ein Vokabeltest an, zieht ein Sturm auf, bis ihr gut vorbereitet seid.</small>
     <button class="btn btn-main btn-block" data-act="introOk">Verstanden!</button></div>`;
-}
-function renderTestCard(){
-  const box = $("#testCard");
-  if (!testActive()){ box.innerHTML = ""; return; }
-  const p = PMAP[S.test.pl], ps = placeStats(p.id), d = dayDiff(today(), S.test.date);
-  const span = Math.min(6, Math.max(1, dayDiff(S.test.start || today(), S.test.date)));
-  const days = []; for (let i=0;i<=span;i++) days.push(addDays(S.test.date, -span+i));
-  const left = ps.total - ps.seen;
-  const plan = d===0 ? "Heute ist der Test! Kurz aufwärmen mit den Karteikarten." :
-    left>0 ? `Heute: ${Math.min(8,left)} neue Test-Wörter lernen.` :
-    d===1 ? "Morgen ist der Test: Mach heute die Möwen-Prüfung mit allen Test-Wörtern." :
-    "Heute: wiederholen und Sätze bauen.";
-  const rd = testReadiness();
-  box.innerHTML = `<div class="storm">
-    <div style="flex:none;align-self:center">${lighthouse(ps.total, ps.fixed)}</div>
-    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:8px">
-      <div class="row" style="align-items:flex-start">
-        <div style="min-width:0"><span class="label">Sturmwarnung: Vokabeltest</span><div style="font-family:var(--f-display);font-weight:700;font-size:1.15rem">${esc(p.name)}</div><small>am ${wdName(S.test.date)}, ${dmy(S.test.date).slice(0,6)}</small></div>
-        <span class="spacer"></span>
-        <div class="center"><div class="count">${d===0?"!":d}</div><small>${d===0?"heute":d===1?"Tag":"Tage"}</small></div>
-      </div>
-      <small>Repariere den Leuchtturm, bevor der Sturm kommt. Jedes gelernte Wort ist ein Stück: ${ps.fixed} von ${ps.total} fertig.</small>
-      <div class="daydots">${days.map(x=>`<span class="${x===today()?"now":x<today()?"past":""}">${x===S.test.date?"Test":wdOf(x)}</span>`).join("")}</div>
-      <span class="ampel" title="${esc(rd.d)}"><i style="background:${rd.c}"></i>${rd.t}</span>
-      <div style="font-weight:700">${plan}</div>
-      <div class="row"><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="startTest">Test-Training</button><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="testCards">Karteikarten</button></div>
-    </div>
-  </div>`;
 }
 function renderFlight(){
   const km = S.km, last = STOPS[STOPS.length-1][1];
@@ -1337,6 +1582,32 @@ function renderBackup(){
 }
 const isAsleep = () => S.dailyDone===today() && dueWords().length===0;
 function learnedSentences(){ return SENT.filter(s=>ss(s.id) && ss(s.id).r>0).map(s=>fillN(s.en)); }
+function renderTestCard(){
+  const box = $("#testCard");
+  if (!testActive()){ box.innerHTML = ""; return; }
+  const p = PMAP[S.test.pl], ps = placeStats(p.id), d = dayDiff(today(), S.test.date);
+  const span = Math.min(6, Math.max(1, dayDiff(S.test.start || today(), S.test.date)));
+  const days = []; for (let i=0;i<=span;i++) days.push(addDays(S.test.date, -span+i));
+  const left = ps.total - ps.seen;
+  const rd = testReadiness(), ready = rd.t.startsWith("Grün");
+  const plan = ready ? "Super vorbereitet! Wiederhole kurz mit den Karteikarten, damit es so bleibt." :
+    d===0 ? "Heute ist der Test! Kurz aufwärmen mit den Karteikarten." :
+    left>0 ? `Heute: ${Math.min(8,left)} neue Test-Wörter lernen.` :
+    d===1 ? "Morgen ist der Test: Mach heute die Möwen-Prüfung mit allen Test-Wörtern." :
+    "Heute: wiederholen und Sätze bauen.";
+  box.innerHTML = `<div class="storm" style="flex-direction:column;gap:8px;${ready?"background:linear-gradient(160deg,#2C8C6A,#1E6E55);border-color:#1E6E55":""}">
+    <div class="row" style="align-items:flex-start">
+      <div style="min-width:0"><span class="label">${ready?"Sturm verzogen":"Sturmwarnung"}: Vokabeltest</span><div style="font-family:var(--f-display);font-weight:700;font-size:1.15rem">${esc(p.name)}</div><small>am ${wdName(S.test.date)}, ${dmy(S.test.date).slice(0,6)}</small></div>
+      <span class="spacer"></span>
+      <div class="center"><div class="count">${d===0?"!":d}</div><small>${d===0?"heute":d===1?"Tag":"Tage"}</small></div>
+    </div>
+    <small>${ready?"Ihr seid bereit. Darum scheint am Hafen die Sonne.":`Je näher der Test, desto dunkler der Himmel am Hafen. Lern die Test-Wörter, dann verzieht sich der Sturm. ${ps.fixed} von ${ps.total} gelernt.`}</small>
+    <div class="daydots">${days.map(x=>`<span class="${x===today()?"now":x<today()?"past":""}">${x===S.test.date?"Test":wdOf(x)}</span>`).join("")}</div>
+    <span class="ampel" title="${esc(rd.d)}"><i style="background:${rd.c}"></i>${rd.t}</span>
+    <div style="font-weight:700">${plan}</div>
+    <div class="row"><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="startTest">Test-Training</button><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="testCards">Karteikarten</button></div>
+  </div>`;
+}
 function renderHome(){
   const l = level(), stage = gullStage(), col = GC(), sleep = isAsleep();
   $("#hAvatar").innerHTML = gullSVG(Math.max(1,stage), col);
@@ -1345,9 +1616,7 @@ function renderHome(){
   $("#hStreak").textContent = S.streak && (S.lastDay===today()||S.lastDay===addDays(today(),-1)) ? S.streak : 0;
   $("#hLevel").textContent = l;
   renderIntro();
-  $("#hGull").innerHTML = gullSVG(stage, col, {sleep});
-  const line = sleep ? {en:"Zzz …", de:`${G()} schläft. Morgen geht der Unterricht weiter!`} : gullLine();
-  $("#hBubble").innerHTML = `<div style="min-width:0"><div class="en">${esc(line.en)}</div>${line.de?`<small class="muted">${esc(line.de)}</small>`:""}</div>${!sleep && line.en.length>3?`<button class="speak" data-act="say" data-t="${esc(line.en)}" aria-label="Anhören">${I.speaker}</button>`:""}`;
+  renderHarbor();
   const safe = W.filter(isSafe).length, nextSt = STAGES[stage+1];
   $("#hStage").textContent = STAGES[stage].n;
   if (stage===0){ $("#hStageBar").style.width = "0%"; $("#hStageTxt").textContent = "schlüpft in der 1. Stunde"; }
@@ -1366,6 +1635,10 @@ function renderHome(){
     const bits = []; if (nw) bits.push(`${nw} neue Wörter`); if (due) bits.push(`${Math.min(due,12)} Wiederholungen`); bits.push("Sätze");
     $("#lSub").textContent = `${bits.join(" · ")} · ca. 10 Min. · +50 km`;
   }
+  $("#soundBtn").textContent = S.settings.sound ? "Ton: an" : "Ton: aus";
+  $("#slowBtn").textContent = S.settings.slow ? "Sprechtempo: langsam" : "Sprechtempo: normal";
+}
+function renderExtras(){
   const p = focusPlace(), ps = placeStats(p.id), bossOk = ps.seen===ps.total;
   $("#bossTile").classList.toggle("locked", !bossOk);
   $("#bossSub").textContent = S.boss[p.id] ? "Besiegt! Revanche?" : bossOk ? `Kampf um ${p.place}` : `Erst alle Wörter lernen (${ps.seen}/${ps.total})`;
@@ -1374,10 +1647,13 @@ function renderHome(){
   $("#mapSub").textContent = `${introduced().length} von ${W.length} Wörtern`;
   $("#sentSub").textContent = `${SENT.filter(sentUnlocked).length} Sätze freigeschaltet`;
   $("#fixSub").textContent = `${G()} macht Fehler. Findest du sie?`;
+  $("#wardSub").textContent = `${accUnlocked().length} von ${ACC.length} Sachen freigeschaltet`;
   const postOk = learnedSentences().length + W.filter(w=>st(w.id)&&st(w.id).b>=2&&w.ex).length >= 2;
   $("#postSub").textContent = postOk ? (S.lastPost && dayDiff(S.lastPost,today())<7 ? "Diese Woche schon verschickt" : "Postkarte an die Familie") : "Erst ein paar Sätze lernen";
-  $("#soundBtn").textContent = S.settings.sound ? "Ton: an" : "Ton: aus";
-  $("#slowBtn").textContent = S.settings.slow ? "Sprechtempo: langsam" : "Sprechtempo: normal";
+  show("extras");
+}
+function accPanel(list){
+  return list.length ? `<div class="panel" style="border-color:var(--good)"><span class="label" style="color:#0E7C51">Neu im Kleiderschrank!</span>${list.map(a=>`<div class="row"><div style="width:54px;flex:none">${gullSVG(Math.max(1,gullStage()), GC(), {wear:{[a.slot]:a.id}})}</div><b>${esc(a.n)}</b></div>`).join("")}<button class="btn btn-soft" data-act="openWardrobe">Gleich anziehen</button></div>` : "";
 }
 
 /* ============ UNTERRICHT ============ */
@@ -1423,8 +1699,8 @@ function startFix(){
   if (!list.length){ toast("Bring deiner Möwe erst ein paar Wörter bei!"); return; }
   begin("fix", list.map(s=>({kind:"fix",s})));
 }
-function startBoss(){
-  const p = focusPlace(), ws = W.filter(w=>w.pl===p.id);
+function startBoss(pid){
+  const p = (typeof pid==="string" && PMAP[pid]) || focusPlace(), ws = W.filter(w=>w.pl===p.id);
   if (!ws.every(w=>st(w.id))){ toast(`Krabbe Kneifer wartet noch. Lerne zuerst alle Wörter von ${esc(p.place)}!`); return; }
   begin("boss", shuffle(ws).slice(0,14).map(w=>({kind:"word",w,boss:true})), {hp:10,max:10,shields:3,pl:p.id});
 }
@@ -1653,6 +1929,16 @@ function resolveSent(ok, opts={}){
   afterAnswer(ok, it);
   showSheet(ok, {en:fillN(s.en), de:fillN(s.de), say:fillN(s.en), tip: ok ? "" : (s.tip||""), ...opts});
 }
+const YAY = ["Juhu, danke!","Jetzt hab ich's!","Mmh, ein Fisch!","Das merk ich mir!"];
+const HUH = ["Hä? Jetzt bin ich verwirrt …","Oh nein, das üben wir nochmal.","Hmm, das war wohl nix."];
+function gullReact(ok){
+  const g = $("#card .gmini .gull"), box = $("#card .gmini"), say = $("#card .coach .say");
+  if (!g) return;
+  g.classList.remove("happy","confused"); void g.getBoundingClientRect(); g.classList.add(ok?"happy":"confused");
+  if (say) say.textContent = (ok?YAY:HUH)[rnd(ok?YAY.length:HUH.length)];
+  if (ok){ const f = document.createElement("div"); f.className="fish"; f.innerHTML = `<svg viewBox="0 0 40 24"><path d="M4 12q12-12 26-2l8-7v18l-8-7Q16 24 4 12z" fill="#0B95C2"/><circle cx="12" cy="10" r="2" fill="#fff"/></svg>`; box.appendChild(f); setTimeout(()=>f.remove(),1100); }
+  else { const q = document.createElement("span"); q.className="qm"; q.textContent="?"; box.appendChild(q); setTimeout(()=>q.remove(),1400); }
+}
 function afterAnswer(ok, it){
   if (ok){
     M.right++; M.combo++; M.best = Math.max(M.best,M.combo); S.stats.bestCombo = Math.max(S.stats.bestCombo, M.combo);
@@ -1661,10 +1947,10 @@ function afterAnswer(ok, it){
     sfx(M.mode==="boss"?"hit":"good");
     const el = $("#card .card");
     if (el){ const [x,y]=centerOf(el); burst(x,y,M.combo>=5?60:34); floatXP(el,"+"+gain); }
-    const g = $("#card .gull"); if (g){ g.classList.remove("happy"); void g.getBoundingClientRect(); g.classList.add("happy"); }
+    gullReact(true);
     if (M.mode==="boss"){ M.boss.hp--; const a=$("#crab"); a.classList.remove("hit"); void a.getBoundingClientRect(); a.classList.add("hit"); const [x,y]=centerOf(a); burst(x,y,30,["#EF4D67","#FF8A3D","#F2B632"]); renderBoss(); }
   } else {
-    M.wrong++; M.combo = 0; sfx("bad");
+    M.wrong++; M.combo = 0; sfx("bad"); gullReact(false);
     if (navigator.vibrate) try{ navigator.vibrate(60); }catch(e){}
     if (M.mode==="boss"){ M.boss.shields--; renderBoss(); }
     else if (!it.retry){
@@ -1756,7 +2042,8 @@ function finish(){
     ${M.missed.length?`<div class="panel"><span class="label">Diese Wörter üben wir morgen nochmal</span><div class="chips">${M.missed.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div></div>`:""}
     ${slept?`<div class="panel" style="flex-direction:row;align-items:center"><div style="width:56px;flex:none">${myGull({sleep:true})}</div><div><b>Tagesziel erreicht!</b><div class="muted" style="font-size:.88rem">${esc(G())} ist müde und schläft jetzt. Morgen geht's weiter.</div></div></div>`:""}
     ${newB.length?`<div class="panel"><span class="label">Neues Abzeichen!</span>${newB.map(id=>{const b=BADGES.find(x=>x.id===id);return `<div class="row"><span style="font-size:2rem">${b.e}</span><div><b>${esc(b.n)}</b><div class="muted" style="font-size:.85rem">${esc(b.d)}</div></div></div>`;}).join("")}</div>`:""}
-    <button class="btn btn-main btn-block" data-act="home">Zurück zum Strand</button>`;
+    ${accPanel(newAccessories())}
+    <button class="btn btn-main btn-block" data-act="home">Zurück zum Hafen</button>`;
   show("summary");
   const target = M.xp, el = $("#xpCount"); let v = 0;
   const step = () => { v = Math.min(target, v + Math.max(1, Math.ceil(target/40))); el.textContent = "+"+v; if (v<target) requestAnimationFrame(step); };
@@ -1888,7 +2175,8 @@ function finishCards(){
     ${wrongIds.length?`<div class="panel"><span class="label">Kommen in den nächsten Stunden wieder</span><div class="chips">${wrongIds.map(id=>`<span class="chip">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
     ${mama && knownIds.length?`<div class="panel"><span class="label">Geprüft und gewusst</span><div class="chips">${knownIds.map(id=>`<span class="chip ok">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
     ${newB.length?`<div class="panel"><span class="label">Neues Abzeichen!</span>${newB.map(id=>{const b=BADGES.find(x=>x.id===id);return `<div class="row"><span style="font-size:2rem">${b.e}</span><b>${esc(b.n)}</b></div>`;}).join("")}</div>`:""}
-    <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Noch ein Stapel</button><button class="btn btn-main" style="flex:1" data-act="home">Zum Strand</button></div>`;
+    ${accPanel(newAccessories())}
+    <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Noch ein Stapel</button><button class="btn btn-main" style="flex:1" data-act="home">Zum Hafen</button></div>`;
   sfx("win"); confetti(); window.scrollTo(0,0);
   C = null;
 }
@@ -2046,7 +2334,18 @@ const ACT = {
   },
   renameGull: () => { OB.color = S.gull ? S.gull.color : 0; renderOnboard(false); show("onboard"); $("#gullIn").value = G(); },
   introOk: () => { S.introSeen = true; save(); renderHome(); },
-  startDaily, startTest, startSentences, startBoss, startFix, openPost,
+  startDaily, startTest, startSentences, startFix, openPost,
+  startBoss: () => startBoss(),
+  openExtras: renderExtras, openWardrobe: renderWardrobe,
+  openPlace: b => renderPlace(b.dataset.pid),
+  placeCards: b => startDeckKey("kid", b.dataset.pid),
+  placeMama: b => startDeckKey("mama", b.dataset.pid),
+  placeBoss: b => startBoss(b.dataset.pid),
+  wear: b => {
+    const a = ACC.find(x=>x.id===b.dataset.id); if (!a) return;
+    if (!accUnlocked().some(x=>x.id===a.id)){ toast(`Noch gesperrt: ${esc(a.how)}`); return; }
+    S.wear = S.wear || {}; S.wear[a.slot] = S.wear[a.slot]===a.id ? null : a.id; save(); sfx("gull"); renderWardrobe();
+  },
   testCards: () => { DK.mode="kid"; const i = deckOptions().findIndex(o=>o.key==="test"); if (i>=0) startCards(i); },
   openDeck: b => openDeck(b.dataset.mode),
   dkDir: b => { DK.dir = b.dataset.v; renderDeck(); },
