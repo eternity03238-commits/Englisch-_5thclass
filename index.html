@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Lexend:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: one narrow cockpit column floating over a live starfield; screens swap in place, feedback slides up from the bottom */
+*,*::before,*::after{box-sizing:border-box}
 :root{
   --sky:#0F0C29; --sky-2:#1B1646; --panel:#221C55; --panel-2:#2D266D; --line:#3E3592;
   --ink:#F6F3FF; --muted:#A9A2DA; --dim:#6E67A6;
@@ -310,6 +311,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
       <div class="row" style="justify-content:space-between;margin-bottom:5px"><span class="label">Erfahrung</span><span class="label" id="hXpTxt"></span></div>
       <div class="xpbar"><i id="hXp"></i></div>
     </div>
+    <div id="introCard"></div>
     <div id="testCard"></div>
     <div id="backupCard"></div>
     <div class="stage">
@@ -334,7 +336,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
       </button>
       <button class="tile t-good" data-act="openDeck" data-mode="mama">
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 11a4 4 0 110-8 4 4 0 010 8zm8 1a3 3 0 110-6 3 3 0 010 6zM2 20c0-3.3 2.7-6 6-6s6 2.7 6 6zm12.5 0c0-2-.8-3.8-2.1-5.1A5 5 0 0122 19v1z"/></svg></span>
-        <b>Mama fragt ab</b><small>Zählt doppelt!</small>
+        <b>Abfrage zu zweit</b><small>Mit Mama, Papa, Oma, Opa … zählt doppelt!</small>
       </button>
       <button class="tile t-flame" data-act="startSentences">
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h8v6H3zm10 0h8v6h-8zM3 13h5v6H3zm7 0h11v6H10z"/></svg></span>
@@ -775,6 +777,8 @@ const today = () => dstr(new Date());
 const addDays = (s,n) => { const [y,m,d]=s.split("-").map(Number); const t=new Date(y,m-1,d); t.setDate(t.getDate()+n); return dstr(t); };
 const dayDiff = (a,b) => { const p=s=>{const [y,m,d]=s.split("-").map(Number); return Date.UTC(y,m-1,d);}; return Math.round((p(b)-p(a))/864e5); };
 const WD = ["So","Mo","Di","Mi","Do","Fr","Sa"];
+const WDL = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"];
+const wdName = s => { const [y,m,d]=s.split("-").map(Number); return WDL[new Date(y,m-1,d).getDay()]; };
 const wdOf = s => { const [y,m,d]=s.split("-").map(Number); return WD[new Date(y,m-1,d).getDay()]; };
 const INTERVAL = [0,1,3,7,14,30];
 const LEVEL_XP = 150;
@@ -1093,7 +1097,7 @@ const BADGES = [
   {id:"safe50",e:"🏅",n:"Gedächtnis-Profi",d:"50 Wörter sicher im Kopf"},
   {id:"planet",e:"🪐",n:"Planet erobert",d:"Alle Wörter eines Planeten sicher"},
   {id:"sent20",e:"🧩",n:"Satz-Baumeister",d:"20 Sätze richtig gebaut"},
-  {id:"mama",e:"🤝",n:"Team-Player",d:"3-mal von Mama oder Papa abgefragt"},
+  {id:"mama",e:"🤝",n:"Team-Player",d:"3-mal von der Familie abgefragt"},
   {id:"boss",e:"👾",n:"Wortfresser besiegt",d:"Einen Bosskampf gewonnen"}
 ];
 function checkBadges(ctx){
@@ -1136,16 +1140,17 @@ function renderTestCard(){
   const left = st_.total - st_.seen;
   const plan = d===0 ? "Heute ist Test! Kurz aufwärmen mit den Karteikarten." :
     left>0 ? `Heute: ${Math.min(8,left)} neue Test-Wörter lernen.` :
-    d===1 ? "Generalprobe: Mama fragt alle Wörter ab." :
+    d===1 ? "Generalprobe: Lass dich zu zweit abfragen, mit allen Test-Wörtern." :
     "Heute: wiederholen und Sätze bauen.";
   const learned = W.filter(w=>w.pl===p.id && st(w.id) && st(w.id).b>=2).length;
   box.innerHTML = `<div class="testcard">
     <div class="row" style="align-items:flex-end">
-      <div><span class="label" style="color:var(--bad)">Test-Countdown</span><div style="font-weight:700;font-size:1.05rem">${esc(p.name)}</div></div>
+      <div><span class="label" style="color:var(--bad)">Vokabeltest in der Schule</span><div style="font-weight:700;font-size:1.05rem">${esc(p.name)}</div><small class="muted">am ${wdName(S.test.date)}, ${S.test.date.split("-").reverse().slice(0,2).join(".")}.</small></div>
       <span class="spacer"></span>
       <div class="center"><div class="count">${d===0?"HEUTE":d}</div><small class="muted">${d===0?"":d===1?"Tag":"Tage"}</small></div>
     </div>
     <div class="daydots">${days.map(x=>`<span class="${x===today()?"now":x<today()?"past":""}">${x===S.test.date?"Test":wdOf(x)}</span>`).join("")}</div>
+    <small class="muted">Bis zum Test kommen diese ${st_.total} Wörter jeden Tag in deiner Mission dran.</small>
     <div class="row" style="justify-content:space-between"><small class="muted">${learned} von ${st_.total} Wörtern gelernt</small><small class="muted">${st_.seen} gesehen</small></div>
     <div class="bar"><i style="width:${Math.round(learned/st_.total*100)}%"></i></div>
     <div style="font-weight:600">${plan}</div>
@@ -1158,7 +1163,7 @@ function renderBackup(){
   const need = introduced().length>0 && (!S.lastBackup || dayDiff(S.lastBackup, today())>=7);
   box.innerHTML = need ? `<div class="panel" style="flex-direction:row;align-items:center;border-color:var(--ice)">
       <span style="font-size:1.6rem" aria-hidden="true">💾</span>
-      <div style="flex:1;min-width:0"><b>Sicherung fällig</b><div class="muted" style="font-size:.85rem">Schick deinen Spielstand an Mama, damit nichts verloren geht.</div></div>
+      <div style="flex:1;min-width:0"><b>Sicherung fällig</b><div class="muted" style="font-size:.85rem">Schick deinen Spielstand an Mama oder Papa, damit nichts verloren geht.</div></div>
       <button class="btn btn-ice" data-act="sendBackup" style="min-height:44px;padding:0 14px">Senden</button></div>` : "";
 }
 function renderHome(){
@@ -1174,6 +1179,13 @@ function renderHome(){
   requestAnimationFrame(()=>{ $("#hXp").style.width = (inLvl/LEVEL_XP*100)+"%"; });
   renderTestCard();
   renderBackup();
+  $("#introCard").innerHTML = S.introSeen ? "" : `<div class="panel" style="border-color:var(--flame)">
+    <span class="label" style="color:var(--flame)">So funktioniert die Wort-Galaxie</span>
+    <div class="row" style="align-items:flex-start"><b style="color:var(--flame);width:22px">1</b><div><b>Jeden Tag die Tagesmission</b><div class="muted" style="font-size:.88rem">Etwa 10 Minuten: neue Wörter lernen, alte wiederholen, Sätze bauen.</div></div></div>
+    <div class="row" style="align-items:flex-start"><b style="color:var(--flame);width:22px">2</b><div><b>Karteikarten für zwischendurch</b><div class="muted" style="font-size:.88rem">Schnell ein paar Wörter durchgehen, zum Beispiel vor einem Test.</div></div></div>
+    <div class="row" style="align-items:flex-start"><b style="color:var(--flame);width:22px">3</b><div><b>Abfrage zu zweit</b><div class="muted" style="font-size:.88rem">Lass dich von Mama, Papa, Oma oder Opa abfragen. Das zählt am meisten.</div></div></div>
+    <small class="muted">Steht ein Vokabeltest an, tragen deine Eltern ihn unter „Für Eltern“ ein. Dann übst du bis dahin jeden Tag genau diese Wörter.</small>
+    <button class="btn btn-main btn-block" data-act="introOk">Verstanden, los geht's!</button></div>`;
   const p = focusPlanet(), ps = planetStats(p.id);
   $("#hPlanetBall").style.filter = `hue-rotate(${p.hue}deg)`;
   $("#hPlanet").textContent = p.planet;
@@ -1554,6 +1566,10 @@ let C = null, pinUntil = 0, pinNext = null;
 function deckOptions(){
   const t = today(), out = [];
   if (testActive()){ const p=PMAP[S.test.pl]; out.push({key:"test", name:`Test: ${p.name}`, sub:"Alle Wörter für den Test", ids:W.filter(w=>w.pl===p.id).map(w=>w.id), hot:true}); }
+  if (testActive()){ const p=PMAP[S.test.pl]; out.push({key:"testsent", kind:"sent", name:`Test: Sätze`, sub:"Zu jedem Test-Wort einen Satz übersetzen", ids:W.filter(w=>w.pl===p.id && w.ex).map(w=>w.id), hot:true}); }
+  const intro = introduced();
+  out.push({key:"rand", random:true, name:"Zufall: alles gemischt", sub: intro.length>=10 ? "Quer durch alle gelernten Wörter" : "Quer durch alle Wörter", ids:(intro.length>=10?intro:W).map(w=>w.id)});
+  out.push({key:"sentall", kind:"sent", random:true, name:"Sätze zu allen Vokabeln", sub:"Deutscher Satz, auf Englisch sagen", ids:(intro.length>=10?intro:W).filter(w=>w.ex).map(w=>w.id)});
   const wrong = W.filter(w=>st(w.id) && st(w.id).w>0 && st(w.id).b<=2);
   out.push({key:"wrong", name:"Fehlerwörter", sub:"Wörter, die zuletzt falsch waren", ids:wrong.map(w=>w.id)});
   out.push({key:"due", name:"Heute fällig", sub:"Was heute wiederholt werden soll", ids:dueWords().map(w=>w.id)});
@@ -1571,9 +1587,9 @@ function renderDeck(){
   const mama = DK.mode==="mama";
   const opts = deckOptions();
   $("#s-deck").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
-    <h1 class="display" style="font-size:1.6rem;color:${mama?"var(--good)":"var(--ice)"}">${mama?"Mama fragt ab":"Karteikarten"}</h1>
+    <h1 class="display" style="font-size:1.6rem;color:${mama?"var(--good)":"var(--ice)"}">${mama?"Abfrage zu zweit":"Karteikarten"}</h1>
     <p class="muted" style="margin:0">${mama
-      ? "So geht's: Lies das deutsche Wort vor. Er antwortet laut auf Englisch. Dann umdrehen und ehrlich bewerten. Falsche Karten kommen in derselben Runde wieder, bis sie sitzen. Was hier richtig ist, zählt in der App als geprüft."
+      ? "Für Mama, Papa, Oma, Opa oder große Geschwister: Lies das Wort oder den Satz vor. Das Kind antwortet laut auf Englisch. Dann umdrehen und ehrlich bewerten. Falsche Karten kommen in derselben Runde wieder, bis sie sitzen. Was hier richtig ist, zählt in der App als geprüft."
       : "Schau die Karte an, sag die Antwort laut, dann umdrehen. Falsche Karten kommen wieder, bis du sie kannst."}</p>
     <div class="seg" role="group" aria-label="Richtung">
       <button data-act="dkDir" data-v="de" aria-pressed="${DK.dir==="de"}">Deutsch → Englisch</button>
@@ -1585,16 +1601,16 @@ function renderDeck(){
       <button data-act="dkSize" data-v="999" aria-pressed="${DK.size===999}">Alle</button>
     </div>
     <div class="stack" style="gap:8px">${opts.map((o,i)=>`<button class="deck ${o.hot?"hot":""}" data-act="startCards" data-i="${i}" ${o.ids.length?"":"disabled"}>
-        ${o.planet?planetDot(o.planet):`<span class="dot" style="background:${o.hot?"var(--bad)":o.key==="wrong"?"var(--flame)":"var(--ice)"}"></span>`}
+        ${o.planet?planetDot(o.planet):`<span class="dot" style="background:${o.hot?"var(--bad)":o.key==="wrong"?"var(--flame)":o.kind==="sent"?"var(--good)":"var(--ice)"}"></span>`}
         <div style="min-width:0"><b>${esc(o.name)}</b><small>${esc(o.sub)}</small></div><span class="n">${o.ids.length}</span></button>`).join("")}</div>`;
   show("deck");
 }
 function startCards(i){
   const o = deckOptions()[i]; if (!o || !o.ids.length) return;
   const weight = id => { const s=st(id); return s ? (s.b*3 - s.w*2 + Math.random()*3) : (Math.random()*3 - 1); };
-  let ids = o.ids.slice().sort((a,b)=>weight(a)-weight(b)).slice(0, DK.size);
+  let ids = o.random ? shuffle(o.ids).slice(0, DK.size) : o.ids.slice().sort((a,b)=>weight(a)-weight(b)).slice(0, DK.size);
   ids = shuffle(ids);
-  C = {mode:DK.mode, dir:DK.dir, deck:o.name, queue:ids.slice(), i:0, first:{}, total:ids.length, flipped:false};
+  C = {mode:DK.mode, dir:DK.dir, kind:o.kind||"word", deck:o.name, queue:ids.slice(), i:0, first:{}, total:ids.length, flipped:false};
   if (C.mode==="mama"){ S.stats.mama++; } else { S.stats.cards++; }
   save();
   renderCard();
@@ -1605,10 +1621,18 @@ function renderCard(){
   const w = WMAP[C.queue[C.i]];
   const known = Object.values(C.first).filter(Boolean).length, wrongN = Object.values(C.first).filter(v=>v===false).length;
   const left = new Set(C.queue.slice(C.i)).size;
-  const front = C.dir==="de"
+  const sentHi = () => { const g = gapMatch(w); return g ? `${esc(g.before)}<span style="color:var(--flame)">${esc(g.word)}</span>${esc(g.after)}` : esc(w.ex); };
+  const isS = C.kind==="sent";
+  const front = isS ? (C.dir==="de"
+    ? `<span class="label">Satz auf Deutsch</span><div class="de-big">${esc(w.exDe)}</div><div class="muted">Sag den ganzen Satz auf Englisch!</div>`
+    : `<span class="label">Satz auf Englisch</span><div class="de-big">${esc(w.ex)}</div>${speakerBtn(w.ex)}<div class="muted">Was heißt der Satz auf Deutsch?</div>`)
+    : C.dir==="de"
     ? `<span class="label">Deutsch</span><div class="de-big" style="font-size:clamp(1.6rem,8vw,2.2rem)">${esc(w.de)}</div><div class="muted">${C.mode==="mama"?"Wie heißt das auf Englisch?":"Sag es laut auf Englisch!"}</div>`
     : `<span class="label">Englisch</span><div class="big">${esc(showEn(w))}</div>${speakerBtn(sayText(w))}<div class="muted">Was heißt das auf Deutsch?</div>`;
-  const back = `<span class="label">${C.dir==="de"?"Englisch":"Deutsch"}</span>
+  const back = isS ? `<span class="label">${C.dir==="de"?"Auf Englisch":"Auf Deutsch"}</span>
+    ${C.dir==="de" ? `<div class="de-big">${sentHi()}</div><div class="row" style="justify-content:center">${speakerBtn(w.ex)}${speakerBtn(w.ex,"",true)}</div>` : `<div class="de-big">${esc(w.exDe)}</div>`}
+    <div class="muted" style="font-size:.95rem">Vokabel: <b style="color:var(--ink)">${esc(showEn(w))}</b> = ${esc(w.de)}</div>`
+    : `<span class="label">${C.dir==="de"?"Englisch":"Deutsch"}</span>
     ${C.dir==="de" ? `<div class="big">${esc(showEn(w))}</div>${w.ipa?`<div class="ipa">[${esc(w.ipa)}]</div>`:""}<div class="row" style="justify-content:center">${speakerBtn(sayText(w))}${speakerBtn(sayText(w),"",true)}</div>` : `<div class="de-big">${esc(w.de)}</div>`}
     ${w.ex?`<div class="muted" style="font-size:.95rem">${esc(w.ex)}</div>`:""}
     ${w.tip?`<div class="tip" style="text-align:left">${w.tip}</div>`:""}`;
@@ -1617,7 +1641,7 @@ function renderCard(){
       <div class="prog"><i style="width:${Math.round((C.total-left)/C.total*100)}%;background:linear-gradient(90deg,var(--ice),var(--good))"></i></div>
       <span class="pill">${left} übrig</span>
     </div>
-    <div class="row" style="justify-content:space-between"><span class="label">${C.mode==="mama"?"Mama fragt ab":"Karteikarten"} · ${esc(C.deck)}</span><small class="muted"><span style="color:var(--good)">✓ ${known}</span> · <span style="color:var(--bad)">✗ ${wrongN}</span></small></div>
+    <div class="row" style="justify-content:space-between"><span class="label">${C.mode==="mama"?"Abfrage zu zweit":"Karteikarten"} · ${esc(C.deck)}</span><small class="muted"><span style="color:var(--good)">✓ ${known}</span> · <span style="color:var(--bad)">✗ ${wrongN}</span></small></div>
     <div class="fc ${C.flipped?"flipped":""}" id="fc"><div class="fc-inner">
       <div class="fc-face fc-front">${front}</div>
       <div class="fc-face fc-back">${back}</div>
@@ -1626,7 +1650,7 @@ function renderCard(){
       ? `<div class="rate"><button class="btn btn-bad" data-act="rate" data-ok="0">✗ ${C.mode==="mama"?"Falsch":"Nochmal"}</button><button class="btn btn-good" data-act="rate" data-ok="1">✓ ${C.mode==="mama"?"Richtig":"Gewusst"}</button></div>`
       : `<button class="btn btn-ice btn-block" data-act="flip" style="min-height:64px">Umdrehen</button>`}</div>
     ${C.first[w.id]===false?`<p class="muted center" style="margin:0">Diese Karte war vorhin falsch. Jetzt nochmal!</p>`:""}`;
-  if (C.dir==="en" && !C.flipped) setTimeout(()=>speak(sayText(w)),200);
+  if (C.dir==="en" && !C.flipped) setTimeout(()=>speak(C.kind==="sent" ? w.ex : sayText(w)),200);
 }
 function flipCard(){
   if (!C || C.flipped) return;
@@ -1634,7 +1658,7 @@ function flipCard(){
   const w = WMAP[C.queue[C.i]];
   $("#fc").classList.add("flipped");
   $("#fcBtns").innerHTML = `<div class="rate"><button class="btn btn-bad" data-act="rate" data-ok="0">✗ ${C.mode==="mama"?"Falsch":"Nochmal"}</button><button class="btn btn-good" data-act="rate" data-ok="1">✓ ${C.mode==="mama"?"Richtig":"Gewusst"}</button></div>`;
-  if (C.dir==="de") setTimeout(()=>speak(sayText(w)),250);
+  if (C.dir==="de") setTimeout(()=>speak(C.kind==="sent" ? w.ex : sayText(w)),250);
 }
 function rateCard(ok, btn){
   const id = C.queue[C.i], w = WMAP[id];
@@ -1680,8 +1704,8 @@ function askPin(then){
   const setting = !S.pin;
   $("#s-pin").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
     <div class="panel" style="margin-top:20px">
-      <span class="label">Nur für Eltern</span>
-      <h2 style="font-size:1.3rem">${setting?"Eltern-PIN festlegen":"Eltern-PIN eingeben"}</h2>
+      <span class="label">Nur für Erwachsene</span>
+      <h2 style="font-size:1.3rem">${setting?"PIN für Erwachsene festlegen":"PIN für Erwachsene eingeben"}</h2>
       <p class="muted" style="margin:0">${setting?"Wähle 4 Ziffern. Damit kann nur ein Erwachsener die Abfrage bewerten und die Einstellungen ändern.":"Gib die 4-stellige PIN ein."}</p>
       <form id="pinForm" autocomplete="off"><input id="pinIn" class="field pin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" aria-label="PIN"></form>
       <div id="pinMsg" class="muted"></div>
@@ -1777,7 +1801,7 @@ const ACT = {
   onboardGo: () => {
     const n = $("#nameIn").value.trim();
     if (!n){ $("#nameIn").focus(); toast("Wie heißt du, Pilot?"); return; }
-    S = blank(); S.name = n; S.rocket = pickRocket; presetTest(); save(); sfx("level"); warp = 12; confetti(); show("home");
+    S = blank(); S.name = n; S.rocket = pickRocket; save(); sfx("level"); warp = 12; confetti(); show("home");
     setTimeout(()=>toast(`Willkommen an Bord, ${esc(n)}!`),400);
   },
   startDaily, startTest, startSentences, startBoss,
@@ -1815,12 +1839,13 @@ const ACT = {
   cont: () => { hideSheet(); M.i++; setTimeout(next, 120); },
   quit: () => { if (REC) try{REC.abort();}catch(e){} if (HAS_TTS) speechSynthesis.cancel(); const had = M && (M.right+M.wrong)>0; if (had){ markDay(); save(); } M = null; show("home"); },
   pinGo,
+  introOk: () => { S.introSeen = true; save(); renderHome(); },
   sendBackup: async () => {
     const code = backupCode(), text = `Wort-Galaxie Sicherung von ${S.name} (${today().split("-").reverse().join(".")}):\n${code}`;
     const done = msg => { S.lastBackup = today(); save(); renderBackup(); toast(msg); };
     try { if (navigator.share){ await navigator.share({title:"Wort-Galaxie Sicherung", text}); return done("Gesendet! Danke!"); } } catch(e){ if (e && e.name==="AbortError") return; }
-    try { await navigator.clipboard.writeText(text); done("Kopiert! Jetzt in WhatsApp an Mama einfügen."); }
-    catch(e){ toast("Kopieren ging nicht. Mama findet den Code unter „Für Eltern“."); }
+    try { await navigator.clipboard.writeText(text); done("Kopiert! Jetzt in WhatsApp an Mama oder Papa schicken."); }
+    catch(e){ toast("Kopieren ging nicht. Der Code steht unter „Für Eltern“."); }
   },
   pinReset: () => { S.pin = null; save(); askPin(renderParents); },
   testSave: () => {
@@ -1857,7 +1882,7 @@ function presetTest(){ if (!S.test && dayDiff(today(),"2026-11-13")>=0) S.test =
 
 /* ============ BOOT ============ */
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); } catch(e) {}
-if (S && S.name){ presetTest(); save(); show("home"); } else { renderOnboard(); show("onboard"); }
+if (S && S.name){ show("home"); } else { renderOnboard(); show("onboard"); }
 })();
 </script>
 
