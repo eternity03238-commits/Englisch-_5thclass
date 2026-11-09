@@ -1,5 +1,5 @@
-# Wort-Galaxie
+# Möwenflug
 
-Englisch-Vokabeltrainer für die 5. Klasse: 245 Wörter auf 11 Planeten, Satzwerkstatt, Karteikarten, Eltern-Abfrage und Test-Countdown.
+Englisch-Lernapp für die 5. Klasse. Das Kind bringt seiner eigenen Möwe Englisch bei: 245 Vokabeln an 11 Orten, Satzwerkstatt, Fehler-Detektiv, Karteikarten, Möwen-Prüfung mit der Familie, Leuchtturm-Testvorbereitung, Flug von Leipzig nach Brighton, Möwen-Post und Wochenbericht.
 
 Die App ist eine einzige Datei: `index.html`. Der Lernstand wird im Browser des Geräts gespeichert und bleibt bei Updates erhalten, solange die Adresse gleich bleibt.
