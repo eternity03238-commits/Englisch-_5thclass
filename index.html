@@ -307,6 +307,7 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .bigbtn:active{transform:translateY(3px)}
 .b-good{background:linear-gradient(180deg,#2FCB8E,#17A570);box-shadow:0 5px 0 #0F7E54}
 .b-ice{background:linear-gradient(180deg,#22AEDB,#0A88B3);box-shadow:0 5px 0 #086A8C}
+.b-sent{background:linear-gradient(180deg,#9A7BE6,#7656CC);box-shadow:0 5px 0 #553A9E;gap:12px}
 /* gull life */
 .gull .eye{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
 .gull .head{transform-box:fill-box;transform-origin:30% 85%;animation:tilt 9s ease-in-out infinite}
@@ -416,6 +417,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
       <div><b id="lTitle"></b><small id="lSub"></small></div>
       <span class="go"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
     </button>
+    <button class="bigbtn b-sent" data-act="startSentences" style="width:100%;flex-direction:row;align-items:center;min-height:0"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h8v6H3zm10 0h8v6h-8zM3 13h5v6H3zm7 0h11v6H10z"/></svg><div style="display:flex;flex-direction:column;gap:2px"><b>Satzwerkstatt</b><small>11 Sätze mit allen aktuellen Vokabeln</small></div><span class="go" style="margin-left:auto;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:none"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
     <div class="duo">
       <button class="bigbtn b-good" data-act="openDeck" data-mode="mama"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 3.9.9 5.5L12 14.6l-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/><path d="M6 19h12v3H6z"/></svg><b>Möwen-Prüfung</b><small>mit Mama, Papa, Oma …</small></button>
       <button class="bigbtn b-ice" data-act="openExtras"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z"/></svg><b>Extras</b><small>Spiele, Karte, Kleiderschrank</small></button>
@@ -501,6 +503,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
   <section id="s-wardrobe" class="stack" hidden></section>
   <section id="s-place" class="stack" hidden></section>
   <section id="s-journal" class="stack" hidden></section>
+  <section id="s-sentpick" class="stack" hidden></section>
   <section id="s-deck" class="stack" hidden></section>
   <section id="s-cards" class="stack" hidden></section>
   <section id="s-pin" class="stack" hidden></section>
@@ -831,6 +834,11 @@ const SENT = [
  {id:"h10",pl:"haus",en:"Our furniture is new.",de:"Unsere Möbel sind neu.",tr:["are","furnitures"],tip:"<b>furniture</b> ist Einzahl: furniture <b>is</b>"},
  {id:"h11",pl:"haus",en:"My pencils are in the drawer.",de:"Meine Stifte sind in der Schublade.",tr:["is","on"]},
  {id:"h12",pl:"haus",en:"Dad is in the living room.",de:"Papa ist im Wohnzimmer.",tr:["are","dad"],tip:"Wenn du über ihn sprichst, klein: <b>my dad</b>. Als Name groß: <b>Dad</b> is …"},
+ {id:"h13",pl:"haus",en:"I read books in the library.",de:"Ich lese Bücher in der Bücherei.",tr:["on","Library"]},
+ {id:"h14",pl:"haus",en:"The bathroom is next to the bedroom.",de:"Das Bad ist neben dem Schlafzimmer.",tr:["are","Bedroom"]},
+ {id:"h15",pl:"haus",en:"There is a shelf in the study.",de:"Im Arbeitszimmer ist ein Regal.",tr:["are","Study"],alt:["There's a shelf in the study."]},
+ {id:"h16",pl:"haus",en:"The ladder is in the attic.",de:"Die Leiter ist auf dem Dachboden.",tr:["are","on"],tip:"Deutsch „auf dem Dachboden“, Englisch <b>in the attic</b>."},
+ {id:"h17",pl:"haus",en:"Our kitchen and our dining room are downstairs.",de:"Unsere Küche und unser Esszimmer sind unten.",tr:["is","Kitchen"]},
 
  {id:"u1",pl:"u1",en:"My room is upstairs.",de:"Mein Zimmer ist oben.",tr:["are","downstairs"]},
  {id:"u2",pl:"u1",en:"The postman is at the door.",de:"Der Briefträger ist an der Tür.",tr:["on","are"]},
@@ -879,7 +887,7 @@ const BAD = {
  g8:"They names are Max and Moritz.", g9:"They class is nice.", g10:"He favourite book is blue.",
  g11:"He sister is ten.", g12:"I am got two cousins.", g13:"My pet are called Tiger.", g14:"We are in school.",
  g15:"I'm don't at home.", g16:"There is two cats in the garden.",
- h6:"My books is on the shelf.", h10:"Our furnitures are new.", h3:"The kitchen are downstairs.",
+ h6:"My books is on the shelf.", h10:"Our furnitures are new.", h3:"The kitchen are downstairs.", h13:"I read books in the Library.", h14:"The Bathroom is next to the bedroom.", h16:"The ladder are in the attic.", h17:"Our kitchen and our dining room is downstairs.",
  c1:"On monday I go to school.", u4:"I'm at Home.", u3:"You have lucky.", e1:"The Sky is blue.",
  e2:"There are a lot of peoples on the beach.", t3:"A elephant is very big.", v3:"We speak english.",
  z2:"My pyjamas is blue.", f1:"My aunt is for Berlin.", i4:"My favourite color is green.", u8:"Where is that?"
@@ -998,14 +1006,16 @@ function checkSentence(s, input){
   let ok = targets.some(t=>norm(t)===n), typo=false;
   if (!ok) for (const t of targets){ const nt=norm(t); if (nt.length>=14 && lev(nt,n)<=1){ ok=true; typo=true; break; } }
   if (!ok) return {ok:false};
-  const allowed = new Set(["i","i'm","i've"]);
-  targets.forEach(t=>t.split(/\s+/).forEach(x=>{ const c=x.replace(/[.,!?]/g,""); if (/^[A-Z]/.test(c)) allowed.add(c.toLowerCase()); }));
+  const mid = new Set();
+  targets.forEach(t=>t.split(/\s+/).forEach((x,i)=>{ const c=x.replace(/[.,!?–]/g,""); if (i>0 && /^[A-Z]/.test(c)) mid.add(c.toLowerCase()); }));
+  const allowed = new Set(["i","i'm","i've"].concat([...mid]));
   const words = raw.split(/\s+/);
   let cap = "";
-  words.forEach((wd,i)=>{ const c = wd.replace(/[.,!?]/g,""); if (!c) return;
+  words.forEach((wd,i)=>{ const c = wd.replace(/[.,!?–]/g,""); if (!c) return;
+    const lo = c.toLowerCase();
     if (i===0 && /^[a-z]/.test(c)) cap = cap || `Der Satz fängt mit einem <b>Großbuchstaben</b> an.`;
-    if (i>0 && /^[A-ZÄÖÜ]/.test(c) && !allowed.has(c.toLowerCase())) cap = cap || `Fast! Aber <b>${esc(c)}</b> schreibt man im Englischen klein: <b>${esc(c.toLowerCase())}</b>.`;
-    if (i>0 && /^[a-z]/.test(c) && allowed.has(c.toLowerCase()) && c.toLowerCase()!=="i'm" && targets.some(t=>t.includes(c[0].toUpperCase()+c.slice(1)))) cap = cap || `<b>${esc(c[0].toUpperCase()+c.slice(1))}</b> schreibt man groß.`;
+    if (i>0 && /^[A-ZÄÖÜ]/.test(c) && !allowed.has(lo)) cap = cap || `Fast! Aber <b>${esc(c)}</b> schreibt man im Englischen klein: <b>${esc(lo)}</b>.`;
+    if (i>0 && /^[a-z]/.test(c) && mid.has(lo) && !["i","i'm","i've"].includes(lo)) cap = cap || `<b>${esc(c[0].toUpperCase()+c.slice(1))}</b> schreibt man groß.`;
   });
   if (cap) return {ok:false, cap};
   return {ok:true, typo};
@@ -1471,11 +1481,124 @@ function updateSent(s, ok, noPromote){
   else { x.w++; x.b = Math.max(0, Math.min(x.b,1)); x.due = addDays(t,1); }
   save();
 }
-function sentUnlocked(s){
-  if (s.pl==="gram") return true;
-  const ws = W.filter(w=>w.pl===s.pl);
-  return ws.filter(w=>st(w.id)).length >= Math.min(3, ws.length);
+function sentUnlocked(s){ return true; }
+/* ============ SATZWERKSTATT: 11 Sätze, alle Vokabeln eines Themas ============ */
+const SESSION_N = 11;
+const SWAP = {"is":"are","are":"is","am":"is","my":"me","his":"her","her":"his","their":"they","they":"their","in":"on","on":"in","an":"a","isn't":"don't","don't":"isn't","I'm":"I","can":"am"};
+function wordRe(w){
+  const c = coreOf(w); if (!c) return null;
+  return new RegExp("(^|[^A-Za-z'])" + escRe(c) + "(s|es)?(?![A-Za-z])", "i");
 }
+const WRE = Object.fromEntries(W.map(w=>[w.id, wordRe(w)]));
+function autoTraps(tokens, w){
+  const out = [];
+  const sw = tokens.find(t=>SWAP[t]); if (sw) out.push(SWAP[sw]);
+  const c = coreOf(w);
+  if (c){
+    const first = c.split(" ")[0];
+    const k = tokens.findIndex((t,i)=>i>0 && t.replace(/[.,!?]/g,"").toLowerCase()===first.toLowerCase() && /^[a-z]/.test(t));
+    if (k>0) out.push(first[0].toUpperCase()+first.slice(1));
+  }
+  ["the","is","a"].forEach(x=>{ if (out.length<2 && !tokens.includes(x) && !out.includes(x)) out.push(x); });
+  return out.slice(0,2);
+}
+function autoBad(en, w){
+  const end = (en.match(/[.!?]$/)||[""])[0];
+  const toks = en.replace(/[.!?]$/,"").split(" ");
+  let k = toks.findIndex((t,i)=>i>0 && (t==="is"||t==="are"));
+  if (k>0){ toks[k] = toks[k]==="is" ? "are" : "is"; return toks.join(" ")+end; }
+  const c = coreOf(w);
+  if (c){
+    const first = c.split(" ")[0];
+    k = toks.findIndex((t,i)=>i>0 && t.replace(/[,!?]/g,"").toLowerCase()===first.toLowerCase() && /^[a-z]/.test(t));
+    if (k>0){ toks[k] = toks[k][0].toUpperCase()+toks[k].slice(1); return toks.join(" ")+end; }
+  }
+  k = toks.findIndex(t=>t==="I'm"); if (k>=0){ toks[k] = "I is"; return toks.join(" ")+end; }
+  return null;
+}
+/* Zu jeder Vokabel mit Beispielsatz entsteht ein eigener Satz */
+const AUTO = [];
+W.forEach(w=>{
+  if (!w.ex || !w.exDe) return;
+  if (SENT.some(s=>s.en===w.ex)) return;
+  const toks = w.ex.replace(/[.!?]$/,"").split(" ");
+  AUTO.push({id:"ex-"+w.id, pl:w.pl, en:w.ex, de:w.exDe, tr:autoTraps(toks,w), bad:autoBad(w.ex,w)||undefined, auto:true, tip: w.tip||""});
+});
+const SALL = SENT.concat(AUTO);
+const SALLMAP = Object.fromEntries(SALL.map(s=>[s.id,s]));
+/* Welche Vokabeln stecken in welchem Satz? */
+SALL.forEach(s=>{
+  const en = fillN(s.en);
+  s.words = W.filter(w=>(w.pl===s.pl || s.pl==="gram") && WRE[w.id] && WRE[w.id].test(en)).map(w=>w.id);
+  if (s.auto){ const own = s.id.slice(3); if (!s.words.includes(own)) s.words.push(own); }
+});
+function sentPoolFor(pid){
+  if (pid==="gram") return SENT.filter(s=>s.pl==="gram");
+  return SALL.filter(s=>s.pl===pid);
+}
+function wordNeed(id){
+  const x = (S.ws||{})[id], s = st(id);
+  let need = 1/(1+(x?x.n:0));
+  if (s && s.w>0 && s.b<=2) need += .6;
+  if (x && x.last===today()) need *= .3;
+  return need;
+}
+function buildSentSession(pid){
+  const pool = sentPoolFor(pid).slice();
+  const targets = new Set(pid==="gram" ? [] : W.filter(w=>w.pl===pid).map(w=>w.id));
+  const chosen = [], covered = new Set(), t = today();
+  const sentBonus = s => { const x = ss(s.id); if (!x) return .25; return (x.w>0 && x.b<=2 ? .5 : 0) + (x.due<=t ? .3 : 0) - (x.last===t ? .6 : 0); };
+  while (chosen.length < SESSION_N && pool.length){
+    let best = null, bestScore = -1e9;
+    shuffle(pool).forEach(s=>{
+      const gain = s.words.filter(id=>targets.has(id) && !covered.has(id)).reduce((a,id)=>a+wordNeed(id), 0);
+      const score = gain*3 + sentBonus(s) + Math.random()*.2;
+      if (score > bestScore){ bestScore = score; best = s; }
+    });
+    chosen.push(best); best.words.forEach(id=>covered.add(id));
+    pool.splice(pool.indexOf(best),1);
+  }
+  if (chosen.length < SESSION_N) shuffle(SENT.filter(s=>s.pl==="gram" && !chosen.includes(s))).slice(0, SESSION_N-chosen.length).forEach(s=>chosen.push(s));
+  /* Leichte zuerst, zwei Fehler-Detektiv-Aufgaben in der Mitte */
+  const items = chosen.map(s=>({kind:"sent", s}));
+  const fixable = items.map((it,i)=>i).filter(i=>items[i].s.bad);
+  [3,7].forEach((pos,j)=>{ const k = fixable.find(i=>i>=pos && items[i].kind==="sent") ?? fixable[j]; if (k!==undefined && items[k].kind==="sent") items[k] = {kind:"fix", s:items[k].s}; });
+  const lvl = it => { const x = ss(it.s.id); return x ? x.b : 0; };
+  return items.sort((a,b)=>lvl(a)-lvl(b));
+}
+function startSentSession(pid){
+  const q = buildSentSession(pid);
+  if (!q.length){ toast("Zu diesem Thema gibt es noch keine Sätze."); return; }
+  begin("sent", q);
+  M.place = pid;
+  M.sentWords = new Set(q.flatMap(it=>it.s.words).filter(id=>pid==="gram" || WMAP[id].pl===pid));
+}
+function renderSentPick(){
+  const cur = focusPlace(), cps = placeStats(cur.id);
+  const covered = id => ((S.ws||{})[id]||{n:0}).n>0;
+  const row = p => { const ws = W.filter(w=>w.pl===p.id), n = sentPoolFor(p.id).length, cov = ws.filter(w=>covered(w.id)).length;
+    return `<button class="deck" data-act="sentGo" data-pid="${p.id}">${placeDot(p)}<div style="min-width:0"><b>${esc(p.name)}</b><small>${n} Sätze · ${cov} von ${ws.length} Vokabeln schon in Sätzen geübt</small></div><span class="n">11</span></button>`; };
+  $("#s-sentpick").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Satzwerkstatt</h1>
+    <p class="muted" style="margin:0">Jede Runde hat 11 Sätze. Die App wählt sie so, dass alle Vokabeln des Themas drankommen, die am wenigsten geübten zuerst. Dazu kommen zwei Sätze, in denen ${esc(G())} einen Fehler gemacht hat.</p>
+    <button class="lesson-btn" data-act="sentGo" data-pid="${cur.id}"><div><b>Aktuelle Vokabeln</b><small>${esc(cur.name)} · ${cps.total} Wörter · 11 Sätze</small></div><span class="go"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+    <span class="label">Anderes Thema wählen</span>
+    <div class="stack" style="gap:8px">${PLANETS.map(row).join("")}
+      <button class="deck" data-act="sentGo" data-pid="gram"><span class="dot" style="background:var(--navy)"></span><div style="min-width:0"><b>Grammatik-Mix</b><small>am/is/are, don't, my/his/her/their, there is/are</small></div><span class="n">11</span></button>
+    </div>`;
+  show("sentpick");
+}
+function trackSentWords(s, ok, it){
+  S.ws = S.ws || {};
+  const t = today();
+  s.words.forEach(id=>{ const x = S.ws[id] || (S.ws[id] = {n:0,ok:0,last:null}); x.n++; if (ok) x.ok++; x.last = t; });
+  if (ok && !it.retry){
+    const strong = it.type==="translate" || it.type==="fixtype";
+    s.words.forEach(id=>{ const w = WMAP[id]; if (w) updateWord(w, true, "mission", !strong); });
+  }
+  save();
+}
+
 function pickSentences(n, only, needBad){
   const t = today(), tp = testActive() ? S.test.pl : null;
   const c = SENT.filter(s=>sentUnlocked(s) && (!only || s.pl===only) && (!needBad || s.bad));
@@ -1536,7 +1659,7 @@ function checkBadges(ctx){
 }
 
 /* ============ BILDSCHIRME ============ */
-const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal"];
+const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick"];
 function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
@@ -1675,7 +1798,7 @@ function renderExtras(){
   const dips = PLANETS.filter(x=>{ const s=placeStats(x.id); return s.safe===s.total; }).length;
   $("#badgeSub").textContent = `${dips} Diplome · ${S.badges.length} Abzeichen`;
   $("#mapSub").textContent = `${introduced().length} von ${W.length} Wörtern`;
-  $("#sentSub").textContent = `${SENT.filter(sentUnlocked).length} Sätze freigeschaltet`;
+  $("#sentSub").textContent = `${SALL.length} Sätze zu allen Vokabeln`;
   $("#fixSub").textContent = `${G()} macht Fehler. Findest du sie?`;
   $("#wardSub").textContent = `${accUnlocked().length} von ${ACC.length} Sachen freigeschaltet`;
   const postOk = learnedSentences().length + W.filter(w=>st(w.id)&&st(w.id).b>=2&&w.ex).length >= 2;
@@ -1719,11 +1842,7 @@ function startTest(){
   pickSentences(1, null, true).forEach(s=>q.push({kind:"fix",s}));
   begin("test", q);
 }
-function startSentences(){
-  const list = pickSentences(6);
-  if (!list.length){ toast("Lerne erst ein paar Wörter, dann werden Sätze freigeschaltet!"); return; }
-  begin("sent", list.map(s=>({kind:"sent",s})));
-}
+function startSentences(){ renderSentPick(); }
 function startFix(){
   const list = pickSentences(5, null, true);
   if (!list.length){ toast("Bring deiner Möwe erst ein paar Wörter bei!"); return; }
@@ -1956,6 +2075,8 @@ function resolveSent(ok, opts={}){
   const it = M.queue[M.i], s = it.s;
   M.sentTotal++; if (ok) M.sentOk++;
   updateSent(s, ok, it.retry);
+  trackSentWords(s, ok, it);
+  if (!ok){ M.missedS = M.missedS || []; const e = fillN(s.en); if (!M.missedS.includes(e)) M.missedS.push(e); }
   afterAnswer(ok, it);
   showSheet(ok, {en:fillN(s.en), de:fillN(s.de), say:fillN(s.en), tip: ok ? "" : (s.tip||""), ...opts});
 }
@@ -2053,7 +2174,7 @@ function finish(){
   const starsN = M.mode==="boss" ? (win ? M.boss.shields : 0) : acc>=.9?3:acc>=.7?2:1;
   if (M.mode!=="boss" || win){ setTimeout(confetti,200); sfx("win"); }
   const titles = M.mode==="boss" ? (win ? ["Krabbe besiegt!","Kneifer gibt alle Wörter zurück."] : ["Kneifer ist entkommen!","Übe noch ein bisschen und fordere ihn erneut heraus."])
-    : M.mode==="sent" ? ["Satzwerkstatt fertig!", `${M.sentOk} von ${M.sentTotal} Sätzen beim ersten Versuch richtig`]
+    : M.mode==="sent" ? ["Satzwerkstatt fertig!", `${M.sentOk} von ${M.sentTotal} Sätzen richtig · ${M.sentWords?M.sentWords.size:0} Vokabeln in Sätzen geübt`]
     : M.mode==="fix" ? ["Detektiv-Arbeit erledigt!", `${M.sentOk} von ${M.sentTotal} Fehlern gefunden`]
     : M.mode==="test" ? ["Test-Training geschafft!", "Der Leuchtturm wird stabiler."]
     : [M.hatch ? `${G()} ist geschlüpft!` : "Unterricht beendet!", M.newCount ? `Du hast ${G()} ${M.newCount} neue Wörter beigebracht.` : "Alle Wiederholungen geschafft."];
@@ -2069,6 +2190,8 @@ function finish(){
       <div class="stat"><b>+${km}</b><small>km geflogen</small></div>
       <div class="stat"><b>${Math.round(acc*100)}%</b><small>richtig</small></div>
     </div>
+    ${M.missedS && M.missedS.length?`<div class="panel"><span class="label">Diese Sätze kommen bald nochmal</span>${M.missedS.map(x=>`<div class="row" style="align-items:flex-start">${speakerBtn(x)}<span style="padding-top:12px">${esc(x)}</span></div>`).join("")}</div>`:""}
+    ${M.mode==="sent"?`<button class="btn btn-soft btn-block" data-act="sentGo" data-pid="${M.place}">Noch eine Runde mit 11 Sätzen</button>`:""}
     ${M.missed.length?`<div class="panel"><span class="label">Diese Wörter üben wir morgen nochmal</span><div class="chips">${M.missed.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div></div>`:""}
     ${slept?`<div class="panel" style="flex-direction:row;align-items:center"><div style="width:56px;flex:none">${myGull({sleep:true})}</div><div><b>Tagesziel erreicht!</b><div class="muted" style="font-size:.88rem">${esc(G())} ist müde und schläft jetzt. Morgen geht's weiter.</div></div></div>`:""}
     ${stickerPanel(newB)}
@@ -2511,6 +2634,7 @@ const ACT = {
   startDaily, startTest, startSentences, startFix, openPost,
   startBoss: () => startBoss(),
   openExtras: renderExtras, openWardrobe: renderWardrobe,
+  sentGo: b => startSentSession(b.dataset.pid),
   openJournal: renderJournal, openPc: b => renderPostcardBig(+b.dataset.i),
   flipPc: () => { const f=$("#pcfc"); if (f){ f.classList.toggle("flipped"); sfx("flip"); } },
   openPlace: b => renderPlace(b.dataset.pid),
