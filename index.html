@@ -411,7 +411,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
       <span class="swipehint" id="swipeHint">← wischen →</span>
       <div class="flash"></div>
     </div>
-    <div class="stagebar"><b id="hStage"></b><div class="minibar"><i id="hStageBar"></i></div><small class="muted" id="hStageTxt"></small></div>
+    <div class="stagebar" data-act="growthInfo" role="button" style="cursor:pointer"><b id="hStage"></b><div class="minibar"><i id="hStageBar"></i></div><small class="muted" id="hStageTxt"></small></div>
     <div id="testCard"></div>
     <button class="lesson-btn" data-act="startDaily" id="lessonBtn">
       <div><b id="lTitle"></b><small id="lSub"></small></div>
@@ -536,7 +536,7 @@ const PLANETS = [
 ];
 const PMAP = Object.fromEntries(PLANETS.map(p=>[p.id,p]));
 const STOPS = [["Leipzig",0],["Hannover",260],["Köln",500],["Brüssel",710],["Calais",920],["Dover",960],["London",1080],["Brighton",1170],["Oxford",1290],["York",1580],["Edinburgh",1900]];
-const STAGES = [{n:"Ei",min:0},{n:"Küken",min:0},{n:"Jungmöwe",min:20},{n:"Möwe",min:60},{n:"Kapitänsmöwe",min:150}];
+const STAGES = [{n:"Ei",min:0},{n:"Küken",min:0},{n:"Jungmöwe",min:60},{n:"Möwe",min:180},{n:"Kapitänsmöwe",min:450}];
 const GULL_COLORS = ["#EF4D67","#0B95C2","#1FB97E","#F2B632","#8E6AD8","#FF8A3D"];
 
 /* ============ WÖRTER ============ */
@@ -942,6 +942,9 @@ function load(){
   return null;
 }
 let S = load();
+/* Fische: Jede Stufe, die ein Wort aufsteigt, ist ein Fisch für die Möwe. Der Zähler sinkt nie. */
+if (S && S.fish==null){ S.fish = Object.values(S.words||{}).reduce((a,x)=>a+(x.b||0),0); }
+const feed = n => { if (n>0){ S.fish = (S.fish||0) + n; } };
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
 const fillN = x => String(x).replace(/\{N\}/g, (S && S.name) || "Tom");
 const G = () => (S && S.gull && S.gull.name) || "Möwe";
@@ -1208,8 +1211,8 @@ function gullSVG(stage, color, opts={}){
 function gullStage(){
   if (!S) return 0;
   if (!W.some(w=>st(w.id))) return 0;
-  const safe = W.filter(isSafe).length;
-  return safe>=150 ? 4 : safe>=60 ? 3 : safe>=20 ? 2 : 1;
+  const f = S.fish||0;
+  return f>=STAGES[4].min ? 4 : f>=STAGES[3].min ? 3 : f>=STAGES[2].min ? 2 : 1;
 }
 const myGull = (opts) => gullSVG(Math.max(1,gullStage()), GC(), opts);
 function gullLine(){
@@ -1462,14 +1465,14 @@ function updateWord(w, ok, src, noPromote){
   let s = S.words[w.id];
   S.stats.answers++; if (ok) S.stats.right++;
   if (!s){
-    if (src==="mama" && ok){ S.words[w.id] = {b:3,due:addDays(t,INTERVAL[3]),up:t,r:1,w:0,last:t,seen:t,fam:t}; save(); return; }
-    S.words[w.id] = {b:1,due:addDays(t,1),up:t,r:ok?1:0,w:ok?0:1,last:t,seen:t}; save(); return;
+    if (src==="mama" && ok){ S.words[w.id] = {b:3,due:addDays(t,INTERVAL[3]),up:t,r:1,w:0,last:t,seen:t,fam:t}; feed(3); save(); return; }
+    S.words[w.id] = {b:1,due:addDays(t,1),up:t,r:ok?1:0,w:ok?0:1,last:t,seen:t}; feed(1); save(); return;
   }
   s.last = t;
   if (ok){
     s.r++;
     if (src==="mama") s.fam = t;
-    if (src!=="kid" && !noPromote && s.up!==t){ s.b = Math.min(5, s.b+1); s.up = t; s.due = addDays(t, INTERVAL[s.b]); }
+    if (src!=="kid" && !noPromote && s.up!==t){ if (s.b<5) feed(1); s.b = Math.min(5, s.b+1); s.up = t; s.due = addDays(t, INTERVAL[s.b]); }
   } else { s.w++; s.b = 1; s.due = addDays(t,1); delete s.fam; }
   save();
 }
@@ -1687,7 +1690,7 @@ function renderIntro(){
   $("#introCard").innerHTML = S.introSeen ? "" : `<div class="panel" style="border-color:var(--flame)">
     <span class="label" style="color:#C4551A">So funktioniert Möwenflug</span>
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">1</b><div><b>Jeden Tag eine Unterrichtsstunde</b><div class="muted" style="font-size:.88rem">Etwa 10 Minuten. Du bringst ${esc(G())} neue Wörter bei und wiederholst alte. Jede Stunde bringt euch 50 km näher an England.</div></div></div>
-    <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">2</b><div><b>${esc(G())} wächst mit</b><div class="muted" style="font-size:.88rem">Je mehr Wörter sicher sitzen, desto größer wird ${esc(G())}. Sie spricht nur, was du ihr beigebracht hast.</div></div></div>
+    <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">2</b><div><b>${esc(G())} wächst mit</b><div class="muted" style="font-size:.88rem">Jedes Wort, das du ihr beibringst oder an einem anderen Tag wieder weißt, ist ein Fisch für sie. Mit genug Fischen wächst sie. Sie spricht nur, was du ihr beigebracht hast.</div></div></div>
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">3</b><div><b>Möwen-Prüfung mit der Familie</b><div class="muted" style="font-size:.88rem">Mama, Papa, Oma oder Opa prüfen, ob ${esc(G())} es wirklich kann. Das zählt am meisten.</div></div></div>
     <small class="muted">Wisch über den Hafen und tipp auf die Orte: Jeder ist ein Thema. Tipp auf deine Möwe, um sie anzuziehen. Steht ein Vokabeltest an, zieht ein Sturm auf, bis ihr gut vorbereitet seid.</small>
     <button class="btn btn-main btn-block" data-act="introOk">Verstanden!</button></div>`;
@@ -1770,11 +1773,14 @@ function renderHome(){
   $("#hLevel").textContent = l;
   renderIntro();
   renderHarbor();
-  const safe = W.filter(isSafe).length, nextSt = STAGES[stage+1];
+  if (S.seenStage==null) S.seenStage = Math.min(stage,1);
+  if (stage > S.seenStage && stage>=2){ S.seenStage = stage; save(); setTimeout(()=>{ toast(`${esc(G())} ist gewachsen! Jetzt eine <b>${STAGES[stage].n}</b>!`); confetti(); sfx("gull"); }, 700); }
+  else if (stage > S.seenStage){ S.seenStage = stage; save(); }
+  const fish = S.fish||0, nextSt = STAGES[stage+1];
   $("#hStage").textContent = STAGES[stage].n;
   if (stage===0){ $("#hStageBar").style.width = "0%"; $("#hStageTxt").textContent = "schlüpft in der 1. Stunde"; }
-  else if (nextSt){ const from = STAGES[stage].min; $("#hStageBar").style.width = Math.round((safe-from)/(nextSt.min-from)*100)+"%"; $("#hStageTxt").textContent = `noch ${nextSt.min-safe} Wörter bis ${nextSt.n}`; }
-  else { $("#hStageBar").style.width = "100%"; $("#hStageTxt").textContent = `${safe} sichere Wörter`; }
+  else if (nextSt){ const from = STAGES[stage].min; $("#hStageBar").style.width = Math.max(3,Math.round((fish-from)/(nextSt.min-from)*100))+"%"; $("#hStageTxt").textContent = `🐟 ${fish} · noch ${nextSt.min-fish} Fische bis ${nextSt.n}`; }
+  else { $("#hStageBar").style.width = "100%"; $("#hStageTxt").textContent = `🐟 ${fish} Fische`; }
   renderTestCard(); renderFlight(); renderBackup();
   const due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
   const btn = $("#lessonBtn");
@@ -1854,8 +1860,9 @@ function startBoss(pid){
   begin("boss", shuffle(ws).slice(0,14).map(w=>({kind:"word",w,boss:true})), {hp:10,max:10,shields:3,pl:p.id});
 }
 function begin(mode, queue, boss){
+  const fish0 = S.fish||0, stage0 = gullStage();
   M = {mode, queue, boss:boss||null, i:0, right:0, wrong:0, combo:0, best:0, xp:0, wrongSet:new Set(), lastType:null,
-       newCount:queue.filter(q=>q.kind==="intro").length, sentOk:0, sentTotal:0, missed:[], hatch: gullStage()===0};
+       newCount:queue.filter(q=>q.kind==="intro").length, sentOk:0, sentTotal:0, missed:[], hatch: gullStage()===0, fish0, stage0};
   $("#bossBox").hidden = mode!=="boss";
   show("mission"); renderBoss(); next();
 }
@@ -1908,7 +1915,7 @@ function copyCheck(){
   const target = norm(w.en.split(" / ")[0]), n = norm(v);
   const ok = n && (n===target || lev(n,target)<=1 || checkWord(w,v).ok);
   if (!ok){ inp.classList.remove("shake"); void inp.offsetWidth; inp.classList.add("shake"); sfx("bad"); inp.placeholder = "Schau genau hin und schreib es ab"; return; }
-  if (!st(w.id)){ S.words[w.id] = {b:1,due:addDays(today(),1),up:today(),r:0,w:0,last:today(),seen:today()}; save(); }
+  if (!st(w.id)){ S.words[w.id] = {b:1,due:addDays(today(),1),up:today(),r:0,w:0,last:today(),seen:today()}; feed(1); save(); }
   sfx("gull"); addXP(3); M.xp += 3; floatXP(inp,"+3");
   M.i++; next();
 }
@@ -2161,6 +2168,12 @@ function startListening(){
 }
 
 /* ---------- Abschluss ---------- */
+function growthPanel(f0, st0){
+  const f = S.fish||0, gained = f - f0, stg = gullStage(), next = STAGES[stg+1];
+  if (stg>st0 && st0>=1) return `<div class="panel" style="border-color:var(--good);text-align:center"><span class="label" style="color:#0E7C51">${esc(G())} ist gewachsen!</span><div style="width:140px;margin:0 auto">${myGull()}</div><b style="font-size:1.2rem;color:var(--navy)">Jetzt eine ${STAGES[stg].n}!</b></div>`;
+  if (gained<=0) return "";
+  return `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.8rem" aria-hidden="true">🐟</span><div><b>${esc(G())} hat ${gained} ${gained===1?"Fisch":"Fische"} bekommen</b><div class="muted" style="font-size:.88rem">${next?`Noch ${next.min-f} Fische bis zur ${next.n}.`:"Größer geht es nicht mehr!"}</div></div></div>`;
+}
 function finish(){
   hideSheet();
   const total = M.right + M.wrong, acc = total ? M.right/total : 1;
@@ -2187,9 +2200,10 @@ function finish(){
     </div>
     <div class="statgrid">
       <div class="stat"><b id="xpCount">+0</b><small>XP</small></div>
-      <div class="stat"><b>+${km}</b><small>km geflogen</small></div>
+      <div class="stat"><b>+${Math.max(0,(S.fish||0)-M.fish0)}</b><small>🐟 Fische</small></div>
       <div class="stat"><b>${Math.round(acc*100)}%</b><small>richtig</small></div>
     </div>
+    ${growthPanel(M.fish0, M.stage0)}
     ${M.missedS && M.missedS.length?`<div class="panel"><span class="label">Diese Sätze kommen bald nochmal</span>${M.missedS.map(x=>`<div class="row" style="align-items:flex-start">${speakerBtn(x)}<span style="padding-top:12px">${esc(x)}</span></div>`).join("")}</div>`:""}
     ${M.mode==="sent"?`<button class="btn btn-soft btn-block" data-act="sentGo" data-pid="${M.place}">Noch eine Runde mit 11 Sätzen</button>`:""}
     ${M.missed.length?`<div class="panel"><span class="label">Diese Wörter üben wir morgen nochmal</span><div class="chips">${M.missed.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div></div>`:""}
@@ -2249,7 +2263,7 @@ function startCards(i){
   const weight = id => { const s=st(id); return s ? (s.b*3 - s.w*2 + Math.random()*3) : (Math.random()*3 - 1); };
   let ids = o.random ? shuffle(o.ids).slice(0, DK.size) : o.ids.slice().sort((a,b)=>weight(a)-weight(b)).slice(0, DK.size);
   ids = shuffle(ids);
-  C = {mode:DK.mode, dir:DK.dir, kind:o.kind||"word", deck:o.name, queue:ids.slice(), i:0, first:{}, total:ids.length, flipped:false};
+  C = {fish0:S.fish||0, stage0:gullStage(), mode:DK.mode, dir:DK.dir, kind:o.kind||"word", deck:o.name, queue:ids.slice(), i:0, first:{}, total:ids.length, flipped:false};
   if (C.mode==="mama") S.stats.mama++; else S.stats.cards++;
   save(); renderCard(); show("cards");
 }
@@ -2313,7 +2327,7 @@ function rateCard(ok, btn){
 function finishCards(){
   const knownIds = Object.keys(C.first).filter(id=>C.first[id]), wrongIds = Object.keys(C.first).filter(id=>!C.first[id]);
   markDay(); save();
-  const mama = C.mode==="mama", km = mama ? 40 : 15;
+  const mama = C.mode==="mama", km = mama ? 40 : 15, gp = growthPanel(C.fish0, C.stage0);
   addKm(km);
   const newB = checkBadges({});
   $("#s-cards").innerHTML = `<div class="trophy">
@@ -2328,6 +2342,7 @@ function finishCards(){
     ${wrongIds.length?`<div class="panel"><span class="label">Kommen in den nächsten Stunden wieder</span><div class="chips">${wrongIds.map(id=>`<span class="chip">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
     ${mama && knownIds.length?`<div class="panel"><span class="label">Geprüft und gewusst</span><div class="chips">${knownIds.map(id=>`<span class="chip ok">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
     ${stickerPanel(newB)}
+    ${gp}
     ${accPanel(newAccessories())}
     <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Noch ein Stapel</button><button class="btn btn-main" style="flex:1" data-act="home">Zum Hafen</button></div>`;
   sfx("win"); confetti(); window.scrollTo(0,0);
@@ -2590,6 +2605,7 @@ function renderParents(){
       <p style="margin:0">Es zählt nur, was ${esc(S.name)} selbst schreibt oder sagt. Ein Wort steigt höchstens einmal pro Tag eine Stufe auf und kommt nach 1, 3, 7, 14 und 30 Tagen wieder. Falsch heißt: zurück auf Stufe 1.</p>
       <p style="margin:0">Im Fehler-Detektiv macht die Möwe genau die Fehler aus seinen Diktaten, zum Beispiel „I'm don't“ oder „They names“. Wer Fehler korrigiert, lernt die Regel besonders gründlich.</p>
       <p style="margin:0">Die Möwen-Prüfung durch einen Erwachsenen zählt am meisten. Was dort beim ersten Mal sofort sitzt, springt auf Stufe 3. Nur geprüfte oder sichere Wörter schalten die Testampel auf Grün.</p>
+      <p style="margin:0">Die Möwe wächst mit Fischen: 1 Fisch für jedes neue Wort und 1 Fisch für jede Stufe, die ein Wort aufsteigt. Fische gehen nie verloren. Jungmöwe ab 60, Möwe ab 180, Kapitänsmöwe ab 450 Fischen.</p>
       <p style="margin:0">Ist das Tagesziel erreicht, schläft die Möwe. Extra-Übungen gehen weiter, aber es gibt keinen Druck, endlos weiterzuspielen.</p>
     </div>
     <div class="panel"><span class="label">Letzte 4 Wochen</span><div class="cal">${days.map(d=>`<i class="${S.days.includes(d)?"on":""}" title="${d}"></i>`).join("")}</div></div>
@@ -2634,6 +2650,7 @@ const ACT = {
   startDaily, startTest, startSentences, startFix, openPost,
   startBoss: () => startBoss(),
   openExtras: renderExtras, openWardrobe: renderWardrobe,
+  growthInfo: () => toast(`Jedes neue Wort ist 1 Fisch für ${esc(G())}. Weißt du ein Wort an einem anderen Tag wieder, gibt es noch einen Fisch.`),
   sentGo: b => startSentSession(b.dataset.pid),
   openJournal: renderJournal, openPc: b => renderPostcardBig(+b.dataset.i),
   flipPc: () => { const f=$("#pcfc"); if (f){ f.classList.toggle("flipped"); sfx("flip"); } },
