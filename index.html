@@ -380,6 +380,26 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 @keyframes floatup{from{opacity:1;transform:translateY(0) scale(.8)}to{opacity:0;transform:translateY(-70px) scale(1.2)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media (max-width:380px){.tiles{gap:8px}.tile{padding:12px}}
+.deck.star{border-color:var(--flame);background:linear-gradient(135deg,#FFF6EC,#FFFFFF 60%)}
+.minisum{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;color:var(--ink);font-weight:600}
+.minisum i,.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.cchip{align-self:center;padding:4px 11px;border-radius:999px;font-size:.78rem;font-weight:700;background:#E8F3F9;color:#16406B;border:1.5px solid #C3DCEA}
+.cchip.bad{background:#FFE9EC;border-color:#F7B7C2;color:#B52A43}
+.cchip.new{background:#F0EAFF;border-color:#CDBDF5;color:#5B3DB0}
+.result{display:flex;align-items:center;gap:16px;background:var(--panel);border:2px solid var(--line);border-radius:20px;padding:14px;box-shadow:var(--shadow)}
+.ring{width:118px;height:118px;flex:none}
+.ringv{animation:ringIn 1.1s cubic-bezier(.3,.8,.3,1) .2s forwards}
+@keyframes ringIn{to{stroke-dashoffset:var(--off)}}
+.panel.escape{border-color:var(--good);background:#F1FCF7}
+.sbar{display:flex;height:14px;border-radius:999px;overflow:hidden;background:#EEF4F8}
+.sbar i{display:block;height:100%;transition:width .6s}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.82rem;color:var(--ink)}
+.dots-grid{display:flex;flex-wrap:wrap;gap:6px}
+.wd{width:20px;height:20px;border-radius:50%;border:0;padding:0;opacity:0;transform:scale(.2);animation:dotIn .35s cubic-bezier(.3,1.6,.5,1) forwards;box-shadow:inset 0 -2px 0 rgba(0,0,0,.12)}
+.wd:active{transform:scale(1.3)}
+@keyframes dotIn{to{opacity:1;transform:scale(1)}}
+.btn.mini{min-height:40px;padding:6px 12px;font-size:.88rem}
+@media (prefers-reduced-motion:reduce){.wd,.ringv{animation-duration:.01s}}
 </style>
 
 </head>
@@ -466,6 +486,10 @@ Bitte öffne sie über den Link, den du bekommen hast.
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 3l4 2 4-2 5 4-3 4-2-1v11H8V10l-2 1-3-4z"/></svg></span>
         <b>Kleiderschrank</b><small id="wardSub"></small>
       </button>
+      <button class="tile t-good" data-act="openOverview" data-back="openExtras">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="5" r="2.4"/><circle cx="12" cy="5" r="2.4"/><circle cx="19" cy="5" r="2.4"/><circle cx="5" cy="12" r="2.4"/><circle cx="12" cy="12" r="2.4"/><circle cx="19" cy="12" r="2.4" opacity=".45"/><circle cx="5" cy="19" r="2.4"/><circle cx="12" cy="19" r="2.4" opacity=".45"/><circle cx="19" cy="19" r="2.4" opacity=".45"/></svg></span>
+        <b>Lernstand</b><small id="ovSub"></small>
+      </button>
       <button class="tile t-ice" data-act="openDeck" data-mode="kid">
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h11a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2zm-3 4v13a1 1 0 001 1h12v-2H6V7z"/></svg></span>
         <b>Karteikarten</b><small>Schnell durchgehen</small>
@@ -504,6 +528,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
   <section id="s-place" class="stack" hidden></section>
   <section id="s-journal" class="stack" hidden></section>
   <section id="s-sentpick" class="stack" hidden></section>
+  <section id="s-overview" class="stack" hidden></section>
   <section id="s-deck" class="stack" hidden></section>
   <section id="s-cards" class="stack" hidden></section>
   <section id="s-pin" class="stack" hidden></section>
@@ -945,6 +970,8 @@ let S = load();
 /* Fische: Jede Stufe, die ein Wort aufsteigt, ist ein Fisch für die Möwe. Der Zähler sinkt nie. */
 if (S && S.fish==null){ S.fish = Object.values(S.words||{}).reduce((a,x)=>a+(x.b||0),0); }
 const feed = n => { if (n>0){ S.fish = (S.fish||0) + n; } };
+/* Fehlerwörter nachrüsten: bisher galt "falsch gewesen und Stufe 1–2" */
+if (S) Object.values(S.words||{}).forEach(x=>{ if (x.lw===undefined){ x.lw = (x.w>0 && x.b<=2) ? (x.last||null) : null; x.okd = []; } });
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
 const fillN = x => String(x).replace(/\{N\}/g, (S && S.name) || "Tom");
 const G = () => (S && S.gull && S.gull.name) || "Möwe";
@@ -1379,8 +1406,7 @@ function renderPlace(pid){
 function startDeckKey(mode, key){
   DK.mode = mode;
   if (mode==="mama" && !pinOk()) return askPin(()=>startDeckKey(mode,key));
-  const i = deckOptions().findIndex(o=>o.key===key);
-  if (i>=0) startCards(i);
+  startCardsKey(key);
 }
 
 /* ============ ICONS ============ */
@@ -1466,14 +1492,15 @@ function updateWord(w, ok, src, noPromote){
   S.stats.answers++; if (ok) S.stats.right++;
   if (!s){
     if (src==="mama" && ok){ S.words[w.id] = {b:3,due:addDays(t,INTERVAL[3]),up:t,r:1,w:0,last:t,seen:t,fam:t}; feed(3); save(); return; }
-    S.words[w.id] = {b:1,due:addDays(t,1),up:t,r:ok?1:0,w:ok?0:1,last:t,seen:t}; feed(1); save(); return;
+    S.words[w.id] = {b:1,due:addDays(t,1),up:t,r:ok?1:0,w:ok?0:1,last:t,seen:t,lw:ok?null:t,okd:[]}; feed(1); save(); return;
   }
   s.last = t;
   if (ok){
     s.r++;
     if (src==="mama") s.fam = t;
+    if (src!=="kid" && s.lw && t!==s.lw){ s.okd = s.okd || []; if (!s.okd.includes(t)) s.okd.push(t); }
     if (src!=="kid" && !noPromote && s.up!==t){ if (s.b<5) feed(1); s.b = Math.min(5, s.b+1); s.up = t; s.due = addDays(t, INTERVAL[s.b]); }
-  } else { s.w++; s.b = 1; s.due = addDays(t,1); delete s.fam; }
+  } else { s.w++; s.b = 1; s.due = addDays(t,1); delete s.fam; s.lw = t; s.okd = []; }
   save();
 }
 function updateSent(s, ok, noPromote){
@@ -1542,7 +1569,7 @@ function sentPoolFor(pid){
 function wordNeed(id){
   const x = (S.ws||{})[id], s = st(id);
   let need = 1/(1+(x?x.n:0));
-  if (s && s.w>0 && s.b<=2) need += .6;
+  if (s && isFehler(WMAP[id])) need += .6;
   if (x && x.last===today()) need *= .3;
   return need;
 }
@@ -1662,7 +1689,7 @@ function checkBadges(ctx){
 }
 
 /* ============ BILDSCHIRME ============ */
-const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick"];
+const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview"];
 function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
@@ -1713,7 +1740,7 @@ function reportText(withCode){
   const t = today(), wk = addDays(t,-6);
   const daysWk = S.days.filter(d=>d>=wk).length;
   const safe = W.filter(isSafe).length;
-  const probs = introduced().filter(w=>st(w.id).w>0 && st(w.id).b<=2).sort((a,b)=>st(b.id).w-st(a.id).w).slice(0,6).map(w=>`${w.en} (${w.de})`);
+  const probs = introduced().filter(isFehler).sort((a,b)=>st(b.id).w-st(a.id).w).slice(0,6).map(w=>`${w.en} (${w.de})`);
   const rd = testReadiness();
   let txt = `Möwen-Bericht von ${S.name} und ${G()} (${dmy(t)})\n`+
     `• Geübt an ${daysWk} von 7 Tagen, Serie: ${S.streak} Tage\n`+
@@ -1804,6 +1831,7 @@ function renderExtras(){
   const dips = PLANETS.filter(x=>{ const s=placeStats(x.id); return s.safe===s.total; }).length;
   $("#badgeSub").textContent = `${dips} Diplome · ${S.badges.length} Abzeichen`;
   $("#mapSub").textContent = `${introduced().length} von ${W.length} Wörtern`;
+  $("#ovSub").textContent = `${W.filter(w=>!st(w.id)).length} Wörter und ${SALL.filter(x=>!ss(x.id)).length} Sätze noch neu`;
   $("#sentSub").textContent = `${SALL.length} Sätze zu allen Vokabeln`;
   $("#fixSub").textContent = `${G()} macht Fehler. Findest du sie?`;
   $("#wardSub").textContent = `${accUnlocked().length} von ${ACC.length} Sachen freigeschaltet`;
@@ -2221,29 +2249,70 @@ function finish(){
 /* ============ KARTEIKARTEN & MÖWEN-PRÜFUNG ============ */
 const DK = {mode:"kid", dir:"de", size:20};
 let C = null, pinUntil = 0, pinNext = null;
+/* Karten sind "w:<wortId>" oder "s:<satzId>" */
+const kW = id => "w:"+id, kS = id => "s:"+id;
+const kParse = k => ({t:k[0], id:k.slice(2)});
+function isFehler(w){ const s = st(w.id); return !!(s && s.w>0 && s.lw && (s.okd||[]).length<2); }
+function fehlerSort(a,b){ const x=st(a.id), y=st(b.id); return (x.okd||[]).length-(y.okd||[]).length || (y.lw||"").localeCompare(x.lw||"") || y.w-x.w; }
+function askedToday(k){ const {t,id} = kParse(k), d = today(); if (t==="w"){ const s=st(id); return !!(s && s.last===d); } const x=ss(id); return !!(x && x.last===d); }
+function wordState(w){
+  const s = st(w.id);
+  if (!s) return "neu";
+  if (isFehler(w)) return "fehler";
+  if (s.b>=5) return "meister";
+  if (s.b>=3) return "sicher";
+  return "lernen";
+}
+const STATE = {neu:["Neu","#C9D8E3"], fehler:["Fehler","#EF4D67"], lernen:["Am Lernen","#F2B632"], sicher:["Sicher","#1FB97E"], meister:["Gemeistert","#0B7FA6"]};
+function topicOrder(pl){ const tp = testActive() ? S.test.pl : null, f = focusPlace().id; return pl===tp ? -2 : pl===f ? -1 : PLANETS.findIndex(p=>p.id===pl); }
+function recommendedItems(){
+  const out = [], seen = new Set(), add = k => { if (!seen.has(k)){ seen.add(k); out.push(k); } };
+  const notT = k => !askedToday(k);
+  W.filter(isFehler).sort(fehlerSort).map(w=>kW(w.id)).filter(notT).slice(0,8).forEach(add);
+  dueWords().map(w=>kW(w.id)).filter(notT).slice(0,6).forEach(add);
+  SALL.filter(s=>s.pl!=="gram").sort((a,b)=>topicOrder(a.pl)-topicOrder(b.pl)).filter(s=>{ const x=ss(s.id); return !x || (x.w>0 && x.b<=1); }).map(s=>kS(s.id)).filter(notT).slice(0,3).forEach(add);
+  W.filter(w=>!st(w.id)).sort((a,b)=>topicOrder(a.pl)-topicOrder(b.pl)).map(w=>kW(w.id)).forEach(k=>{ if (out.length<20) add(k); });
+  W.filter(w=>st(w.id)).map(w=>kW(w.id)).filter(notT).forEach(k=>{ if (out.length<20) add(k); });
+  return out;
+}
 function deckOptions(){
-  const t = today(), out = [], intro = introduced(), base = (intro.length>=10?intro:W);
+  const t = today(), out = [], intro = introduced();
+  out.push({key:"rec", order:"fixed", name:"Empfohlen für heute", sub:"Zuerst Fehlerwörter, dann fällige, ein paar Sätze und neue Wörter", items:recommendedItems(), star:true});
   if (testActive()){
     const p=PMAP[S.test.pl];
-    out.push({key:"test", name:`Test: ${p.name}`, sub:"Alle Wörter für den Test", ids:W.filter(w=>w.pl===p.id).map(w=>w.id), hot:true});
-    out.push({key:"testsent", kind:"sent", name:"Test: Sätze", sub:"Zu jedem Test-Wort einen Satz übersetzen", ids:W.filter(w=>w.pl===p.id && w.ex).map(w=>w.id), hot:true});
+    out.push({key:"test", name:`Test: ${p.name}`, sub:"Alle Wörter für den Test", items:W.filter(w=>w.pl===p.id).map(w=>kW(w.id)), hot:true});
+    out.push({key:"testsent", name:`Test: Sätze`, sub:`Alle Sätze zu ${p.name}`, items:SALL.filter(s=>s.pl===p.id).map(s=>kS(s.id)), hot:true});
   }
-  out.push({key:"rand", random:true, name:"Zufall: alles gemischt", sub: intro.length>=10 ? "Quer durch alle gelernten Wörter" : "Quer durch alle Wörter", ids:base.map(w=>w.id)});
-  out.push({key:"sentall", kind:"sent", random:true, name:"Sätze zu allen Vokabeln", sub:"Deutscher Satz, auf Englisch sagen", ids:base.filter(w=>w.ex).map(w=>w.id)});
-  out.push({key:"wrong", name:"Fehlerwörter", sub:"Wörter, die zuletzt falsch waren", ids:W.filter(w=>st(w.id) && st(w.id).w>0 && st(w.id).b<=2).map(w=>w.id)});
-  out.push({key:"due", name:"Heute fällig", sub:"Was heute wiederholt werden soll", ids:dueWords().map(w=>w.id)});
-  out.push({key:"recent", name:"Zuletzt gelernt", sub:"Die letzten 3 Tage", ids:W.filter(w=>st(w.id) && st(w.id).last && dayDiff(st(w.id).last,t)<=3).map(w=>w.id)});
-  PLANETS.forEach(p=>{ const ps=placeStats(p.id); out.push({key:p.id, name:p.name, sub:`${p.place} · ${ps.seen}/${ps.total} gesehen · ${ps.safe} sicher`, ids:W.filter(w=>w.pl===p.id).map(w=>w.id), place:p}); });
+  out.push({key:"wrong", order:"fixed", name:"Fehlerwörter", sub:"Die zuletzt nicht gewussten zuerst. Raus nach 2 richtigen Tagen.", items:W.filter(isFehler).sort(fehlerSort).map(w=>kW(w.id)), red:true});
+  out.push({key:"newW", order:"fixed", name:"Neue Wörter: noch nie geübt", sub:"Aktuelles Thema zuerst", items:W.filter(w=>!st(w.id)).sort((a,b)=>topicOrder(a.pl)-topicOrder(b.pl)).map(w=>kW(w.id)), fresh:true});
+  out.push({key:"newS", order:"fixed", name:"Neue Sätze: noch nie geübt", sub:"Aktuelles Thema zuerst", items:SALL.filter(s=>!ss(s.id)).sort((a,b)=>topicOrder(a.pl)-topicOrder(b.pl)).map(s=>kS(s.id)), fresh:true});
+  out.push({key:"due", name:"Heute fällig", sub:"Was laut Vokabelkiste heute wiederholt werden soll", items:dueWords().map(w=>kW(w.id))});
+  out.push({key:"rand", order:"random", name:"Zufall: alles gemischt", sub: intro.length>=10 ? "Quer durch alle gelernten Wörter" : "Quer durch alle Wörter", items:(intro.length>=10?intro:W).map(w=>kW(w.id))});
+  out.push({key:"sentall", order:"random", name:"Sätze: alles gemischt", sub:"Quer durch alle Sätze", items:SALL.map(s=>kS(s.id))});
+  out.push({key:"recent", name:"Zuletzt gelernt", sub:"Die letzten 3 Tage", items:W.filter(w=>st(w.id) && st(w.id).last && dayDiff(st(w.id).last,t)<=3).map(w=>kW(w.id))});
+  PLANETS.forEach(p=>{ const ps=placeStats(p.id); out.push({key:p.id, name:p.name, sub:`${ps.seen}/${ps.total} gesehen · ${ps.safe} sicher`, items:W.filter(w=>w.pl===p.id).map(w=>kW(w.id)), place:p}); });
   return out;
+}
+function deckByKey(key){
+  const m = key.match(/^(new|wrong|sent):(.+)$/);
+  if (m){
+    const p = PMAP[m[2]]; if (!p) return null;
+    if (m[1]==="new") return {key, order:"fixed", name:`Neu: ${p.name}`, sub:"", items:W.filter(w=>w.pl===p.id && !st(w.id)).map(w=>kW(w.id))};
+    if (m[1]==="wrong") return {key, order:"fixed", name:`Fehler: ${p.name}`, sub:"", items:W.filter(w=>w.pl===p.id && isFehler(w)).sort(fehlerSort).map(w=>kW(w.id))};
+    return {key, name:`Sätze: ${p.name}`, sub:"", items:SALL.filter(s=>s.pl===p.id).map(s=>kS(s.id))};
+  }
+  return deckOptions().find(o=>o.key===key) || null;
 }
 function openDeck(mode){ DK.mode = mode; if (mode==="mama" && !pinOk()) return askPin(()=>openDeck("mama")); renderDeck(); }
 function renderDeck(){
   const mama = DK.mode==="mama", opts = deckOptions();
-  $("#s-deck").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+  const wC = W.filter(w=>!st(w.id)).length, sC = SALL.filter(s=>!ss(s.id)).length, fC = W.filter(isFehler).length;
+  $("#s-deck").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button><span class="spacer"></span><button class="btn btn-soft" data-act="openOverview" data-back="deckBack">Lernstand</button></div>
     <h1 class="display" style="font-size:1.8rem;color:var(--navy)">${mama?"Möwen-Prüfung":"Karteikarten"}</h1>
     <p class="muted" style="margin:0">${mama
-      ? `Für Mama, Papa, Oma, Opa oder große Geschwister: Lies das Wort oder den Satz vor. ${esc(S.name)} antwortet laut auf Englisch. Dann umdrehen und ehrlich bewerten. Falsche Karten kommen wieder, bis sie sitzen. Was hier richtig ist, gilt als geprüft und zählt für die Testampel.`
+      ? `Für Mama, Papa, Oma, Opa oder große Geschwister: Lies das Wort oder den Satz vor. ${esc(S.name)} antwortet laut auf Englisch. Dann umdrehen und ehrlich bewerten. Falsche Karten kommen wieder, bis sie sitzen.`
       : "Schau die Karte an, sag die Antwort laut, dann umdrehen. Falsche Karten kommen wieder, bis du sie kannst."}</p>
+    <div class="minisum"><span><i style="background:${STATE.fehler[1]}"></i>${fC} Fehlerwörter</span><span><i style="background:${STATE.neu[1]}"></i>${wC} Wörter neu</span><span><i style="background:#8E6AD8"></i>${sC} Sätze neu</span></div>
     <div class="seg" role="group" aria-label="Richtung">
       <button data-act="dkDir" data-v="de" aria-pressed="${DK.dir==="de"}">Deutsch → Englisch</button>
       <button data-act="dkDir" data-v="en" aria-pressed="${DK.dir==="en"}">Englisch → Deutsch</button>
@@ -2253,42 +2322,74 @@ function renderDeck(){
       <button data-act="dkSize" data-v="20" aria-pressed="${DK.size===20}">20 Karten</button>
       <button data-act="dkSize" data-v="999" aria-pressed="${DK.size===999}">Alle</button>
     </div>
-    <div class="stack" style="gap:8px">${opts.map((o,i)=>`<button class="deck ${o.hot?"hot":""}" data-act="startCards" data-i="${i}" ${o.ids.length?"":"disabled"}>
-        ${o.place?placeDot(o.place):`<span class="dot" style="background:${o.hot?"var(--flame)":o.key==="wrong"?"var(--bad)":o.kind==="sent"?"var(--good)":"var(--ice)"}"></span>`}
-        <div style="min-width:0"><b>${esc(o.name)}</b><small>${esc(o.sub)}</small></div><span class="n">${o.ids.length}</span></button>`).join("")}</div>`;
+    <div class="stack" style="gap:8px">${opts.map(o=>{
+      const n = o.items.length, fresh = o.items.filter(k=>!askedToday(k)).length;
+      const dot = o.place ? placeDot(o.place) : `<span class="dot" style="background:${o.star?"var(--flame)":o.hot?"var(--flame-2)":o.red?"var(--bad)":o.fresh?"#8E6AD8":"var(--ice)"}"></span>`;
+      return `<button class="deck ${o.star?"star":""} ${o.hot?"hot":""}" data-act="startCards" data-key="${o.key}" ${n?"":"disabled"}>${dot}
+        <div style="min-width:0"><b>${esc(o.name)}</b><small>${esc(o.sub)}${n && fresh<n ? ` · ${fresh} heute noch nicht dran` : ""}</small></div><span class="n">${n}</span></button>`; }).join("")}</div>`;
   show("deck");
 }
-function startCards(i){
-  const o = deckOptions()[i]; if (!o || !o.ids.length) return;
-  const weight = id => { const s=st(id); return s ? (s.b*3 - s.w*2 + Math.random()*3) : (Math.random()*3 - 1); };
-  let ids = o.random ? shuffle(o.ids).slice(0, DK.size) : o.ids.slice().sort((a,b)=>weight(a)-weight(b)).slice(0, DK.size);
-  ids = shuffle(ids);
-  C = {fish0:S.fish||0, stage0:gullStage(), mode:DK.mode, dir:DK.dir, kind:o.kind||"word", deck:o.name, queue:ids.slice(), i:0, first:{}, total:ids.length, flipped:false};
+function pickItems(o, size){
+  const weight = k => { const {t,id} = kParse(k); if (t==="s"){ const x=ss(id); return x ? x.b*3 - x.w*2 : -1; } const s=st(id); return s ? (s.b*3 - s.w*2 - (isFehler(WMAP[id])?6:0)) : -1; };
+  let items = o.items.slice();
+  if (o.order==="random") items = shuffle(items);
+  else if (o.order!=="fixed") items = items.map(k=>[k, weight(k)+Math.random()*2]).sort((a,b)=>a[1]-b[1]).map(x=>x[0]);
+  /* Heute noch nicht drangewesene Karten zuerst, Reihenfolge sonst beibehalten */
+  const notT = items.filter(k=>!askedToday(k)), done = items.filter(k=>askedToday(k));
+  let pick = notT.concat(done).slice(0, size);
+  if (o.order!=="fixed") pick = shuffle(pick);
+  return pick;
+}
+function startCardsKey(key){
+  const o = deckByKey(key); if (!o || !o.items.length){ toast("In diesem Stapel ist gerade nichts."); return; }
+  const items = pickItems(o, DK.size);
+  const fehler0 = new Set(W.filter(isFehler).map(w=>w.id));
+  C = {fish0:S.fish||0, stage0:gullStage(), mode:DK.mode, dir:DK.dir, key, deck:o.name, queue:items.slice(), i:0, first:{}, total:items.length, flipped:false, fehler0, new0:new Set(items.filter(k=>{ const {t,id}=kParse(k); return t==="w" ? !st(id) : !ss(id); }))};
   if (C.mode==="mama") S.stats.mama++; else S.stats.cards++;
   save(); renderCard(); show("cards");
 }
+function startCards(i){ const o = deckOptions()[i]; if (o) startCardsKey(o.key); }
 const rateBtns = () => `<div class="rate"><button class="btn btn-bad" data-act="rate" data-ok="0">✗ ${C.mode==="mama"?"Falsch":"Nochmal"}</button><button class="btn btn-good" data-act="rate" data-ok="1">✓ ${C.mode==="mama"?"Richtig":"Gewusst"}</button></div>`;
-function renderCard(){
-  if (C.i >= C.queue.length) return finishCards();
-  const w = WMAP[C.queue[C.i]];
-  const known = Object.values(C.first).filter(Boolean).length, wrongN = Object.values(C.first).filter(v=>v===false).length;
-  const left = new Set(C.queue.slice(C.i)).size;
-  const sentHi = () => { const g = gapMatch(w); return g ? `${esc(g.before)}<span style="color:#C4551A">${esc(g.word)}</span>${esc(g.after)}` : esc(w.ex); };
-  const isS = C.kind==="sent";
-  const front = isS ? (C.dir==="de"
-      ? `<span class="label">Satz auf Deutsch</span><div class="de-big">${esc(w.exDe)}</div><div class="muted">Sag den ganzen Satz auf Englisch!</div>`
-      : `<span class="label">Satz auf Englisch</span><div class="de-big">${esc(w.ex)}</div>${speakerBtn(w.ex)}<div class="muted">Was heißt der Satz auf Deutsch?</div>`)
-    : C.dir==="de"
-      ? `<span class="label">Deutsch</span><div class="de-big" style="font-size:clamp(1.6rem,8vw,2.2rem)">${esc(w.de)}</div><div class="muted">Wie heißt das auf Englisch?</div>`
-      : `<span class="label">Englisch</span><div class="big">${esc(w.en)}</div>${speakerBtn(sayText(w))}<div class="muted">Was heißt das auf Deutsch?</div>`;
-  const back = isS
-    ? `<span class="label">${C.dir==="de"?"Auf Englisch":"Auf Deutsch"}</span>
-      ${C.dir==="de" ? `<div class="de-big">${sentHi()}</div><div class="row" style="justify-content:center">${speakerBtn(w.ex)}${speakerBtn(w.ex,"",true)}</div>` : `<div class="de-big">${esc(w.exDe)}</div>`}
-      <div class="muted" style="font-size:.95rem">Vokabel: <b style="color:var(--navy)">${esc(w.en)}</b> = ${esc(w.de)}</div>`
-    : `<span class="label">${C.dir==="de"?"Englisch":"Deutsch"}</span>
+function cardChip(k){
+  const {t,id} = kParse(k);
+  if (t==="s"){ const x = ss(id); return x ? `<span class="cchip">Satz · Stufe ${x.b} von 5</span>` : `<span class="cchip new">Neuer Satz</span>`; }
+  const w = WMAP[id], s = st(id);
+  if (!s) return `<span class="cchip new">Neues Wort</span>`;
+  if (isFehler(w)) return `<span class="cchip bad">Fehlerwort · ${(s.okd||[]).length} von 2 richtigen Tagen</span>`;
+  return `<span class="cchip">Stufe ${s.b} von 5</span>`;
+}
+function cardFaces(k){
+  const {t,id} = kParse(k);
+  if (t==="s"){
+    const s = SALLMAP[id], en = fillN(s.en), de = fillN(s.de);
+    const hi = (()=>{ let txt = esc(en); for (const wid of s.words){ const re = WRE[wid]; if (!re) continue; const m = en.match(re); if (m){ const start = m.index + m[1].length, word = en.slice(start).match(/^[A-Za-z' -]+?(?=[^A-Za-z'-]|$)/); const ww = m[0].slice(m[1].length); return esc(en.slice(0,start)) + `<span style="color:#C4551A">${esc(ww)}</span>` + esc(en.slice(start+ww.length)); } } return txt; })();
+    const vocab = s.words.slice(0,3).map(w=>WMAP[w]).filter(Boolean);
+    return {
+      say: en,
+      front: C.dir==="de" ? `<span class="label">Satz auf Deutsch</span><div class="de-big">${esc(de)}</div><div class="muted">Sag den ganzen Satz auf Englisch!</div>`
+                          : `<span class="label">Satz auf Englisch</span><div class="de-big">${esc(en)}</div>${speakerBtn(en)}<div class="muted">Was heißt der Satz auf Deutsch?</div>`,
+      back: `<span class="label">${C.dir==="de"?"Auf Englisch":"Auf Deutsch"}</span>
+        ${C.dir==="de" ? `<div class="de-big">${hi}</div><div class="row" style="justify-content:center">${speakerBtn(en)}${speakerBtn(en,"",true)}</div>` : `<div class="de-big">${esc(de)}</div>`}
+        ${vocab.length?`<div class="muted" style="font-size:.92rem">${vocab.map(w=>`<b style="color:var(--navy)">${esc(w.en)}</b> = ${esc(w.de)}`).join("<br>")}</div>`:""}
+        ${s.tip?`<div class="tip" style="text-align:left">${s.tip}</div>`:""}`
+    };
+  }
+  const w = WMAP[id];
+  return {
+    say: sayText(w),
+    front: C.dir==="de" ? `<span class="label">Deutsch</span><div class="de-big" style="font-size:clamp(1.6rem,8vw,2.2rem)">${esc(w.de)}</div><div class="muted">Wie heißt das auf Englisch?</div>`
+                        : `<span class="label">Englisch</span><div class="big">${esc(w.en)}</div>${speakerBtn(sayText(w))}<div class="muted">Was heißt das auf Deutsch?</div>`,
+    back: `<span class="label">${C.dir==="de"?"Englisch":"Deutsch"}</span>
       ${C.dir==="de" ? `<div class="big">${esc(w.en)}</div>${w.ipa?`<div class="ipa">[${esc(w.ipa)}]</div>`:""}<div class="row" style="justify-content:center">${speakerBtn(sayText(w))}${speakerBtn(sayText(w),"",true)}</div>` : `<div class="de-big">${esc(w.de)}</div>`}
       ${w.ex?`<div class="muted" style="font-size:.95rem">${esc(w.ex)}</div>`:""}
-      ${w.tip?`<div class="tip" style="text-align:left">${w.tip}</div>`:""}`;
+      ${w.tip?`<div class="tip" style="text-align:left">${w.tip}</div>`:""}`
+  };
+}
+function renderCard(){
+  if (C.i >= C.queue.length) return finishCards();
+  const k = C.queue[C.i], f = cardFaces(k);
+  const known = Object.values(C.first).filter(Boolean).length, wrongN = Object.values(C.first).filter(v=>v===false).length;
+  const left = new Set(C.queue.slice(C.i)).size;
   $("#s-cards").innerHTML = `<div class="mbar">
       <button class="close" data-act="cardsQuit" aria-label="Beenden">${I.close}</button>
       <div class="prog"><i style="width:${Math.round((C.total-left)/C.total*100)}%;background:linear-gradient(90deg,var(--ice),var(--good))"></i></div>
@@ -2296,57 +2397,116 @@ function renderCard(){
     </div>
     <div class="row" style="justify-content:space-between"><span class="label">${C.mode==="mama"?"Möwen-Prüfung":"Karteikarten"} · ${esc(C.deck)}</span><small class="muted"><span style="color:#0E7C51">✓ ${known}</span> · <span style="color:#B52A43">✗ ${wrongN}</span></small></div>
     <div class="fc ${C.flipped?"flipped":""}" id="fc"><div class="fc-inner">
-      <div class="fc-face fc-front">${front}</div>
-      <div class="fc-face fc-back">${back}</div>
+      <div class="fc-face fc-front">${cardChip(k)}${f.front}</div>
+      <div class="fc-face fc-back">${f.back}</div>
     </div></div>
     <div id="fcBtns">${C.flipped ? rateBtns() : `<button class="btn btn-ice btn-block" data-act="flip" style="min-height:64px">Umdrehen</button>`}</div>
-    ${C.first[w.id]===false?`<p class="muted center" style="margin:0">Diese Karte war vorhin falsch. Jetzt nochmal!</p>`:""}`;
-  if (C.dir==="en" && !C.flipped) setTimeout(()=>speak(isS ? w.ex : sayText(w)),200);
+    ${C.first[k]===false?`<p class="muted center" style="margin:0">Diese Karte war vorhin falsch. Jetzt nochmal!</p>`:""}`;
+  if (C.dir==="en" && !C.flipped){ const s = f.say; setTimeout(()=>speak(s),200); }
 }
 function flipCard(){
   if (!C || C.flipped) return;
   C.flipped = true; sfx("flip");
-  const w = WMAP[C.queue[C.i]];
+  const say = cardFaces(C.queue[C.i]).say;
   $("#fc").classList.add("flipped");
   $("#fcBtns").innerHTML = rateBtns();
-  const txt = C.kind==="sent" ? w.ex : sayText(w);
-  if (C.dir==="de") setTimeout(()=>speak(txt),250);
+  if (C.dir==="de") setTimeout(()=>speak(say),250);
 }
 function rateCard(ok, btn){
-  const id = C.queue[C.i], w = WMAP[id];
-  if (!(id in C.first)){
-    C.first[id] = ok;
-    updateWord(w, ok, C.mode==="mama" ? "mama" : "kid", false);
-    if (ok) addXP(C.mode==="mama"?6:2);
+  const k = C.queue[C.i], {t,id} = kParse(k), mama = C.mode==="mama";
+  if (!(k in C.first)){
+    C.first[k] = ok;
+    if (t==="w") updateWord(WMAP[id], ok, mama ? "mama" : "kid", false);
+    else { const s = SALLMAP[id]; updateSent(s, ok, !mama); trackSentWords(s, ok, {type: mama ? "translate" : "puzzle"}); }
+    if (ok) addXP(mama?6:2);
   }
   if (ok){ sfx("good"); if (btn){ const [x,y]=centerOf(btn); burst(x,y,16); } }
-  else { sfx("bad"); C.queue.splice(Math.min(C.i+4, C.queue.length), 0, id); }
+  else { sfx("bad"); C.queue.splice(Math.min(C.i+4, C.queue.length), 0, k); }
   C.i++; C.flipped = false;
   renderCard();
 }
+function ringSVG(pct, color){
+  const r = 52, c = 2*Math.PI*r, off = c*(1-pct);
+  return `<svg class="ring" viewBox="0 0 130 130" aria-hidden="true"><circle cx="65" cy="65" r="${r}" fill="none" stroke="#E3EEF5" stroke-width="14"/>
+    <circle class="ringv" cx="65" cy="65" r="${r}" fill="none" stroke="${color}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${c.toFixed(1)}" style="--off:${off.toFixed(1)}" transform="rotate(-90 65 65)"/>
+    <text x="65" y="74" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="700" font-size="30" fill="#16406B">${Math.round(pct*100)}%</text></svg>`;
+}
+const kLabel = k => { const {t,id} = kParse(k); return t==="w" ? WMAP[id].en : fillN(SALLMAP[id].en); };
 function finishCards(){
-  const knownIds = Object.keys(C.first).filter(id=>C.first[id]), wrongIds = Object.keys(C.first).filter(id=>!C.first[id]);
-  markDay(); save();
+  const keys = Object.keys(C.first), knownK = keys.filter(k=>C.first[k]), wrongK = keys.filter(k=>!C.first[k]);
+  const pct = keys.length ? knownK.length/keys.length : 0;
+  markDay();
   const mama = C.mode==="mama", km = mama ? 40 : 15, gp = growthPanel(C.fish0, C.stage0);
-  addKm(km);
+  const escaped = [...C.fehler0].filter(id=>!isFehler(WMAP[id]));
+  const newDone = [...C.new0].filter(k=>k in C.first).length;
+  let cmp = "";
+  if (mama){
+    S.exams = S.exams || [];
+    const prev = S.exams[S.exams.length-1];
+    S.exams.push({d:today(), deck:C.deck, n:keys.length, ok:knownK.length});
+    if (S.exams.length>40) S.exams = S.exams.slice(-40);
+    if (prev && prev.n){ const pp = Math.round(prev.ok/prev.n*100), now = Math.round(pct*100), diff = now-pp;
+      cmp = `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.7rem" aria-hidden="true">${diff>0?"📈":diff<0?"📉":"➡️"}</span><div><b>${diff>0?`${diff} Prozentpunkte besser als letztes Mal!`:diff<0?"Diesmal etwas weniger als letztes Mal":"Genauso gut wie letztes Mal"}</b><div class="muted" style="font-size:.85rem">Letzte Prüfung (${dmy(prev.d).slice(0,6)}): ${prev.ok} von ${prev.n} · heute: ${knownK.length} von ${keys.length}</div></div></div>`; }
+  }
+  save(); addKm(km);
   const newB = checkBadges({});
+  const o = deckByKey(C.key), more = o ? o.items.filter(k=>!askedToday(k)).length : 0;
   $("#s-cards").innerHTML = `<div class="trophy">
-      <div style="width:140px;margin:0 auto">${myGull()}</div>
+      <div style="width:120px;margin:0 auto">${myGull()}</div>
       <h1 class="display" style="font-size:clamp(1.6rem,7vw,2rem);color:var(--navy)">${mama?"Prüfung beendet!":"Stapel geschafft!"}</h1>
-      <p class="muted" style="margin:6px 0 0">${esc(C.deck)} · +${km} km</p>
+      <p class="muted" style="margin:4px 0 0">${esc(C.deck)} · +${km} km</p>
     </div>
-    <div class="statgrid" style="grid-template-columns:1fr 1fr">
-      <div class="stat"><b style="color:#0E7C51">${knownIds.length}</b><small>sofort gewusst</small></div>
-      <div class="stat"><b style="color:#B52A43">${wrongIds.length}</b><small>geübt, bis es saß</small></div>
-    </div>
-    ${wrongIds.length?`<div class="panel"><span class="label">Kommen in den nächsten Stunden wieder</span><div class="chips">${wrongIds.map(id=>`<span class="chip">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
-    ${mama && knownIds.length?`<div class="panel"><span class="label">Geprüft und gewusst</span><div class="chips">${knownIds.map(id=>`<span class="chip ok">${esc(WMAP[id].en)}</span>`).join("")}</div></div>`:""}
+    <div class="result">${ringSVG(pct, pct>=.8?"#1FB97E":pct>=.5?"#F2B632":"#EF4D67")}
+      <div class="stack" style="gap:6px"><b style="font-size:1.15rem;color:var(--navy)">${knownK.length} von ${keys.length} sofort gewusst</b>
+      <small class="muted">${wrongK.length ? `${wrongK.length} geübt, bis sie saßen` : "Alles beim ersten Mal!"}</small>
+      ${newDone?`<small class="muted">${newDone} davon waren ganz neu</small>`:""}</div></div>
+    ${escaped.length?`<div class="panel escape"><span class="label" style="color:#0E7C51">Raus aus den Fehlerwörtern!</span><div class="chips">${escaped.map(id=>`<span class="chip ok">${esc(WMAP[id].en)}</span>`).join("")}</div><small class="muted">An 2 verschiedenen Tagen richtig gewusst. Geschafft!</small></div>`:""}
+    ${cmp}
+    ${wrongK.length?`<div class="panel"><span class="label">Kommen bald wieder</span><div class="chips">${wrongK.map(k=>`<span class="chip">${esc(kLabel(k))}</span>`).join("")}</div></div>`:""}
+    ${mama && knownK.length?`<div class="panel"><span class="label">Geprüft und gewusst</span><div class="chips">${knownK.map(k=>`<span class="chip ok">${esc(kLabel(k))}</span>`).join("")}</div></div>`:""}
     ${stickerPanel(newB)}
     ${gp}
     ${accPanel(newAccessories())}
-    <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Noch ein Stapel</button><button class="btn btn-main" style="flex:1" data-act="home">Zum Hafen</button></div>`;
+    ${more?`<button class="btn btn-main btn-block" data-act="nextStack" data-key="${C.key}" data-mode="${C.mode}">Nächste ${Math.min(DK.size,more)}: heute noch nicht dran</button>`:""}
+    <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Anderer Stapel</button><button class="btn btn-soft" style="flex:1" data-act="home">Zum Hafen</button></div>`;
   sfx("win"); confetti(); window.scrollTo(0,0);
   C = null;
+}
+
+/* ============ LERNSTAND: Überblick über alle Wörter und Sätze ============ */
+function stackBar(counts, total){
+  return `<div class="sbar">${Object.keys(STATE).map(k=>counts[k]?`<i style="width:${(counts[k]/total*100).toFixed(2)}%;background:${STATE[k][1]}" title="${STATE[k][0]}: ${counts[k]}"></i>`:"").join("")}</div>`;
+}
+function countStates(ws){ const c = {neu:0,fehler:0,lernen:0,sicher:0,meister:0}; ws.forEach(w=>c[wordState(w)]++); return c; }
+function renderOverview(back){
+  const all = countStates(W);
+  const sDone = SALL.filter(s=>ss(s.id)).length, sSafe = SALL.filter(s=>ss(s.id) && ss(s.id).b>=2).length;
+  let delay = 0;
+  $("#s-overview").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="${back||"home"}">Zurück</button></div>
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Lernstand</h1>
+    <p class="muted" style="margin:0">Jeder Punkt ist ein Wort. Tipp auf einen Punkt, um es zu sehen.</p>
+    <div class="panel">
+      <div class="row" style="justify-content:space-between"><b style="color:var(--navy)">${W.length} Wörter</b><small class="muted">${W.length-all.neu} schon geübt</small></div>
+      ${stackBar(all, W.length)}
+      <div class="legend">${Object.keys(STATE).map(k=>`<span><i style="background:${STATE[k][1]}"></i>${STATE[k][0]} <b>${all[k]}</b></span>`).join("")}</div>
+      <div class="row" style="justify-content:space-between;margin-top:6px"><b style="color:var(--navy)">${SALL.length} Sätze</b><small class="muted">${sDone} geübt · ${SALL.length-sDone} neu</small></div>
+      <div class="sbar"><i style="width:${(sSafe/SALL.length*100).toFixed(2)}%;background:#1FB97E"></i><i style="width:${((sDone-sSafe)/SALL.length*100).toFixed(2)}%;background:#B9A3EE"></i></div>
+      <small class="muted">Fehlerwörter verlassen die Liste, wenn sie an 2 verschiedenen Tagen richtig waren, in der Unterrichtsstunde, der Satzwerkstatt oder der Möwen-Prüfung.</small>
+    </div>
+    ${PLANETS.map(p=>{
+      const ws = W.filter(w=>w.pl===p.id), c = countStates(ws), sp = SALL.filter(s=>s.pl===p.id), spd = sp.filter(s=>ss(s.id)).length;
+      return `<div class="panel ov">
+        <div class="row">${placeDot(p)}<b style="color:var(--navy);flex:1;min-width:0">${esc(p.name)}</b><small class="muted">${ws.length-c.neu}/${ws.length}</small></div>
+        ${stackBar(c, ws.length)}
+        <div class="dots-grid">${ws.map(w=>{ delay += 6; const s = wordState(w); return `<button class="wd" data-act="dotInfo" data-id="${w.id}" style="background:${STATE[s][1]};animation-delay:${Math.min(delay,1200)}ms" aria-label="${esc(w.en)}: ${STATE[s][0]}"></button>`; }).join("")}</div>
+        <small class="muted">Sätze: ${spd} von ${sp.length} geübt${c.fehler?` · ${c.fehler} Fehlerwörter`:""}${c.neu?` · ${c.neu} Wörter neu`:""}</small>
+        <div class="row" style="flex-wrap:wrap;gap:8px">
+          ${c.neu?`<button class="btn btn-soft mini" data-act="ovCards" data-key="new:${p.id}">Neue Wörter</button>`:""}
+          ${c.fehler?`<button class="btn btn-soft mini" data-act="ovCards" data-key="wrong:${p.id}">Fehler üben</button>`:""}
+          <button class="btn btn-soft mini" data-act="ovCards" data-key="sent:${p.id}">Sätze</button>
+        </div>
+      </div>`; }).join("")}`;
+  show("overview");
 }
 
 /* ============ MÖWEN-POST ============ */
@@ -2576,6 +2736,7 @@ function renderParents(){
   const t = S.test || {}, rd = testReadiness();
   $("#s-parents").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
     <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Elternbereich</h1>
+    <button class="btn btn-soft btn-block" data-act="openOverview" data-back="openParents">Lernstand: alle Wörter und Sätze auf einen Blick</button>
     <div class="panel"><span class="label">Wochenbericht</span>
       <pre style="margin:0;white-space:pre-wrap;font:inherit;font-size:.9rem">${esc(reportText(false))}</pre>
       <button class="btn btn-soft" data-act="shareReport">Bericht teilen</button>
@@ -2650,6 +2811,11 @@ const ACT = {
   startDaily, startTest, startSentences, startFix, openPost,
   startBoss: () => startBoss(),
   openExtras: renderExtras, openWardrobe: renderWardrobe,
+  openOverview: b => renderOverview(b && b.dataset.back),
+  deckBack: () => renderDeck(),
+  ovCards: b => { DK.mode = "kid"; startCardsKey(b.dataset.key); },
+  dotInfo: b => { const w = WMAP[b.dataset.id], s = st(w.id), stt = wordState(w); toast(`<b>${esc(w.en)}</b> = ${esc(w.de)}<br><small>${STATE[stt][0]}${s?` · Stufe ${s.b} von 5`:""}${stt==="fehler"?` · ${(s.okd||[]).length} von 2 richtigen Tagen`:""}</small>`); },
+  nextStack: b => { DK.mode = b.dataset.mode; if (DK.mode==="mama" && !pinOk()) return askPin(()=>startCardsKey(b.dataset.key)); startCardsKey(b.dataset.key); },
   growthInfo: () => toast(`Jedes neue Wort ist 1 Fisch für ${esc(G())}. Weißt du ein Wort an einem anderen Tag wieder, gibt es noch einen Fisch.`),
   sentGo: b => startSentSession(b.dataset.pid),
   openJournal: renderJournal, openPc: b => renderPostcardBig(+b.dataset.i),
@@ -2663,11 +2829,11 @@ const ACT = {
     if (!accUnlocked().some(x=>x.id===a.id)){ toast(`Noch gesperrt: ${esc(a.how)}`); return; }
     S.wear = S.wear || {}; S.wear[a.slot] = S.wear[a.slot]===a.id ? null : a.id; save(); sfx("gull"); renderWardrobe();
   },
-  testCards: () => { DK.mode="kid"; const i = deckOptions().findIndex(o=>o.key==="test"); if (i>=0) startCards(i); },
+  testCards: () => { DK.mode="kid"; startCardsKey("test"); },
   openDeck: b => openDeck(b.dataset.mode),
   dkDir: b => { DK.dir = b.dataset.v; renderDeck(); },
   dkSize: b => { DK.size = +b.dataset.v; renderDeck(); },
-  startCards: b => startCards(+b.dataset.i),
+  startCards: b => startCardsKey(b.dataset.key),
   flip: flipCard,
   rate: b => rateCard(b.dataset.ok==="1", b),
   cardsQuit: () => { if (C && Object.keys(C.first).length) finishCards(); else { C=null; show("home"); } },
