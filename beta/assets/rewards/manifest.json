@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -116,6 +116,96 @@
         },
         {
           "path": "diplom-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "sent20": {
+      "name": "Satz-Baumeister",
+      "images": [
+        {
+          "path": "sent20.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "sent20-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "fix10": {
+      "name": "Fehler-Detektiv",
+      "images": [
+        {
+          "path": "fix10.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "fix10-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "mama": {
+      "name": "Team-Player",
+      "images": [
+        {
+          "path": "mama.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "mama-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "post": {
+      "name": "Postmöwe",
+      "images": [
+        {
+          "path": "post.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "post-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "brighton": {
+      "name": "Ankunft in Brighton",
+      "images": [
+        {
+          "path": "brighton.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "brighton-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "boss": {
+      "name": "Krabbe besiegt",
+      "images": [
+        {
+          "path": "boss.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "boss-128.webp",
           "width": 128,
           "height": 128
         }
