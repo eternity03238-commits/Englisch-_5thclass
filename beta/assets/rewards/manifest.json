@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -56,6 +56,66 @@
         },
         {
           "path": "streak3-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "streak7": {
+      "name": "Wochen-Lehrer",
+      "images": [
+        {
+          "path": "streak7.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "streak7-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "words50": {
+      "name": "Fischschwarm",
+      "images": [
+        {
+          "path": "words50.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "words50-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "safe50": {
+      "name": "Gedächtnis-Profi",
+      "images": [
+        {
+          "path": "safe50.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "safe50-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "diplom": {
+      "name": "Erstes Diplom",
+      "images": [
+        {
+          "path": "diplom.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "diplom-128.webp",
           "width": 128,
           "height": 128
         }
