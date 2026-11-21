@@ -1,5 +1,5 @@
 {
-  "version": 33,
+  "version": 34,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -523,6 +523,21 @@
         },
         {
           "path": "probe_klassenarbeit-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "lernstand_anzeige": {
+      "name": "Illustration für den Lernstand",
+      "images": [
+        {
+          "path": "lernstand_anzeige.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "lernstand_anzeige-128.webp",
           "width": 128,
           "height": 128
         }
