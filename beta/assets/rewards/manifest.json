@@ -1,5 +1,5 @@
 {
-  "version": 27,
+  "version": 28,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -433,6 +433,21 @@
         },
         {
           "path": "lernorte_kartenpin-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "lernwelt_hafenkarte": {
+      "name": "Hafenkarte für die Lernwelt-Übersicht",
+      "images": [
+        {
+          "path": "lernwelt_hafenkarte.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "lernwelt_hafenkarte-128.webp",
           "width": 128,
           "height": 128
         }
