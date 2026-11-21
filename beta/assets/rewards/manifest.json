@@ -1,5 +1,5 @@
 {
-  "version": 32,
+  "version": 33,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -508,6 +508,21 @@
         },
         {
           "path": "kleiderschrank-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "probe_klassenarbeit": {
+      "name": "Aufgabenblatt für die Probe-Klassenarbeit",
+      "images": [
+        {
+          "path": "probe_klassenarbeit.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "probe_klassenarbeit-128.webp",
           "width": 128,
           "height": 128
         }
