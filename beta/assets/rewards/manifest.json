@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "badges": {
+    "first": {
+      "name": "Geschlüpft",
+      "images": [
+        {
+          "path": "first.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "first-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    }
+  }
+}
