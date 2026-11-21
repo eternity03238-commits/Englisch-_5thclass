@@ -1,5 +1,5 @@
 {
-  "version": 38,
+  "version": 39,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -598,6 +598,21 @@
         },
         {
           "path": "grammatik_mix_wuerfel-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "start_moewennest": {
+      "name": "Möwennest für Friedrichs Start",
+      "images": [
+        {
+          "path": "start_moewennest.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "start_moewennest-128.webp",
           "width": 128,
           "height": 128
         }
