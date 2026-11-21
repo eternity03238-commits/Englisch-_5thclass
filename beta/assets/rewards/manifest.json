@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -289,6 +289,22 @@
         },
         {
           "path": "sailor-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "phones": {
+      "name": "Kopfhörer",
+      "slot": "hat",
+      "images": [
+        {
+          "path": "phones.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "phones-128.webp",
           "width": 128,
           "height": 128
         }
