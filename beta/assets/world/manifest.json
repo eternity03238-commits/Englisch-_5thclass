@@ -1,5 +1,5 @@
 {
-  "version": 15,
+  "version": 16,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -218,6 +218,21 @@
           "path": "hafenstadt/steckbrief-steg-640.webp",
           "width": 640,
           "height": 1136
+        }
+      ]
+    },
+    "bei-freunden-in-brighton": {
+      "learningArea": "u1",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/bei-freunden-in-brighton.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/bei-freunden-in-brighton-640.webp",
+          "width": 640,
+          "height": 1137
         }
       ]
     }
