@@ -1,5 +1,5 @@
 {
-  "version": 17,
+  "version": 18,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -283,6 +283,21 @@
         },
         {
           "path": "satzwerkstatt_bausteine-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "karteikarten_stapel": {
+      "name": "Stapel für die Karteikarten",
+      "images": [
+        {
+          "path": "karteikarten_stapel.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "karteikarten_stapel-128.webp",
           "width": 128,
           "height": 128
         }
