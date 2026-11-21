@@ -160,11 +160,11 @@ const FR = {
   views: ["front","3quarter","side","back","face"],
   frames: ["blink","look_left","look_right","wave","celebrate","think","encourage"],
   /* Zusätzliche Frames nur für einzelne Stufen: das Ei bekommt einen Riss und schlüpft */
-  extra: {egg:["crack","hatch"]},
+  extra: {egg:["crack","hatch"], king:["fly"]},
   poseName: {front:"Vorderansicht", "3quarter":"Dreiviertelansicht", side:"Seitenansicht", back:"Rückansicht", face:"Gesicht",
-    crack:"Riss", hatch:"Schlüpfen", blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
+    crack:"Riss", hatch:"Schlüpfen", fly:"Fliegen", blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
-  anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500], crack:["crack",900], hatch:["hatch",1600]},
+  anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500], crack:["crack",900], hatch:["hatch",1600], fly:["fly",1100]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
   frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"},
   base: "assets/friedrich/",
@@ -258,7 +258,7 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/bc241afc433dbc0a0aa840c844a86a199951dc02/beta/assets/friedrich/manifest.json";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/e77b732a3f712a9993f6e2f26eeabdebfa7260c9/beta/assets/friedrich/manifest.json";
 /* Standardansicht je Stufe im Prüfstand */
 const DEFAULT_POSE = {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"};
 const defPose = s => DEFAULT_POSE[s] || "front";
@@ -267,9 +267,9 @@ const $ = s => document.querySelector(s);
 const stagesEl = $("#stages"), posesEl = $("#poses"), animsEl = $("#anims");
 stagesEl.innerHTML = FR.stages.map((s,i)=>`<button data-s="${s}" aria-pressed="${s===stage}">G0${i+1} ${FR.stageName[s]}</button>`).join("");
 /* Erwartete Bilder je Stufe: das Ei hat statt der Vogel-Frames Riss und Schlüpfen */
-const expected = s => s==="egg" ? FR.views.concat(FR.extra.egg) : FR.views.concat(FR.frames);
-const ANIM_NAME = {celebrate:"Jubeln",levelup:"Level Up",think:"Nachdenken",encourage:"Ermutigen",wave:"Winken",look_left:"Blick links",look_right:"Blick rechts",crack:"Riss",hatch:"Schlüpfen"};
-const animsFor = s => s==="egg" ? ["crack","hatch"] : ["celebrate","levelup","think","encourage","wave","look_left","look_right"];
+const expected = s => s==="egg" ? FR.views.concat(FR.extra.egg) : FR.views.concat(FR.frames, FR.extra[s] || []);
+const ANIM_NAME = {celebrate:"Jubeln",levelup:"Level Up",think:"Nachdenken",encourage:"Ermutigen",wave:"Winken",look_left:"Blick links",look_right:"Blick rechts",crack:"Riss",hatch:"Schlüpfen",fly:"Fliegen"};
+const animsFor = s => s==="egg" ? ["crack","hatch"] : ["celebrate","levelup","think","encourage","wave","look_left","look_right"].concat(FR.extra[s] || []);
 function renderPoseButtons(){
   posesEl.innerHTML = expected(stage).map(p=>`<button data-p="${p}" aria-pressed="${p===pose}">${FR.poseName[p]}</button>`).join("");
   animsEl.innerHTML = animsFor(stage).map(a=>`<button data-a="${a}">${ANIM_NAME[a]}</button>`).join("");
@@ -347,7 +347,7 @@ function parsePinAny(f){
   }
   return null;
 }
-const ALLP = () => FR.views.concat(FR.frames, FR.extra.egg);
+const ALLP = () => FR.views.concat(FR.frames, ...Object.values(FR.extra));
 function idToKey(id, e){
   const st = (e && e.stage) ? String(e.stage).toLowerCase() : null, po = (e && e.pose) ? String(e.pose).toLowerCase().replace(/-/g,"_") : null;
   if (st && po && FR.stages.includes(st) && ALLP().includes(po)) return st + "/" + po;
