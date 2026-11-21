@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -268,6 +268,21 @@
         },
         {
           "path": "ortsdiplom_urkunde-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "satzwerkstatt_bausteine": {
+      "name": "Satzbausteine für die Satzwerkstatt",
+      "images": [
+        {
+          "path": "satzwerkstatt_bausteine.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "satzwerkstatt_bausteine-128.webp",
           "width": 128,
           "height": 128
         }
