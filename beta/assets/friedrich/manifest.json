@@ -1,4 +1,10 @@
 {
- "version": 1,
- "files": {}
+ "version": 2,
+ "files": {
+  "king/front": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_king_front.png"
+  }
+ }
 }
