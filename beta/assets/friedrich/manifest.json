@@ -1,5 +1,5 @@
 {
- "version": 17,
+ "version": 18,
  "files": {
   "king/front": {
    "w": 1024,
@@ -330,6 +330,11 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_egg_hatch.png"
+  },
+  "egg/crack": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_egg_crack.png"
   }
  }
 }
