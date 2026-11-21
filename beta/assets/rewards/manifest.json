@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -257,6 +257,22 @@
         },
         {
           "path": "bow-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "pack": {
+      "name": "Reiserucksack",
+      "slot": "back",
+      "images": [
+        {
+          "path": "pack.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "pack-128.webp",
           "width": 128,
           "height": 128
         }
