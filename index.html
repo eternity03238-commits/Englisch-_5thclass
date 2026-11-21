@@ -1314,7 +1314,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Speicher: Google Firebase Firestore (kostenlos), angesprochen über die REST-Schnittstelle.
    Jede Familie hat einen eigenen, nicht erratbaren Familiencode = eigenes Dokument.
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
-const CLOUD = {project:"", key:""};   /* wird nach der Einrichtung eingetragen */
+const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
 const cloudOn = () => !!(CLOUD.project && CLOUD.key);
 let famCode = null; try { famCode = localStorage.getItem(FAM_KEY); } catch(e) {}
