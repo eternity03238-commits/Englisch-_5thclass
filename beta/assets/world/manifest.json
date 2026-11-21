@@ -1,5 +1,5 @@
 {
-  "version": 13,
+  "version": 14,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -188,6 +188,21 @@
           "path": "hafenstadt/leuchtturm-zimmer-640.webp",
           "width": 640,
           "height": 1137
+        }
+      ]
+    },
+    "spukschloss-auf-der-klippe": {
+      "learningArea": "hal",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/spukschloss-auf-der-klippe.webp",
+          "width": 941,
+          "height": 1671
+        },
+        {
+          "path": "hafenstadt/spukschloss-auf-der-klippe-640.webp",
+          "width": 640,
+          "height": 1136
         }
       ]
     }
