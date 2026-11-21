@@ -431,12 +431,12 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .hand s{text-decoration-color:#C0262D;text-decoration-thickness:2px}
 .red-note{color:#C0262D;font-weight:600}
 .gradebox{display:flex;align-items:center;gap:18px}
-.stamp{flex:none;width:118px;height:118px;border-radius:50%;border:5px solid var(--h);color:var(--h);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-12deg) scale(2.4);opacity:0;background:rgba(255,255,255,.6)}
-.stamp.in{animation:stampIn .45s cubic-bezier(.2,1.4,.4,1) forwards}
+.gstamp{flex:none;width:118px;height:118px;border-radius:50%;border:5px solid var(--h);color:var(--h);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-12deg) scale(2.4);opacity:0;background:rgba(255,255,255,.6)}
+.gstamp.in{animation:stampIn .45s cubic-bezier(.2,1.4,.4,1) forwards}
 @keyframes stampIn{to{transform:rotate(-12deg) scale(1);opacity:1}}
-.stamp small{font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.72rem}
-.stamp b{font-family:"Caveat","Bradley Hand","Segoe Print","Comic Sans MS",cursive;font-size:3.6rem;line-height:.9}
-.stamp span{font-weight:700;font-size:.78rem}
+.gstamp small{font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.72rem}
+.gstamp b{font-family:"Caveat","Bradley Hand","Segoe Print","Comic Sans MS",cursive;font-size:3.6rem;line-height:.9}
+.gstamp span{font-weight:700;font-size:.78rem}
 .parts{display:flex;flex-direction:column;gap:8px}
 .prow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;align-items:center;gap:10px;font-size:.92rem}
 .prow .hand{font-size:1.25rem;color:#C0262D}
@@ -444,7 +444,7 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .fixrow:last-child{border-bottom:0}
 .fixrow .nr{flex:none;width:30px;height:30px;border-radius:50%;background:#FDE3E3;color:#C0262D;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.8rem}
 .fixrow .pts{flex:none;font-size:1.2rem}
-@media (prefers-reduced-motion:reduce){.stamp{transform:rotate(-12deg);opacity:1}.stamp.in{animation:none}}
+@media (prefers-reduced-motion:reduce){.gstamp{transform:rotate(-12deg);opacity:1}.gstamp.in{animation:none}}
 .codebox{font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.06em;font-size:1rem;color:var(--navy);background:#EAF6FC;border:2px dashed #9CCFE6;border-radius:12px;padding:10px 12px;text-align:center;word-break:break-all;user-select:all}
 .syncdot{width:12px;height:12px;border-radius:50%;background:#1FB97E;box-shadow:0 0 0 0 rgba(31,185,126,.6);animation:syncp 2s infinite}
 @keyframes syncp{70%{box-shadow:0 0 0 10px rgba(31,185,126,0)}100%{box-shadow:0 0 0 0 rgba(31,185,126,0)}}
@@ -453,6 +453,156 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .postcard{position:relative}
 .updbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#16406B;color:#fff;font-weight:700;box-shadow:0 -6px 20px rgba(14,42,71,.25)}
 .updbar .btn{min-height:44px;flex:none}
+/* ================= 3D-SPIELWELT ================= */
+:root{
+  --line:#C7E3F2; --panel-2:#EEF8FD;
+  --clay-hi:inset 0 2px 0 rgba(255,255,255,.55), inset 0 -3px 0 rgba(0,0,0,.08);
+  --lift:0 2px 0 #CFE3EF, 0 6px 0 #B7D3E4, 0 14px 24px rgba(14,42,71,.14);
+  --shadow:0 4px 0 #BBD6E6, 0 10px 22px rgba(14,42,71,.10);
+}
+body{background:radial-gradient(120% 60% at 85% -10%,#FFF6C9 0,rgba(255,246,201,0) 45%),linear-gradient(180deg,#3FB7F5 0,#7FD3FF 28%,#BDEBFF 58%,#E9F9FF 100%) fixed;background-color:#BDEBFF}
+.display{text-shadow:0 2px 0 rgba(255,255,255,.65)}
+/* Karten wie aus weichem Kunststoff */
+.panel,.card,.tile,.stat,.stagebar{border:0;border-radius:22px;background:linear-gradient(180deg,#FFFFFF,#F6FBFE);box-shadow:var(--lift),inset 0 1px 0 #fff}
+.card{border-radius:28px}
+/* Knöpfe: knubbelig, mit Licht oben und dicker Kante unten */
+.btn{border-radius:18px;transition:transform .1s ease,box-shadow .1s ease,filter .1s}
+.btn:active{transform:translateY(4px)}
+.btn-main{background:linear-gradient(180deg,#FFB561 0,#FF8A3D 45%,#FF5E5B 100%);box-shadow:var(--clay-hi),0 6px 0 #C2413C,0 12px 22px rgba(255,94,91,.35);text-shadow:0 1px 0 rgba(150,40,20,.35)}
+.btn-main:active{box-shadow:var(--clay-hi),0 2px 0 #C2413C,0 4px 10px rgba(255,94,91,.3)}
+.btn-good{background:linear-gradient(180deg,#4FE0A4,#1FB97E);box-shadow:var(--clay-hi),0 6px 0 #11835A}
+.btn-good:active{box-shadow:var(--clay-hi),0 2px 0 #11835A}
+.btn-bad{background:linear-gradient(180deg,#FF7A8E,#EF4D67);box-shadow:var(--clay-hi),0 6px 0 #B02B44}
+.btn-bad:active{box-shadow:var(--clay-hi),0 2px 0 #B02B44}
+.btn-ice{background:linear-gradient(180deg,#3FC6F0,#0B95C2);box-shadow:var(--clay-hi),0 6px 0 #07698A}
+.btn-ice:active{box-shadow:var(--clay-hi),0 2px 0 #07698A}
+.btn-soft{border:0;background:linear-gradient(180deg,#fff,#EEF7FC);box-shadow:inset 0 1px 0 #fff,0 4px 0 #BCD8E8,0 8px 16px rgba(14,42,71,.08)}
+.btn-soft:active{box-shadow:inset 0 1px 0 #fff,0 1px 0 #BCD8E8}
+.btn-ghost{border:2px solid rgba(255,255,255,.9);background:rgba(255,255,255,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.field,.answer{border:0;background:#F1F8FC;box-shadow:inset 0 3px 0 rgba(14,42,71,.08),0 0 0 2px #D3E8F3}
+.field:focus,.answer:focus{box-shadow:inset 0 3px 0 rgba(14,42,71,.08),0 0 0 3px var(--ice);outline:none}
+.seg{border:0;background:#E3F1F9;box-shadow:inset 0 2px 0 rgba(14,42,71,.07)}
+.seg button[aria-pressed="true"]{background:#fff;box-shadow:0 3px 0 #BCD8E8;color:var(--navy)}
+.pill{border:0;background:#fff;box-shadow:0 3px 0 #BCD8E8}
+.tile{min-height:112px;transition:transform .12s}
+.tile:active{transform:translateY(3px)}
+.tile .ti{width:42px;height:42px;border-radius:14px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.08),0 3px 0 rgba(14,42,71,.08)}
+.deck{border:0!important;border-radius:20px!important;background:linear-gradient(180deg,#fff,#F5FAFD)!important;box-shadow:0 4px 0 #BCD8E8,0 8px 18px rgba(14,42,71,.08)!important}
+.deck:active{transform:translateY(3px)}
+.mbar .close{border:0;box-shadow:0 4px 0 #BCD8E8;background:#fff}
+.mbar .prog{height:16px;border-radius:999px;background:#fff;box-shadow:inset 0 2px 0 rgba(14,42,71,.1)}
+.mbar .prog i{border-radius:999px;background:linear-gradient(180deg,#5BE3A8,#1FB97E)!important;box-shadow:inset 0 2px 0 rgba(255,255,255,.5)}
+.sheet{border-radius:28px 28px 0 0}
+
+/* ---------- Startseite: Spiel-HUD ---------- */
+.hud{display:flex;align-items:center;gap:10px}
+.hud-me{display:flex;align-items:center;gap:10px;min-width:0;flex:1;text-align:left;padding:0}
+.hud .avatar{width:54px;height:54px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff,#DDF2FD);box-shadow:0 4px 0 #A9CFE3,0 8px 16px rgba(14,42,71,.15);padding:4px}
+.hud .who b{font-size:1.12rem;color:#0E3460;text-shadow:0 1px 0 rgba(255,255,255,.7)}
+.hud .who small{color:#1D5B8A;font-weight:600}
+.hud-chips{display:flex;gap:6px;flex:none}
+.chip3d{display:inline-flex;align-items:center;gap:4px;height:38px;padding:0 10px 0 6px;border-radius:999px;background:linear-gradient(180deg,#fff,#EAF5FB);box-shadow:0 3px 0 #A9CFE3,0 6px 12px rgba(14,42,71,.12);font-family:var(--f-display);font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+.chip3d i{font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:.95rem}
+.c-flame i{background:#FFE6CF}
+.c-fish i{background:#D9F1FC}
+.c-lv{padding:0;width:44px;height:44px;justify-content:center}
+.lvring{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#FFB627 calc(var(--p,0)*1%),#E3EEF5 0)}
+.lvring b{width:28px;height:28px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:.85rem;color:#B5651D}
+@media (max-width:380px){.hud .who small{display:none}.chip3d{padding:0 8px 0 4px}}
+
+/* Hafen als Bühne */
+.harbor-wrap{height:310px;border:0;border-radius:30px;box-shadow:0 6px 0 #6FB4D6,0 18px 30px rgba(14,42,71,.22),inset 0 0 0 3px rgba(255,255,255,.65)}
+.stagebar{margin-top:-28px;margin-inline:14px;position:relative;z-index:4;padding:8px 12px;border-radius:999px}
+.stagebar .minibar{height:14px;background:#E3EEF5;box-shadow:inset 0 2px 0 rgba(14,42,71,.1)}
+.stagebar .minibar i{background:linear-gradient(180deg,#FFD36B,#FFA51F);box-shadow:inset 0 2px 0 rgba(255,255,255,.55)}
+
+/* Großer Play-Knopf */
+.play-btn{position:relative;overflow:hidden;width:100%;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:26px;text-align:left;color:#fff;
+  background:linear-gradient(180deg,#FFC069 0,#FF8A3D 40%,#FF5E5B 100%);box-shadow:inset 0 3px 0 rgba(255,255,255,.5),inset 0 -5px 0 rgba(160,40,30,.18),0 8px 0 #C2413C,0 18px 30px rgba(255,94,91,.38);transition:transform .1s,box-shadow .1s}
+.play-btn:active{transform:translateY(6px);box-shadow:inset 0 3px 0 rgba(255,255,255,.5),0 2px 0 #C2413C,0 6px 12px rgba(255,94,91,.3)}
+.play-btn::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);animation:shine 3.2s ease-in-out infinite;pointer-events:none}
+.play-btn b{display:block;font-family:var(--f-display);font-size:1.5rem;line-height:1.05;text-shadow:0 2px 0 rgba(150,40,20,.3)}
+.play-btn small{display:block;font-weight:600;opacity:.95;margin-top:4px;font-size:.88rem}
+.play-ic{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff,#FFE3C9);box-shadow:0 4px 0 #D9622B,inset 0 -3px 0 rgba(0,0,0,.06);color:#FF5E5B;animation:playpulse 1.8s ease-in-out infinite}
+.play-ic svg{width:30px;height:30px;margin-left:4px}
+@keyframes playpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.play-btn.done{background:linear-gradient(180deg,#6CD3F7,#2E9FD0 60%,#1F82B3);box-shadow:inset 0 3px 0 rgba(255,255,255,.5),0 8px 0 #186C95,0 18px 30px rgba(31,130,179,.3)}
+.play-btn.done .play-ic{color:#1F82B3;box-shadow:0 4px 0 #186C95;animation:none}
+.play-btn.done::after{display:none}
+
+/* Drei runde Knöpfe */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.orb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px 12px;border-radius:24px;color:#fff;text-align:center;min-width:0;transition:transform .1s,box-shadow .1s}
+.orb:active{transform:translateY(5px)}
+.orb-ic{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.25);box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -3px 0 rgba(0,0,0,.1)}
+.orb-ic svg{width:28px;height:28px}
+.orb b{font-family:var(--f-display);font-size:1.05rem;line-height:1.05;text-shadow:0 1px 0 rgba(0,0,0,.18)}
+.orb small{font-size:.72rem;opacity:.92;line-height:1.15}
+.o-sent{background:linear-gradient(180deg,#B49AF2,#7C5AD6);box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 6px 0 #563AA6,0 12px 20px rgba(86,58,166,.3)}
+.o-sent:active{box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 1px 0 #563AA6}
+.o-good{background:linear-gradient(180deg,#52E3A9,#17A570);box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 6px 0 #0E7C51,0 12px 20px rgba(14,124,81,.28)}
+.o-good:active{box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 1px 0 #0E7C51}
+.o-ice{background:linear-gradient(180deg,#4CCDF4,#0A8DBB);box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 6px 0 #076A8C,0 12px 20px rgba(7,106,140,.28)}
+.o-ice:active{box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 1px 0 #076A8C}
+
+/* Reise-Leiste */
+.journey{width:100%;display:flex;flex-direction:column;gap:6px;padding:12px 14px;border-radius:22px;text-align:left;background:linear-gradient(180deg,#fff,#F3F9FD);box-shadow:var(--lift)}
+.journey:active{transform:translateY(3px)}
+.journey .jtop{display:flex;align-items:center;gap:8px}
+.journey .jtop b{font-family:var(--f-display);color:var(--navy);font-size:1.02rem}
+.journey .jtop small{margin-left:auto;color:var(--muted);font-weight:600;font-size:.8rem;text-align:right}
+.newdot{display:inline-block;background:var(--flame-2);color:#fff;font-weight:700;font-size:.72rem;padding:2px 8px;border-radius:999px;margin-left:4px;animation:pulse 1.4s infinite}
+
+/* Kompakte Testkarte */
+.storm{border:0;border-radius:24px;box-shadow:inset 0 2px 0 rgba(255,255,255,.18),0 6px 0 #142A47,0 14px 24px rgba(14,42,71,.3)}
+.tbar{width:100%;display:flex;align-items:center;gap:12px;color:#fff;text-align:left;padding:0}
+.tbar .ticon{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;background:rgba(255,255,255,.14);box-shadow:inset 0 2px 0 rgba(255,255,255,.2)}
+.tbar .tmid{min-width:0;flex:1}
+.tbar .tmid b{display:block;font-family:var(--f-display);font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tbar .tmid small{display:flex;align-items:center;gap:6px}
+.tbar .tmid small i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.tbar .count{font-size:2rem}
+.tbar .chev{transition:transform .2s;opacity:.8}
+.storm.open .tbar .chev{transform:rotate(180deg)}
+
+.foot .btn{min-height:40px;font-size:.84rem}
+
+/* Hafen: lebendige Details */
+.world .boat{animation:sail linear infinite}
+.world .boat .bob2{animation:bob 2.4s ease-in-out infinite;transform-box:fill-box}
+.world .bird{animation:birdfly linear infinite}
+.world .bird path{animation:flapw .5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+.world .jump{transform-box:fill-box;transform-origin:center;animation:fishjump 7s ease-in-out infinite;opacity:0}
+.world .due{transform-box:fill-box;transform-origin:center bottom;animation:duebounce 1.4s ease-in-out infinite}
+.world .flag{transform-box:fill-box;transform-origin:left center;animation:flagw 1.2s ease-in-out infinite alternate}
+@keyframes sail{from{transform:translateX(-160px)}to{transform:translateX(1560px)}}
+@keyframes birdfly{from{transform:translate(-80px,0)}50%{transform:translate(700px,-24px)}to{transform:translate(1480px,10px)}}
+@keyframes flapw{from{transform:scaleY(1)}to{transform:scaleY(-.6)}}
+@keyframes fishjump{0%,78%,100%{opacity:0;transform:translate(0,30px) rotate(-40deg)}80%{opacity:1}86%{transform:translate(18px,-26px) rotate(0)}92%{opacity:1;transform:translate(36px,24px) rotate(50deg)}93%{opacity:0}}
+@keyframes duebounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes flagw{from{transform:skewY(-6deg) scaleX(.92)}to{transform:skewY(6deg) scaleX(1)}}
+.hgull.happy .gull .bob{animation:hop .45s ease-in-out 2}
+
+/* Belohnungen */
+.lvbox{display:flex;flex-direction:column;gap:8px}
+.lvline{display:flex;align-items:center;gap:10px}
+.lvbadge{flex:none;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:1.25rem;color:#8A4A10;background:radial-gradient(circle at 35% 30%,#FFF4C2,#FFC43D);box-shadow:0 4px 0 #C98A12,inset 0 -3px 0 rgba(0,0,0,.08)}
+.lvbar{flex:1;height:20px;border-radius:999px;background:#E3EEF5;box-shadow:inset 0 3px 0 rgba(14,42,71,.1);overflow:hidden}
+.lvbar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(180deg,#FFD36B,#FFA51F);box-shadow:inset 0 3px 0 rgba(255,255,255,.55);transition:width 1.2s cubic-bezier(.3,.8,.3,1)}
+.lvup{align-items:center;text-align:center;background:linear-gradient(180deg,#FFF3C4,#FFD96B)!important;animation:lvup .7s cubic-bezier(.2,1.5,.4,1) both}
+.lvup b{font-family:var(--f-display);font-size:1.7rem;color:#8A4A10;letter-spacing:.04em}
+@keyframes lvup{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
+.chest{align-items:center;text-align:center;cursor:pointer}
+.chest svg{width:130px;height:110px;overflow:visible}
+.chest .lid{transform-box:fill-box;transform-origin:15% 100%;transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
+.chest.opened .lid{transform:rotate(-38deg) translate(-6px,-10px)}
+.chest:not(.opened) svg{animation:wobble 2s ease-in-out infinite}
+.chest .glow{opacity:0;transition:opacity .4s}
+.chest.opened .glow{opacity:1}
+.floatxp{position:fixed;z-index:70;pointer-events:none;font-family:var(--f-display);font-weight:700;font-size:1.3rem;color:#FFB627;text-shadow:0 2px 0 #8A4A10,0 0 10px rgba(255,255,255,.8);animation:floatup 1s ease-out forwards}
+.stars-row svg{width:64px;height:64px;filter:drop-shadow(0 4px 0 rgba(201,138,18,.45))}
+.stat b{font-size:1.7rem}
+@media (prefers-reduced-motion:reduce){.world .boat,.world .bird,.world .jump,.world .due,.world .flag,.play-ic,.chest svg{animation:none}}
 </style>
 
 </head>
@@ -470,12 +620,13 @@ Bitte öffne sie über den Link, den du bekommen hast.
   <section id="s-onboard" class="stack" hidden></section>
 
   <section id="s-home" class="stack" hidden>
-    <div class="topbar">
-      <div class="avatar" id="hAvatar"></div>
-      <div class="who"><b id="hName"></b><small id="hRank"></small></div>
-      <div class="spacer"></div>
-      <span class="pill" title="Tage hintereinander geübt"><span aria-hidden="true">🔥</span><span id="hStreak">0</span></span>
-      <span class="pill" title="Level">Lv <span id="hLevel">1</span></span>
+    <div class="hud">
+      <button class="hud-me" data-act="openWardrobe" aria-label="Kleiderschrank öffnen"><span class="avatar" id="hAvatar"></span><span class="who"><b id="hName"></b><small id="hRank"></small></span></button>
+      <div class="hud-chips">
+        <span class="chip3d c-flame" title="Tage hintereinander geübt"><i aria-hidden="true">🔥</i><b id="hStreak">0</b></span>
+        <span class="chip3d c-fish" title="Fische für die Möwe"><i aria-hidden="true">🐟</i><b id="hFish">0</b></span>
+        <span class="chip3d c-lv" title="Level"><span class="lvring" id="hLvRing"><b id="hLevel">1</b></span></span>
+      </div>
     </div>
     <div id="introCard"></div>
     <div class="harbor-wrap" id="harborWrap">
@@ -486,16 +637,16 @@ Bitte öffne sie über den Link, den du bekommen hast.
     </div>
     <div class="stagebar" data-act="growthInfo" role="button" style="cursor:pointer"><b id="hStage"></b><div class="minibar"><i id="hStageBar"></i></div><small class="muted" id="hStageTxt"></small></div>
     <div id="testCard"></div>
-    <button class="lesson-btn" data-act="startDaily" id="lessonBtn">
-      <div><b id="lTitle"></b><small id="lSub"></small></div>
-      <span class="go"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+    <button class="play-btn" data-act="startDaily" id="lessonBtn">
+      <span class="play-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 001.5.9l12-7.5a1 1 0 000-1.8l-12-7.5A1 1 0 007 4.5z"/></svg></span>
+      <div style="min-width:0"><b id="lTitle"></b><small id="lSub"></small></div>
     </button>
-    <button class="bigbtn b-sent" data-act="startSentences" style="width:100%;flex-direction:row;align-items:center;min-height:0"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h8v6H3zm10 0h8v6h-8zM3 13h5v6H3zm7 0h11v6H10z"/></svg><div style="display:flex;flex-direction:column;gap:2px"><b>Satzwerkstatt</b><small>11 Sätze mit allen aktuellen Vokabeln</small></div><span class="go" style="margin-left:auto;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;flex:none"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
-    <div class="duo">
-      <button class="bigbtn b-good" data-act="openDeck" data-mode="mama"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 3.9.9 5.5L12 14.6l-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/><path d="M6 19h12v3H6z"/></svg><b>Möwen-Prüfung</b><small>mit Mama, Papa, Oma …</small></button>
-      <button class="bigbtn b-ice" data-act="openExtras"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z"/></svg><b>Extras</b><small>Spiele, Karte, Kleiderschrank</small></button>
+    <div class="trio">
+      <button class="orb o-sent" data-act="startSentences"><span class="orb-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h8v6H3zm10 0h8v6h-8zM3 13h5v6H3zm7 0h11v6H10z"/></svg></span><b>Sätze</b><small>Satzwerkstatt</small></button>
+      <button class="orb o-good" data-act="openDeck" data-mode="mama"><span class="orb-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 3.9.9 5.5L12 14.6l-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/></svg></span><b>Prüfung</b><small>mit der Familie</small></button>
+      <button class="orb o-ice" data-act="openExtras"><span class="orb-ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h7v7H4zm9 0h7v7h-7zM4 13h7v7H4zm9 0h7v7h-7z"/></svg></span><b>Extras</b><small>Spiele & mehr</small></button>
     </div>
-    <div class="panel" id="flightCard"></div>
+    <button class="journey" id="flightCard" data-act="openJournal"></button>
     <div id="backupCard"></div>
     <div class="foot">
       <button class="btn btn-ghost" data-act="toggleSound" id="soundBtn"></button>
@@ -1318,7 +1469,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795257590";
+const BUILD = "1795260064";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -1853,15 +2004,30 @@ function worldSVG(m){
     const x = (i*233)%1300 - 100, y = 20 + (i*37)%(m.storm>=2?90:110), s = .8 + (i%3)*.35;
     g += `<g class="cl c${i%3+1}" style="animation-delay:-${(i*17)%60}s"><g transform="translate(${x},${y}) scale(${s})" fill="${clC}" opacity="${m.storm>=2?.95:.9}"><circle cx="0" cy="20" r="22"/><circle cx="26" cy="8" r="28"/><circle cx="56" cy="18" r="22"/><rect x="-4" y="20" width="64" height="22" rx="11"/></g></g>`;
   }
+  /* Hügel und ferne Stadt im Hintergrund: geben dem Hafen Tiefe */
+  const hillA = night ? "#24465E" : m.storm>=2 ? "#7F95A0" : m.tod==="evening" ? "#9C8FB8" : "#A6DEC4";
+  const hillB = night ? "#1C3A50" : m.storm>=2 ? "#6E8590" : m.tod==="evening" ? "#857AA6" : "#7FCFA9";
+  g += `<path d="M0 186V160C90 132 170 150 250 162S420 128 530 152 700 134 820 156 1000 126 1120 150 1300 132 1400 150V186z" fill="${hillA}" opacity=".75"/>
+    <g fill="${hillB}" opacity=".7">${[[150,22],[175,34],[200,18],[960,26],[985,40],[1012,20],[1035,30]].map(([x,h])=>`<rect x="${x}" y="${186-h-8}" width="22" height="${h+8}" rx="2"/>`).join("")}<path d="M985 ${186-48}l11-12 11 12z"/></g>
+    <path d="M0 186V172C120 160 220 176 340 170S560 158 700 172 920 160 1060 174 1280 162 1400 172V186z" fill="${hillB}"/>`;
   g += `<rect y="186" width="1400" height="154" fill="${sea}"/>
     <path class="wv" d="M-40 206q35-10 70 0t70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0" stroke="#fff" stroke-opacity=".35" stroke-width="3" fill="none"/>
     <path class="wv v2" d="M-40 230q35-10 70 0t70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0 70 0" stroke="#fff" stroke-opacity=".22" stroke-width="3" fill="none"/>`;
+  /* Segelboote, Vögel, springende Fische */
+  const boat = (y, sc, dur, delay, sail) => `<g transform="translate(0,${y}) scale(${sc})"><g class="boat" style="animation-duration:${dur}s;animation-delay:-${delay}s"><g class="bob2"><path d="M0 0h52l-10 12H9z" fill="#fff" stroke="#16406B" stroke-width="2.5" stroke-linejoin="round"/><path d="M26 0V-42" stroke="#16406B" stroke-width="2.5"/><path d="M28 -40l22 36H28z" fill="${sail}" stroke="#16406B" stroke-width="2" stroke-linejoin="round"/><path d="M24 -36l-17 32h17z" fill="#fff" stroke="#16406B" stroke-width="2" stroke-linejoin="round"/><path d="M26 -42l10 4-10 4z" fill="#EF4D67"/></g></g></g>`;
+  if (m.storm<3){ g += boat(202, .55, 95, 30, "#FF8A3D") + boat(214, .8, 70, 52, "#0B95C2"); }
+  if (!night && m.storm<2){
+    [[58,46,6,1],[86,60,30,.8],[40,52,44,.7]].forEach(([y,dur,delay,sc])=>{ g += `<g transform="translate(0,${y}) scale(${sc})"><g class="bird" style="animation-duration:${dur}s;animation-delay:-${delay}s"><path d="M0 0q7-8 14 0q7-8 14 0" stroke="#16406B" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>`; });
+  }
+  const fishSVG = c => `<path d="M0 0q12-10 24 0-12 10-24 0z" fill="${c}" stroke="#16406B" stroke-width="1.5"/><path d="M23 0l9-7v14z" fill="${c}" stroke="#16406B" stroke-width="1.5"/><circle cx="6" cy="-1.5" r="1.8" fill="#16406B"/>`;
+  g += `<g transform="translate(676,300)"><g class="jump">${fishSVG("#FF8A3D")}</g></g><g transform="translate(726,292)"><g class="jump" style="animation-delay:-3.5s">${fishSVG("#F2B632")}</g></g>`;
   if (m.storm>=2) g += `<path class="wv" d="M-40 196l40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14 40-14 40 14" stroke="#fff" stroke-opacity=".5" stroke-width="3" fill="none"/>`;
   /* Boden mit Lücke für die Seebrücke, Klippe rechts */
   g += `<path d="M0 262H640V340H0z" fill="${sand}"/><path d="M760 262H1262L1278 204H1400V340H760z" fill="${sand}"/>
     <path d="M1262 262L1278 204H1400" stroke="#B89A66" stroke-width="3" fill="none"/>
     <path d="M0 262H640M760 262H1262" stroke="#D8BE84" stroke-width="3"/>`;
   const focus = focusPlace().id;
+  const dueBy = {}; dueWords().forEach(w=>PLANETS.forEach(p=>{ if (inPl(w,p.id)) dueBy[p.id] = (dueBy[p.id]||0)+1; }));
   PLANETS.forEach(p=>{
     const x = WX[p.id], ps = placeStats(p.id), done = ps.safe===ps.total, hue = p.hue;
     let b = "";
@@ -1878,7 +2044,7 @@ function worldSVG(m){
         <rect x="${x-40}" y="212" width="16" height="16" fill="${win}" stroke="${ink}" stroke-width="1.5"/><rect x="${x+24}" y="212" width="16" height="16" fill="${win}" stroke="${ink}" stroke-width="1.5"/><rect x="${x-10}" y="232" width="20" height="30" fill="${hue}"/>`; break;
       case "sea": b = `<rect x="${x-110}" y="226" width="220" height="8" fill="#9C6B44"/>${[...Array(9)].map((_,i)=>`<path d="M${x-100+i*25} 234V340" stroke="#7A5233" stroke-width="5"/>`).join("")}
         <path d="M${x-110} 214H${x+110}" stroke="#fff" stroke-width="2.5"/>${[...Array(12)].map((_,i)=>`<path d="M${x-108+i*19} 214v12" stroke="#fff" stroke-width="2"/>`).join("")}
-        <rect x="${x+30}" y="190" width="54" height="36" fill="#fff" stroke="${ink}" stroke-width="2"/><path d="M${x+26} 192Q${x+57} 150 ${x+88} 192z" fill="${hue}" stroke="${ink}" stroke-width="2"/><path d="M${x+57} 158v-16" stroke="${ink}" stroke-width="2"/><path d="M${x+57} 142l14 5-14 5z" fill="#EF4D67"/><rect x="${x+40}" y="200" width="12" height="14" fill="${win}"/><rect x="${x+62}" y="200" width="12" height="14" fill="${win}"/>`; break;
+        <rect x="${x+30}" y="190" width="54" height="36" fill="#fff" stroke="${ink}" stroke-width="2"/><path d="M${x+26} 192Q${x+57} 150 ${x+88} 192z" fill="${hue}" stroke="${ink}" stroke-width="2"/><path d="M${x+57} 158v-16" stroke="${ink}" stroke-width="2"/><path class="flag" d="M${x+57} 142l14 5-14 5z" fill="#EF4D67"/><rect x="${x+40}" y="200" width="12" height="14" fill="${win}"/><rect x="${x+62}" y="200" width="12" height="14" fill="${win}"/>`; break;
       case "far": ["#EF4D67","#F2D23F","#0B95C2","#3CC47C"].forEach((col,i)=>{ const hx = x-54+i*28; b += `<rect x="${hx}" y="222" width="24" height="40" fill="${col}" stroke="${ink}" stroke-width="1.5"/><path d="M${hx-3} 224L${hx+12} 206L${hx+27} 224z" fill="#fff" stroke="${ink}" stroke-width="1.5"/><rect x="${hx+7}" y="242" width="10" height="20" fill="#fff" opacity=".8"/>`; }); break;
       case "tie": b = `<rect x="${x+22}" y="196" width="12" height="66" fill="#8A5A35"/><circle cx="${x+28}" cy="186" r="30" fill="#5DB85A"/><circle cx="${x+12}" cy="196" r="18" fill="#4FA64D"/>
         <ellipse cx="${x-18}" cy="238" rx="28" ry="18" fill="#9AA8B6"/><circle cx="${x+6}" cy="226" r="14" fill="#9AA8B6"/><path d="M${x+16} 232q8 10 2 22" stroke="#9AA8B6" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="${x+9}" cy="222" r="2.5" fill="${ink}"/><path d="M${x-36} 252v10M${x-6} 252v10" stroke="#9AA8B6" stroke-width="8"/>
@@ -1899,6 +2065,7 @@ function worldSVG(m){
     b += `<rect x="${x-w/2}" y="${signY}" width="${w}" height="34" rx="9" fill="#fff" stroke="${isF?"#FF8A3D":hue}" stroke-width="${isF?4:2}"/>
       <text x="${x}" y="${signY+16}" text-anchor="middle" font-family="Fredoka, Trebuchet MS, sans-serif" font-weight="700" font-size="14" fill="${ink}">${SHORT[p.id]}</text>
       <rect x="${x-34}" y="${signY+23}" width="68" height="5" rx="2.5" fill="#E3EEF5"/><rect x="${x-34}" y="${signY+23}" width="${(68*prog).toFixed(1)}" height="5" rx="2.5" fill="${hue}"/>
+      ${dueBy[p.id]?`<g class="due"><circle cx="${x-w/2+6}" cy="${signY-4}" r="13" fill="#FF5E5B" stroke="#fff" stroke-width="3"/><text x="${x-w/2+6}" y="${signY+2}" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="700" font-size="17" fill="#fff">!</text></g>`:""}
       ${done?`<path transform="translate(${x+w/2-4},${signY-2})" d="M0-11l3.2 6.6 7.3 1-5.3 5 1.3 7.2L0 5.4-6.5 8.8l1.3-7.2-5.3-5 7.3-1z" fill="#F2B632" stroke="#C98A12" stroke-width="1.5"/>`:""}`;
     g += `<g class="bld" data-act="openPlace" data-pid="${p.id}" role="button" aria-label="${esc(p.place)}"><rect x="${x-62}" y="80" width="124" height="230" fill="transparent"/>${b}</g>`;
   });
@@ -1916,7 +2083,7 @@ function renderHarbor(){
   wrap.className = "harbor-wrap" + (m.storm>=3 ? " storm3" : "");
   const fx = WX[focus] + 58, topU = focus==="hal" ? 182 : 226;
   const gw = 74, left = fx*HK - gw/2, top = topU*HK - gw*0.91;
-  inner.innerHTML = worldSVG(m) + `<div class="hgull" id="hGullEl" data-act="openWardrobe" role="button" aria-label="${esc(G())} anziehen" style="left:${(lastFocus && lastFocus!==focus ? (WX[lastFocus]+58)*HK-gw/2 : left).toFixed(0)}px;top:${top.toFixed(0)}px">${gullSVG(stage, GC(), {sleep})}</div>`;
+  inner.innerHTML = worldSVG(m) + `<div class="hgull" id="hGullEl" data-act="gullTap" role="button" aria-label="${esc(G())} antippen" style="left:${(lastFocus && lastFocus!==focus ? (WX[lastFocus]+58)*HK-gw/2 : left).toFixed(0)}px;top:${top.toFixed(0)}px">${gullSVG(stage, GC(), {sleep})}</div>`;
   if (lastFocus && lastFocus!==focus){ const el = $("#hGullEl"); requestAnimationFrame(()=>{ el.classList.add("flying"); el.style.left = left.toFixed(0)+"px"; }); }
   if (!harborScrolled || lastFocus!==focus){ requestAnimationFrame(()=>{ hb.scrollLeft = Math.max(0, fx*HK - hb.clientWidth/2); }); harborScrolled = true; }
   lastFocus = focus;
@@ -2283,21 +2450,19 @@ function renderIntro(){
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">1</b><div><b>Jeden Tag eine Unterrichtsstunde</b><div class="muted" style="font-size:.88rem">Etwa 10 Minuten. Du bringst ${esc(G())} neue Wörter bei und wiederholst alte. Jede Stunde bringt euch 50 km näher an England.</div></div></div>
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">2</b><div><b>${esc(G())} wächst mit</b><div class="muted" style="font-size:.88rem">Jedes Wort, das du ihr beibringst oder an einem anderen Tag wieder weißt, ist ein Fisch für sie. Mit genug Fischen wächst sie. Sie spricht nur, was du ihr beigebracht hast.</div></div></div>
     <div class="row" style="align-items:flex-start"><b style="color:#C4551A;width:22px;flex:none">3</b><div><b>Möwen-Prüfung mit der Familie</b><div class="muted" style="font-size:.88rem">Mama, Papa, Oma oder Opa prüfen, ob ${esc(G())} es wirklich kann. Das zählt am meisten.</div></div></div>
-    <small class="muted">Wisch über den Hafen und tipp auf die Orte: Jeder ist ein Thema. Tipp auf deine Möwe, um sie anzuziehen. Steht ein Vokabeltest an, zieht ein Sturm auf, bis ihr gut vorbereitet seid.</small>
+    <small class="muted">Wisch über den Hafen und tipp auf die Orte: Jeder ist ein Thema. Ein rotes Ausrufezeichen heißt: Hier wartet Arbeit. Tipp auf deine Möwe, dann spricht sie. Anziehen kannst du sie über dein Bild oben links. Steht ein Vokabeltest an, zieht ein Sturm auf, bis ihr gut vorbereitet seid.</small>
     <button class="btn btn-main btn-block" data-act="introOk">Verstanden!</button></div>`;
 }
 function renderFlight(){
   const km = S.km, last = STOPS[STOPS.length-1][1];
   const next = STOPS.find(s=>s[1]>km);
   const pos = x => `calc(8px + (100% - 16px) * ${Math.min(1, x/last).toFixed(4)})`;
-  $("#flightCard").innerHTML = `<div class="row" style="align-items:flex-end"><div><span class="label">Flug nach England</span><div style="font-family:var(--f-display);font-weight:700;font-size:1.15rem;color:var(--navy)">${km} km geflogen</div></div><span class="spacer"></span><small class="muted" style="text-align:right">${next?`Nächster Halt: <b>${next[0]}</b><br>noch ${next[1]-km} km`:"Ziel erreicht!"}</small></div>
-    <div class="route"><div class="track"></div><div class="done" style="width:calc((100% - 16px) * ${Math.min(1,km/last).toFixed(4)})"></div>
+  const got = CITIES.filter(c=>S.km>=c.km), seen = S.pcSeen||["Leipzig"], nNew = got.filter(c=>!seen.includes(c.n)).length;
+  $("#flightCard").innerHTML = `<span class="jtop"><span aria-hidden="true" style="font-size:1.25rem">🗺️</span><b style="white-space:nowrap">${km} km</b><small>${next?`nach <b style="font-size:inherit">${next[0]}</b>: noch ${next[1]-km} km`:"Ziel erreicht!"}</small></span>
+    <span class="route" style="display:block"><span class="track"></span><span class="done" style="width:calc((100% - 16px) * ${Math.min(1,km/last).toFixed(4)})"></span>
       ${STOPS.map(s=>`<span class="stop ${km>=s[1]?"on":""} ${s[0]==="Brighton"?"goal":""}" style="left:${pos(s[1])}" title="${s[0]}"></span>`).join("")}
-      <span class="plane" style="left:${pos(km)}">${I.flyer(GC())}</span></div>
-    <div class="row" style="justify-content:space-between"><small class="muted">Leipzig</small><small class="muted" style="color:#C4551A;font-weight:700">Brighton</small><small class="muted">Edinburgh</small></div>
-    ${S.reward?`<div class="tip"><b>Belohnung:</b> Wenn ${esc(G())} in Brighton landet: ${esc(S.reward)}</div>`:""}
-    ${(()=>{ const got = CITIES.filter(c=>S.km>=c.km), seen = S.pcSeen||["Leipzig"], nNew = got.filter(c=>!seen.includes(c.n)).length;
-      return `<button class="btn btn-soft btn-block" data-act="openJournal">Reisetagebuch · ${got.length} von ${CITIES.length} Postkarten${nNew?` <span class="newdot">${nNew} neu</span>`:""}</button>`; })()}`;
+      <span class="plane" style="left:${pos(km)}">${I.flyer(GC())}</span></span>
+    <span class="jtop"><small style="margin-left:0">📮 ${got.length}/${CITIES.length} Postkarten${nNew?` <span class="newdot">${nNew} neu</span>`:""}</small>${S.reward?`<small>🎁 ${esc(S.reward)}</small>`:""}</span>`;
 }
 function backupCode(){ try { return btoa(unescape(encodeURIComponent(JSON.stringify(Object.assign({},S,{pin:null}))))); } catch(e){ return ""; } }
 function reportText(withCode){
@@ -2321,7 +2486,7 @@ async function shareText(title, text, onDone){
   catch(e){ toast("Kopieren ging leider nicht."); }
 }
 function renderBackup(){
-  const need = introduced().length>0 && (!S.lastBackup || dayDiff(S.lastBackup, today())>=7);
+  const need = !famCode && introduced().length>0 && (!S.lastBackup || dayDiff(S.lastBackup, today())>=7);
   $("#backupCard").innerHTML = need ? `<div class="panel" style="flex-direction:row;align-items:center;border-color:var(--ice)">
       <div style="width:48px;flex:none">${myGull()}</div>
       <div style="flex:1;min-width:0"><b>Wochenbericht fällig</b><div class="muted" style="font-size:.85rem">Schick Mama oder Papa deinen Möwen-Bericht. Darin ist auch dein Spielstand gesichert.</div></div>
@@ -2329,6 +2494,7 @@ function renderBackup(){
 }
 const isAsleep = () => S.dailyDone===today() && dueWords().length===0;
 function learnedSentences(){ return SENT.filter(s=>ss(s.id) && ss(s.id).r>0).map(s=>fillN(s.en)); }
+let testOpen = null;
 function renderTestCard(){
   const box = $("#testCard");
   if (!testActive()){ box.innerHTML = ""; return; }
@@ -2342,27 +2508,33 @@ function renderTestCard(){
     left>0 ? `Heute: ${planNew(0)} neue Test-Wörter lernen. Noch ${left} neu.` :
     d===1 ? "Morgen ist der Test: Mach heute die Möwen-Prüfung mit allen Test-Wörtern." :
     "Heute: wiederholen und Sätze bauen.";
-  box.innerHTML = `<div class="storm" style="flex-direction:column;gap:8px;${ready?"background:linear-gradient(160deg,#2C8C6A,#1E6E55);border-color:#1E6E55":""}">
-    <div class="row" style="align-items:flex-start">
-      <div style="min-width:0"><span class="label">${ready?"Sturm verzogen":"Sturmwarnung"}: Test</span><div style="font-family:var(--f-display);font-weight:700;font-size:1.15rem">${esc(p.name)}</div><small>am ${wdName(S.test.date)}, ${dmy(S.test.date).slice(0,6)}</small></div>
-      <span class="spacer"></span>
-      <div class="center"><div class="count">${d===0?"!":d}</div><small>${d===0?"heute":d===1?"Tag":"Tage"}</small></div>
-    </div>
+  const open = testOpen==null ? d<=1 : testOpen;
+  box.innerHTML = `<div class="storm ${open?"open":""}" style="flex-direction:column;gap:8px;${ready?"background:linear-gradient(160deg,#2C8C6A,#1E6E55)":""}">
+    <button class="tbar" data-act="toggleTest" aria-expanded="${open}">
+      <span class="ticon" aria-hidden="true">${ready?"☀️":d<=1?"⛈️":"🌧️"}</span>
+      <span class="tmid"><b>Test: ${esc(p.name)}</b><small><i style="background:${rd.c}"></i>${esc(rd.t.split(":")[0])} · ${wdName(S.test.date)}, ${dmy(S.test.date).slice(0,6)}</small></span>
+      <span class="center"><span class="count" style="display:block">${d===0?"!":d}</span><small>${d===0?"heute":d===1?"Tag":"Tage"}</small></span>
+      <svg class="chev icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    ${open?`<div style="display:flex;flex-direction:column;gap:8px">
     <small>${ready?"Ihr seid bereit. Darum scheint am Hafen die Sonne.":`Je näher der Test, desto dunkler der Himmel am Hafen. Lern die Test-Wörter, dann verzieht sich der Sturm. ${ps.fixed} von ${ps.total} gelernt.`}</small>
     <div class="daydots">${days.map(x=>`<span class="${x===today()?"now":x<today()?"past":""}">${x===S.test.date?"Test":wdOf(x)}</span>`).join("")}</div>
     <span class="ampel" title="${esc(rd.d)}"><i style="background:${rd.c}"></i>${rd.t}</span>
     <div style="font-weight:700">${plan}</div>
     <div class="row"><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="startTest">Test-Training</button><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="testCards">Karteikarten</button></div>
     <button class="btn btn-main" style="min-height:48px" data-act="openExam">Probe-Klassenarbeit (45 Min.)</button>
+    </div>`:""}
   </div>`;
 }
 function renderHome(){
   const l = level(), stage = gullStage(), col = GC(), sleep = isAsleep();
   $("#hAvatar").innerHTML = gullSVG(Math.max(1,stage), col);
-  $("#hName").textContent = `${S.name} & ${G()}`;
+  $("#hName").textContent = S.name;
   $("#hRank").textContent = rank(l);
   $("#hStreak").textContent = S.streak && (S.lastDay===today()||S.lastDay===addDays(today(),-1)) ? S.streak : 0;
   $("#hLevel").textContent = l;
+  $("#hFish").textContent = S.fish||0;
+  $("#hLvRing").style.setProperty("--p", Math.round((S.xp % LEVEL_XP)/LEVEL_XP*100));
   renderIntro();
   renderHarbor();
   if (S.seenStage==null) S.seenStage = Math.min(stage,1);
@@ -2371,7 +2543,7 @@ function renderHome(){
   const fish = S.fish||0, nextSt = STAGES[stage+1];
   $("#hStage").textContent = STAGES[stage].n;
   if (stage===0){ $("#hStageBar").style.width = "0%"; $("#hStageTxt").textContent = "schlüpft in der 1. Stunde"; }
-  else if (nextSt){ const from = STAGES[stage].min; $("#hStageBar").style.width = Math.max(3,Math.round((fish-from)/(nextSt.min-from)*100))+"%"; $("#hStageTxt").textContent = `🐟 ${fish} · noch ${nextSt.min-fish} Fische bis ${nextSt.n}`; }
+  else if (nextSt){ const from = STAGES[stage].min; $("#hStageBar").style.width = Math.max(3,Math.round((fish-from)/(nextSt.min-from)*100))+"%"; $("#hStageTxt").textContent = `🐟 ${fish}/${nextSt.min} bis ${nextSt.n}`; }
   else { $("#hStageBar").style.width = "100%"; $("#hStageTxt").textContent = `🐟 ${fish} Fische`; }
   renderTestCard(); renderFlight(); renderBackup();
   const due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
@@ -2383,8 +2555,8 @@ function renderHome(){
   } else {
     btn.classList.remove("done"); btn.dataset.act = "startDaily";
     $("#lTitle").textContent = stage===0 ? "Erste Stunde: Ei ausbrüten" : S.lastDay===today() ? "Weiter unterrichten" : "Unterrichtsstunde";
-    const bits = []; if (nw) bits.push(`${nw} neue Wörter`); if (due) bits.push(`${Math.min(due,12)} Wiederholungen`); bits.push("Sätze");
-    $("#lSub").textContent = `${bits.join(" · ")} · ca. 10 Min. · +50 km`;
+    const bits = []; if (nw) bits.push(`${nw} neu`); if (due) bits.push(`${Math.min(due,12)} wiederholen`); bits.push("+50 km");
+    $("#lSub").textContent = `${bits.join(" · ")} · ca. 10 Min.`;
   }
   $("#soundBtn").textContent = S.settings.sound ? "Ton: an" : "Ton: aus";
   $("#slowBtn").textContent = S.settings.slow ? "Sprechtempo: langsam" : "Sprechtempo: normal";
@@ -2567,7 +2739,7 @@ function examFinish(timeUp){
   $("#s-summary").innerHTML = `<div class="paper result-paper">
       <div class="phead"><span>Probe-Klassenarbeit · ${esc(PMAP[E.pid].name)}</span><span>${dmy(today())}</span></div>
       <div class="gradebox">
-        <div class="stamp" style="--h:${hue}"><small>Note</small><b>${g}</b><span>${GRADE_TXT[g]}</span></div>
+        <div class="gstamp" style="--h:${hue}"><small>Note</small><b>${g}</b><span>${GRADE_TXT[g]}</span></div>
         <div class="stack" style="gap:4px;min-width:0">
           <div class="hand big">${fmtP(pts)} / ${max} P.</div>
           <b style="color:var(--navy)">${Math.round(pct*100)} % geschafft</b>
@@ -2603,14 +2775,14 @@ function examFinish(timeUp){
     <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openExam">Neue Probe-Klassenarbeit</button><button class="btn btn-soft" style="flex:1" data-act="home">Zum Hafen</button></div>`;
   M = null;
   show("summary"); window.scrollTo(0,0);
-  setTimeout(()=>{ sfx("hit"); const st = $("#s-summary .stamp"); if (st){ st.classList.add("in"); const [x,y] = centerOf(st); burst(x,y,40,[hue,"#fff",hue]); } }, 600);
+  setTimeout(()=>{ sfx("hit"); const st = $("#s-summary .gstamp"); if (st){ st.classList.add("in"); const [x,y] = centerOf(st); burst(x,y,40,[hue,"#fff",hue]); } }, 600);
   if (g<=2) setTimeout(()=>{ sfx("win"); confetti(); }, 1100);
 }
 
 function begin(mode, queue, boss){
   const fish0 = S.fish||0, stage0 = gullStage();
   M = {mode, queue, boss:boss||null, i:0, right:0, wrong:0, combo:0, best:0, xp:0, wrongSet:new Set(), lastType:null,
-       newCount:queue.filter(q=>q.kind==="intro").length, sentOk:0, sentTotal:0, missed:[], hatch: gullStage()===0, fish0, stage0};
+       newCount:queue.filter(q=>q.kind==="intro").length, sentOk:0, sentTotal:0, missed:[], hatch: gullStage()===0, fish0, stage0, xp0:S.xp};
   $("#bossBox").hidden = mode!=="boss";
   $("#combo").hidden = mode==="exam"; $("#examClock").hidden = mode!=="exam";
   show("mission"); renderBoss(); next();
@@ -2928,6 +3100,35 @@ function growthPanel(f0, st0){
   if (gained<=0) return "";
   return `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.8rem" aria-hidden="true">🐟</span><div><b>${esc(G())} hat ${gained} ${gained===1?"Fisch":"Fische"} bekommen</b><div class="muted" style="font-size:.88rem">${next?`Noch ${next.min-f} Fische bis zur ${next.n}.`:"Größer geht es nicht mehr!"}</div></div></div>`;
 }
+/* ============ BELOHNUNGEN ============ */
+function lvPanel(xp0){
+  const l0 = Math.floor((xp0||0)/LEVEL_XP)+1, l1 = level();
+  const p0 = l0===l1 ? ((xp0||0)%LEVEL_XP)/LEVEL_XP*100 : 0, p1 = (S.xp%LEVEL_XP)/LEVEL_XP*100;
+  return `${l1>l0?`<div class="panel lvup"><b>LEVEL UP!</b><span style="font-weight:700;color:#8A4A10">Level ${l1} · ${esc(rank(l1))}</span></div>`:""}
+    <div class="panel lvbox"><div class="lvline"><span class="lvbadge">${l1}</span><div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px"><div class="lvbar"><i id="lvFill" style="width:${p0.toFixed(1)}%" data-to="${p1.toFixed(1)}"></i></div><small class="muted">${S.xp%LEVEL_XP} von ${LEVEL_XP} XP bis Level ${l1+1}</small></div></div></div>`;
+}
+const CHEST_SVG = `<svg viewBox="0 0 130 110" aria-hidden="true">
+  <g class="glow">${[...Array(8)].map((_,i)=>`<path d="M65 52L${(65+70*Math.cos(i*Math.PI/4-Math.PI/2)).toFixed(0)} ${(52+60*Math.sin(i*Math.PI/4-Math.PI/2)).toFixed(0)}" stroke="#FFD23F" stroke-width="6" stroke-linecap="round" opacity=".6"/>`).join("")}<circle cx="65" cy="52" r="22" fill="#FFE98A"/></g>
+  <rect x="18" y="50" width="94" height="52" rx="8" fill="#B8692F" stroke="#6E3A16" stroke-width="3"/>
+  <rect x="18" y="62" width="94" height="8" fill="#F2B632" stroke="#9C6A0E" stroke-width="2"/><rect x="58" y="56" width="14" height="20" rx="3" fill="#F2B632" stroke="#9C6A0E" stroke-width="2"/><circle cx="65" cy="68" r="2.5" fill="#6E3A16"/>
+  <path d="M30 50V96M100 50V96" stroke="#F2B632" stroke-width="5"/>
+  <g class="lid"><path d="M16 52q0-28 49-28t49 28z" fill="#CC7A38" stroke="#6E3A16" stroke-width="3" stroke-linejoin="round"/><path d="M30 50q0-20 35-22M100 50q0-20-35-22" stroke="#F2B632" stroke-width="5" fill="none"/></g>
+</svg>`;
+function chestPanel(mode){
+  if (!["daily","test","sent"].includes(mode) || S.chestDay===today()) return "";
+  return `<div class="panel chest" data-act="openChest" role="button" aria-label="Tagestruhe öffnen">${CHEST_SVG}<b class="display" style="font-size:1.3rem;color:var(--navy)" id="chestT">Tagestruhe!</b><small class="muted" id="chestS">Eine pro Tag. Tipp drauf und öffne sie!</small></div>`;
+}
+function openChest(el){
+  if (S.chestDay===today()) return;
+  S.chestDay = today();
+  const xp = 20 + Math.floor(Math.random()*21), fish = 1 + Math.floor(Math.random()*3);
+  feed(fish); addXP(xp); save();
+  el.classList.add("opened"); sfx("win");
+  const [x,y] = centerOf(el); burst(x, y-30, 70, ["#FFD23F","#FF8A3D","#fff","#1FB97E"]);
+  $("#chestT").textContent = `+${xp} XP und +${fish} 🐟`;
+  $("#chestS").textContent = `${G()} freut sich! Morgen gibt es eine neue Truhe.`;
+  const f = $("#lvFill"); if (f){ f.style.width = ((S.xp%LEVEL_XP)/LEVEL_XP*100).toFixed(1)+"%"; }
+}
 function finish(){
   if (M.mode==="exam") return examFinish(false);
   hideSheet();
@@ -2958,6 +3159,8 @@ function finish(){
       <div class="stat"><b>+${Math.max(0,(S.fish||0)-M.fish0)}</b><small>🐟 Fische</small></div>
       <div class="stat"><b>${Math.round(acc*100)}%</b><small>richtig</small></div>
     </div>
+    ${lvPanel(M.xp0)}
+    ${chestPanel(M.mode)}
     ${growthPanel(M.fish0, M.stage0)}
     ${M.missedS && M.missedS.length?`<div class="panel"><span class="label">Diese Sätze kommen bald nochmal</span>${M.missedS.map(x=>`<div class="row" style="align-items:flex-start">${speakerBtn(x)}<span style="padding-top:12px">${esc(x)}</span></div>`).join("")}</div>`:""}
     ${M.mode==="sent"?`<button class="btn btn-soft btn-block" data-act="sentGo" data-pid="${M.place}">Noch eine Runde mit 11 Sätzen</button>`:""}
@@ -2967,6 +3170,8 @@ function finish(){
     ${accPanel(newAccessories())}
     <button class="btn btn-main btn-block" data-act="home">Zurück zum Hafen</button>`;
   show("summary");
+  setTimeout(()=>{ const f = $("#lvFill"); if (f) f.style.width = f.dataset.to+"%"; }, 500);
+  if ($("#s-summary .lvup")) setTimeout(()=>{ sfx("level"); confetti(); }, 900);
   const target = M.xp, el = $("#xpCount"); let v = 0;
   const step = () => { v = Math.min(target, v + Math.max(1, Math.ceil(target/40))); el.textContent = "+"+v; if (v<target) requestAnimationFrame(step); };
   requestAnimationFrame(step);
@@ -3548,6 +3753,17 @@ const ACT = {
   kidRename: () => { const n = $("#kidName").value.trim(); if (!n){ toast("Bitte einen Namen eingeben."); return; } S.name = n; save(); toast(`Name gespeichert: ${esc(n)}`); renderParents(); },
   renameGull: () => { OB.color = S.gull ? S.gull.color : 0; renderOnboard(false); show("onboard"); $("#gullIn").value = G(); },
   introOk: () => { S.introSeen = true; save(); renderHome(); },
+  openChest: b => openChest(b),
+  toggleTest: () => { const d = testActive() ? dayDiff(today(), S.test.date) : 9; testOpen = !(testOpen==null ? d<=1 : testOpen); renderTestCard(); },
+  gullTap: () => {
+    const el = $("#hGullEl"); if (!el) return;
+    el.classList.remove("happy"); void el.offsetWidth; el.classList.add("happy"); sfx("gull");
+    const [x,y] = centerOf(el); burst(x, y-20, 14, ["#FFD23F","#FF8A3D","#fff"]);
+    if (isAsleep()) return;
+    const line = gullLine();
+    $("#hBubble").innerHTML = `<div style="min-width:0"><span class="who-says">${esc(G())} sagt</span><div class="en">${esc(line.en)}</div>${line.de?`<small class="muted">${esc(line.de)}</small>`:""}</div>${line.en.length>3?`<button class="speak" data-act="say" data-t="${esc(line.en)}" aria-label="Anhören">${I.speaker}</button>`:""}`;
+    if (line.en.length>3) speak(line.en);
+  },
   startDaily, startTest, startSentences, startFix, openPost,
   startBoss: () => startBoss(),
   openExtras: renderExtras, openWardrobe: renderWardrobe,
