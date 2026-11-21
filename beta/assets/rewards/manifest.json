@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -305,6 +305,22 @@
         },
         {
           "path": "phones-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "star": {
+      "name": "Sternenbrille",
+      "slot": "eyes",
+      "images": [
+        {
+          "path": "star.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "star-128.webp",
           "width": 128,
           "height": 128
         }
