@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -206,6 +206,23 @@
         },
         {
           "path": "boss-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    }
+  },
+  "illustrations": {
+    "stufenaufstieg_podest": {
+      "name": "Podest für den Stufenaufstieg",
+      "images": [
+        {
+          "path": "stufenaufstieg_podest.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "stufenaufstieg_podest-128.webp",
           "width": 128,
           "height": 128
         }
