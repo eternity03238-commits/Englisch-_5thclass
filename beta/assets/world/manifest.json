@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -66,6 +66,21 @@
         },
         {
           "path": "hafenstadt/obststand-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "familien-picknick": {
+      "learningArea": "fam",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/familien-picknick.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/familien-picknick-640.webp",
           "width": 640,
           "height": 1137
         }
