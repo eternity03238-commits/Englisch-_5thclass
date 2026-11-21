@@ -1,5 +1,5 @@
 {
-  "version": 36,
+  "version": 37,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -568,6 +568,21 @@
         },
         {
           "path": "extras_kacheln-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "aussprache_lautsprecher": {
+      "name": "Lautsprecher für die Vokabelaussprache",
+      "images": [
+        {
+          "path": "aussprache_lautsprecher.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "aussprache_lautsprecher-128.webp",
           "width": 128,
           "height": 128
         }
