@@ -1,5 +1,5 @@
 {
-  "version": 28,
+  "version": 29,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -448,6 +448,21 @@
         },
         {
           "path": "lernwelt_hafenkarte-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "unterricht_schulbuch": {
+      "name": "Schulbuch für die Unterrichtsstunde",
+      "images": [
+        {
+          "path": "unterricht_schulbuch.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "unterricht_schulbuch-128.webp",
           "width": 128,
           "height": 128
         }
