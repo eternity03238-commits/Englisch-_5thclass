@@ -6,6 +6,10 @@
 <meta name="theme-color" content="#8ED2FF">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Möwenflug">
+<link rel="icon" type="image/svg+xml" href="icons/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Möwenflug</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -71,6 +75,11 @@ h1,h2,h3{margin:0;text-wrap:balance}
 .gull .bob{animation:bob 2.6s ease-in-out infinite}
 .gull.happy .wing{animation:flap .25s ease-in-out 4;transform-box:fill-box;transform-origin:80% 30%}
 .gull.sleep .bob{animation:none}
+.gull .wobble{animation:wobble 3.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes wobble{0%,70%,100%{transform:rotate(0)}76%{transform:rotate(-6deg)}82%{transform:rotate(5deg)}88%{transform:rotate(-3deg)}94%{transform:rotate(2deg)}}
+.gull .spark{animation:twinkle 2.4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(.6)}50%{opacity:1;transform:scale(1.1)}}
+.gull.chick .bob{animation:bob 1.8s ease-in-out infinite}
 .zz{font-family:var(--f-display);font-weight:700;fill:var(--navy);animation:zz 2.4s ease-in-out infinite}
 
 /* onboarding */
@@ -436,6 +445,12 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .fixrow .nr{flex:none;width:30px;height:30px;border-radius:50%;background:#FDE3E3;color:#C0262D;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.8rem}
 .fixrow .pts{flex:none;font-size:1.2rem}
 @media (prefers-reduced-motion:reduce){.stamp{transform:rotate(-12deg);opacity:1}.stamp.in{animation:none}}
+.codebox{font-family:ui-monospace,Menlo,monospace;font-weight:700;letter-spacing:.06em;font-size:1rem;color:var(--navy);background:#EAF6FC;border:2px dashed #9CCFE6;border-radius:12px;padding:10px 12px;text-align:center;word-break:break-all;user-select:all}
+.syncdot{width:12px;height:12px;border-radius:50%;background:#1FB97E;box-shadow:0 0 0 0 rgba(31,185,126,.6);animation:syncp 2s infinite}
+@keyframes syncp{70%{box-shadow:0 0 0 10px rgba(31,185,126,0)}100%{box-shadow:0 0 0 0 rgba(31,185,126,0)}}
+.pc:not(.locked),.postcard,.fc{transition:transform .18s ease-out;transform-style:preserve-3d;will-change:transform}
+.pc.tilting::after,.postcard.tilting::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.55),rgba(255,255,255,0) 55%);mix-blend-mode:soft-light}
+.postcard{position:relative}
 </style>
 
 </head>
@@ -571,6 +586,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
   <section id="s-sentpick" class="stack" hidden></section>
   <section id="s-overview" class="stack" hidden></section>
   <section id="s-exam" class="stack" hidden></section>
+  <section id="s-family" class="stack" hidden></section>
   <section id="s-deck" class="stack" hidden></section>
   <section id="s-cards" class="stack" hidden></section>
   <section id="s-pin" class="stack" hidden></section>
@@ -1293,7 +1309,173 @@ if (S && S.fish==null){ S.fish = Object.values(S.words||{}).reduce((a,x)=>a+(x.b
 const feed = n => { if (n>0){ S.fish = (S.fish||0) + n; } };
 /* Fehlerwörter nachrüsten: bisher galt "falsch gewesen und Stufe 1–2" */
 if (S) Object.values(S.words||{}).forEach(x=>{ if (x.lw===undefined){ x.lw = (x.w>0 && x.b<=2) ? (x.last||null) : null; x.okd = []; } });
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} };
+const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
+/* ============ FAMILIEN-SYNC: ein Lernstand auf allen Handys einer Familie ============
+   Speicher: Google Firebase Firestore (kostenlos), angesprochen über die REST-Schnittstelle.
+   Jede Familie hat einen eigenen, nicht erratbaren Familiencode = eigenes Dokument.
+   Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
+const CLOUD = {project:"", key:""};   /* wird nach der Einrichtung eingetragen */
+const FAM_KEY = "moewenflug-family";
+const cloudOn = () => !!(CLOUD.project && CLOUD.key);
+let famCode = null; try { famCode = localStorage.getItem(FAM_KEY); } catch(e) {}
+const SYNC = {busy:false, last:0, err:"", timer:null, again:false};
+const docUrl = code => `https://firestore.googleapis.com/v1/projects/${CLOUD.project}/databases/(default)/documents/families/${encodeURIComponent(code)}?key=${CLOUD.key}`;
+function newFamCode(){
+  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", r = new Uint32Array(16); crypto.getRandomValues(r);
+  let s = "MOEWE"; for (let i=0;i<16;i++){ if (i%4===0) s += "-"; s += A[r[i]%A.length]; } return s;
+}
+const normCode = x => String(x||"").toUpperCase().replace(/[^A-Z0-9]/g,"").replace(/^MOEWE/,"").replace(/(.{4})(?=.)/g,"$1-").replace(/^/,"MOEWE-");
+const validCode = x => /^MOEWE(-[A-Z0-9]{4}){4}$/.test(x);
+async function cloudGet(code){
+  const r = await fetch(docUrl(code), {cache:"no-store"});
+  if (r.status===404) return null;
+  if (!r.ok) throw new Error("HTTP "+r.status);
+  const j = await r.json(), f = j.fields || {};
+  return f.state ? JSON.parse(f.state.stringValue) : null;
+}
+async function cloudPut(code, state){
+  const body = JSON.stringify({fields:{state:{stringValue:JSON.stringify(state)}, upd:{integerValue:String(state.upd||Date.now())}}});
+  const r = await fetch(docUrl(code), {method:"PATCH", headers:{"Content-Type":"application/json"}, body, keepalive: body.length < 60000});
+  if (!r.ok) throw new Error("HTTP "+r.status);
+}
+/* Zwei Lernstände zusammenführen, ohne dass Fortschritt verloren geht */
+function newerEntry(a, b){
+  if (!a) return b; if (!b) return a;
+  const la = a.last||"", lb = b.last||"";
+  if (la!==lb) return la > lb ? a : b;
+  const na = (a.r||0)+(a.w||0), nb = (b.r||0)+(b.w||0);
+  if (na!==nb) return na > nb ? a : b;
+  return (a.b||0) >= (b.b||0) ? a : b;
+}
+function mergeMap(a, b, pick){ const out = {}; new Set([...Object.keys(a||{}), ...Object.keys(b||{})]).forEach(k=>{ out[k] = pick((a||{})[k], (b||{})[k]); }); return out; }
+const union = (a, b) => [...new Set([...(a||[]), ...(b||[])])];
+function mergeStates(L, R){
+  if (!R) return L; if (!L) return R;
+  const newer = (R.upd||0) > (L.upd||0) ? R : L;
+  const out = Object.assign({}, L, R, newer);
+  out.settings = L.settings;                       /* Ton und Tempo bleiben pro Gerät */
+  out.words = mergeMap(L.words, R.words, newerEntry);
+  out.sent = mergeMap(L.sent, R.sent, newerEntry);
+  out.ws = mergeMap(L.ws, R.ws, (a,b)=> !a ? b : !b ? a : ((a.n||0) >= (b.n||0) ? a : b));
+  ["xp","km","fish","seenStage"].forEach(k=>{ if (L[k]!=null || R[k]!=null) out[k] = Math.max(L[k]||0, R[k]||0); });
+  out.stats = mergeMap(L.stats, R.stats, (a,b)=> typeof a==="number" || typeof b==="number" ? Math.max(a||0, b||0) : (b ?? a));
+  out.days = union(L.days, R.days).sort().slice(-150);
+  out.lastDay = [L.lastDay, R.lastDay].filter(Boolean).sort().pop() || null;
+  out.streak = L.lastDay===R.lastDay ? Math.max(L.streak||0, R.streak||0) : (out.lastDay===L.lastDay ? L.streak : R.streak);
+  ["badges","pcSeen","accSeen"].forEach(k=>{ if (L[k] || R[k]) out[k] = union(L[k], R[k]); });
+  const ek = e => [e.d, e.kind||"", e.deck||"", e.n, e.ok].join("|");
+  const ex = new Map(); [...(L.exams||[]), ...(R.exams||[])].forEach(e=>ex.set(ek(e), e));
+  out.exams = [...ex.values()].sort((a,b)=>(a.d||"").localeCompare(b.d||"")).slice(-40);
+  out.boss = Object.assign({}, (newer===L ? R : L).boss, newer.boss);
+  out.upd = Math.max(L.upd||0, R.upd||0);
+  return out;
+}
+const sig = x => { const c = Object.assign({}, x); delete c.upd; delete c.settings; return JSON.stringify(c, Object.keys(c).sort()); };
+function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
+function schedSync(){
+  if (!cloudOn() || !famCode) return;
+  clearTimeout(SYNC.timer); SYNC.timer = setTimeout(()=>syncNow({quiet:true}), 4000);
+}
+async function syncNow(opts={}){
+  if (!cloudOn() || !famCode) return false;
+  if (SYNC.busy){ SYNC.again = true; return false; }
+  SYNC.busy = true; clearTimeout(SYNC.timer);
+  let news = false;
+  try {
+    const remote = await cloudGet(famCode);
+    if (!S && remote){ S = Object.assign(blank(), remote, {settings: blank().settings}); news = true; }
+    else if (S){
+      const merged = mergeStates(S, remote);
+      news = !!remote && sig(merged) !== sig(S);
+      S = merged;
+      if (!remote || sig(merged) !== sig(remote)) await cloudPut(famCode, S);
+    }
+    saveLocal();
+    SYNC.last = Date.now(); SYNC.err = "";
+    if (news && !opts.quiet && !$("#s-home").hidden) renderHome();
+    if (news && !opts.silent) toast(`Neuer Stand von einem anderen Handy geladen`);
+  } catch(e){ SYNC.err = String(e.message||e); }
+  SYNC.busy = false;
+  if (SYNC.again){ SYNC.again = false; schedSync(); }
+  if ($("#syncStat")) $("#syncStat").innerHTML = syncStatText();
+  return news;
+}
+function syncStatText(){
+  if (SYNC.err) return `<span style="color:var(--bad)">Gerade nicht erreichbar (${esc(SYNC.err)}). Der Stand wird später abgeglichen.</span>`;
+  if (!SYNC.last) return "Wird abgeglichen …";
+  const m = Math.round((Date.now()-SYNC.last)/60000);
+  return `Abgeglichen ${m<1?"gerade eben":`vor ${m} Min.`}`;
+}
+const famLink = () => location.href.split("#")[0] + "#familie=" + famCode;
+function famPanel(){
+  if (!cloudOn()) return `<div class="panel"><span class="label">Familien-Sync</span><small class="muted">Damit Friedrich auf jedem Handy denselben Stand hat, muss der Online-Speicher einmal eingerichtet werden. Bis dahin hilft der Sicherungscode unten.</small></div>`;
+  if (!famCode) return `<div class="panel fam"><span class="label">Familien-Sync</span>
+      <b style="color:var(--navy)">Ein Lernstand auf allen Handys</b>
+      <small class="muted">Lege eure Familie an. Dann schickst du den Einladungslink per WhatsApp an Papa, Oma oder Opa. Wer ihn öffnet, sieht sofort denselben Stand, und alles, was geübt wird, landet bei allen.</small>
+      <button class="btn btn-main" data-act="famCreate">Familie anlegen</button>
+      <label class="muted" for="famIn" style="font-size:.85rem">Oder Familiencode eingeben</label>
+      <div class="row"><input id="famIn" class="field" style="flex:1;min-width:0" placeholder="MOEWE-XXXX-XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off"><button class="btn btn-soft" data-act="famJoinIn">Verbinden</button></div>
+      <div id="famMsg" class="muted" style="font-size:.9rem"></div>
+    </div>`;
+  return `<div class="panel fam"><span class="label">Familien-Sync</span>
+      <div class="row"><span class="syncdot" aria-hidden="true"></span><b style="color:var(--navy)">Verbunden</b></div>
+      <small id="syncStat" class="muted">${syncStatText()}</small>
+      <div class="codebox">${esc(famCode)}</div>
+      <button class="btn btn-main" data-act="famShare">Einladung per WhatsApp schicken</button>
+      <div class="row"><button class="btn btn-soft" style="flex:1" data-act="famSyncNow">Jetzt abgleichen</button><button class="btn btn-ghost" style="flex:1" data-act="famLeave">Trennen</button></div>
+      <small class="muted">Jede Familie hat ihren eigenen Code. Andere Familien, die die App nutzen, sehen euren Stand nie.</small>
+    </div>`;
+}
+function renderFamJoin(code){
+  $("#s-family").innerHTML = `<div class="paper intro" style="text-align:center;align-items:center">
+      <div style="width:130px">${gullSVG(S ? Math.max(1,gullStage()) : 3, GC())}</div>
+      <h1 class="display" style="font-size:1.7rem;color:var(--navy);margin:0">Familien-Einladung</h1>
+      <p class="muted" style="margin:0">Mit diesem Link nutzt dieses Handy denselben Lernstand wie die anderen Handys der Familie. Was hier geübt wird, sehen alle anderen auch.</p>
+      ${S && S.name ? `<div class="tip" style="text-align:left">Auf diesem Handy ist schon ein Stand von <b>${esc(S.name)}</b>. Er wird mit dem Familienstand zusammengeführt. Es geht nichts verloren.</div>` : ""}
+      <div class="codebox">${esc(code)}</div>
+      <div id="famMsg" class="muted" style="font-size:.9rem"></div>
+    </div>
+    <button class="btn btn-main btn-block" data-act="famJoin" data-code="${esc(code)}" style="min-height:60px">Verbinden</button>
+    <button class="btn btn-soft btn-block" data-act="famCancel">Nicht jetzt</button>`;
+  show("family");
+}
+async function famJoin(code){
+  const msg = $("#famMsg"); if (msg) msg.textContent = "Verbinde …";
+  try {
+    const remote = await cloudGet(code);
+    if (!remote){ if (msg) msg.textContent = "Diesen Familiencode gibt es nicht. Bitte prüfen."; return; }
+    famCode = code; try { localStorage.setItem(FAM_KEY, code); } catch(e) {}
+    try { history.replaceState(null, "", location.pathname + location.search); } catch(e) {}
+    await syncNow({quiet:true, silent:true});
+    toast(`Verbunden! Hallo ${esc(S.name)}.`); confetti();
+    if (S && S.name && S.gull) show("home"); else { renderOnboard(!S || !S.name); show("onboard"); }
+  } catch(e){ if (msg) msg.textContent = "Keine Verbindung. Bitte später nochmal versuchen."; }
+}
+function famBoot(){
+  const m = location.hash.match(/familie=([A-Za-z0-9-]+)/);
+  if (m && cloudOn()){ const code = normCode(m[1]); if (validCode(code) && code!==famCode){ renderFamJoin(code); return true; } }
+  if (famCode) syncNow({quiet:false});
+  return false;
+}
+document.addEventListener("visibilitychange", ()=>{ if (!famCode || !cloudOn()) return; if (document.visibilityState==="visible") syncNow(); else if (SYNC.timer) syncNow({quiet:true}); });
+const FAM_ACT = {
+  famCreate: async () => {
+    const code = newFamCode(), msg = $("#famMsg");
+    try { S.upd = Date.now(); await cloudPut(code, S); famCode = code; localStorage.setItem(FAM_KEY, code); SYNC.last = Date.now(); renderParents(); toast("Familie angelegt!"); }
+    catch(e){ if (msg) msg.textContent = "Keine Verbindung zum Online-Speicher. Bitte später nochmal versuchen."; }
+  },
+  famJoinIn: () => { const code = normCode($("#famIn").value); if (!validCode(code)){ $("#famMsg").textContent = "Der Code hat die Form MOEWE-XXXX-XXXX-XXXX-XXXX."; return; } famJoin(code); },
+  famJoin: b => famJoin(b.dataset.code),
+  famCancel: () => { try { history.replaceState(null, "", location.pathname + location.search); } catch(e) {} if (S && S.name && S.gull) show("home"); else { renderOnboard(true); show("onboard"); } },
+  famShare: async b => {
+    const text = `${S.name} lernt Englisch mit Möwenflug. Öffne diesen Link auf deinem Handy, dann siehst du denselben Lernstand:\n${famLink()}`;
+    try { if (navigator.share){ await navigator.share({title:"Möwenflug", text}); return; } } catch(e) { if (e && e.name==="AbortError") return; }
+    try { await navigator.clipboard.writeText(text); b.textContent = "Link kopiert, jetzt in WhatsApp einfügen"; } catch(e) { b.textContent = famLink(); }
+  },
+  famSyncNow: async b => { b.textContent = "Gleiche ab …"; const n = await syncNow({silent:true}); b.textContent = n ? "Neuer Stand geladen" : "Alles aktuell"; renderParents(); },
+  famLeave: () => { famCode = null; try { localStorage.removeItem(FAM_KEY); } catch(e) {} renderParents(); toast("Dieses Handy ist nicht mehr verbunden. Der Stand bleibt hier erhalten."); }
+};
+
 const fillN = x => String(x).replace(/\{N\}/g, (S && S.name) || "Tom");
 const G = () => (S && S.gull && S.gull.name) || "Möwe";
 const GC = () => GULL_COLORS[(S && S.gull && S.gull.color) || 0];
@@ -1502,60 +1684,105 @@ function accSVG(id){
   }
   return "";
 }
+/* Möwe in 5 Stufen: Ei, flauschiges Küken, gesprenkelte Jungmöwe, Möwe, Kapitänsmöwe.
+   Innerhalb einer Stufe wächst sie mit jedem Fisch ein Stück (grow 0..1). */
+let GID = 0;
+function fluffPath(cx, cy, r, n, a, start=0){
+  let d = "";
+  for (let i=0;i<=n;i++){
+    const t = start + i/n*Math.PI*2, x = cx+Math.cos(t)*r, y = cy+Math.sin(t)*r;
+    if (!i){ d += `M${x.toFixed(1)} ${y.toFixed(1)}`; continue; }
+    const m = start + (i-.5)/n*Math.PI*2;
+    d += `Q${(cx+Math.cos(m)*(r+a)).toFixed(1)} ${(cy+Math.sin(m)*(r+a)).toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)}`;
+  }
+  return d+"Z";
+}
+function growFrac(stage){
+  if (!S || stage!==gullStage() || stage<1 || stage>=4) return 1;
+  const lo = STAGES[stage].min, hi = STAGES[stage+1].min;
+  return Math.max(0, Math.min(1, ((S.fish||0)-lo)/(hi-lo)));
+}
 function gullSVG(stage, color, opts={}){
-  const c = color || GULL_COLORS[0], sleep = !!opts.sleep;
-  const wear = opts.wear===false ? {} : (opts.wear || (S && S.wear) || {});
+  const c = color || GULL_COLORS[0], sleep = !!opts.sleep, id = "gl"+(++GID);
+  const wear = Object.assign({}, opts.wear===false ? {} : (opts.wear || (S && S.wear) || {}));
+  if (stage>=4 && !wear.hat && opts.wear!==false) wear.hat = "captain";
   const acc = (slot, tf) => wear[slot] ? `<g transform="${tf}">${accSVG(wear[slot])}</g>` : "";
   const zz = sleep ? `<text class="zz" x="170" y="44" font-size="22">z</text><text class="zz" x="184" y="24" font-size="15" style="animation-delay:.8s">z</text>` : "";
-  const legs = `<path d="M90 158v22M112 158v22" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/><path d="M82 182h16M104 182h16" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/>`;
+  const g = opts.grow!=null ? opts.grow : growFrac(stage);
+  const sc = stage===1 ? .78 + .22*g : stage===2 ? .86 + .14*g : stage===3 ? .92 + .08*g : stage>=4 ? 1.04 : 1;
+  const grow = c2 => `<g transform="translate(100 190) scale(${sc.toFixed(3)}) translate(-100 -190)">${c2}</g>`;
+  const shade = (k, hi, base, lo) => `<radialGradient id="${id}${k}" cx="35%" cy="28%" r="80%"><stop offset="0" stop-color="${hi}"/><stop offset=".55" stop-color="${base}"/><stop offset="1" stop-color="${lo}"/></radialGradient>`;
   if (stage===0){
-    return `<svg class="gull" viewBox="0 0 200 200" role="img" aria-label="Möwen-Ei"><g class="bob">
+    return `<svg class="gull" viewBox="0 0 200 200" role="img" aria-label="Möwen-Ei"><defs>${shade("e","#FFFFFF","#F4EEE1","#D8CCB2")}</defs><g class="bob wobble">
       <ellipse cx="100" cy="188" rx="44" ry="8" fill="rgba(14,42,71,.15)"/>
-      <path d="M100 52c30 0 50 50 50 82s-22 52-50 52-50-20-50-52 20-82 50-82z" fill="#F7F3EA" stroke="#D9CFB8" stroke-width="3"/>
-      <circle cx="82" cy="100" r="6" fill="#B9C7D3"/><circle cx="118" cy="86" r="4" fill="#B9C7D3"/><circle cx="114" cy="146" r="7" fill="#B9C7D3"/><circle cx="80" cy="154" r="4" fill="#B9C7D3"/>
+      <path d="M100 52c30 0 50 50 50 82s-22 52-50 52-50-20-50-52 20-82 50-82z" fill="url(#${id}e)" stroke="#D9CFB8" stroke-width="3"/>
+      <circle cx="82" cy="100" r="6" fill="#A9B4BE"/><circle cx="118" cy="86" r="4" fill="#A9B4BE"/><circle cx="114" cy="146" r="7" fill="#A9B4BE"/><circle cx="80" cy="154" r="4" fill="#A9B4BE"/><circle cx="130" cy="118" r="3" fill="#A9B4BE"/>
       <path d="M56 124l14-8 10 10 12-12 12 10 14-8 14 8" stroke="${c}" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M96 62q8-4 14 4" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".8"/>
     </g></svg>`;
   }
   if (stage===1){
-    const eye = sleep ? `<path d="M132 80q6 5 12 0" stroke="#0E2A47" stroke-width="3" fill="none" stroke-linecap="round"/>`
-                      : `<g class="eye"><circle cx="138" cy="79" r="7" fill="#0E2A47"/><circle cx="140.5" cy="76.5" r="2.3" fill="#fff"/></g>`;
-    return `<svg class="gull ${sleep?"sleep":""}" viewBox="0 0 200 200" role="img" aria-label="Möwen-Küken"><g class="bob">
-      <ellipse cx="100" cy="190" rx="40" ry="7" fill="rgba(14,42,71,.15)"/>
-      <path d="M90 162v20M110 162v20" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/><path d="M82 184h16M102 184h16" stroke="#F29A5C" stroke-width="5" stroke-linecap="round"/>
-      <circle cx="98" cy="124" r="46" fill="#C9D3DC"/><circle cx="92" cy="132" r="32" fill="#DFE6EC"/>
-      <path class="wing" d="M58 118q-14 18 2 32 10-6 12-18z" fill="#AEBBC7"/>
+    const eye = sleep ? `<path d="M131 82q7 6 14 0" stroke="#0E2A47" stroke-width="3.2" fill="none" stroke-linecap="round"/>`
+      : `<g class="eye"><ellipse cx="138" cy="80" rx="8.5" ry="10" fill="#0E2A47"/><circle cx="141" cy="76" r="3.4" fill="#fff"/><circle cx="135.5" cy="85" r="1.6" fill="#fff" opacity=".8"/></g>`;
+    const spk = [[78,112,3],[96,104,2.4],[110,140,2.6],[74,140,2.2],[118,120,2],[90,152,2.4],[64,126,2]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#A99D89" opacity=".75"/>`).join("");
+    return `<svg class="gull chick ${sleep?"sleep":""}" viewBox="0 0 200 200" role="img" aria-label="Möwen-Küken"><defs>${shade("b","#FBF8F1","#DCD3C3","#B8AC97")}${shade("h","#FFFDF8","#E4DCCE","#BFB39E")}</defs><g class="bob">
+      <ellipse cx="100" cy="190" rx="${(36+10*g).toFixed(0)}" ry="7" fill="rgba(14,42,71,.15)"/>
+      ${grow(`
+      <path d="M88 164v18M108 164v18" stroke="#E98E5A" stroke-width="5" stroke-linecap="round"/><path d="M80 184l8-3 8 3M100 184l8-3 8 3" stroke="#E98E5A" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${fluffPath(98,126,44,16,5,.2)}" fill="url(#${id}b)" stroke="#C9BCA6" stroke-width="1.5"/>
+      <ellipse cx="96" cy="138" rx="26" ry="22" fill="#F4EFE5" opacity=".9"/>
+      ${spk}
+      <path class="wing" d="M56 116q-16 14-4 32 6 2 12-4 4-12 0-24z" fill="#C5B9A4" stroke="#B3A68F" stroke-width="1.5"/>
       ${acc("back","translate(4,14)")}
-      <path d="M112 100q18 12 36 0l3 9q-22 14-42 0z" fill="${c}"/>
+      <path d="M112 102q18 12 36 0l3 9q-22 14-42 0z" fill="${c}"/>
       ${acc("neck","translate(2,-2)")}
-      <g class="head"><circle cx="130" cy="84" r="30" fill="#D6DEE6"/>${eye}
-        <path d="M157 86l18 5-18 6z" fill="#3B4652"/>
+      <g class="head">
+        <path d="M120 58q-4-14 6-16-1 7 4 10 3-9 12-8-7 6-4 14z" fill="#DCD3C3" stroke="#C9BCA6" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="${fluffPath(130,84,30,13,3.5,0)}" fill="url(#${id}h)" stroke="#C9BCA6" stroke-width="1.5"/>
+        <circle cx="116" cy="70" r="2" fill="#A99D89"/><circle cx="122" cy="98" r="1.8" fill="#A99D89"/>
+        ${eye}
+        <ellipse cx="146" cy="97" rx="6.5" ry="3.8" fill="#F59AA6" opacity=".55"/>
+        <path d="M156 86q10 1 15 4-5 4-15 5z" fill="#5A626C"/><path d="M167 88.5l4 1.5-4 1.5z" fill="#EBD9B2"/>
         ${acc("eyes","translate(-20,6)")}${acc("hat","translate(-20,2)")}</g>
-      ${zz}
+      ${zz}`)}
     </g></svg>`;
   }
   const young = stage===2;
-  const body = young ? "#F1EADF" : "#FFFFFF", wing = young ? "#B7A58A" : "#A9B9C8", head = young ? "#ECE3D4" : "#FFFFFF";
-  const mottle = young ? `<circle cx="80" cy="128" r="4" fill="#D3C3A8"/><circle cx="104" cy="140" r="3" fill="#D3C3A8"/><circle cx="120" cy="126" r="3.5" fill="#D3C3A8"/>` : "";
   const eye = sleep ? `<path d="M152 74q6 5 12 0" stroke="#0E2A47" stroke-width="3" fill="none" stroke-linecap="round"/>`
-                    : `<g class="eye"><circle cx="158" cy="73" r="5.5" fill="#0E2A47"/><circle cx="160" cy="71" r="1.8" fill="#fff"/></g>`;
-  const big = stage>=4 ? ` transform="translate(-10,-12) scale(1.06)"` : "";
-  return `<svg class="gull ${sleep?"sleep":""}" viewBox="0 0 200 200" role="img" aria-label="Möwe"><g class="bob"><g${big}>
-    <ellipse cx="100" cy="188" rx="48" ry="7" fill="rgba(14,42,71,.15)"/>
-    ${legs}
-    <path d="M46 118L12 106l12 24z" fill="${wing}"/><path d="M14 107l10 4-4 10z" fill="#2E3742"/>
-    <ellipse cx="98" cy="124" rx="60" ry="40" fill="${body}" stroke="#D8E2EA" stroke-width="2"/>
+    : young ? `<g class="eye"><circle cx="158" cy="73" r="6.5" fill="#0E2A47"/><circle cx="160.5" cy="70.5" r="2.3" fill="#fff"/></g>`
+            : `<g class="eye"><circle cx="158" cy="73" r="5.5" fill="#F4D35E"/><circle cx="158.6" cy="73" r="3.6" fill="#0E2A47"/><circle cx="160" cy="71.4" r="1.5" fill="#fff"/></g>`;
+  const bodyG = young ? shade("b","#FBF6EE","#E8DECD","#C6B79E") : shade("b","#FFFFFF","#F4F8FB","#C9D6E1");
+  const headG = young ? shade("h","#FFFBF4","#E9E0D0","#C9BBA3") : shade("h","#FFFFFF","#F7FAFC","#D0DCE6");
+  const wingG = young ? `<linearGradient id="${id}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A88E70"/><stop offset="1" stop-color="#7E6650"/></linearGradient>`
+                      : `<linearGradient id="${id}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8C7D4"/><stop offset="1" stop-color="#8FA3B5"/></linearGradient>`;
+  const scallops = young ? [[66,112],[82,106],[98,104],[114,106],[74,122],[90,118],[106,118],[122,116],[86,130],[102,130]].map(([x,y])=>`<path d="M${x-6} ${y}q6 6 12 0" stroke="#E8DCC6" stroke-width="2" fill="none" stroke-linecap="round"/>`).join("") : "";
+  const mottle = young ? [[78,132,3.5],[100,146,3],[122,134,3],[88,150,2.5],[64,138,2.5]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#B9A688" opacity=".7"/>`).join("") + `<path d="M140 74q8-4 14 2" stroke="#B9A688" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="142" cy="92" r="2" fill="#B9A688"/><circle cx="134" cy="82" r="1.8" fill="#B9A688"/>` : "";
+  const tuft = young ? `<path d="M140 56q-3-10 4-12 0 5 4 7 2-6 8-6-5 4-3 10z" fill="#E9E0D0" stroke="#C9BBA3" stroke-width="1.4" stroke-linejoin="round"/>` : "";
+  const leg = young ? "#D9A094" : "#F2A93B";
+  const beak = young ? `<path d="M174 82l24 6-24 7z" fill="#3A3F47"/><path d="M174 82l10 2.5v8.5l-10 2z" fill="#C99A8E"/>`
+                     : `<path d="M174 82l24 6-24 7z" fill="#FFC233"/><path d="M174 88.5l24-.5-24 6.5z" fill="#E9A81E"/><circle cx="190" cy="90.5" r="2.6" fill="#E8574A"/>`;
+  const sparkle = stage>=4 ? `<g class="spark"><path d="M30 46l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#F2B632"/><path d="M176 132l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#F2B632"/></g>` : "";
+  return `<svg class="gull ${sleep?"sleep":""}" viewBox="0 0 200 200" role="img" aria-label="${young?"Jungmöwe":stage>=4?"Kapitänsmöwe":"Möwe"}"><defs>${bodyG}${headG}${wingG}</defs><g class="bob">
+    <ellipse cx="100" cy="188" rx="${(40+8*sc).toFixed(0)}" ry="7" fill="rgba(14,42,71,.15)"/>
+    ${grow(`
+    <path d="M90 158v22M112 158v22" stroke="${leg}" stroke-width="5" stroke-linecap="round"/><path d="M82 182l8-3 8 3M104 182l8-3 8 3" stroke="${leg}" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M46 118L12 106l12 24z" fill="url(#${id}w)"/><path d="M14 107l10 4-4 10z" fill="${young?"#5E4B3A":"#2E3742"}"/>
+    <ellipse cx="98" cy="124" rx="60" ry="40" fill="url(#${id}b)" stroke="${young?"#D6C8B0":"#D3DEE8"}" stroke-width="2"/>
     ${mottle}
-    <path class="wing" d="M50 112q46-34 98-6-26 38-86 34z" fill="${wing}"/>
-    <path d="M52 114q-10 8-18 2l8-10z" fill="#2E3742"/><circle cx="46" cy="110" r="2.5" fill="#fff"/>
+    <path class="wing" d="M50 112q46-34 98-6-26 38-86 34z" fill="url(#${id}w)"/>
+    ${scallops}
+    <path d="M52 114q-10 8-18 2l8-10z" fill="${young?"#5E4B3A":"#2E3742"}"/>${young?"":`<circle cx="46" cy="110" r="2.5" fill="#fff"/>`}
+    <path d="M64 110q30-18 70-8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity="${young?.25:.45}"/>
     ${acc("back","")}
     <path d="M118 98q16 18 40 6l2 10q-28 14-46-6z" fill="${c}"/><path d="M122 106l-8 24 10-2 5-18z" fill="${c}"/>
     ${acc("neck","")}
-    <g class="head"><circle cx="150" cy="80" r="28" fill="${head}" stroke="#D8E2EA" stroke-width="2"/>
+    <g class="head">${tuft}<circle cx="150" cy="80" r="28" fill="url(#${id}h)" stroke="${young?"#D6C8B0":"#D3DEE8"}" stroke-width="2"/>
       ${eye}
-      <path d="M174 82l24 6-24 7z" fill="#FFC233"/><circle cx="190" cy="90.5" r="2.6" fill="#E8574A"/>
+      ${beak}
       ${acc("eyes","")}${acc("hat","")}</g>
-    ${zz}
-  </g></g></svg>`;
+    ${sparkle}
+    ${zz}`)}
+  </g></svg>`;
 }
 function gullStage(){
   if (!S) return 0;
@@ -2012,7 +2239,7 @@ function checkBadges(ctx){
 }
 
 /* ============ BILDSCHIRME ============ */
-const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview","exam"];
+const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview","exam","family"];
 function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
@@ -3061,17 +3288,17 @@ function renderMap(all){
 }
 /* ============ REISETAGEBUCH: Postkarten aus jeder Stadt ============ */
 const CITIES = [
-  {n:"Leipzig",   km:0,    x:330,y:118, en:"Leipzig is famous for music. Bach worked here.",            de:"Leipzig ist berühmt für Musik. Bach hat hier gearbeitet."},
-  {n:"Hannover",  km:260,  x:292,y:98,  en:"Hanover has a big zoo and beautiful gardens.",              de:"Hannover hat einen großen Zoo und wunderschöne Gärten."},
-  {n:"Köln",      km:500,  x:262,y:140, en:"Cologne has a very big church with two towers.",            de:"Köln hat eine sehr große Kirche mit zwei Türmen."},
-  {n:"Brüssel",   km:710,  x:224,y:152, en:"In Brussels people love waffles and chocolate.",            de:"In Brüssel lieben die Leute Waffeln und Schokolade."},
-  {n:"Calais",    km:920,  x:186,y:146, en:"From Calais you can see England on a sunny day.",          de:"Von Calais aus kann man an sonnigen Tagen England sehen."},
-  {n:"Dover",     km:960,  x:164,y:138, en:"Dover has white cliffs by the sea.",                        de:"Dover hat weiße Klippen am Meer."},
-  {n:"London",    km:1080, x:140,y:122, en:"Big Ben is the name of the bell, not the tower!",          de:"Big Ben ist der Name der Glocke, nicht des Turms!"},
-  {n:"Brighton",  km:1170, x:132,y:146, en:"Brighton has a pier, a palace and a lot of seagulls.",     de:"Brighton hat eine Seebrücke, einen Palast und viele Möwen."},
-  {n:"Oxford",    km:1290, x:112,y:114, en:"Oxford is a very old town with a famous university.",      de:"Oxford ist eine sehr alte Stadt mit einer berühmten Universität."},
-  {n:"York",      km:1580, x:126,y:66,  en:"York has old city walls. You can walk on them.",           de:"York hat alte Stadtmauern. Man kann darauf spazieren gehen."},
-  {n:"Edinburgh", km:1900, x:108,y:28,  en:"Edinburgh has a castle on a big rock.",                    de:"Edinburgh hat eine Burg auf einem großen Felsen."}
+  {n:"Leipzig",   km:0,    x:324.5,y:163.9, en:"Leipzig is famous for music. Bach worked here.",            de:"Leipzig ist berühmt für Musik. Bach hat hier gearbeitet."},
+  {n:"Hannover",  km:260,  x:278.4,y:133.8,  en:"Hanover has a big zoo and beautiful gardens.",              de:"Hannover hat einen großen Zoo und wunderschöne Gärten."},
+  {n:"Köln",      km:500,  x:230,y:175.5, en:"Cologne has a very big church with two towers.",            de:"Köln hat eine sehr große Kirche mit zwei Türmen."},
+  {n:"Brüssel",   km:710,  x:184.4,y:178.2, en:"In Brussels people love waffles and chocolate.",            de:"In Brüssel lieben die Leute Waffeln und Schokolade."},
+  {n:"Calais",    km:920,  x:140.9,y:175.2, en:"From Calais you can see England on a sunny day.",          de:"Von Calais aus kann man an sonnigen Tagen England sehen."},
+  {n:"Dover",     km:960,  x:131.2,y:170, en:"Dover has white cliffs by the sea.",                        de:"Dover hat weiße Klippen am Meer."},
+  {n:"London",    km:1080, x:106.1,y:158.9, en:"Big Ben is the name of the bell, not the tower!",          de:"Big Ben ist der Name der Glocke, nicht des Turms!"},
+  {n:"Brighton",  km:1170, x:105.9,y:179, en:"Brighton has a pier, a palace and a lot of seagulls.",     de:"Brighton hat eine Seebrücke, einen Palast und viele Möwen."},
+  {n:"Oxford",    km:1290, x:86.3,y:151.9, en:"Oxford is a very old town with a famous university.",      de:"Oxford ist eine sehr alte Stadt mit einer berühmten Universität."},
+  {n:"York",      km:1580, x:89.5,y:87.3,  en:"York has old city walls. You can walk on them.",           de:"York hat alte Stadtmauern. Man kann darauf spazieren gehen."},
+  {n:"Edinburgh", km:1900, x:52.6,y:29.2,  en:"Edinburgh has a castle on a big rock.",                    de:"Edinburgh hat eine Burg auf einem großen Felsen."}
 ];
 function cityArt(name){
   const ink = "#16406B";
@@ -3111,9 +3338,12 @@ function cityArt(name){
   }
   return "";
 }
-const LBL = {Edinburgh:[8,3,"start"],York:[8,3,"start"],Oxford:[-7,-4,"end"],London:[8,12,"start"],Brighton:[-8,6,"end"],Dover:[0,15,"middle"],Calais:[6,-6,"start"],"Brüssel":[0,15,"middle"],"Köln":[0,15,"middle"],Hannover:[0,-8,"middle"],Leipzig:[0,15,"middle"]};
+/* Karte aus echten Geodaten (Natural Earth 1:50 Mio., world-atlas), Städte auf echten Koordinaten */
+const MAPD = {"W": 360, "H": 216, "land": [{"n": "Guernsey", "d": "M64.5 217.8L63.8 219.7L62.2 219.0L63.9 217.4Z"}, {"n": "Isle of Man", "d": "M31.2 80.8L27.7 84.5L26.3 83.8L25.1 84.1L25.4 82.7L26.2 79.6L27.7 78.4L29.6 75.1L31.0 74.3L31.9 74.7L32.6 78.3L31.6 79.6L31.2 80.8Z"}, {"n": "United Kingdom", "d": "M61.7 155.6L60.4 156.8L56.3 158.0L54.5 159.3L51.4 162.1L46.1 161.7L42.6 158.0L40.4 156.5L39.4 156.3L38.5 156.8L36.4 157.2L34.3 157.2L35.4 155.5L36.8 154.5L33.6 153.8L32.7 153.3L31.7 152.2L29.2 152.0L28.0 152.3L25.9 153.8L22.7 155.5L18.8 153.2L18.0 152.2L18.0 150.2L17.5 148.6L16.4 148.1L17.8 146.1L19.4 144.7L23.1 143.3L28.7 140.2L31.8 138.8L34.6 136.5L35.8 135.1L36.7 133.1L37.5 130.7L38.8 128.7L37.6 128.3L37.0 126.8L37.2 125.3L37.7 124.0L37.3 122.3L36.4 120.6L36.5 119.3L36.7 117.8L34.5 117.9L32.2 118.4L30.2 119.4L28.2 120.8L26.5 121.0L26.5 119.9L27.3 118.5L29.2 116.6L31.4 115.0L32.1 113.7L32.7 112.3L33.8 111.1L36.5 109.0L41.8 106.5L42.6 106.4L44.6 106.7L46.7 106.3L48.4 105.4L50.2 105.2L54.2 107.8L53.0 103.8L54.8 102.9L57.4 106.5L58.3 106.8L60.3 106.3L59.5 105.7L58.6 105.7L57.4 105.2L56.5 104.0L54.8 100.4L54.9 98.3L56.0 96.0L57.2 93.9L56.2 93.5L55.3 92.8L55.2 90.7L55.5 88.9L57.7 87.3L58.3 84.9L58.6 82.2L58.2 81.0L56.0 81.2L55.0 81.7L54.0 82.5L53.0 82.4L50.3 79.4L48.7 77.2L46.0 72.5L45.6 69.7L47.8 63.6L51.3 59.7L55.3 58.3L54.5 58.1L48.4 58.0L46.3 58.5L44.4 60.1L43.3 60.6L42.3 60.7L41.2 61.5L40.2 62.7L39.2 63.4L37.1 63.2L36.1 63.4L35.4 62.8L34.8 61.7L34.0 61.4L33.1 61.8L31.3 63.2L29.4 64.0L27.2 63.1L24.1 61.4L23.6 62.1L22.9 63.6L22.5 66.0L20.4 63.9L18.6 61.1L18.0 59.4L18.0 57.4L18.9 56.6L20.0 57.3L21.6 52.6L24.7 46.4L25.8 44.7L26.6 42.3L26.5 40.8L25.8 39.5L22.9 36.6L22.9 34.1L23.2 31.4L24.0 29.8L28.2 29.6L26.7 28.7L23.7 26.3L23.8 25.4L24.5 23.1L23.5 24.4L22.3 26.9L21.5 27.5L19.4 28.1L19.0 29.4L17.5 29.8L17.2 31.0L16.7 29.8L16.7 27.7L17.1 25.8L17.9 24.3L21.0 20.9L19.5 22.0L16.0 25.1L14.3 27.2L13.8 27.9L13.6 29.1L14.5 32.8L14.2 34.5L11.2 45.6L10.7 46.7L10.2 47.3L8.2 47.2L7.5 46.3L7.5 45.4L7.8 44.0L9.0 38.7L9.6 37.3L10.4 35.9L12.1 33.5L10.9 33.8L10.1 33.2L10.3 26.2L11.2 23.8L11.6 20.4L12.4 17.5L13.4 15.4L14.1 12.7L15.2 11.5L15.5 9.7L16.7 7.7L17.7 5.6L11.1 11.2L9.5 12.2L7.5 12.0L5.8 11.4L4.6 10.0L4.0 7.6L2.5 7.5L1.2 7.1L2.9 5.4L5.6 5.0L8.2 2.8L5.9 1.4L8.1 -0.3L10.6 -4.5L11.2 -8.0L9.9 -8.0L7.1 -8.0L8.9 -8.0L10.8 -8.0L9.1 -8.0L8.0 -8.0L8.9 -8.0L10.4 -8.0L14.9 -8.0L15.9 -8.0L18.2 -8.0L14.1 -8.0L14.8 -8.0L16.3 -8.0L19.9 -8.0L20.8 -8.0L19.5 -8.0L20.7 -8.0L22.3 -8.0L24.3 -8.0L25.1 -8.0L26.0 -8.0L29.1 -8.0L29.9 -8.0L30.9 -8.0L35.1 -8.0L40.9 -8.0L44.3 -8.0L48.0 -8.0L51.4 -8.0L55.0 -8.0L54.0 -8.0L52.2 -8.0L48.7 -8.0L42.4 -8.0L38.6 -8.0L37.9 -8.0L40.1 -8.0L40.9 -8.0L37.1 -8.0L36.1 -8.0L38.7 -8.0L40.7 -8.0L45.0 -8.0L48.9 -8.0L50.8 -8.0L54.5 -8.0L55.3 -8.0L56.9 -8.0L58.4 -8.0L69.1 -8.0L72.1 -8.0L74.1 -8.0L75.7 -8.0L77.3 -8.0L76.3 -8.0L74.5 -8.0L73.0 -8.0L72.3 -5.9L71.8 -4.5L68.9 2.5L65.9 6.4L64.7 9.2L63.0 11.4L61.5 12.7L59.9 13.6L55.1 14.6L53.8 15.3L52.2 16.5L50.5 17.1L52.5 17.0L54.4 16.4L57.9 16.1L62.0 18.5L61.6 20.3L60.0 21.8L56.3 22.1L52.8 25.4L51.3 26.4L49.6 26.9L47.5 26.8L43.8 25.9L42.1 25.0L43.6 26.5L45.3 27.3L55.1 29.1L58.7 27.0L62.9 27.0L70.8 30.6L73.1 33.4L76.4 37.3L78.1 38.9L79.4 40.3L80.2 42.4L81.8 49.4L83.5 56.2L85.8 63.6L86.8 65.6L88.2 67.0L95.1 70.4L96.6 71.4L99.3 74.6L101.9 78.0L104.3 80.6L106.9 82.7L105.6 83.8L104.7 85.5L105.4 87.9L106.4 90.1L108.5 93.7L110.4 97.6L109.7 97.0L109.0 96.7L108.0 96.7L107.1 96.6L105.3 95.4L103.6 93.8L100.3 94.5L98.4 94.2L96.8 94.2L99.9 95.1L103.2 95.2L110.6 101.7L113.1 105.6L114.5 110.7L113.5 113.0L112.0 114.5L110.5 116.2L109.1 118.1L113.2 121.0L114.1 120.9L115.0 120.5L115.9 119.5L117.4 117.2L118.1 116.4L120.6 116.1L122.8 116.2L124.9 116.7L126.8 116.6L130.6 117.6L132.5 118.5L137.3 122.5L138.3 124.8L138.8 127.7L138.9 130.9L138.1 133.8L137.1 136.4L136.6 139.8L136.2 141.1L135.6 142.0L133.0 144.8L131.3 145.8L130.7 145.4L129.9 145.4L130.6 147.4L130.7 149.1L129.1 150.3L127.6 150.8L125.1 150.2L121.5 152.5L124.0 153.6L124.5 154.9L123.9 157.1L122.3 158.1L120.5 158.5L118.7 158.6L117.2 159.2L115.7 160.2L117.6 159.6L118.8 160.1L119.6 161.9L120.3 162.5L123.9 163.3L126.1 163.3L130.3 162.8L132.4 162.9L133.1 163.2L133.1 164.7L132.8 168.5L132.2 169.2L126.6 172.4L125.4 174.6L125.1 175.9L121.8 175.7L120.3 177.1L117.6 178.1L115.6 179.1L113.6 180.4L111.9 180.7L104.8 179.2L100.5 179.3L94.6 180.7L93.1 180.4L90.9 179.2L88.6 178.3L85.9 178.0L83.6 176.8L85.0 179.0L81.8 181.2L80.4 181.6L78.9 181.5L75.7 182.1L72.8 181.8L73.3 183.3L74.0 184.7L73.5 185.2L72.8 185.4L67.3 184.4L66.5 184.6L65.9 185.5L63.8 185.0L61.9 183.4L59.8 182.4L57.7 181.9L55.9 182.1L48.9 184.5L47.4 187.0L46.7 190.5L45.7 193.6L44.0 196.0L42.1 196.3L40.2 194.6L36.7 192.8L35.4 191.6L34.6 192.0L33.3 192.5L31.8 192.5L29.6 193.0L25.7 194.5L24.1 195.5L20.8 198.3L20.1 199.1L18.9 201.8L17.0 202.4L15.3 200.6L13.4 199.9L11.4 200.6L10.1 201.5L9.5 200.7L9.5 199.2L11.0 197.2L15.0 195.8L18.5 192.1L20.2 189.8L20.9 188.5L21.7 187.7L22.8 187.4L23.4 186.0L28.2 180.3L28.7 179.0L28.9 176.7L29.3 174.5L33.3 173.0L35.1 168.3L41.2 167.1L45.3 167.1L49.4 168.0L51.4 168.1L53.5 167.8L55.2 166.5L58.0 161.9L59.6 159.9L61.4 158.1L63.1 156.0L65.9 152.2L64.0 153.5L61.7 155.6ZM35.0 106.0L35.7 106.5L37.6 106.4L37.0 107.6L35.0 109.0L33.6 110.3L31.9 111.4L31.1 110.2L30.2 110.2L28.8 107.7L28.5 104.1L30.4 103.1L32.9 103.2L35.0 106.0ZM-7.1 10.6L-8.0 10.8L-6.4 8.4L-5.4 8.1L-5.7 9.4L-7.1 10.6ZM19.1 43.9L16.9 43.9L16.2 43.6L15.2 42.9L14.1 38.9L14.5 37.5L15.0 36.8L15.4 36.2L16.6 36.0L17.7 36.8L18.2 37.5L19.1 40.2L19.3 42.5L19.1 43.9ZM7.4 17.7L0.4 19.3L-2.0 19.2L-2.2 18.3L-1.7 17.8L0.2 17.3L1.1 13.4L-1.9 11.6L-1.8 10.2L0.3 9.0L1.1 8.8L3.0 9.9L4.4 12.1L6.3 12.5L7.7 13.4L7.4 17.7ZM1.2 29.8L1.9 33.5L2.5 35.8L2.5 36.7L1.9 37.8L-0.9 39.2L-1.8 39.2L-1.2 37.4L-1.8 35.7L-1.5 34.4L-2.3 34.3L-4.4 36.4L-5.1 36.6L-4.7 34.5L-4.6 33.4L-4.3 32.6L-3.7 32.0L-3.0 31.5L-2.0 31.9L-0.3 30.5L1.2 29.8ZM4.0 33.2L2.7 33.4L2.2 32.2L2.2 30.9L2.7 29.9L5.0 28.5L4.0 28.0L4.6 26.4L7.0 24.6L7.7 24.2L7.0 27.6L4.0 33.2ZM-1.4 -0.4L-2.5 -0.1L-3.2 -0.6L-4.0 -2.0L-2.2 -2.9L-1.3 -2.4L-1.1 -1.7L-1.1 -1.0ZM1.0 -8.0L1.9 -8.0L5.6 -8.0L8.7 -8.0L8.8 -7.3L7.1 -5.7L5.0 -3.3L4.4 -2.8L3.3 -3.0L2.9 -7.4L0.7 -6.8L-1.2 -6.9L-2.2 -7.4L-2.8 -8.0L-4.2 -8.0L-8.0 -8.0L-7.1 -8.0L-3.1 -8.0L-1.8 -8.0L-0.8 -8.0L0.6 -8.0ZM-0.3 83.6L-1.8 83.4L-2.8 83.9L-3.5 84.4L-6.1 84.5L-7.9 84.5L-8.0 83.7L-7.8 81.4L-8.0 80.5L-8.0 78.3L-8.0 77.6L-8.0 76.6L-8.0 75.2L-8.0 74.3L-8.0 75.8L-8.0 77.4L-8.0 78.1L-8.0 79.1L-8.0 79.9L-8.0 81.6L-8.0 82.6L-8.0 80.7L-8.0 79.9L-8.0 77.9L-8.0 74.1L-8.0 72.9L-8.0 71.2L-8.0 69.5L-8.0 68.2L-8.0 67.5L-8.0 66.7L-8.0 65.8L-8.0 64.9L-8.0 63.7L-8.0 62.1L-8.0 60.5L-8.0 59.7L-8.0 56.8L-8.0 56.1L-8.0 54.2L-8.0 55.3L-8.0 54.6L-8.0 51.6L-4.8 49.9L-3.0 49.9L-0.6 50.6L1.2 50.6L2.9 52.7L3.8 56.1L5.8 59.4L8.5 62.3L8.5 64.0L7.6 65.0L5.6 66.2L5.6 67.4L6.9 66.8L8.0 66.5L10.8 66.8L11.7 68.1L12.4 70.0L12.8 71.5L12.5 73.3L11.8 72.7L11.1 71.2L10.2 70.5L9.2 70.1L9.7 72.2L9.5 75.0L11.2 75.3L10.4 78.2L8.6 79.0L6.5 79.3L6.0 80.3L5.6 81.6L4.6 83.6L3.2 84.7L1.4 84.5L-0.3 83.6ZM89.8 182.8L88.2 183.8L87.8 185.0L86.5 185.8L85.5 185.8L81.9 183.4L81.0 183.5L81.8 182.4L84.2 181.6L85.4 180.4L88.4 181.5L89.8 182.8Z"}, {"n": "Sweden", "d": "M307.4 -8.0L308.8 -8.0L310.1 -8.0L311.8 -8.0L313.0 -8.0L314.5 -8.0L313.6 -8.0L312.5 -8.0L315.2 -8.0L316.0 -8.0L316.9 -8.0L317.9 -8.0L319.3 -8.0L321.0 -8.0L323.2 -8.0L325.1 -8.0L326.6 -8.0L327.7 -8.0L325.8 -8.0L323.5 -8.0L326.2 -8.0L330.0 -8.0L330.8 -8.0L331.6 -8.0L332.5 -8.0L333.4 -8.0L331.3 -8.0L328.5 -8.0L326.6 -8.0L323.2 -8.0L320.8 -8.0L322.2 -8.0L323.2 -8.0L320.1 -8.0L321.8 -8.0L320.6 -8.0L318.1 -8.0L321.8 -8.0L323.4 -8.0L327.4 -8.0L329.6 -8.0L331.9 -8.0L335.3 -8.0L339.1 -8.0L340.8 -8.0L347.3 -8.0L352.3 -8.0L353.1 -8.0L354.1 -8.0L355.5 -8.0L354.4 -8.0L350.8 -8.0L346.9 -8.0L351.7 -8.0L355.0 -8.0L359.2 -8.0L360.5 -8.0L361.4 -8.0L362.6 -8.0L363.4 -8.0L362.5 -8.0L368.0 -8.0L368.0 -7.0L368.0 -5.6L368.0 -3.5L368.0 0.7L368.0 4.2L368.0 7.0L368.0 10.5L368.0 13.1L368.0 21.2L368.0 22.9L368.0 24.1L368.0 23.0L366.7 23.0L365.5 23.8L366.2 26.8L364.4 27.2L362.8 26.3L361.3 27.3L360.0 28.4L357.6 31.0L356.8 32.6L356.6 35.6L357.8 38.4L359.0 41.5L356.1 45.4L354.4 45.5L349.7 44.5L341.2 46.8L333.5 44.9L334.5 42.9L334.5 41.4L334.9 39.1L335.1 36.7L335.1 35.1L334.5 33.4L332.7 31.2L328.4 23.7L327.2 20.6L326.3 19.3L330.4 20.9L331.2 20.7L332.0 20.0L331.0 17.6L330.2 16.5L329.5 14.9L331.6 14.4L333.0 14.5L334.1 12.7L333.5 9.7L331.9 8.8L330.6 8.4L328.1 3.7L325.4 1.3L320.7 -8.0L319.0 -8.0L317.4 -8.0L316.6 -8.0L313.4 -8.0L310.2 -8.0L308.4 -8.0L306.4 -8.0L304.9 -8.0L303.5 -8.0L305.7 -8.0L307.4 -8.0Z"}, {"n": "Poland", "d": "M368.0 158.6L368.0 160.7L368.0 162.2L368.0 163.5L368.0 164.7L368.0 166.1L368.0 170.1L368.0 174.0L368.0 175.5L368.0 177.5L368.0 178.3L368.0 179.0L368.0 180.0L368.0 180.8L368.0 181.9L368.0 185.0L368.0 187.5L368.0 189.6L368.0 191.0L368.0 192.0L368.0 193.4L368.0 196.3L368.0 197.9L368.0 200.9L368.0 206.0L368.0 208.1L368.0 209.8L368.0 214.5L368.0 216.5L368.0 218.1L368.0 221.9L368.0 223.6L368.0 222.2L368.0 221.1L368.0 220.2L368.0 222.3L368.0 223.0L368.0 221.4L368.0 222.3L368.0 224.0L368.0 222.9L368.0 221.3L368.0 220.6L368.0 219.8L368.0 217.5L368.0 215.4L368.0 216.9L368.0 220.5L368.0 219.1L368.0 217.7L368.0 216.4L368.0 214.3L368.0 210.1L368.0 208.3L368.0 206.5L368.0 205.0L368.0 204.0L368.0 203.2L368.0 202.1L368.0 203.0L368.0 203.8L368.0 202.8L368.0 201.3L368.0 200.1L368.0 198.9L368.0 197.3L368.0 196.3L368.0 194.3L368.0 195.3L368.0 192.0L368.0 190.8L368.0 192.9L368.0 195.4L368.0 197.1L368.0 198.4L368.0 199.6L368.0 195.7L368.0 192.9L368.0 192.1L368.0 190.6L368.0 189.7L368.0 188.9L368.0 187.9L368.0 187.2L368.0 186.2L368.0 184.9L368.0 183.8L368.0 184.6L368.0 183.4L368.0 182.3L368.0 181.4L368.0 179.8L368.0 178.3L368.0 177.2L368.0 175.0L368.0 174.0L368.0 175.9L368.0 177.1L368.0 177.8L367.1 177.9L368.0 173.6L368.0 171.0L368.0 166.4L368.0 162.8L368.0 161.1L368.0 160.3L365.7 158.5L365.9 155.5L365.7 154.4L364.9 153.4L363.9 151.3L363.5 149.5L364.8 147.3L365.1 145.8L365.7 143.7L366.1 142.5L365.3 141.4L365.1 140.2L365.3 138.5L364.9 137.3L363.7 136.5L363.1 135.4L362.7 134.1L363.0 132.0L363.8 129.1L362.0 125.7L357.5 121.7L355.3 118.9L355.4 117.3L356.4 115.9L358.1 114.6L359.5 112.3L360.2 109.6L360.3 107.1L358.2 99.1L357.9 97.1L357.6 94.7L361.5 95.7L363.2 96.7L363.0 95.6L362.7 94.7L362.9 93.3L362.7 91.3L359.2 90.3L356.8 89.9L356.4 88.5L356.7 87.6L357.4 88.2L359.7 88.4L365.5 85.6L368.0 82.1L368.0 78.7L368.0 77.7L368.0 76.5L368.0 75.6L368.0 73.4L368.0 70.0L368.0 68.7L368.0 67.1L368.0 64.8L368.0 62.3L368.0 63.7L368.0 66.2L368.0 67.7L368.0 66.7L368.0 64.5L368.0 71.2L368.0 73.6L368.0 75.4L368.0 73.5L368.0 72.8L368.0 73.5L368.0 74.3L368.0 75.2L368.0 75.9L368.0 74.6L368.0 75.4L368.0 76.6L368.0 77.4L368.0 79.1L368.0 80.3L368.0 82.0L368.0 83.9L368.0 86.0L368.0 87.4L368.0 97.9L368.0 107.4L368.0 112.1L368.0 114.6L368.0 118.1L368.0 120.7L368.0 122.1L368.0 124.0L368.0 125.2L368.0 128.5L368.0 129.5L368.0 132.1L368.0 134.7L368.0 135.6L368.0 137.1L368.0 138.5L368.0 139.6L368.0 140.5L368.0 141.6L368.0 142.5L368.0 143.4L368.0 145.4L368.0 148.1L368.0 150.1L368.0 151.5L368.0 153.0L368.0 155.7L368.0 158.6Z"}, {"n": "Netherlands", "d": "M213.1 181.1L211.3 181.0L209.7 181.0L208.8 180.8L207.8 180.4L207.4 179.4L206.9 178.4L207.0 177.7L208.6 175.8L208.7 175.0L208.9 174.1L210.0 171.3L210.2 170.1L209.7 169.3L208.9 168.8L206.3 168.0L205.1 166.8L204.6 165.7L203.3 165.8L201.2 166.2L199.5 165.6L197.5 163.7L197.0 161.9L196.8 160.6L196.3 160.1L195.6 160.8L194.8 161.9L193.1 162.0L192.5 161.1L191.9 159.9L189.4 161.5L188.5 161.4L187.5 160.7L187.0 159.9L186.0 160.4L184.9 161.3L185.3 163.1L183.6 163.2L182.2 162.5L180.7 162.0L178.3 160.8L175.1 161.8L172.9 160.6L171.0 160.5L169.8 159.6L168.7 158.0L169.5 156.9L170.4 156.6L173.7 156.4L176.3 157.0L180.7 160.5L181.9 160.4L183.1 160.0L182.4 159.1L181.3 158.6L179.7 157.7L178.3 156.4L181.4 156.0L181.0 155.3L180.6 154.1L177.3 150.1L177.9 149.0L178.7 146.7L179.7 144.8L180.5 144.2L181.9 142.9L184.8 138.8L186.7 135.5L188.1 131.7L190.1 120.9L190.7 119.1L191.7 117.1L192.9 117.5L193.8 118.0L196.8 116.5L202.0 112.6L203.5 109.1L205.0 107.5L211.0 104.4L214.3 103.5L219.4 103.2L223.1 102.7L227.5 102.5L229.2 104.4L230.1 105.8L231.7 106.6L234.1 107.1L234.0 109.9L234.0 115.4L233.8 116.4L232.7 118.7L231.6 122.8L231.3 125.5L226.3 126.0L225.7 126.6L225.8 127.8L225.7 128.5L225.5 130.0L226.3 131.0L227.7 131.7L229.3 131.7L230.1 131.6L230.7 132.3L231.3 133.4L231.3 134.9L231.0 136.8L230.3 138.6L228.2 140.6L227.2 141.3L226.3 141.7L225.7 142.9L227.2 145.2L226.7 146.4L226.2 147.2L222.3 148.9L220.6 148.7L219.7 149.5L218.4 148.9L216.1 148.1L215.3 148.4L214.8 148.9L213.3 149.4L212.3 150.3L212.3 151.5L214.1 154.5L214.8 155.2L214.8 156.3L215.6 157.7L216.6 159.5L216.7 160.6L216.6 161.8L216.1 163.4L214.5 167.2L214.5 168.0L215.2 168.7L215.5 169.5L212.5 172.1L210.9 172.4L210.9 173.6L211.4 174.3L212.4 174.6L213.3 175.2L214.1 176.5L213.1 181.1ZM182.2 162.5L181.9 163.6L181.3 164.8L179.0 166.6L176.5 167.7L175.3 167.6L174.4 167.0L174.0 166.4L172.7 165.7L170.9 165.4L169.8 166.1L169.0 166.7L167.8 166.1L167.4 165.3L166.9 162.8L168.2 162.3L171.1 162.1L173.3 163.0L176.2 163.4L178.5 162.2L180.2 163.3L182.2 162.5ZM212.0 102.0L208.5 102.4L207.3 102.1L208.1 101.6L211.1 101.5L211.9 101.8ZM197.7 106.4L194.4 108.5L196.2 106.3L197.7 106.4ZM201.4 104.1L199.8 104.3L199.0 103.9L203.0 102.8L205.5 102.4L201.4 104.1ZM193.8 113.3L192.0 115.4L190.9 114.8L191.2 112.7L193.8 110.0L193.8 113.3ZM177.3 152.2L179.1 153.8L179.5 154.8L177.4 155.5L175.1 153.5L173.6 154.0L173.0 153.1L174.6 152.0L177.3 152.2ZM226.0 98.4L224.5 98.5L224.9 97.7L226.4 97.1L227.2 97.1L226.0 98.4Z"}, {"n": "Luxembourg", "d": "M215.3 199.5L215.1 200.2L215.1 202.0L215.6 203.7L216.8 205.4L217.7 206.7L218.9 207.7L220.9 208.7L221.8 208.9L221.8 210.2L221.7 211.5L221.0 212.3L220.3 213.4L219.8 214.7L219.3 217.2L219.2 219.0L218.0 218.3L217.4 217.8L216.3 217.6L215.3 218.0L214.5 218.9L213.4 219.2L212.5 218.9L211.9 218.3L210.1 217.5L209.5 216.5L210.4 215.3L210.7 214.3L211.1 213.4L209.8 210.8L209.5 210.0L208.4 208.6L208.4 207.9L208.7 207.2L208.7 205.3L209.5 204.1L210.0 202.6L210.9 200.6L212.8 198.1L214.1 198.5L215.1 199.4Z"}, {"n": "Ireland", "d": "M-8.0 54.2L-8.0 56.1L-8.0 56.8L-8.0 59.7L-8.0 60.5L-8.0 62.1L-8.0 63.7L-8.0 64.9L-8.0 65.8L-8.0 66.7L-8.0 67.5L-8.0 68.2L-8.0 69.5L-8.0 71.2L-8.0 72.2L-8.0 74.1L-8.0 77.5L-8.0 79.9L-8.0 80.7L-8.0 82.0L-8.0 79.9L-8.0 79.1L-8.0 78.1L-8.0 77.4L-8.0 75.8L-8.0 74.2L-8.0 75.2L-8.0 76.6L-8.0 77.6L-8.0 78.3L-8.0 79.9L-8.0 80.8L-8.0 83.7L-7.9 84.5L-6.1 84.5L-4.2 84.3L-2.8 83.9L-1.8 83.4L-0.3 83.6L0.4 84.6L0.7 85.7L-0.5 86.0L-1.9 85.8L-2.5 86.5L-2.6 87.9L-2.1 89.6L-1.2 90.8L-0.5 93.6L0.1 96.6L1.0 98.5L1.2 100.8L1.1 101.9L1.2 103.9L0.9 104.6L1.1 106.6L2.2 110.5L2.7 112.7L3.0 117.5L2.2 119.3L1.2 121.0L0.5 123.0L0.0 125.2L-0.3 128.7L-2.5 132.8L-3.5 133.9L-4.6 134.5L-2.2 137.4L-4.2 138.7L-6.3 139.1L-8.0 138.4L-8.0 139.4L-8.0 137.3L-8.0 139.7L-8.0 140.5L-8.0 141.7L-8.0 142.8L-8.0 144.0L-8.0 144.8L-8.0 146.1L-8.0 148.5L-8.0 149.7L-8.0 148.9L-8.0 148.2L-8.0 149.0L-8.0 150.6L-8.0 152.2L-8.0 153.0L-8.0 154.7L-8.0 156.7L-8.0 159.3L-8.0 158.3L-8.0 160.0L-8.0 156.2L-8.0 154.4L-8.0 153.7L-8.0 154.9L-8.0 156.0L-8.0 154.6L-8.0 152.5L-8.0 151.4L-8.0 149.7L-8.0 148.3L-8.0 151.2L-8.0 150.1L-8.0 148.4L-8.0 145.3L-8.0 144.0L-8.0 143.3L-8.0 142.3L-8.0 141.0L-8.0 139.6L-8.0 138.5L-8.0 136.6L-8.0 137.7L-8.0 136.1L-8.0 133.6L-8.0 132.8L-8.0 131.7L-8.0 131.0L-8.0 128.6L-8.0 127.7L-8.0 126.5L-8.0 124.7L-8.0 123.8L-8.0 122.5L-8.0 125.1L-8.0 126.0L-8.0 127.6L-8.0 125.6L-8.0 121.8L-8.0 120.5L-8.0 118.4L-8.0 117.5L-8.0 112.5L-8.0 111.7L-8.0 110.9L-8.0 109.3L-8.0 108.5L-8.0 107.4L-8.0 105.9L-8.0 103.8L-8.0 102.4L-8.0 101.4L-8.0 100.5L-8.0 99.3L-8.0 98.1L-8.0 96.9L-8.0 96.2L-8.0 95.1L-8.0 94.2L-8.0 92.5L-8.0 90.8L-8.0 89.7L-8.0 88.0L-8.0 86.0L-8.0 84.8L-8.0 83.4L-8.0 82.0L-8.0 80.7L-8.0 81.6L-8.0 79.9L-8.0 78.6L-8.0 77.4L-8.0 80.1L-8.0 77.9L-8.0 79.4L-8.0 77.3L-8.0 76.1L-8.0 74.4L-8.0 73.3L-8.0 72.0L-8.0 69.2L-8.0 67.4L-8.0 68.3L-8.0 66.3L-8.0 64.8L-8.0 63.9L-8.0 62.5L-8.0 60.2L-8.0 58.0L-8.0 56.4L-8.0 55.3L-8.0 53.8L-8.0 52.7L-8.0 51.3L-8.0 49.7L-8.0 51.1L-8.0 52.0L-8.0 53.4L-8.0 54.5L-8.0 55.4L-8.0 56.2L-8.0 57.8L-8.0 55.6L-8.0 54.3L-8.0 52.7L-8.0 51.3L-8.0 49.7L-8.0 48.7L-8.0 46.4L-8.0 48.1L-8.0 49.1L-8.0 50.0L-8.0 51.8L-8.0 52.9L-8.0 54.2Z"}, {"n": "Germany", "d": "M274.8 224.0L271.8 224.0L268.8 224.0L267.9 224.0L263.5 224.0L262.7 224.0L261.6 224.0L260.9 224.0L258.9 224.0L258.2 224.0L257.0 224.0L255.8 224.0L257.8 224.0L256.5 224.0L255.7 224.0L253.9 224.0L251.6 224.0L249.8 224.0L246.9 224.0L242.9 224.0L241.4 224.0L240.6 224.0L241.3 224.0L243.0 224.0L244.0 224.0L245.3 224.0L246.8 224.0L250.3 224.0L249.6 224.0L248.2 224.0L244.7 224.0L241.4 224.0L239.9 224.0L238.5 224.0L237.7 224.0L236.2 224.0L234.1 224.0L232.8 224.0L231.8 224.0L231.1 224.0L229.9 224.0L228.8 224.0L228.0 224.0L226.8 224.0L226.0 224.0L223.8 223.7L223.3 222.8L223.1 222.1L222.6 220.7L221.2 219.3L219.9 218.8L219.3 217.2L219.8 214.7L220.3 213.4L221.0 212.3L221.7 211.5L221.8 210.2L221.8 208.9L220.9 208.7L218.9 207.7L217.7 206.7L216.8 205.4L215.6 203.7L215.1 202.0L215.1 200.2L215.3 199.5L216.3 196.2L219.5 193.7L219.2 191.3L219.2 189.8L218.4 188.8L216.8 188.4L216.3 187.8L216.2 187.0L217.3 185.6L215.9 184.4L215.3 183.1L213.3 181.6L214.1 176.5L213.3 175.2L212.4 174.6L211.4 174.3L210.9 173.6L210.7 172.9L212.1 172.6L215.5 169.5L215.2 168.7L214.5 168.0L214.5 167.2L216.1 163.4L216.6 161.8L216.7 160.6L216.6 159.5L215.6 157.7L214.8 156.3L214.8 155.2L214.1 154.5L212.3 151.5L212.3 150.3L213.3 149.4L214.8 148.9L215.3 148.4L216.1 148.1L218.4 148.9L219.4 149.7L220.6 148.7L222.3 148.9L226.2 147.2L226.7 146.4L227.2 145.5L225.7 143.5L225.8 142.2L227.2 141.3L228.2 140.6L230.3 138.6L231.0 136.8L231.3 134.9L231.3 133.4L230.7 132.3L230.1 131.6L229.3 131.7L227.7 131.7L226.3 131.0L225.5 130.0L225.3 129.1L225.8 127.8L225.5 127.1L226.3 126.0L230.9 126.1L231.6 122.8L232.7 118.7L233.8 116.4L234.0 115.4L234.0 109.9L234.1 107.1L233.3 105.8L231.6 104.4L232.0 101.4L232.6 99.1L234.3 96.2L235.7 95.5L241.7 95.0L248.3 95.2L251.1 99.5L250.1 101.7L251.6 102.7L252.5 102.4L253.0 100.4L253.4 98.3L254.0 97.7L256.0 99.3L256.8 100.3L256.8 103.8L257.5 99.1L257.0 95.8L257.4 92.6L258.2 90.9L259.0 89.8L263.8 91.0L269.3 90.3L271.3 91.6L275.9 97.9L277.4 98.9L279.3 99.2L276.7 97.9L271.1 90.3L269.4 89.3L266.9 89.1L265.2 88.3L264.2 87.2L264.0 86.1L264.0 78.5L263.0 77.4L261.8 77.0L261.0 77.5L259.4 77.6L259.1 75.8L259.5 74.5L262.7 73.7L264.8 72.5L264.9 70.4L263.5 68.8L262.0 65.9L260.1 63.0L259.9 59.8L263.1 59.8L264.0 60.0L268.9 61.5L270.1 62.6L271.6 62.6L274.3 61.6L276.4 61.2L277.2 61.8L278.3 62.1L281.2 63.4L282.3 64.6L283.5 66.5L283.6 69.2L282.1 71.1L280.8 72.3L285.6 71.9L286.1 73.0L286.8 74.2L289.4 73.4L295.9 76.9L299.8 75.2L300.8 75.1L301.7 78.0L300.7 80.9L297.2 84.0L298.1 85.9L299.1 86.3L302.4 85.9L307.6 87.8L308.6 87.2L312.8 82.8L314.5 81.9L320.0 81.2L321.0 79.5L323.2 77.9L324.7 76.1L328.1 72.5L331.7 73.2L333.7 73.8L336.1 74.2L338.1 77.9L343.4 82.0L348.2 81.7L349.9 85.6L350.7 90.5L352.2 92.0L353.4 92.9L357.4 94.0L357.6 94.7L357.9 97.1L358.2 99.1L360.3 107.1L360.2 109.1L359.5 112.3L358.1 114.6L356.4 115.9L355.4 117.3L355.3 118.9L357.5 121.7L362.0 125.7L363.8 129.1L363.0 132.0L362.7 134.1L363.1 135.4L363.7 136.5L364.9 137.3L365.3 138.5L365.1 140.2L365.3 141.4L366.1 142.2L365.7 143.7L365.1 145.8L364.8 147.3L363.5 149.5L363.9 151.3L364.9 153.4L365.7 154.4L365.9 155.5L365.4 157.9L368.0 160.3L368.0 161.1L368.0 162.8L368.0 166.4L368.0 171.0L368.0 173.6L367.3 177.5L367.0 178.4L366.4 179.1L365.6 179.2L364.5 178.7L363.7 178.0L363.9 176.3L362.8 175.1L362.6 174.0L361.9 173.5L359.4 173.0L358.6 172.7L357.5 173.7L357.8 174.5L358.3 175.2L359.6 176.3L356.5 177.8L354.7 179.0L353.0 179.6L351.2 180.8L347.8 182.1L345.2 182.4L343.8 185.0L343.2 185.4L342.1 184.8L340.9 185.9L340.2 186.2L338.7 188.1L335.8 188.7L335.5 189.7L334.9 190.8L333.2 190.6L331.4 190.4L330.4 191.0L329.1 191.4L327.6 191.5L326.0 192.8L324.3 195.0L323.4 197.0L322.9 197.7L322.1 195.9L321.1 194.5L320.4 193.9L319.6 194.2L319.6 195.2L320.3 196.8L321.1 197.8L321.2 198.7L321.7 200.1L322.9 201.7L324.8 203.0L326.1 204.3L327.0 206.1L326.8 207.3L326.3 207.9L325.9 208.8L324.9 210.6L325.2 211.4L326.1 212.3L326.8 213.5L327.8 215.4L329.1 218.7L330.0 220.1L331.2 221.5L332.3 222.6L334.1 222.5L335.9 224.0L338.0 224.0L339.5 224.0L340.6 224.0L341.5 224.0L342.2 224.0L343.2 224.0L345.1 224.0L347.5 224.0L349.0 224.0L349.8 224.0L348.2 224.0L347.3 224.0L344.1 224.0L342.7 224.0L341.2 224.0L339.3 224.0L338.0 224.0L336.9 224.0L333.7 224.0L332.3 224.0L331.3 224.0L332.9 224.0L334.7 224.0L333.9 224.0L335.3 224.0L336.1 224.0L335.0 224.0L333.4 224.0L332.2 224.0L330.0 224.0L328.5 224.0L327.3 224.0L326.5 224.0L325.7 224.0L324.4 224.0L322.7 224.0L321.7 224.0L313.1 224.0L310.6 224.0L308.8 224.0L307.4 224.0L305.8 224.0L304.3 224.0L303.0 224.0L301.3 224.0L300.3 224.0L298.8 224.0L296.1 224.0L294.6 224.0L291.5 224.0L290.8 224.0L289.6 224.0L288.6 224.0L287.3 224.0L286.3 224.0L284.8 224.0L283.7 224.0L282.6 224.0L280.3 224.0L278.8 224.0L277.0 224.0L275.2 224.0ZM348.0 75.0L348.4 77.0L347.9 77.9L345.9 76.3L343.9 76.3L342.8 78.9L341.9 79.0L338.8 76.7L338.4 75.5L338.3 74.6L338.7 71.3L338.6 70.3L339.6 69.2L339.7 67.5L341.4 65.8L342.9 65.8L343.4 67.2L344.1 68.2L346.6 69.3L347.3 70.5L346.1 71.9L345.7 72.6L346.1 73.8L348.0 75.0ZM356.7 87.6L356.4 88.5L356.8 89.9L356.0 89.8L353.9 90.1L351.7 89.7L351.3 88.0L351.7 86.2L350.8 85.1L350.0 84.4L349.8 83.5L350.0 82.4L353.7 85.2L356.7 87.6ZM305.6 74.0L302.8 74.0L301.8 72.9L300.8 72.6L301.3 71.1L302.1 70.6L304.7 71.5L305.5 73.4ZM253.5 63.2L253.1 63.8L253.3 59.6L255.2 55.3L256.0 55.4L255.2 56.5L255.0 57.3L254.7 59.0L254.8 59.9L259.2 60.1L258.7 60.9L254.2 61.4L253.5 63.2ZM258.4 65.4L257.7 66.1L256.1 66.0L255.2 65.3L255.5 64.6L256.4 64.0L258.2 64.3L258.4 65.4Z"}, {"n": "France", "d": "M241.4 224.0L239.3 224.0L238.0 224.0L236.7 224.0L235.3 224.0L234.2 224.0L233.1 224.0L231.6 224.0L230.1 224.0L228.9 224.0L230.4 224.0L227.5 224.0L225.2 224.0L224.1 224.0L221.2 224.0L220.4 224.0L218.2 224.0L216.0 224.0L215.1 224.0L214.3 224.0L215.3 224.0L213.8 224.0L212.7 224.0L214.7 224.0L216.7 224.0L218.0 224.0L217.2 224.0L218.9 224.0L220.7 224.0L223.3 224.0L226.5 224.0L227.5 224.0L226.7 224.0L228.2 224.0L229.9 224.0L230.7 224.0L229.6 224.0L227.3 224.0L228.6 224.0L230.0 224.0L230.9 224.0L232.9 224.0L232.1 224.0L231.3 224.0L230.4 224.0L227.9 224.0L226.8 224.0L225.3 224.0L224.2 224.0L225.3 224.0L226.1 224.0L227.2 224.0L228.7 224.0L229.6 224.0L230.6 224.0L229.5 224.0L228.5 224.0L230.1 224.0L233.3 224.0L236.2 224.0L237.2 224.0L241.1 224.0L242.3 224.0L241.0 224.0L239.8 224.0L238.4 224.0L237.6 224.0L235.3 224.0L233.8 224.0L228.3 224.0L225.7 224.0L224.7 224.0L223.2 224.0L221.8 224.0L218.5 224.0L215.2 224.0L213.8 224.0L209.9 224.0L207.5 224.0L202.8 224.0L201.3 224.0L199.2 224.0L197.8 224.0L197.0 224.0L195.3 224.0L194.2 224.0L193.0 224.0L192.0 224.0L190.7 224.0L189.2 224.0L185.4 224.0L182.2 224.0L181.1 224.0L180.2 224.0L179.2 224.0L176.7 224.0L175.8 224.0L174.5 224.0L165.3 224.0L163.6 224.0L161.7 224.0L164.2 224.0L163.4 224.0L161.7 224.0L160.2 224.0L158.9 224.0L157.6 224.0L156.4 224.0L155.6 224.0L154.7 224.0L153.2 224.0L149.8 224.0L146.8 224.0L145.0 224.0L143.9 224.0L143.0 224.0L142.0 224.0L140.8 224.0L138.1 224.0L135.7 224.0L134.6 224.0L133.9 224.0L131.9 224.0L131.0 224.0L129.5 224.0L127.8 224.0L126.0 224.0L121.7 224.0L120.5 224.0L119.8 224.0L117.4 224.0L114.9 224.0L113.8 224.0L112.8 224.0L111.8 224.0L107.6 224.0L105.9 224.0L104.7 224.0L103.9 224.0L103.1 224.0L101.4 224.0L100.0 224.0L98.8 224.0L95.4 224.0L93.7 224.0L92.0 224.0L87.8 224.0L85.9 224.0L84.7 224.0L84.0 224.0L82.8 224.0L83.8 224.0L82.6 224.0L81.1 224.0L79.9 224.0L78.4 224.0L77.7 224.0L79.8 224.0L82.4 224.0L84.9 224.0L86.6 224.0L87.9 224.0L89.5 224.0L88.2 224.0L87.4 224.0L86.6 224.0L87.6 224.0L89.4 224.0L91.9 224.0L93.9 224.0L95.0 224.0L96.3 224.0L97.2 224.0L98.8 224.0L97.1 224.0L95.5 224.0L94.5 224.0L93.0 224.0L87.9 224.0L87.2 224.0L88.9 224.0L90.3 224.0L89.1 224.0L88.3 224.0L86.7 224.0L85.4 224.0L84.0 224.0L77.1 224.0L74.8 224.0L72.3 224.0L73.1 224.0L72.0 224.0L70.9 224.0L69.9 224.0L70.8 224.0L72.9 224.0L74.8 224.0L76.5 224.0L77.9 224.0L73.8 224.0L67.2 224.0L65.8 224.0L64.6 224.0L65.9 224.0L65.0 224.0L63.7 224.0L61.8 224.0L59.9 224.0L58.4 224.0L56.5 224.0L54.8 224.0L53.1 224.0L52.1 224.0L51.3 224.0L50.2 224.0L49.0 224.0L48.2 224.0L47.0 224.0L40.2 224.0L37.2 224.0L34.5 224.0L33.0 224.0L31.9 224.0L31.0 224.0L26.6 224.0L27.5 224.0L29.5 224.0L31.8 224.0L32.7 224.0L30.9 224.0L29.5 224.0L28.4 224.0L29.2 224.0L31.4 224.0L34.2 224.0L33.2 224.0L32.1 224.0L29.3 224.0L28.2 224.0L25.9 224.0L25.1 224.0L29.2 224.0L37.4 224.0L40.9 224.0L43.5 224.0L46.4 224.0L47.7 224.0L51.9 224.0L55.8 224.0L59.6 224.0L61.3 224.0L65.6 224.0L72.0 224.0L73.3 224.0L75.0 224.0L76.0 224.0L83.2 224.0L84.3 224.0L82.5 224.0L81.0 224.0L78.8 223.0L76.7 217.9L75.7 214.8L75.6 213.8L75.9 212.2L78.6 212.3L80.6 212.7L84.5 211.5L86.4 212.3L86.2 214.7L86.8 217.8L87.5 219.2L88.4 220.9L91.6 220.7L95.0 221.7L99.3 221.8L105.5 223.6L108.1 222.5L110.7 220.5L115.6 219.1L116.1 218.4L113.2 218.7L110.6 217.4L110.3 215.9L110.6 214.6L111.6 211.7L119.1 207.0L124.5 205.6L130.1 203.1L132.9 200.4L134.8 197.0L135.4 196.3L136.2 195.6L135.4 194.4L135.9 181.4L136.5 179.1L137.6 177.2L139.3 175.7L141.8 174.1L151.1 171.8L152.5 171.0L152.7 172.3L153.4 174.1L153.8 175.1L153.4 176.3L153.7 177.4L155.0 179.3L156.6 181.1L158.0 182.2L159.4 181.8L161.2 180.6L162.7 180.2L163.5 181.1L164.9 183.6L165.1 185.7L165.6 187.4L166.3 188.2L169.1 188.4L171.2 189.1L171.7 189.6L172.4 193.5L173.4 193.6L173.9 193.0L175.8 193.1L177.4 193.2L179.0 193.6L181.3 195.8L181.2 196.5L180.8 197.8L180.6 198.8L181.6 200.2L181.5 201.4L180.9 202.3L180.7 203.0L180.9 203.8L184.7 204.6L187.8 204.1L189.7 202.9L190.0 201.6L190.6 200.2L191.7 198.9L192.6 198.5L193.3 199.0L192.1 204.2L192.9 205.5L193.1 207.5L193.4 209.2L194.5 209.2L195.8 209.5L196.8 210.1L197.9 211.1L199.5 212.1L200.6 212.4L201.0 213.2L201.9 214.1L203.3 216.0L204.6 217.3L206.4 216.8L208.2 216.5L209.5 216.5L210.1 217.5L211.5 217.9L212.5 218.9L213.4 219.2L214.5 218.9L215.3 218.0L216.3 217.6L217.4 217.8L218.0 218.3L219.2 219.0L221.2 219.3L222.6 220.7L223.1 222.1L223.3 222.8L223.8 223.7L226.0 224.0L226.8 224.0L227.5 224.0L228.8 224.0L229.9 224.0L230.7 224.0L231.8 224.0L232.8 224.0L234.1 224.0L236.2 224.0L237.7 224.0L238.5 224.0L239.9 224.0L241.4 224.0L244.7 224.0L248.2 224.0L249.6 224.0L250.5 224.0L246.8 224.0L245.3 224.0L244.6 224.0L243.0 224.0L241.4 224.0L240.1 224.0L241.4 224.0Z"}, {"n": "Denmark", "d": "M328.0 34.0L328.0 37.0L327.6 37.8L326.9 38.4L325.2 38.9L323.7 39.8L322.3 41.3L321.8 43.3L322.9 44.9L324.8 45.7L325.3 48.6L323.7 50.0L319.6 51.5L319.2 54.9L319.3 57.6L319.3 59.6L319.0 62.4L315.7 63.6L313.5 59.4L313.5 57.7L312.8 55.8L312.8 54.1L312.0 51.5L308.9 50.8L307.7 50.7L306.0 51.2L303.5 47.4L303.9 43.3L302.8 41.3L302.7 40.4L302.7 39.4L301.8 38.6L300.7 38.1L300.2 35.9L301.5 35.3L304.5 35.6L305.4 35.4L306.2 35.0L308.7 31.3L308.6 30.5L308.9 29.4L311.5 29.0L312.7 30.4L312.5 32.7L312.7 35.6L314.3 36.5L315.6 34.4L316.1 33.4L316.7 32.7L316.9 30.8L316.6 29.6L315.7 28.7L318.8 26.2L321.9 24.3L323.7 24.2L325.6 24.6L327.3 25.3L328.2 25.9L328.7 26.8L327.6 28.9L327.3 30.1L328.0 34.0ZM278.6 62.1L277.2 61.8L276.4 61.2L274.3 61.6L271.6 62.6L270.1 62.6L268.9 61.5L264.0 60.0L263.1 59.8L259.9 59.8L259.7 57.3L259.3 55.6L258.2 53.0L259.9 52.4L259.6 47.4L258.9 44.7L254.2 42.0L250.4 39.4L251.3 30.6L251.7 28.3L250.3 23.7L250.4 18.3L251.0 10.0L252.2 9.7L253.1 9.7L256.4 11.3L257.8 11.4L258.7 12.7L259.9 13.3L260.7 11.9L261.0 9.4L263.7 6.3L265.5 5.1L266.8 4.6L268.1 5.8L269.1 7.2L269.3 4.2L270.1 -1.8L267.6 -2.7L265.5 -1.9L263.5 1.8L261.6 6.6L258.7 7.0L256.4 8.4L254.2 6.9L252.8 5.7L252.8 3.9L253.1 2.8L255.6 -1.0L259.0 -4.7L262.3 -4.7L264.8 -5.8L266.3 -6.0L270.8 -5.7L273.2 -6.5L275.3 -8.0L279.9 -8.0L282.5 -8.0L287.6 -8.0L292.4 -8.0L293.8 -8.0L291.5 -8.0L292.5 -8.0L290.8 -6.5L289.0 -2.1L288.2 -1.4L288.1 3.7L288.3 5.0L288.1 9.6L289.8 11.6L291.6 12.6L297.9 12.5L298.5 13.3L299.3 14.8L298.8 17.3L298.1 19.1L296.3 20.7L294.0 21.8L292.5 21.9L290.6 19.7L289.6 20.4L288.7 21.5L287.1 27.6L286.3 31.7L285.0 31.4L283.4 31.4L281.5 32.3L282.5 33.2L283.5 34.7L283.1 35.5L281.3 36.3L279.8 37.9L279.1 39.2L277.2 40.7L276.0 42.5L276.5 44.9L276.8 46.9L277.4 49.2L276.9 51.0L274.5 53.5L273.6 55.8L275.6 55.8L276.9 56.3L277.7 56.9L278.4 57.9L277.9 59.1L278.6 62.1ZM294.4 39.1L295.1 40.7L296.0 43.9L297.4 47.6L296.8 49.1L297.2 51.0L296.8 53.1L294.0 55.4L290.8 55.5L287.6 54.4L282.9 52.2L282.5 51.0L281.9 50.3L280.6 46.5L280.7 41.9L283.0 41.3L288.1 39.1L289.3 39.4L290.5 40.6L292.0 40.7L294.0 39.0ZM306.9 60.1L310.0 62.0L312.1 61.9L313.5 62.6L313.9 63.7L314.0 66.3L312.5 67.1L310.8 66.8L308.6 67.8L301.2 63.6L301.3 60.1L301.6 58.7L305.1 58.4L306.9 60.1ZM295.9 64.2L295.2 64.4L294.1 62.1L294.0 61.3L295.2 59.8L296.0 58.1L298.1 55.4L299.3 52.3L299.2 55.2L296.5 62.8L295.9 64.2ZM327.6 57.9L327.0 58.4L324.3 58.1L321.3 60.1L320.1 59.5L320.6 58.2L321.9 57.1L322.6 56.3L322.9 55.1L323.5 55.8L325.4 56.0L326.2 56.4L327.0 57.0L327.6 57.9ZM329.7 39.5L328.1 40.8L327.1 39.0L328.0 38.0L328.5 37.1L329.4 38.1L329.7 39.5ZM291.6 61.4L290.4 61.7L289.1 61.1L286.9 58.7L287.7 58.5L289.2 59.7L290.3 60.0L291.9 61.0ZM284.2 60.3L282.3 60.7L281.5 60.0L279.7 59.7L279.1 55.2L280.1 55.3L283.1 57.3L284.1 59.6ZM293.7 34.1L292.3 34.1L292.2 32.2L292.6 30.5L292.2 28.9L292.7 28.0L294.2 30.3L294.7 31.3L294.1 32.6L293.7 34.1ZM368.0 56.3L364.9 53.9L365.5 50.0L366.4 48.3L368.0 52.7L368.0 54.4L368.0 56.3Z"}, {"n": "Czechia", "d": "M368.0 217.3L368.0 218.6L368.0 219.9L368.0 220.8L368.0 221.6L368.0 222.4L368.0 224.0L366.8 224.0L365.4 224.0L362.7 224.0L361.5 224.0L360.5 224.0L359.4 224.0L356.3 224.0L353.9 224.0L352.8 224.0L351.7 224.0L350.3 224.0L349.0 224.0L347.5 224.0L345.1 224.0L343.2 224.0L342.2 224.0L341.5 224.0L340.6 224.0L339.5 224.0L338.0 224.0L335.9 224.0L334.1 222.5L332.3 222.6L331.2 221.5L330.0 220.1L329.1 218.7L327.8 215.4L326.8 213.5L326.1 212.3L325.2 211.4L324.9 210.6L325.9 208.8L326.3 207.9L326.8 207.3L327.0 206.6L326.1 204.3L324.8 203.0L322.9 201.7L321.7 200.1L321.2 198.7L321.1 197.8L320.3 196.8L319.6 195.2L319.6 194.2L320.4 193.9L321.1 194.5L322.1 195.9L322.9 197.7L323.4 197.0L324.3 195.0L326.0 192.8L327.6 191.5L329.1 191.4L330.4 191.0L331.4 190.4L333.2 190.6L334.6 191.1L335.5 189.7L335.8 188.7L338.7 188.1L339.7 186.1L340.9 185.9L341.5 185.1L342.5 185.2L343.8 185.0L344.7 182.7L347.8 182.1L351.2 180.8L353.0 179.6L354.7 179.0L356.5 177.8L359.5 176.8L358.3 175.2L357.8 174.5L357.5 173.7L358.0 172.9L359.4 173.0L361.9 173.5L362.6 174.0L362.8 175.1L363.4 176.1L363.7 178.0L364.5 178.7L365.6 179.2L366.4 179.1L367.0 178.4L368.0 177.8L368.0 177.1L368.0 175.9L368.0 173.7L368.0 175.0L368.0 177.2L368.0 178.3L368.0 179.3L368.0 181.1L368.0 182.3L368.0 183.2L368.0 184.5L368.0 185.9L368.0 187.2L368.0 187.9L368.0 188.9L368.0 189.7L368.0 190.6L368.0 191.5L368.0 192.3L368.0 195.7L368.0 199.4L368.0 200.1L368.0 198.4L368.0 197.5L368.0 196.1L368.0 192.9L368.0 190.9L368.0 192.0L368.0 195.6L368.0 194.7L368.0 196.3L368.0 197.3L368.0 198.4L368.0 199.6L368.0 201.3L368.0 202.8L368.0 203.8L368.0 203.0L368.0 202.0L368.0 202.8L368.0 204.0L368.0 205.0L368.0 205.9L368.0 207.6L368.0 210.1L368.0 214.3L368.0 216.4L368.0 217.3Z"}, {"n": "Belgium", "d": "M182.2 162.5L183.6 163.2L184.8 163.4L184.9 161.3L186.0 160.4L187.0 159.9L187.5 160.7L188.5 161.4L189.4 161.5L191.5 159.5L192.4 160.6L192.6 161.7L194.8 161.9L195.6 160.8L196.3 160.1L196.8 160.6L197.0 161.9L197.5 163.7L199.5 165.6L201.2 166.2L203.3 165.8L204.1 165.4L205.1 166.8L206.3 168.0L208.9 168.8L209.7 169.3L210.2 170.1L210.0 171.3L208.9 174.1L208.7 175.0L208.6 175.8L207.0 177.7L206.9 178.4L207.4 179.4L207.8 180.4L208.8 180.8L209.7 181.0L211.3 181.0L213.1 181.1L215.3 183.1L215.9 184.4L217.3 185.6L216.2 187.0L216.3 187.8L216.8 188.4L218.4 188.8L219.2 189.8L219.2 191.3L219.5 193.7L216.3 196.2L215.3 198.9L214.1 198.5L212.8 198.1L210.9 200.6L210.0 202.6L209.5 204.1L208.7 205.3L208.6 206.6L208.4 207.9L208.4 208.6L209.5 210.0L209.8 210.8L211.1 213.4L210.7 214.3L210.4 215.3L210.0 216.0L208.2 216.5L206.4 216.8L205.2 217.3L203.3 216.0L201.9 214.1L201.0 213.2L200.6 212.4L199.5 212.1L197.9 211.1L196.8 210.1L195.8 209.5L194.5 209.2L193.4 209.2L193.1 207.5L192.9 205.5L192.1 204.2L193.3 199.0L192.6 198.5L191.7 198.9L190.6 200.2L190.0 201.6L189.7 202.9L187.8 204.1L184.7 204.6L181.4 204.1L180.7 203.5L180.9 202.3L181.5 201.4L181.6 200.2L181.0 199.2L180.8 197.8L181.2 196.5L181.3 195.8L179.0 193.6L177.4 193.2L175.8 193.1L174.6 192.9L173.4 193.6L172.8 194.0L171.7 189.6L171.2 189.1L169.1 188.4L166.3 188.2L165.6 187.4L165.1 185.7L164.9 183.6L163.9 181.6L162.7 180.2L161.2 180.6L159.4 181.8L158.4 182.1L156.6 181.1L155.0 179.3L153.7 177.4L153.4 176.3L153.8 175.1L153.4 174.1L152.7 172.3L152.5 171.0L160.1 166.1L164.7 163.5L166.9 162.8L167.4 165.3L167.8 166.1L168.3 166.6L169.8 166.1L170.9 165.4L172.7 165.7L174.0 166.4L174.4 167.0L175.3 167.6L176.5 167.7L179.0 166.6L181.3 164.8L181.9 163.6L182.2 162.5Z"}]};
+const LBL = {Edinburgh:[7,4,"start"],York:[7,4,"start"],Oxford:[-7,-4,"end"],London:[0,-7,"middle"],Brighton:[-8,5,"end"],Dover:[-3,-7,"middle"],Calais:[5,12,"start"],"Brüssel":[0,14,"middle"],"Köln":[0,14,"middle"],Hannover:[0,-9,"middle"],Leipzig:[0,14,"middle"]};
+const MAPLBL = [["SCOTLAND",40,64,9],["ENGLAND",64,128,9],["WALES",34,162,7],["GERMANY",300,206,9],["FRANCE",120,208,8],["BELGIUM",204,204,6.5],["NETHERLANDS",224,140,6.5],["the North Sea",190,66,10,1],["English Channel",62,196,7,1]];
 function journalMap(){
-  const ink = "#16406B";
+  const ink = "#16406B", Wm = MAPD.W, Hm = MAPD.H;
   const pts = CITIES.map(c=>[c.x,c.y]);
   /* Position der Möwe entlang der Route */
   let px = pts[0][0], py = pts[0][1];
@@ -3124,19 +3354,20 @@ function journalMap(){
     break;
   }
   const done = CITIES.filter(c=>S.km>=c.km);
-  return `<svg viewBox="0 0 360 200" style="display:block;width:100%;height:auto;border-radius:18px" role="img" aria-label="Reisekarte von Leipzig nach Edinburgh">
-    <rect width="360" height="200" fill="#BFE6F7"/>
-    <path d="M150 160q-2-20 12-34 14-6 22 4 10-4 26 2 30-10 60-6 40-2 60 6 20 4 30 6V200H150z" fill="#CFE8B8" stroke="#9CC488" stroke-width="2"/>
-    <path d="M206 112q14-20 40-22 30-8 60-2 26 4 54 0V60q-30-14-60-6-28-8-50 8-18 10-30 18-12 14-14 32z" fill="#CFE8B8" stroke="#9CC488" stroke-width="2"/>
-    <path d="M100 6q18-8 30 6 6 16-4 26 18 8 20 30 4 22-6 36 22 12 26 26 4 14-12 22-22 6-44 2-18-4-24-16 10-12 4-24-12-10-6-26 4-14-8-22-6-18 8-30 6-8 16-10z" fill="#D8EDC4" stroke="#9CC488" stroke-width="2"/>
-    <path d="M50 70q10-12 24-8 8 12 0 24-12 8-22 0-8-8-2-16z" fill="#D8EDC4" stroke="#9CC488" stroke-width="2"/>
-    <text x="350" y="190" text-anchor="end" font-family="Fredoka, sans-serif" font-size="11" fill="#5E8A54" font-weight="700">Deutschland</text>
-    <text x="40" y="140" font-family="Fredoka, sans-serif" font-size="11" fill="#5E8A54" font-weight="700">England</text>
-    <polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="5 5"/>
-    <polyline points="${done.map(c=>c.x+","+c.y).concat(done.length<CITIES.length?[px.toFixed(1)+","+py.toFixed(1)]:[]).join(" ")}" fill="none" stroke="#0B95C2" stroke-width="3.5"/>
-    ${CITIES.map(c=>`<circle cx="${c.x}" cy="${c.y}" r="${c.n==="Brighton"?6:4.5}" fill="${S.km>=c.km?"#0B95C2":"#fff"}" stroke="${c.n==="Brighton"?"#FF8A3D":ink}" stroke-width="2"/>`).join("")}
-    ${CITIES.map(c=>{ const L = LBL[c.n] || [0,-8,"middle"]; return `<text x="${c.x+L[0]}" y="${c.y+L[1]}" text-anchor="${L[2]}" font-family="Fredoka, sans-serif" font-size="9" font-weight="600" fill="${ink}" paint-order="stroke" stroke="#fff" stroke-width="2.5">${c.n}</text>`; }).join("")}
-    <g transform="translate(${(px-20).toFixed(1)},${(py-30).toFixed(1)})">${I.flyer(GC()).replace('<svg ','<svg width="40" height="27" ')}</g>
+  const land = MAPD.land.map(l=>`<path d="${l.d}" fill="${l.n==="Germany"?"#DCEFC6":l.n==="United Kingdom"?"#E3F2CF":"#CDE5B5"}" stroke="#93BC7E" stroke-width=".8" stroke-linejoin="round"/>`).join("");
+  return `<svg viewBox="0 0 ${Wm} ${Hm}" style="display:block;width:100%;height:auto;border-radius:18px" role="img" aria-label="Reisekarte von Leipzig nach Edinburgh">
+    <defs><clipPath id="mapclip"><rect width="${Wm}" height="${Hm}" rx="14"/></clipPath>
+      <pattern id="waves" width="22" height="12" patternUnits="userSpaceOnUse"><path d="M2 8q4-4 8 0t8 0" stroke="#A9DAF0" stroke-width="1" fill="none"/></pattern></defs>
+    <g clip-path="url(#mapclip)">
+    <rect width="${Wm}" height="${Hm}" fill="#BFE6F7"/><rect width="${Wm}" height="${Hm}" fill="url(#waves)"/>
+    ${land}
+    ${MAPLBL.map(([t,x,y,fs,sea])=>`<text x="${x}" y="${y}" text-anchor="middle" font-family="Fredoka, sans-serif" font-size="${fs}" font-weight="700" letter-spacing="${sea?0:1.5}" fill="${sea?"#4F9CC0":"#6E9A5E"}" ${sea?'font-style="italic"':""}>${t}</text>`).join("")}
+    <polyline points="${pts.map(p=>p.join(",")).join(" ")}" fill="none" stroke="#fff" stroke-width="2.6" stroke-dasharray="4 4" stroke-linecap="round"/>
+    <polyline points="${done.map(c=>c.x+","+c.y).concat(done.length<CITIES.length?[px.toFixed(1)+","+py.toFixed(1)]:[]).join(" ")}" fill="none" stroke="#0B95C2" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${CITIES.map(c=>`<circle cx="${c.x}" cy="${c.y}" r="${c.n==="Brighton"?5.5:4}" fill="${S.km>=c.km?"#0B95C2":"#fff"}" stroke="${c.n==="Brighton"?"#FF8A3D":ink}" stroke-width="1.8"/>`).join("")}
+    ${CITIES.map(c=>{ const L = LBL[c.n] || [0,-8,"middle"]; return `<text x="${c.x+L[0]}" y="${c.y+L[1]}" text-anchor="${L[2]}" font-family="Fredoka, sans-serif" font-size="8.5" font-weight="600" fill="${ink}" paint-order="stroke" stroke="#fff" stroke-width="2.5" stroke-linejoin="round">${c.n}</text>`; }).join("")}
+    <g transform="translate(${(px-18).toFixed(1)},${(py-27).toFixed(1)})">${I.flyer(GC()).replace('<svg ','<svg width="36" height="24" ')}</g>
+    </g>
   </svg>`;
 }
 function renderJournal(){
@@ -3223,6 +3454,7 @@ function renderParents(){
   $("#s-parents").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
     <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Elternbereich</h1>
     <button class="btn btn-soft btn-block" data-act="openOverview" data-back="openParents">Lernstand: alle Wörter und Sätze auf einen Blick</button>
+    ${famPanel()}
     <div class="panel"><span class="label">Wochenbericht</span>
       <pre style="margin:0;white-space:pre-wrap;font:inherit;font-size:.9rem">${esc(reportText(false))}</pre>
       <button class="btn btn-soft" data-act="shareReport">Bericht teilen</button>
@@ -3387,7 +3619,7 @@ const ACT = {
     } catch(e){ msg.textContent = "Der Code ist ungültig. Bitte vollständig kopieren und erneut einfügen."; }
   },
   resetAsk: () => { $("#resetBox").innerHTML = `<p style="margin:0 0 8px">Wirklich alles löschen? Fortschritt, Möwe und Abzeichen gehen verloren.</p><div class="row"><button class="btn btn-ghost" data-act="openParents" style="flex:1">Abbrechen</button><button class="btn btn-bad" data-act="resetDo" style="flex:1">Ja, löschen</button></div>`; },
-  resetDo: () => { try{ localStorage.removeItem(KEY); localStorage.removeItem(OLDKEY); }catch(e){} S = null; OB.color = 0; renderOnboard(true); show("onboard"); }
+  resetDo: () => { try{ localStorage.removeItem(KEY); localStorage.removeItem(OLDKEY); localStorage.removeItem(FAM_KEY); }catch(e){} famCode = null; S = null; OB.color = 0; renderOnboard(true); show("onboard"); }
 };
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-act]"); if (!b || b.disabled) return;
@@ -3397,9 +3629,23 @@ document.addEventListener("keydown", e => { if (e.key==="Enter" && (e.target.id=
 
 /* ============ START ============ */
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); } catch(e) {}
-if (S && S.name && S.gull) show("home");
-else if (S && S.name){ renderOnboard(false); show("onboard"); }
-else { renderOnboard(true); show("onboard"); }
+Object.assign(ACT, FAM_ACT);
+/* 3D-Kippeffekt: Postkarten und Karteikarten folgen dem Finger, mit Glanzlicht */
+const TILT = ".pc:not(.locked), .postcard, .fc";
+const tiltOff = el => { el.style.transform = ""; el.classList.remove("tilting"); };
+document.addEventListener("pointermove", e => {
+  if (RM) return; const el = e.target.closest && e.target.closest(TILT); if (!el) return;
+  const r = el.getBoundingClientRect(), x = (e.clientX-r.left)/r.width-.5, y = (e.clientY-r.top)/r.height-.5;
+  el.style.transform = `perspective(700px) rotateX(${(-y*12).toFixed(2)}deg) rotateY(${(x*14).toFixed(2)}deg) scale(1.02)`;
+  el.style.setProperty("--gx", ((x+.5)*100).toFixed(0)+"%"); el.style.setProperty("--gy", ((y+.5)*100).toFixed(0)+"%");
+  el.classList.add("tilting");
+}, {passive:true});
+["pointerup","pointercancel","pointerout"].forEach(t=>document.addEventListener(t, e => { const el = e.target.closest && e.target.closest(TILT); if (el && (t!=="pointerout" || !el.contains(e.relatedTarget))) tiltOff(el); }, {passive:true}));
+if (!famBoot()){
+  if (S && S.name && S.gull) show("home");
+  else if (S && S.name){ renderOnboard(false); show("onboard"); }
+  else { renderOnboard(true); show("onboard"); }
+}
 })();
 
 </script>
