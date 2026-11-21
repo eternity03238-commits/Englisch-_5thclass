@@ -1,5 +1,5 @@
 {
-  "version": 25,
+  "version": 26,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -403,6 +403,21 @@
         },
         {
           "path": "belohnung_fisch-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "lernserie_flamme": {
+      "name": "Flamme für Friedrichs Lernserie",
+      "images": [
+        {
+          "path": "lernserie_flamme.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "lernserie_flamme-128.webp",
           "width": 128,
           "height": 128
         }
