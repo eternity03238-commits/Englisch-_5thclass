@@ -1,5 +1,5 @@
 {
- "version": 8,
+ "version": 9,
  "files": {
   "king/front": {
    "w": 1024,
@@ -145,6 +145,46 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_adult_face.png"
+  },
+  "adult/blink": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_blink.png"
+  },
+  "adult/look_left": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_look_left.png"
+  },
+  "adult/look_right": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_look_right.png"
+  },
+  "adult/wave": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_wave.png"
+  },
+  "adult/celebrate": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_celebrate.png"
+  },
+  "adult/think": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_think.png"
+  },
+  "adult/encourage": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_encourage.png"
+  },
+  "young/front": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_front.png"
   }
  }
 }
