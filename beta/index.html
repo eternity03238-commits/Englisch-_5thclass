@@ -791,6 +791,33 @@ img.stk-img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:con
 .scn-medal.away{visibility:hidden}
 .scn-medal:not(.got) img.stk-img{filter:grayscale(1) brightness(.5) blur(1px);opacity:.7}
 .scn-zoom-art.locked img.stk-img{filter:grayscale(1) brightness(.5) blur(7px);opacity:.9}
+/* Reise */
+.scn-flyer{animation:scn-bob 3.2s ease-in-out infinite}
+@keyframes scn-bob{0%,100%{transform:translate(-50%,-90%)}50%{transform:translate(-50%,calc(-90% - 4%))}}
+.scn-flyer .fr-shadow{display:none}
+.scn-trip{background:rgba(11,25,48,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#F7F4EC;border-radius:18px;padding:10px 14px;display:flex;flex-direction:column;gap:8px}
+.scn-trip-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:800 1rem/1.1 var(--fr-font)}
+.scn-trip-row small{font-weight:700;font-size:.78rem;color:#A8BCD4}
+.scn-trip-bar{position:relative;height:10px;border-radius:999px;background:rgba(255,255,255,.18);margin:4px 6px}
+.scn-trip-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#72C8FF,#FFD36E)}
+.scn-trip-bar span{position:absolute;top:50%;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#13284A;box-shadow:0 0 0 2px rgba(255,255,255,.6)}
+.scn-trip-bar span.on{background:#FFD36E}
+.scn-trip-bar span.goal{width:16px;height:16px;margin:-8px 0 0 -8px;background:#FF9438;box-shadow:0 0 0 3px #fff}
+/* Stufenaufstieg auf dem Podest */
+.scn-podium{position:absolute;inset:0;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px 16px;cursor:pointer;
+  background:radial-gradient(70% 50% at 50% 55%,rgba(255,214,120,.35),rgba(11,25,48,.85));opacity:0;transition:opacity .35s ease}
+.scn-podium.on{opacity:1}
+.scn-podium.instant{transition:none}
+.scn-podium-stage{position:relative;width:min(80vw,420px);aspect-ratio:1/1}
+.scn-podium-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+/* Podestoberfläche bei ~68 % der Bildhöhe: dort stehen Friedrichs Füße (90 % seiner Box) */
+.scn-podium-fr{position:absolute;left:50%;top:68%;width:62%;transform:translate(-50%,-90%)}
+.scn-podium-fr .fr-shadow{bottom:8%}
+.scn-podium-text{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:#FFF7E6;max-width:420px}
+.scn-podium-text small{font:800 .8rem/1 var(--fr-font);letter-spacing:.08em;text-transform:uppercase;color:#FFD36E}
+.scn-podium-text b{font:800 1.6rem/1.15 var(--fr-font-head)}
+.scn-podium-text span{font:600 .85rem/1 var(--fr-font);color:rgba(255,247,230,.75)}
+@media (prefers-reduced-motion:reduce){.scn-flyer{animation:none}}
 </style>
 
 </head>
@@ -1662,7 +1689,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795292562";
+const BUILD = "1795294704";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2262,7 +2289,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "e77b732a3f712a9993f6e2f26eeabdebfa7260c9";
+const SCN_COMMIT = "ffdb89a65d3d534dfd074eaad739c1ddf4bfafc7";
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2285,6 +2312,8 @@ const SCN_LAYOUT = {
 };
 /* Übersichtskarte: Lage der Orte auf lernwelt-uebersicht.webp in Prozent */
 const SCN_MAP_ID = "lernwelt-uebersicht", SCN_TREASURE_ID = "schatzkammer";
+/* Reise Leipzig → Brighton: Flugbild je Abschnitt (ab Kilometer), passend zu den Stationen der App */
+const SCN_FLIGHT = [["abflug-aus-leipzig", 0], ["ueber-dem-aermelkanal", 920], ["flug-nach-brighton", 1170]];
 /* Schatzkammer: Oberkanten der drei Regalbretter (y), Regalbreite (x0–x1) und die Truhe, in Prozent */
 const SCN_SHELVES = {ys:[24.6, 32.6, 40.2], x0:28, x1:74, perRow:5, chest:{x:39, y:43.5, w:17, h:8.5}};
 const SCN_MAP_PINS = {
@@ -2293,7 +2322,7 @@ const SCN_MAP_PINS = {
   "steckbrief-steg":[78,46.5], "bei-freunden-in-brighton":[91,11.5]
 };
 const SCN_SHORT = {"marktplatz":"Markt", "abenteuer-pier":"Abenteuer-Pier"};
-const SCN_NAMES = {"lernwelt-uebersicht":"Die Lernwelt", "schatzkammer":"Die Schatzkammer", "marktplatz":"Der Marktplatz", "marktplatz-obststand":"Der Obststand", "haus-am-hafen-wohnzimmer":"Das Wohnzimmer", "schule-am-meer-klassenzimmer":"Das Klassenzimmer"};
+const SCN_NAMES = {"abflug-aus-leipzig":"Abflug aus Leipzig", "ueber-dem-aermelkanal":"Über dem Ärmelkanal", "flug-nach-brighton":"Flug nach Brighton", "lernwelt-uebersicht":"Die Lernwelt", "schatzkammer":"Die Schatzkammer", "marktplatz":"Der Marktplatz", "marktplatz-obststand":"Der Obststand", "haus-am-hafen-wohnzimmer":"Das Wohnzimmer", "schule-am-meer-klassenzimmer":"Das Klassenzimmer"};
 const SCN = {world:null, ready:null, cur:SCN_START, inRoom:false, origin:null, success:false, rewardOn:false, stage0:null};
 const scnRM = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 const SCN_SIZES = "(max-width:560px) 130vw, 728px";
@@ -2316,7 +2345,7 @@ function scnLoad(){
     document.querySelectorAll(".fr[data-stage]").forEach(frRefresh);
   }).catch(() => { FR.files = FR.files || {}; });
   const wd = scnFetch("world/manifest.json").then(m => { SCN.world = m; }).catch(() => { SCN.world = null; });
-  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; }).catch(() => { SCN.rewards = {}; });
+  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; }).catch(() => { SCN.rewards = {}; SCN.illus = {}; });
   SCN.ready = Promise.all([fr, wd, rw]).then(() => { SCN.loaded = true; });
   return SCN.ready;
 }
@@ -2334,11 +2363,16 @@ function rwImg(id, cls, sizes){
   const src = scnRaw("rewards/" + l[l.length-1].path), set = l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", ");
   return `<img class="stk stk-img ${cls||""}" src="${src}" srcset="${set}" sizes="${sizes || "96px"}" alt="" decoding="async" draggable="false">`;
 }
+function rwIllus(id){
+  const b = SCN.illus && SCN.illus[id]; if (!b || !b.images || !b.images.length) return null;
+  const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
+  return {src: scnRaw("rewards/" + l[l.length-1].path), srcset: l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", ")};
+}
 const scnScene = id => SCN.world && SCN.world.scenes && SCN.world.scenes[id];
 const scnIds = () => Object.keys((SCN.world && SCN.world.scenes) || {}).filter(id => scnSet(scnScene(id).backgrounds));
 /* Außenorte in Lernreihenfolge (wie die Themen der App); Orte ohne Lernbereich bleiben hinter ihrem Vorgänger im Manifest */
 const scnOutdoor = () => {
-  const ids = scnIds().filter(id => id !== SCN_MAP_ID && id !== SCN_TREASURE_ID), outs = ids.filter(id => !ids.some(o => o !== id && id.startsWith(o + "-")));
+  const ids = scnIds().filter(id => id !== SCN_MAP_ID && id !== SCN_TREASURE_ID && !SCN_FLIGHT.some(f => f[0] === id)), outs = ids.filter(id => !ids.some(o => o !== id && id.startsWith(o + "-")));
   let last = -1; const rank = {};
   outs.forEach(id => { const a = scnArea(id), i = a ? PLANETS.findIndex(p => p.id === a) : -1; rank[id] = i >= 0 ? i : last + 0.5; if (i >= 0) last = i; else last += 0.01; });
   return outs.slice().sort((a,b) => rank[a] - rank[b]);
@@ -2399,7 +2433,8 @@ function renderScene(opts = {}){
   /* vorab laden: Innenszene, Belohnung, Nachbarorte */
   if (act.child) scnPreload(scnSet(scnScene(act.child).backgrounds));
   setTimeout(() => { scnPreload(scnSet(scnScene(next).backgrounds)); scnPreload(scnSet(scnScene(prev).backgrounds)); }, 800);
-  if (SCN.success) setTimeout(() => scnReward(hatch), 350);
+  const up = SCN.success && SCN.stage0 >= 1 && gullStage() > SCN.stage0;
+  if (SCN.success) setTimeout(async () => { if (up){ SCN.rewardOn = true; await scnPodium(SCN.stage0); SCN.rewardOn = false; } scnReward(hatch); }, 350);
 }
 /* Beschriftungen am Bildrand in den sichtbaren Bereich schieben */
 function scnClamp(){
@@ -2500,11 +2535,42 @@ function scnMap(){
   }).join("");
   st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-mapview ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}${pins}</div>
     <div class="scn-top"><span class="scn-place">${esc(scnName(SCN_MAP_ID))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Karte schließen">Schließen</button></span></div>
-    <div class="scn-bottom"><div class="scn-say"><b>${esc(G())}</b><span>Wohin fliegen wir? Tippe auf einen Ort.</span></div></div></div>`);
+    <div class="scn-bottom">${scnFlightId() ? `<button class="btn btn-main btn-block" data-act="scnFlight">Unsere Reise nach Brighton · ${S.km||0} km</button>` : ""}<div class="scn-say"><b>${esc(G())}</b><span>Wohin fliegen wir? Tippe auf einen Ort.</span></div></div></div>`);
   /* Ortsmarken am Rand in den sichtbaren Ausschnitt schieben */
   requestAnimationFrame(() => { const v = st.querySelector(".scn-mapview"); if (!v) return; const b = v.getBoundingClientRect();
     v.querySelectorAll(".scn-pin").forEach(p => { const r = p.getBoundingClientRect(), pad = 8;
       const dx = r.left < b.left + pad ? (b.left + pad - r.left) : r.right > b.right - pad ? (b.right - pad - r.right) : 0; if (dx) p.style.marginLeft = Math.round(dx) + "px"; }); });
+}
+/* Reise: Flugbild passend zu den geflogenen Kilometern, Fortschritt bis Brighton */
+function scnFlightId(){ const km = S.km || 0; const f = SCN_FLIGHT.filter(x => scnScene(x[0]) && km >= x[1]).pop() || SCN_FLIGHT.find(x => scnScene(x[0])); return f ? f[0] : null; }
+function scnFlight(){
+  const id = scnFlightId(), set = id && scnSet(scnScene(id).backgrounds), st = $("#s-scene .scn-stage");
+  if (!set || !st) return;
+  const v0 = st.querySelector(".scn-view"); if (v0) v0.remove();
+  const km = S.km || 0, goal = 1170, next = STOPS.find(x => x[1] > km), stage = FR.stageOf(gullStage());
+  const pose = FR.has(stage, "fly") ? "fly" : FR.has(stage, "celebrate") ? "celebrate" : FR.baseOf(stage);
+  const pct = Math.min(100, km / goal * 100), stops = STOPS.filter(x => x[1] <= goal);
+  const line = km >= goal ? `Angekommen in Brighton! ${next ? `Weiter nach ${next[0]}: noch ${next[1]-km} km.` : ""}` : `Nächster Halt: ${next[0]}, noch ${next[1]-km} km. Bis Brighton noch ${goal-km} km.`;
+  st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-flight ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}
+      <div class="scn-fr scn-flyer" style="left:50%;top:52%;width:46%">${friedrichEl({stage, pose, size:"fit"})}</div></div>
+    <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Reise schließen">Schließen</button></span></div>
+    <div class="scn-bottom"><div class="scn-trip"><div class="scn-trip-row"><b>${km} km</b><small>${km >= goal ? "Ziel erreicht" : `${Math.round(pct)} % bis Brighton`}</small></div>
+      <div class="scn-trip-bar"><i style="width:${pct.toFixed(1)}%"></i>${stops.map(x => `<span class="${km >= x[1] ? "on" : ""} ${x[0]==="Brighton" ? "goal" : ""}" style="left:${(x[1]/goal*100).toFixed(1)}%" title="${x[0]}"></span>`).join("")}</div>
+      <div class="scn-trip-row"><small>Leipzig</small><small>Brighton</small></div></div>
+      <div class="scn-say"><b>${esc(G())}</b><span>${esc(line)} Jede Übung bringt uns weiter!</span></div></div></div>`);
+}
+/* Stufenaufstieg: Friedrich steht auf dem Podest in seiner neuen Stufe */
+function scnPodium(stage0){
+  const st = $("#s-scene .scn-stage"), pod = rwIllus("stufenaufstieg_podest"); if (!st) return Promise.resolve();
+  const n = gullStage(), stage = FR.stageOf(n), name = (STAGES[n] || {}).n || FR.stageName[stage];
+  st.insertAdjacentHTML("beforeend", `<div class="scn-podium ${scnRM() ? "instant" : ""}" data-act="scnPodiumClose" role="dialog" aria-label="${esc(G())} ist gewachsen">
+    <div class="scn-podium-stage">${pod ? `<img class="scn-podium-img" src="${pod.src}" srcset="${pod.srcset}" sizes="min(80vw, 420px)" alt="" decoding="async">` : ""}
+      <div class="scn-podium-fr">${friedrichEl({stage, pose:FR.baseOf(stage), size:"fit"})}</div></div>
+    <div class="scn-podium-text"><small>Stufenaufstieg</small><b>${esc(G())} ist jetzt ${/e$/.test(name) ? "eine" : "ein"} ${esc(name)}!</b><span>Tippen zum Weiterspielen</span></div></div>`);
+  const z = st.querySelector(".scn-podium"), el = z.querySelector(".fr");
+  requestAnimationFrame(() => requestAnimationFrame(() => z.classList.add("on")));
+  if (el && !scnRM()) setTimeout(() => frPlay(el, "levelup").then(() => { if (FR.has(stage, "celebrate")) frPlay(el, "celebrate"); }), 500);
+  return new Promise(res => { SCN.podiumDone = res; });
 }
 /* Schatzkammer: alle Sticker/Medaillen auf den Regalen, Truhe öffnet die Diplome */
 function scnTreasure(){
@@ -2589,6 +2655,8 @@ const SCENE_ACT = {
   scnTreasure: () => scnTreasure(),
   scnMedal: b => scnMedal(b.dataset.id),
   scnMedalClose: () => scnMedalClose(),
+  scnFlight: () => scnFlight(),
+  scnPodiumClose: () => { const z = $("#s-scene .scn-podium"); if (!z) return; z.classList.remove("on"); setTimeout(() => { z.remove(); if (SCN.podiumDone){ const d = SCN.podiumDone; SCN.podiumDone = null; d(); } }, scnRM() ? 0 : 300); },
   scnChest: () => scnChest(),
   scnViewBack: () => { const v = $("#s-scene .scn-view"); if (v) v.remove(); },
   scnMap: () => scnMap(),
