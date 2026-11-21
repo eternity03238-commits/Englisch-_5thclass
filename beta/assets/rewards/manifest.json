@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -273,6 +273,22 @@
         },
         {
           "path": "pack-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "sailor": {
+      "name": "Matrosenmütze",
+      "slot": "hat",
+      "images": [
+        {
+          "path": "sailor.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "sailor-128.webp",
           "width": 128,
           "height": 128
         }
