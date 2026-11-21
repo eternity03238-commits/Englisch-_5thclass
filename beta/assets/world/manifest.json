@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -126,6 +126,21 @@
         },
         {
           "path": "hafenstadt/strand-und-seebruecke-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "bunte-strandhuetten": {
+      "learningArea": "far",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/bunte-strandhuetten.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/bunte-strandhuetten-640.webp",
           "width": 640,
           "height": 1137
         }
