@@ -2,7 +2,7 @@
 
 Aufruf:  python3 import_friedrich.py <ordner-mit-pngs> [--repo /pfad/zum/repo]
 
-Erwartete Dateinamen: friedrich_<stufe>_<pose>.png
+Erwartete Dateinamen: friedrich_<stufe>_<pose>.png oder friedrich_<stufe>_wear-<teil>.png (Kleidungs-Ebene)
   stufe: egg, chick, young, adult, captain, king
   pose:  front, 3quarter, side, back, face, blink, look_left, look_right, wave, celebrate, think, encourage
 
@@ -18,7 +18,9 @@ from PIL import Image
 
 STAGES = ["egg", "chick", "young", "adult", "captain", "king"]
 POSES = ["front", "3quarter", "side", "back", "face", "blink", "look_left", "look_right", "wave", "celebrate", "think", "encourage"]
-NAME = re.compile(r"^friedrich_(%s)_(%s)\.png$" % ("|".join(STAGES), "|".join(POSES)))
+POSES += ["crack", "hatch", "fly"]
+# Kleidungs-Ebenen: friedrich_<stufe>_wear-<teil>.png bzw. friedrich_<stufe>_wear-<teil>-<frame>.png
+NAME = re.compile(r"^friedrich_(%s)_(%s|wear-[a-z0-9_]+(?:-(?:%s))?)\.png$" % ("|".join(STAGES), "|".join(POSES), "|".join(POSES)))
 
 def check(im):
     notes, ok = [], True
@@ -54,6 +56,8 @@ def main():
         im = Image.open(os.path.join(src, fn)); im.load()
         if im.mode != "RGBA": im = im.convert("RGBA") if "A" in im.getbands() or im.mode == "P" else im
         ok, notes = check(im)
+        if pose.startswith("wear-"):   # nur das Kleidungsstück: Höhe/Mitte der Figur nicht prüfen
+            notes = [n for n in notes if n.startswith("FEHLER")]; ok = not notes
         print(f"{fn}: " + ("OK" if ok else "ABGELEHNT")); [print("   " + n) for n in notes]
         if not ok: continue
         os.makedirs(os.path.join(repo, "art-source", "friedrich", stage), exist_ok=True)

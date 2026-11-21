@@ -664,6 +664,11 @@ a.btn{text-decoration:none}
 @keyframes fr-halo{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.2);opacity:0}}
 .fr-img.fr-broken{opacity:0}
 .fr[data-broken="1"] .fr-body{outline:2px dashed #FF5E5B;outline-offset:-4px;border-radius:14%}
+/* Kleidungs-Ebenen liegen über Grundbild und Frames */
+.fr-wear,.fr-wear-f{z-index:2}
+.fr-wear.off{opacity:0}
+.fr-wear-f{opacity:0}
+.fr-wear-f.on{opacity:1}
 /* Platzhalter: neutral, klar beschriftet, keine Ersatzfigur */
 .fr-ph{position:absolute;inset:6%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:2px dashed currentColor;border-radius:22%;color:#6F87A3;background:repeating-linear-gradient(45deg,rgba(114,200,255,.08) 0 8px,rgba(114,200,255,.16) 8px 16px);font-family:var(--fr-font);padding:6%}
 .fr-ph svg{width:34%;max-width:56px;height:auto}
@@ -1699,7 +1704,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795296593";
+const BUILD = "1795297127";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2242,20 +2247,43 @@ function frPlaceholder(s, p, size){
     ${tiny ? "" : `<b>Friedrich</b><small>${FR.stageName[s]} · ${FR.poseName[p]||p}</small><code>${s}/${p}</code><small class="fr-ph-note">Grafik folgt</small>`}
   </div>`;
 }
-function frInner(s, p, size){
+/* Kleidungs-Ebenen: Manifest-Schlüssel "<stufe>/wear-<teil>", Datei <stufe>/wear-<teil>.webp.
+   Jede Ebene ist exakt auf das Grundbild der Stufe (FR.baseOf, z. B. 3quarter) ausgerichtet und enthält nur das Teil.
+   Reihenfolge von hinten nach vorne kommt vom Aufrufer (Rücken, Hals, Augen, Kopf).
+   Optional pro Frame: "<stufe>/wear-<teil>-<frame>" ersetzt die Ebene, solange dieser Frame zu sehen ist. */
+/* Bei diesen Frames bewegt sich der Körper deutlich: Kleidung ohne eigene Frame-Ebene wird kurz ausgeblendet */
+FR.wearHideIn = ["wave","celebrate","think","encourage","fly","crack","hatch"];
+function frWearFrame(el, frame){
+  el.querySelectorAll(".fr-wear-f.on").forEach(x => x.classList.remove("on"));
+  el.querySelectorAll(".fr-wear").forEach(w => {
+    const item = [...w.classList].find(c => c.startsWith("fr-w-")), v = frame && el.querySelector(`.fr-wf-${frame}.${item}`);
+    if (v) v.classList.add("on");
+    w.classList.toggle("off", !!frame && (!!v || FR.wearHideIn.includes(frame)));
+  });
+}
+FR.wearKey = (item, frame) => "wear-" + item + (frame ? "-" + frame : "");
+FR.wearOf = s => Object.keys(FR.files || {}).filter(k => k.startsWith(s + "/wear-") && !FR.framesOf(s).some(f => k.endsWith("-" + f))).map(k => k.slice(s.length + 6));
+function frWear(s, wear){
+  return (wear || []).filter(w => FR.has(s, FR.wearKey(w))).map(w =>
+    frImg(s, FR.wearKey(w), "fr-wear fr-w-" + w) +
+    FR.framesOf(s).filter(f => FR.has(s, FR.wearKey(w, f))).map(f => frImg(s, FR.wearKey(w, f), `fr-wear-f fr-wf-${f} fr-w-${w}`)).join("")
+  ).join("");
+}
+function frInner(s, p, size, wear){
   if (!FR.has(s, p)) return frPlaceholder(s, p, size);
-  /* Frames nur über ihr Grundbild legen, sonst würde die Figur beim Wechsel springen */
-  const layers = p !== FR.baseOf(s) ? "" : FR.framesOf(s).filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
-  return frImg(s, p, "fr-base") + layers;
+  /* Frames und Kleidung nur über das Grundbild legen, sonst würde die Figur beim Wechsel springen */
+  const onBase = p === FR.baseOf(s);
+  const layers = !onBase ? "" : FR.framesOf(s).filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
+  return frImg(s, p, "fr-base") + layers + (onBase ? frWear(s, wear) : "");
 }
 /* size: xs (Avatar), sm (Hafen, Übung), md (Karten), lg (Bühne) */
 function friedrichEl(o = {}){
   const s = FR.stageOf(o.stage!=null ? o.stage : (typeof gullStage==="function" ? gullStage() : 5));
-  const p = o.pose || "front", size = o.size || "md";
-  return `<div class="fr fr-${size} ${o.cls||""}" data-stage="${s}" data-pose="${p}" data-size="${size}" role="img" aria-label="Friedrich, ${FR.stageName[s]}">
-    <div class="fr-body">${frInner(s, p, size)}</div><div class="fr-shadow" aria-hidden="true"></div></div>`;
+  const p = o.pose || "front", size = o.size || "md", wear = (o.wear || []).filter(Boolean);
+  return `<div class="fr fr-${size} ${o.cls||""}" data-stage="${s}" data-pose="${p}" data-size="${size}" data-wear="${wear.join(" ")}" role="img" aria-label="Friedrich, ${FR.stageName[s]}">
+    <div class="fr-body">${frInner(s, p, size, wear)}</div><div class="fr-shadow" aria-hidden="true"></div></div>`;
 }
-function frRefresh(el){ const b = el.querySelector(".fr-body"); if (b) b.innerHTML = frInner(el.dataset.stage, el.dataset.pose, el.dataset.size); }
+function frRefresh(el){ const b = el.querySelector(".fr-body"); if (b) b.innerHTML = frInner(el.dataset.stage, el.dataset.pose, el.dataset.size, (el.dataset.wear || "").split(" ").filter(Boolean)); }
 /* Animation abspielen: Frame einblenden (falls vorhanden) und passende Bewegung */
 function frPlay(el, state){
   if (!el) return Promise.resolve();
@@ -2270,10 +2298,11 @@ function frPlay(el, state){
   el.classList.add("fr-a-" + state);
   el.dataset.next = Date.now() + ms + 1500 + Math.random()*2000;   /* nach einer Animation kurz Ruhe, kein sofortiges Blinzeln */
   if (f) f.classList.add("on");
+  frWearFrame(el, f ? frame : null);
   if (state==="levelup"){ el.insertAdjacentHTML("beforeend", `<div class="fr-halo" aria-hidden="true"></div>`); }
   return new Promise(res => setTimeout(() => {
     if (el._frTok !== tok) return res();   /* inzwischen läuft eine neue Animation */
-    el.classList.remove("fr-a-" + state); if (f) f.classList.remove("on");
+    el.classList.remove("fr-a-" + state); if (f) f.classList.remove("on"); frWearFrame(el, null);
     const h = el.querySelector(".fr-halo"); if (h) h.remove(); res();
   }, ms));
 }
@@ -2287,7 +2316,7 @@ setInterval(() => {
     if (now < next || el.className.includes("fr-a-")) return;
     el.dataset.next = now + 3000 + Math.random()*3000;
     const s = el.dataset.stage;
-    if (FR.has(s,"blink") && Math.random() < .8){ const b = el.querySelector(".fr-f-blink"); if (b){ b.classList.add("on"); setTimeout(()=>b.classList.remove("on"), 120); } }
+    if (FR.has(s,"blink") && Math.random() < .8){ const b = el.querySelector(".fr-f-blink"); if (b){ b.classList.add("on"); frWearFrame(el, "blink"); setTimeout(()=>{ b.classList.remove("on"); frWearFrame(el, null); }, 120); } }
     else if (!FR_RM && Math.random() < .5){ const d = Math.random()<.5 ? "look_left" : "look_right"; if (FR.has(s,d)) frPlay(el, d); }
   });
 }, 400);
@@ -2348,7 +2377,7 @@ function scnLoad(){
     const files = {};
     Object.keys((m && m.files) || {}).forEach(k => {
       const [s, p] = k.split("/");
-      if (!FR.stages.includes(s) || !FR.posesOf(s).includes(p)) return;
+      if (!FR.stages.includes(s) || !(FR.posesOf(s).includes(p) || /^wear-[a-z0-9_-]+$/.test(p))) return;
       files[k] = {id:k, url:scnRaw(`friedrich/${k}.webp`), url512:scnRaw(`friedrich/${k}-512.webp`), fb:scnCdn(`friedrich/${k}.webp`)};
     });
     FR.files = files; FR.ver = SCN_COMMIT.slice(0,7);
@@ -2379,6 +2408,8 @@ function rwOutfit(id, cls){
   const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
   return `<img class="out-img ${cls||""}" src="${scnRaw("rewards/" + l[l.length-1].path)}" srcset="${l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", ")}" sizes="72px" alt="" decoding="async" draggable="false">`;
 }
+/* Getragene Teile von hinten nach vorne: Rücken, Hals, Augen, Kopf */
+const scnWearList = () => { const w = (S && S.wear) || {}; return ["back","neck","eyes","hat"].map(k => w[k]).filter(Boolean); };
 /* Ausrüstung neben Friedrich: was er in jedem Platz gerade trägt */
 function wardSlots(){
   const wear = S.wear || {};
@@ -2441,7 +2472,7 @@ function renderScene(opts = {}){
   el.innerHTML = `<div class="scn-stage ${opts.fade && !scnRM() ? "scn-fade" : ""}" style="--ratio:${base.ratio.toFixed(5)}">
       <div class="scn-art">
         ${scnImg(base, "scn-base")}${rew ? scnImg(rew, "scn-reward") : ""}
-        <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit"})}</div>
+        <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}</div>
         ${spot}
       </div>
       <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr">${scnScene(SCN_MAP_ID) ? `<button class="scn-menu" data-act="scnMap" aria-label="Übersichtskarte öffnen">Karte</button>` : ""}${scnScene(SCN_TREASURE_ID) ? `<button class="scn-menu" data-act="scnTreasure" aria-label="Schatzkammer öffnen">Schätze</button>` : ""}<button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></span></div>
@@ -2498,7 +2529,7 @@ async function scnReward(hatch){
     sayIt(`${esc(G())} schlüpft!`);
     await frPlay(frEl, "crack"); await frPlay(frEl, "hatch");
     const stage = FR.stageOf(gullStage()), box = $("#scnFr");
-    if (box){ box.innerHTML = friedrichEl({stage, pose:FR.baseOf(stage), size:"fit"}); frEl = box.querySelector(".fr"); }
+    if (box){ box.innerHTML = friedrichEl({stage, pose:FR.baseOf(stage), size:"fit", wear:scnWearList()}); frEl = box.querySelector(".fr"); }
     sayIt(`Hallo! Ich bin ${esc(G())}. Danke, dass du mit mir übst!`);
   }
   if (frEl && FR.has(frEl.dataset.stage, "celebrate")) setTimeout(() => frPlay(frEl, "celebrate"), hatch ? 150 : 450);
@@ -2589,7 +2620,7 @@ function scnPodium(stage0){
   const n = gullStage(), stage = FR.stageOf(n), name = (STAGES[n] || {}).n || FR.stageName[stage];
   st.insertAdjacentHTML("beforeend", `<div class="scn-podium ${scnRM() ? "instant" : ""}" data-act="scnPodiumClose" role="dialog" aria-label="${esc(G())} ist gewachsen">
     <div class="scn-podium-stage">${pod ? `<img class="scn-podium-img" src="${pod.src}" srcset="${pod.srcset}" sizes="min(80vw, 420px)" alt="" decoding="async">` : ""}
-      <div class="scn-podium-fr">${friedrichEl({stage, pose:FR.baseOf(stage), size:"fit"})}</div></div>
+      <div class="scn-podium-fr">${friedrichEl({stage, pose:FR.baseOf(stage), size:"fit", wear:scnWearList()})}</div></div>
     <div class="scn-podium-text"><small>Stufenaufstieg</small><b>${esc(G())} ist jetzt ${/e$/.test(name) ? "eine" : "ein"} ${esc(name)}!</b><span>Tippen zum Weiterspielen</span></div></div>`);
   const z = st.querySelector(".scn-podium"), el = z.querySelector(".fr");
   requestAnimationFrame(() => requestAnimationFrame(() => z.classList.add("on")));
@@ -2701,7 +2732,7 @@ function sceneBoot(){
   scnLoad();
 }
 
-const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), size:"fit"}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
+const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), pose:FR.baseOf(FR.stageOf(Math.max(1,gullStage()))), size:"fit", wear:scnWearList()}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
 function gullLine(){
   const learned = SENT.filter(s=>ss(s.id) && ss(s.id).r>0).map(s=>fillN(s.en));
   const words = W.filter(w=>st(w.id) && st(w.id).b>=2 && w.ex).map(w=>w.ex);
@@ -2832,7 +2863,7 @@ function renderHarbor(){
   wrap.className = "harbor-wrap" + (m.storm>=3 ? " storm3" : "");
   const fx = WX[focus] + 58, topU = focus==="hal" ? 182 : 226;
   const gw = 74, left = fx*HK - gw/2, top = topU*HK - gw*0.91;
-  inner.innerHTML = worldSVG(m) + `<div class="hgull" id="hGullEl" data-act="gullTap" role="button" aria-label="${esc(G())} antippen" style="left:${(lastFocus && lastFocus!==focus ? (WX[lastFocus]+58)*HK-gw/2 : left).toFixed(0)}px;top:${top.toFixed(0)}px">${BETA ? friedrichEl({stage, size:"sm"}) : gullSVG(stage, GC(), {sleep})}</div>`;
+  inner.innerHTML = worldSVG(m) + `<div class="hgull" id="hGullEl" data-act="gullTap" role="button" aria-label="${esc(G())} antippen" style="left:${(lastFocus && lastFocus!==focus ? (WX[lastFocus]+58)*HK-gw/2 : left).toFixed(0)}px;top:${top.toFixed(0)}px">${BETA ? friedrichEl({stage, pose:FR.baseOf(FR.stageOf(stage)), size:"sm", wear:scnWearList()}) : gullSVG(stage, GC(), {sleep})}</div>`;
   if (lastFocus && lastFocus!==focus){ const el = $("#hGullEl"); requestAnimationFrame(()=>{ el.classList.add("flying"); el.style.left = left.toFixed(0)+"px"; }); }
   if (!harborScrolled || lastFocus!==focus){ requestAnimationFrame(()=>{ hb.scrollLeft = Math.max(0, fx*HK - hb.clientWidth/2); }); harborScrolled = true; }
   lastFocus = focus;

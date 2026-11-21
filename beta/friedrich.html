@@ -42,6 +42,11 @@
 @keyframes fr-halo{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.2);opacity:0}}
 .fr-img.fr-broken{opacity:0}
 .fr[data-broken="1"] .fr-body{outline:2px dashed #FF5E5B;outline-offset:-4px;border-radius:14%}
+/* Kleidungs-Ebenen liegen über Grundbild und Frames */
+.fr-wear,.fr-wear-f{z-index:2}
+.fr-wear.off{opacity:0}
+.fr-wear-f{opacity:0}
+.fr-wear-f.on{opacity:1}
 /* Platzhalter: neutral, klar beschriftet, keine Ersatzfigur */
 .fr-ph{position:absolute;inset:6%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:2px dashed currentColor;border-radius:22%;color:#6F87A3;background:repeating-linear-gradient(45deg,rgba(114,200,255,.08) 0 8px,rgba(114,200,255,.16) 8px 16px);font-family:var(--fr-font);padding:6%}
 .fr-ph svg{width:34%;max-width:56px;height:auto}
@@ -134,6 +139,7 @@ td,th{padding:6px 8px;border-bottom:1px solid rgba(168,188,212,.2);text-align:le
   </div>
 </div>
 <div class="seg" id="anims" style="margin-top:10px"></div>
+<div id="wearBox" hidden><h2>Kleidung</h2><p>Kleidungs-Ebenen liegen über der Ruhepose. Antippen schaltet ein Teil an oder aus.</p><div class="seg" id="wears"></div></div>
 
 <h2>Alle Bilder dieser Stufe</h2>
 <div class="grid" id="grid"></div>
@@ -207,20 +213,43 @@ function frPlaceholder(s, p, size){
     ${tiny ? "" : `<b>Friedrich</b><small>${FR.stageName[s]} · ${FR.poseName[p]||p}</small><code>${s}/${p}</code><small class="fr-ph-note">Grafik folgt</small>`}
   </div>`;
 }
-function frInner(s, p, size){
+/* Kleidungs-Ebenen: Manifest-Schlüssel "<stufe>/wear-<teil>", Datei <stufe>/wear-<teil>.webp.
+   Jede Ebene ist exakt auf das Grundbild der Stufe (FR.baseOf, z. B. 3quarter) ausgerichtet und enthält nur das Teil.
+   Reihenfolge von hinten nach vorne kommt vom Aufrufer (Rücken, Hals, Augen, Kopf).
+   Optional pro Frame: "<stufe>/wear-<teil>-<frame>" ersetzt die Ebene, solange dieser Frame zu sehen ist. */
+/* Bei diesen Frames bewegt sich der Körper deutlich: Kleidung ohne eigene Frame-Ebene wird kurz ausgeblendet */
+FR.wearHideIn = ["wave","celebrate","think","encourage","fly","crack","hatch"];
+function frWearFrame(el, frame){
+  el.querySelectorAll(".fr-wear-f.on").forEach(x => x.classList.remove("on"));
+  el.querySelectorAll(".fr-wear").forEach(w => {
+    const item = [...w.classList].find(c => c.startsWith("fr-w-")), v = frame && el.querySelector(`.fr-wf-${frame}.${item}`);
+    if (v) v.classList.add("on");
+    w.classList.toggle("off", !!frame && (!!v || FR.wearHideIn.includes(frame)));
+  });
+}
+FR.wearKey = (item, frame) => "wear-" + item + (frame ? "-" + frame : "");
+FR.wearOf = s => Object.keys(FR.files || {}).filter(k => k.startsWith(s + "/wear-") && !FR.framesOf(s).some(f => k.endsWith("-" + f))).map(k => k.slice(s.length + 6));
+function frWear(s, wear){
+  return (wear || []).filter(w => FR.has(s, FR.wearKey(w))).map(w =>
+    frImg(s, FR.wearKey(w), "fr-wear fr-w-" + w) +
+    FR.framesOf(s).filter(f => FR.has(s, FR.wearKey(w, f))).map(f => frImg(s, FR.wearKey(w, f), `fr-wear-f fr-wf-${f} fr-w-${w}`)).join("")
+  ).join("");
+}
+function frInner(s, p, size, wear){
   if (!FR.has(s, p)) return frPlaceholder(s, p, size);
-  /* Frames nur über ihr Grundbild legen, sonst würde die Figur beim Wechsel springen */
-  const layers = p !== FR.baseOf(s) ? "" : FR.framesOf(s).filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
-  return frImg(s, p, "fr-base") + layers;
+  /* Frames und Kleidung nur über das Grundbild legen, sonst würde die Figur beim Wechsel springen */
+  const onBase = p === FR.baseOf(s);
+  const layers = !onBase ? "" : FR.framesOf(s).filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
+  return frImg(s, p, "fr-base") + layers + (onBase ? frWear(s, wear) : "");
 }
 /* size: xs (Avatar), sm (Hafen, Übung), md (Karten), lg (Bühne) */
 function friedrichEl(o = {}){
   const s = FR.stageOf(o.stage!=null ? o.stage : (typeof gullStage==="function" ? gullStage() : 5));
-  const p = o.pose || "front", size = o.size || "md";
-  return `<div class="fr fr-${size} ${o.cls||""}" data-stage="${s}" data-pose="${p}" data-size="${size}" role="img" aria-label="Friedrich, ${FR.stageName[s]}">
-    <div class="fr-body">${frInner(s, p, size)}</div><div class="fr-shadow" aria-hidden="true"></div></div>`;
+  const p = o.pose || "front", size = o.size || "md", wear = (o.wear || []).filter(Boolean);
+  return `<div class="fr fr-${size} ${o.cls||""}" data-stage="${s}" data-pose="${p}" data-size="${size}" data-wear="${wear.join(" ")}" role="img" aria-label="Friedrich, ${FR.stageName[s]}">
+    <div class="fr-body">${frInner(s, p, size, wear)}</div><div class="fr-shadow" aria-hidden="true"></div></div>`;
 }
-function frRefresh(el){ const b = el.querySelector(".fr-body"); if (b) b.innerHTML = frInner(el.dataset.stage, el.dataset.pose, el.dataset.size); }
+function frRefresh(el){ const b = el.querySelector(".fr-body"); if (b) b.innerHTML = frInner(el.dataset.stage, el.dataset.pose, el.dataset.size, (el.dataset.wear || "").split(" ").filter(Boolean)); }
 /* Animation abspielen: Frame einblenden (falls vorhanden) und passende Bewegung */
 function frPlay(el, state){
   if (!el) return Promise.resolve();
@@ -235,10 +264,11 @@ function frPlay(el, state){
   el.classList.add("fr-a-" + state);
   el.dataset.next = Date.now() + ms + 1500 + Math.random()*2000;   /* nach einer Animation kurz Ruhe, kein sofortiges Blinzeln */
   if (f) f.classList.add("on");
+  frWearFrame(el, f ? frame : null);
   if (state==="levelup"){ el.insertAdjacentHTML("beforeend", `<div class="fr-halo" aria-hidden="true"></div>`); }
   return new Promise(res => setTimeout(() => {
     if (el._frTok !== tok) return res();   /* inzwischen läuft eine neue Animation */
-    el.classList.remove("fr-a-" + state); if (f) f.classList.remove("on");
+    el.classList.remove("fr-a-" + state); if (f) f.classList.remove("on"); frWearFrame(el, null);
     const h = el.querySelector(".fr-halo"); if (h) h.remove(); res();
   }, ms));
 }
@@ -252,7 +282,7 @@ setInterval(() => {
     if (now < next || el.className.includes("fr-a-")) return;
     el.dataset.next = now + 3000 + Math.random()*3000;
     const s = el.dataset.stage;
-    if (FR.has(s,"blink") && Math.random() < .8){ const b = el.querySelector(".fr-f-blink"); if (b){ b.classList.add("on"); setTimeout(()=>b.classList.remove("on"), 120); } }
+    if (FR.has(s,"blink") && Math.random() < .8){ const b = el.querySelector(".fr-f-blink"); if (b){ b.classList.add("on"); frWearFrame(el, "blink"); setTimeout(()=>{ b.classList.remove("on"); frWearFrame(el, null); }, 120); } }
     else if (!FR_RM && Math.random() < .5){ const d = Math.random()<.5 ? "look_left" : "look_right"; if (FR.has(s,d)) frPlay(el, d); }
   });
 }, 400);
@@ -283,16 +313,27 @@ function cellTag(s,p){
 }
 /* Vergleichsbild: Frames gegen ihr Grundbild, Ansichten gegen die Vorderansicht */
 const onionPose = () => FR.frames.includes(pose) ? FR.baseOf(stage) : (pose === "front" ? FR.baseOf(stage) : "front");
+/* Kleidung: angeschaltete Teile in Ebenen-Reihenfolge (Rücken, Hals, Augen, Kopf; unbekannte Teile davor) */
+const WEAR_ORDER = ["pack","bow","sun","star","sailor","phones","captain","crown"];
+let wearOn = new Set();
+const wearList = () => [...wearOn].filter(w => FR.has(stage, FR.wearKey(w))).sort((a,b) => WEAR_ORDER.indexOf(a) - WEAR_ORDER.indexOf(b));
+function renderWear(){
+  const items = FR.wearOf(stage);
+  $("#wearBox").hidden = !items.length;
+  $("#wears").innerHTML = items.map(w => `<button data-w="${w}" aria-pressed="${wearOn.has(w)}">${esc(w)}</button>`).join("");
+}
 function render(){
-  $("#box").innerHTML = friedrichEl({stage, pose, size:"lg"}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:onionPose(), size:"lg"})}</div>`;
+  $("#box").innerHTML = friedrichEl({stage, pose, size:"lg", wear:wearList()}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:onionPose(), size:"lg"})}</div>`;
+  renderWear();
   $("#oBtn").textContent = "Mit " + FR.poseName[onionPose()] + " überlagern";
   renderPoseButtons();
   $("#grid").innerHTML = expected(stage).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b>${cellTag(stage,p)}<code style="font-size:.7rem;color:var(--fr-slate);word-break:break-all">${FR.has(stage,p) && FR.files[stage+"/"+p].id ? esc(FR.files[stage+"/"+p].id) : stage+"/"+p+".webp"}</code></div>`).join("");
-  const all = FR.stages.map(s=>{ const n = expected(s).filter(p=>FR.has(s,p)).length; const total = expected(s).length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${total} Bild${total===1?"":"ern"}${n>=total?" ✓":""}</td></tr>`; }).join("");
+  const all = FR.stages.map(s=>{ const n = expected(s).filter(p=>FR.has(s,p)).length; const total = expected(s).length; const nw = FR.wearOf(s).length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${total} Bild${total===1?"":"ern"}${n>=total?" ✓":""}${nw ? ` · ${nw} Kleidungs-Ebene${nw===1?"":"n"}` : ""}</td></tr>`; }).join("");
   $("#status").innerHTML = `<tr><th>Stufe</th><th>Geliefert</th></tr>` + all;
   stagesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===stage));
   posesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===pose));
 }
+$("#wears").onclick = e => { const b = e.target.closest("button"); if (!b) return; const w = b.dataset.w; wearOn.has(w) ? wearOn.delete(w) : wearOn.add(w); if (pose !== FR.baseOf(stage)) pose = FR.baseOf(stage); render(); };
 stagesEl.onclick = e => { const b = e.target.closest("button"); if (b){ stage = b.dataset.s; pose = defPose(stage); render(); } };
 posesEl.onclick = e => { const b = e.target.closest("button"); if (b){ pose = b.dataset.p; render(); } };
 /* Animation: läuft immer auf dem Grundbild, an dem die Frames ausgerichtet sind */
@@ -349,6 +390,8 @@ function parsePinAny(f){
 }
 const ALLP = () => FR.views.concat(FR.frames, ...Object.values(FR.extra));
 function idToKey(id, e){
+  const wm = String(id||"").toLowerCase().match(new RegExp("^("+FR.stages.join("|")+")/(wear-[a-z0-9_-]+)$"));
+  if (wm) return wm[1] + "/" + wm[2];   /* Kleidungs-Ebene */
   const st = (e && e.stage) ? String(e.stage).toLowerCase() : null, po = (e && e.pose) ? String(e.pose).toLowerCase().replace(/-/g,"_") : null;
   if (st && po && FR.stages.includes(st) && ALLP().includes(po)) return st + "/" + po;
   const n = String(id||"").toLowerCase().replace(/\.(png|webp)$/,"").replace(/[\s.-]+/g,"_");
@@ -394,7 +437,7 @@ async function loadPinned(link){
     let f = pickFiles(e);
     /* Manifest im Format des Import-Werkzeugs: Schlüssel "stufe/pose", "src" nennt nur die Original-PNG.
        Dann gelten die WebP-Dateien neben dem Manifest: <stufe>/<pose>.webp und <stufe>/<pose>-512.webp */
-    if (/^[a-z]+\/[a-z0-9_]+$/.test(String(id)) && !(f.main && /\.webp/i.test(f.main) && f.main !== e.src))
+    if (/^[a-z]+\/[a-z0-9_-]+$/.test(String(id)) && !(f.main && /\.webp/i.test(f.main) && f.main !== e.src))
       f = {main: id + ".webp", small: id + "-512.webp"};
     if (!f.main){ notes.push(`<code>${esc(id)}</code>: keine PNG- oder WebP-Datei angegeben`); continue; }
     const a = resolvePath(pin, f.main); if (a.err){ notes.push(esc(a.err)); continue; }
