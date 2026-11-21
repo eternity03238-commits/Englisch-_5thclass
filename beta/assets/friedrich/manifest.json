@@ -1,5 +1,5 @@
 {
- "version": 6,
+ "version": 7,
  "files": {
   "king/front": {
    "w": 1024,
@@ -120,6 +120,11 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_captain_encourage.png"
+  },
+  "adult/front": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_front.png"
   }
  }
 }
