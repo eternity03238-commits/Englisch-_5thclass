@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -52,6 +52,20 @@
         },
         {
           "path": "hafenstadt/marktplatz-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "marktplatz-obststand": {
+      "backgrounds": [
+        {
+          "path": "hafenstadt/obststand.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/obststand-640.webp",
           "width": 640,
           "height": 1137
         }
