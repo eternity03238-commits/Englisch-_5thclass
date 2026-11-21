@@ -1,5 +1,5 @@
 {
-  "version": 30,
+  "version": 31,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -478,6 +478,21 @@
         },
         {
           "path": "reisetagebuch_postkarte-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "stickeralbum": {
+      "name": "Friedrichs Stickeralbum",
+      "images": [
+        {
+          "path": "stickeralbum.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "stickeralbum-128.webp",
           "width": 128,
           "height": 128
         }
