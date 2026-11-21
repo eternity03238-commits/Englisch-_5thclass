@@ -1,5 +1,5 @@
 {
-  "version": 20,
+  "version": 21,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -289,6 +289,20 @@
           "path": "hafenstadt/abflug-aus-leipzig-640.webp",
           "width": 640,
           "height": 1137
+        }
+      ]
+    },
+    "ueber-dem-aermelkanal": {
+      "backgrounds": [
+        {
+          "path": "hafenstadt/ueber-dem-aermelkanal.webp",
+          "width": 941,
+          "height": 1671
+        },
+        {
+          "path": "hafenstadt/ueber-dem-aermelkanal-640.webp",
+          "width": 640,
+          "height": 1136
         }
       ]
     }
