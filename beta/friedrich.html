@@ -164,7 +164,7 @@ const FR = {
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
   anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
-  frameBase: {king:"3quarter"},
+  frameBase: {king:"3quarter", captain:"3quarter"},
   base: "assets/friedrich/",
   files: null, ver: 1
 };
@@ -251,7 +251,7 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/c996fbd9e6ec4be9ff303f4ff845f599bf6aba9f/beta/assets/friedrich/manifest.json";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/a39d6205444d41798f9b84c0f42c25ae5e08e562/beta/assets/friedrich/manifest.json";
 /* Standardansicht je Stufe im Prüfstand */
 const DEFAULT_POSE = {king:"3quarter", captain:"3quarter"};
 const defPose = s => DEFAULT_POSE[s] || "front";

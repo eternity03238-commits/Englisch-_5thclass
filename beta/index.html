@@ -1549,7 +1549,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795277038";
+const BUILD = "1795278803";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2048,7 +2048,7 @@ const FR = {
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
   anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
-  frameBase: {king:"3quarter"},
+  frameBase: {king:"3quarter", captain:"3quarter"},
   base: "assets/friedrich/",
   files: null, ver: 1
 };
