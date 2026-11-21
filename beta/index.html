@@ -660,6 +660,8 @@ a.btn{text-decoration:none}
 @keyframes fr-sway{0%,100%{transform:translateX(0)}25%{transform:translateX(-2%)}75%{transform:translateX(2%)}}
 .fr-halo{position:absolute;inset:-8%;border-radius:50%;background:radial-gradient(closest-side,rgba(228,180,92,.55),rgba(228,180,92,0) 70%);animation:fr-halo 1.7s ease-out forwards;z-index:0;pointer-events:none}
 @keyframes fr-halo{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.2);opacity:0}}
+.fr-img.fr-broken{opacity:0}
+.fr[data-broken="1"] .fr-body{outline:2px dashed #FF5E5B;outline-offset:-4px;border-radius:14%}
 /* Platzhalter: neutral, klar beschriftet, keine Ersatzfigur */
 .fr-ph{position:absolute;inset:6%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:2px dashed currentColor;border-radius:22%;color:#6F87A3;background:repeating-linear-gradient(45deg,rgba(114,200,255,.08) 0 8px,rgba(114,200,255,.16) 8px 16px);font-family:var(--fr-font);padding:6%}
 .fr-ph svg{width:34%;max-width:56px;height:auto}
@@ -1545,7 +1547,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795272037";
+const BUILD = "1795275322";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2048,7 +2050,19 @@ const FR = {
 };
 FR.key = (s, p) => s + "/" + p;
 FR.has = (s, p) => !!(FR.files && FR.files[FR.key(s,p)]);
-FR.src = (s, p, w) => `${FR.base}${s}/${p}${w===512 ? "-512" : ""}.webp?v=${FR.ver}`;
+FR.src = (s, p, w) => {
+  const e = FR.files && FR.files[FR.key(s,p)];
+  if (e && e.url) return (w===512 && e.url512) ? e.url512 : e.url;   /* externe, commitgenaue Quelle (nur Prüfstand) */
+  return `${FR.base}${s}/${p}${w===512 ? "-512" : ""}.webp?v=${FR.ver}`;
+};
+FR.fb = (s, p) => { const e = FR.files && FR.files[FR.key(s,p)]; return (e && e.fb) || ""; };
+FR.hasSmall = (s, p) => { const e = FR.files && FR.files[FR.key(s,p)]; return !(e && e.url) || !!e.url512; };
+function frImgErr(img){
+  if (img.dataset.fb){ const f = img.dataset.fb; delete img.dataset.fb; img.removeAttribute("srcset"); img.src = f; return; }
+  img.classList.add("fr-broken"); const el = img.closest(".fr"); if (el) el.dataset.broken = "1";
+  document.dispatchEvent(new CustomEvent("fr-broken", {detail:{src:img.currentSrc||img.src}}));
+}
+window.frImgErr = frImgErr;
 FR.stageOf = st => typeof st === "number" ? FR.stages[Math.max(0, Math.min(FR.stages.length-1, st))] : (FR.stages.includes(st) ? st : "adult");
 function frLoadManifest(){
   return fetch(FR.base + "manifest.json", {cache:"no-cache"})
@@ -2057,7 +2071,9 @@ function frLoadManifest(){
     .catch(() => { FR.files = {}; return FR.files; });
 }
 function frImg(s, p, cls){
-  return `<img class="fr-img ${cls||""}" src="${FR.src(s,p,1024)}" srcset="${FR.src(s,p,512)} 512w, ${FR.src(s,p,1024)} 1024w" sizes="(max-width:600px) 60vw, 360px" alt="" decoding="async" draggable="false">`;
+  const set = FR.hasSmall(s,p) ? ` srcset="${FR.src(s,p,512)} 512w, ${FR.src(s,p,1024)} 1024w" sizes="(max-width:600px) 60vw, 360px"` : "";
+  const fb = FR.fb(s,p);
+  return `<img class="fr-img ${cls||""}" src="${FR.src(s,p,1024)}"${set}${fb ? ` data-fb="${fb}"` : ""} onerror="frImgErr(this)" alt="" decoding="async" draggable="false">`;
 }
 function frPlaceholder(s, p, size){
   const tiny = size==="xs" || size==="sm";
@@ -2110,7 +2126,7 @@ setInterval(() => {
     else if (!FR_RM && Math.random() < .5){ const d = Math.random()<.5 ? "look_left" : "look_right"; if (FR.has(s,d)) frPlay(el, d); }
   });
 }, 400);
-frLoadManifest();
+if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
 const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), size:"fit"}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
 function gullLine(){

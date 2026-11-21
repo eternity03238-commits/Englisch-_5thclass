@@ -38,6 +38,8 @@
 @keyframes fr-sway{0%,100%{transform:translateX(0)}25%{transform:translateX(-2%)}75%{transform:translateX(2%)}}
 .fr-halo{position:absolute;inset:-8%;border-radius:50%;background:radial-gradient(closest-side,rgba(228,180,92,.55),rgba(228,180,92,0) 70%);animation:fr-halo 1.7s ease-out forwards;z-index:0;pointer-events:none}
 @keyframes fr-halo{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.2);opacity:0}}
+.fr-img.fr-broken{opacity:0}
+.fr[data-broken="1"] .fr-body{outline:2px dashed #FF5E5B;outline-offset:-4px;border-radius:14%}
 /* Platzhalter: neutral, klar beschriftet, keine Ersatzfigur */
 .fr-ph{position:absolute;inset:6%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:2px dashed currentColor;border-radius:22%;color:#6F87A3;background:repeating-linear-gradient(45deg,rgba(114,200,255,.08) 0 8px,rgba(114,200,255,.16) 8px 16px);font-family:var(--fr-font);padding:6%}
 .fr-ph svg{width:34%;max-width:56px;height:auto}
@@ -81,16 +83,34 @@ a{color:var(--fr-sky)}
 .cell .fr{width:100%}
 .cell b{font-size:.9rem}
 .tag{font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.04em}
-.ok{background:rgba(33,184,121,.2);color:#5BE3A8}.miss{background:rgba(255,148,56,.18);color:#FFB36B}
+.ok{background:rgba(33,184,121,.2);color:#5BE3A8}.bad{background:rgba(255,94,91,.2);color:#FF8A7A}.miss{background:rgba(255,148,56,.18);color:#FFB36B}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 table{border-collapse:collapse;width:100%;font-size:.88rem}
 td,th{padding:6px 8px;border-bottom:1px solid rgba(168,188,212,.2);text-align:left}
 .refimg{max-width:180px;border-radius:14px}
+.src{background:var(--fr-navy-2);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.srcstate{font-weight:700}.srcstate.ok{color:#5BE3A8}.srcstate.err{color:#FF8A7A}
+.srcstate code,.notes code{font-size:.8rem;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:6px;word-break:break-all}
+#srcIn{flex:1 1 260px;min-width:0;font:600 .9rem var(--fr-font);color:var(--fr-ivory);background:var(--fr-navy);border:1px solid rgba(114,200,255,.3);border-radius:12px;padding:10px 12px;min-height:40px}
+.notes{margin:0;padding-left:18px;overflow-wrap:anywhere;min-width:0;color:var(--fr-slate);font-size:.85rem;display:flex;flex-direction:column;gap:3px}
+.notes:empty{display:none}
+
 </style>
 </head>
 <body><div class="wrap">
 <h1>Friedrich Prüfstand</h1>
 <p>Hier prüfen wir jede gelieferte Grafik, bevor sie in die App geht: gleiche Figur, gleiche Größe, sauberer transparenter Hintergrund. Fehlende Bilder sind als Platzhalter markiert. <a href="index.html">Zur Beta-App</a></p>
+
+<h2>Quelle der Grafiken</h2>
+<div class="src" id="srcBox">
+  <div id="srcState" class="srcstate">Noch keine Freigabe. Es werden die Platzhalter gezeigt.</div>
+  <form id="srcForm" class="row" autocomplete="off">
+    <input id="srcIn" type="url" inputmode="url" spellcheck="false" placeholder="Commit-Link zu beta/assets/friedrich/manifest.json" aria-label="Commit-Link zum Manifest">
+    <button class="btn gold" type="submit">Laden</button>
+    <button class="btn" type="button" id="srcReset">Platzhalter</button>
+  </form>
+  <ul id="srcNotes" class="notes"></ul>
+</div>
 
 <h2>Stufe</h2>
 <div class="seg" id="stages"></div>
@@ -124,6 +144,7 @@ td,th{padding:6px 8px;border-bottom:1px solid rgba(168,188,212,.2);text-align:le
 <table id="status"></table>
 </div>
 <script>
+window.FR_NO_AUTOLOAD = true;
 (() => {
 const gullStage = () => 5;
 /* ============ FRIEDRICH 2.0: Charakterkomponente ============
@@ -145,7 +166,19 @@ const FR = {
 };
 FR.key = (s, p) => s + "/" + p;
 FR.has = (s, p) => !!(FR.files && FR.files[FR.key(s,p)]);
-FR.src = (s, p, w) => `${FR.base}${s}/${p}${w===512 ? "-512" : ""}.webp?v=${FR.ver}`;
+FR.src = (s, p, w) => {
+  const e = FR.files && FR.files[FR.key(s,p)];
+  if (e && e.url) return (w===512 && e.url512) ? e.url512 : e.url;   /* externe, commitgenaue Quelle (nur Prüfstand) */
+  return `${FR.base}${s}/${p}${w===512 ? "-512" : ""}.webp?v=${FR.ver}`;
+};
+FR.fb = (s, p) => { const e = FR.files && FR.files[FR.key(s,p)]; return (e && e.fb) || ""; };
+FR.hasSmall = (s, p) => { const e = FR.files && FR.files[FR.key(s,p)]; return !(e && e.url) || !!e.url512; };
+function frImgErr(img){
+  if (img.dataset.fb){ const f = img.dataset.fb; delete img.dataset.fb; img.removeAttribute("srcset"); img.src = f; return; }
+  img.classList.add("fr-broken"); const el = img.closest(".fr"); if (el) el.dataset.broken = "1";
+  document.dispatchEvent(new CustomEvent("fr-broken", {detail:{src:img.currentSrc||img.src}}));
+}
+window.frImgErr = frImgErr;
 FR.stageOf = st => typeof st === "number" ? FR.stages[Math.max(0, Math.min(FR.stages.length-1, st))] : (FR.stages.includes(st) ? st : "adult");
 function frLoadManifest(){
   return fetch(FR.base + "manifest.json", {cache:"no-cache"})
@@ -154,7 +187,9 @@ function frLoadManifest(){
     .catch(() => { FR.files = {}; return FR.files; });
 }
 function frImg(s, p, cls){
-  return `<img class="fr-img ${cls||""}" src="${FR.src(s,p,1024)}" srcset="${FR.src(s,p,512)} 512w, ${FR.src(s,p,1024)} 1024w" sizes="(max-width:600px) 60vw, 360px" alt="" decoding="async" draggable="false">`;
+  const set = FR.hasSmall(s,p) ? ` srcset="${FR.src(s,p,512)} 512w, ${FR.src(s,p,1024)} 1024w" sizes="(max-width:600px) 60vw, 360px"` : "";
+  const fb = FR.fb(s,p);
+  return `<img class="fr-img ${cls||""}" src="${FR.src(s,p,1024)}"${set}${fb ? ` data-fb="${fb}"` : ""} onerror="frImgErr(this)" alt="" decoding="async" draggable="false">`;
 }
 function frPlaceholder(s, p, size){
   const tiny = size==="xs" || size==="sm";
@@ -207,17 +242,25 @@ setInterval(() => {
     else if (!FR_RM && Math.random() < .5){ const d = Math.random()<.5 ? "look_left" : "look_right"; if (FR.has(s,d)) frPlay(el, d); }
   });
 }, 400);
-frLoadManifest();
+if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
+const PINNED_MANIFEST = "";
 let stage = "king", pose = "front", bg = "bg-light";
 const $ = s => document.querySelector(s);
 const stagesEl = $("#stages"), posesEl = $("#poses"), animsEl = $("#anims");
 stagesEl.innerHTML = FR.stages.map((s,i)=>`<button data-s="${s}" aria-pressed="${s===stage}">G0${i+1} ${FR.stageName[s]}</button>`).join("");
 posesEl.innerHTML = FR.views.concat(FR.frames).map(p=>`<button data-p="${p}" aria-pressed="${p===pose}">${FR.poseName[p]}</button>`).join("");
 animsEl.innerHTML = ["celebrate","levelup","think","encourage","wave","look_left","look_right"].map(a=>`<button data-a="${a}">${{celebrate:"Jubeln",levelup:"Level Up",think:"Nachdenken",encourage:"Ermutigen",wave:"Winken",look_left:"Blick links",look_right:"Blick rechts"}[a]}</button>`).join("");
+function cellTag(s,p){
+  const k = s+"/"+p;
+  if (!FR.has(s,p)) return `<span class="tag miss" data-tag="${k}">fehlt</span>`;
+  const e = FR.files[k];
+  if (e.ok === false) return `<span class="tag bad" data-tag="${k}">lädt nicht</span>`;
+  return `<span class="tag ok" data-tag="${k}">${e.w ? e.w+" px" : "prüfe …"}</span>`;
+}
 function render(){
   $("#box").innerHTML = friedrichEl({stage, pose, size:"lg"}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:"front", size:"lg"})}</div>`;
-  $("#grid").innerHTML = FR.views.concat(FR.frames).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b><span class="tag ${FR.has(stage,p)?"ok":"miss"}">${FR.has(stage,p)?"vorhanden":"fehlt"}</span><code style="font-size:.7rem;color:var(--fr-slate)">${stage}/${p}.webp</code></div>`).join("");
+  $("#grid").innerHTML = FR.views.concat(FR.frames).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b>${cellTag(stage,p)}<code style="font-size:.7rem;color:var(--fr-slate);word-break:break-all">${FR.has(stage,p) && FR.files[stage+"/"+p].id ? esc(FR.files[stage+"/"+p].id) : stage+"/"+p+".webp"}</code></div>`).join("");
   const all = FR.stages.map(s=>{ const n = FR.views.concat(FR.frames).filter(p=>FR.has(s,p)).length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${FR.views.length+FR.frames.length} Bildern</td></tr>`; }).join("");
   $("#status").innerHTML = `<tr><th>Stufe</th><th>Geliefert</th></tr>` + all;
   stagesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===stage));
@@ -228,8 +271,136 @@ posesEl.onclick = e => { const b = e.target.closest("button"); if (b){ pose = b.
 animsEl.onclick = e => { const b = e.target.closest("button"); if (b) frPlay($("#box > .fr"), b.dataset.a); };
 $("#bgs").onclick = e => { const b = e.target.closest("button"); if (!b) return; $("#stage").className = "stage " + b.dataset.bg; $("#bgs").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b)); };
 $("#gBtn").onclick = e => { const on = e.currentTarget.getAttribute("aria-pressed")!=="true"; e.currentTarget.setAttribute("aria-pressed", on); $("#guides").classList.toggle("on", on); };
+
+/* ---------- Freigegebene Grafiken: nur über einen commitgenauen Manifest-Link ----------
+   Erlaubt ist ausschließlich das Repo eternity03238-commits/Englisch-_5thclass mit voller Commit-ID (40 Zeichen).
+   Ein Branch-Link wird abgelehnt, weil sich ein Branch nachträglich ändern kann. */
+const REPO = "eternity03238-commits/Englisch-_5thclass";
+const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function parsePin(link){
+  let u; try { u = new URL(String(link).trim()); } catch(e){ return {err:"Das ist kein gültiger Link."}; }
+  const r = REPO.replace("/", "\\/").replace(/[.]/g,"\\.");
+  const pats = [
+    new RegExp("^https://github\\.com/"+r+"/(?:blob|raw)/([^/]+)/(.+)$","i"),
+    new RegExp("^https://raw\\.githubusercontent\\.com/"+r+"/([^/]+)/(.+)$","i"),
+    new RegExp("^https://cdn\\.jsdelivr\\.net/gh/"+r+"@([^/]+)/(.+)$","i")];
+  const clean = u.origin + u.pathname;
+  let m = null; for (const p of pats){ m = clean.match(p); if (m) break; }
+  if (!m) return {err:"Der Link zeigt nicht auf das Repository "+REPO+"."};
+  const sha = m[1], path = decodeURIComponent(m[2]);
+  if (!/^[0-9a-f]{40}$/i.test(sha)) return {err:"Der Link enthält keine vollständige Commit-ID, sondern »"+sha+"«. Bitte den Permalink des Commits schicken (auf GitHub Taste Y)."};
+  if (!/(^|\/)manifest\.json$/.test(path)) return {err:"Der Link zeigt nicht auf eine manifest.json."};
+  const dir = path.replace(/manifest\.json$/,"");
+  return {sha:sha.toLowerCase(), path, dir,
+    raw: p => `https://raw.githubusercontent.com/${REPO}/${sha}/${p}`,
+    cdn: p => `https://cdn.jsdelivr.net/gh/${REPO}@${sha}/${p}`};
+}
+/* Dateipfad aus dem Manifest auflösen: relativ zum Manifest, "/…" relativ zum Repo, absolute Links nur aus demselben Commit */
+function resolvePath(pin, f){
+  f = String(f).trim();
+  if (/^https?:/i.test(f)){
+    const q = parsePinAny(f);
+    if (!q || q.sha !== pin.sha) return {err:"Datei liegt nicht im freigegebenen Commit: "+f};
+    return {path:q.path};
+  }
+  let parts = (f.startsWith("/") ? f.slice(1) : pin.dir + f).split("/"), out = [];
+  for (const x of parts){ if (x==="..") out.pop(); else if (x && x!==".") out.push(x); }
+  return {path: out.join("/")};
+}
+function parsePinAny(f){
+  const r = REPO.replace("/", "\\/").replace(/[.]/g,"\\.");
+  for (const p of [new RegExp("^https://github\\.com/"+r+"/(?:blob|raw)/([0-9a-f]{40})/(.+)$","i"), new RegExp("^https://raw\\.githubusercontent\\.com/"+r+"/([0-9a-f]{40})/(.+)$","i"), new RegExp("^https://cdn\\.jsdelivr\\.net/gh/"+r+"@([0-9a-f]{40})/(.+)$","i")]){
+    const m = f.split(/[?#]/)[0].match(p); if (m) return {sha:m[1].toLowerCase(), path:decodeURIComponent(m[2])};
+  }
+  return null;
+}
+const ALLP = () => FR.views.concat(FR.frames);
+function idToKey(id, e){
+  const st = (e && e.stage) ? String(e.stage).toLowerCase() : null, po = (e && e.pose) ? String(e.pose).toLowerCase().replace(/-/g,"_") : null;
+  if (st && po && FR.stages.includes(st) && ALLP().includes(po)) return st + "/" + po;
+  const n = String(id||"").toLowerCase().replace(/\.(png|webp)$/,"").replace(/[\s.-]+/g,"_");
+  const m = n.match(new RegExp("(?:^|[_/])("+FR.stages.join("|")+")[_/]+("+ALLP().join("|")+")(?:$|[_/])"));
+  return m ? m[1] + "/" + m[2] : null;
+}
+/* Manifest tolerant lesen: Liste von Einträgen mit id, oder Objekt mit id als Schlüssel */
+function manifestEntries(m){
+  const list = Array.isArray(m) ? m : null;
+  if (list) return list.map(e => [e && (e.id||e.name), e]);
+  for (const k of ["assets","files","items","images","graphics"]){
+    const v = m && m[k];
+    if (Array.isArray(v)) return v.map(e => [e && (e.id||e.name), e]);
+    if (v && typeof v === "object") return Object.entries(v).map(([id,e]) => [ (e && e.id) || id, typeof e === "string" ? {file:e} : e ]);
+  }
+  return [];
+}
+function pickFiles(e){
+  const c = [], small = [];
+  const add = (v, arr) => { if (typeof v === "string" && /\.(webp|png)(\?.*)?$/i.test(v)) arr.push(v); };
+  ["webp","png","file","path","src","url"].forEach(k => add(e[k], c));
+  if (e.files && typeof e.files === "object") Object.entries(e.files).forEach(([k,v]) => add(v, /512|small|sm/i.test(k) ? small : c));
+  ["webp512","webp_512","small","thumb"].forEach(k => add(e[k], small));
+  if (e.sizes && typeof e.sizes === "object") Object.entries(e.sizes).forEach(([k,v]) => add(v, /^512/.test(k) ? small : c));
+  const pref = arr => arr.find(x => /\.webp/i.test(x)) || arr.find(x => /\.png/i.test(x)) || null;
+  return {main: pref(c.filter(x => !/-512\.(webp|png)/i.test(x))) || pref(c), small: pref(small) || c.find(x => /-512\.webp/i.test(x)) || null};
+}
+let SOURCE = null;
+async function fetchJSON(urls){
+  let last; for (const u of urls){ try { const r = await fetch(u, {cache:"no-store"}); if (r.ok) return await r.json(); last = "HTTP " + r.status; } catch(e){ last = e.message; } }
+  throw new Error(last || "nicht erreichbar");
+}
+async function loadPinned(link){
+  const notes = [], pin = parsePin(link);
+  if (pin.err){ setSource({err:pin.err}); return false; }
+  let m; try { m = await fetchJSON([pin.raw(pin.path), pin.cdn(pin.path)]); }
+  catch(e){ setSource({err:"Manifest konnte nicht geladen werden ("+e.message+"). Ist der Commit gepusht und das Repository öffentlich?"}); return false; }
+  const files = {}, ignored = [];
+  for (const [id, e] of manifestEntries(m)){
+    if (!e || typeof e !== "object"){ ignored.push(String(id)); continue; }
+    const key = idToKey(id, e);
+    if (!key){ ignored.push(String(id)); continue; }
+    const f = pickFiles(e);
+    if (!f.main){ notes.push(`<code>${esc(id)}</code>: keine PNG- oder WebP-Datei angegeben`); continue; }
+    const a = resolvePath(pin, f.main); if (a.err){ notes.push(esc(a.err)); continue; }
+    const b = f.small ? resolvePath(pin, f.small) : null;
+    if (files[key]) notes.push(`<code>${esc(id)}</code>: ${esc(key)} kommt doppelt vor, der erste Eintrag gilt`);
+    else files[key] = {id:String(id), path:a.path, url:pin.cdn(a.path), fb:pin.raw(a.path), url512: b && !b.err ? pin.cdn(b.path) : null};
+  }
+  if (ignored.length) notes.push("Nicht zugeordnet (Stufe oder Pose unbekannt): " + ignored.map(x => `<code>${esc(x)}</code>`).join(", "));
+  FR.files = files; FR.ver = pin.sha.slice(0,7);
+  SOURCE = {pin, link, count:Object.keys(files).length, notes};
+  setSource(SOURCE);
+  try { const u = new URL(location.href); u.searchParams.set("manifest", link); history.replaceState(null, "", u); } catch(e){}
+  const first = FR.stages.slice().reverse().find(s => ALLP().some(p => FR.has(s,p)));
+  if (first) stage = first;
+  render(); checkLoads();
+  return true;
+}
+function setSource(o){
+  const el = $("#srcState"), n = $("#srcNotes");
+  if (!o){ el.className = "srcstate"; el.textContent = "Noch keine Freigabe. Es werden die Platzhalter gezeigt."; n.innerHTML = ""; return; }
+  if (o.err){ el.className = "srcstate err"; el.textContent = o.err + " Es bleiben die Platzhalter."; n.innerHTML = ""; return; }
+  el.className = "srcstate ok";
+  el.innerHTML = `Freigabe aus Commit <code>${o.pin.sha.slice(0,7)}</code>: ${o.count} Grafik${o.count===1?"":"en"} zugeordnet. <span style="font-weight:600;color:var(--fr-slate)">Nur hier im Prüfstand sichtbar.</span>`;
+  n.innerHTML = o.notes.map(x => `<li>${x}</li>`).join("");
+}
+/* Jede Datei einmal anfragen und melden, was nicht lädt */
+function checkLoads(){
+  if (!SOURCE) return;
+  const done = () => { document.querySelectorAll("[data-tag]").forEach(t => { const [a,b] = t.dataset.tag.split("/"); t.outerHTML = cellTag(a,b); }); };   /* nur Status aktualisieren, Bilder bleiben stehen */
+  Object.entries(FR.files).forEach(([k, e]) => {
+    const im = new Image();
+    im.onload = () => { e.ok = true; e.w = im.naturalWidth; e.h = im.naturalHeight; if (im.naturalWidth !== im.naturalHeight) note(`<code>${esc(e.id)}</code>: nicht quadratisch (${im.naturalWidth} × ${im.naturalHeight})`); done(); };
+    im.onerror = () => { if (im.src !== e.fb){ im.src = e.fb; return; } e.ok = false; note(`<code>${esc(e.id)}</code>: Datei <code>${esc(e.path)}</code> lädt nicht`); done(); };
+    im.src = e.url;
+  });
+}
+function note(h){ if (SOURCE){ SOURCE.notes.push(h); setSource(SOURCE); } }
+$("#srcForm").onsubmit = e => { e.preventDefault(); const v = $("#srcIn").value; if (v.trim()) loadPinned(v); };
+$("#srcReset").onclick = () => { FR.files = {}; SOURCE = null; setSource(null); $("#srcIn").value = ""; try { const u = new URL(location.href); u.searchParams.delete("manifest"); history.replaceState(null, "", u); } catch(e){} stage = "king"; render(); };
 $("#oBtn").onclick = e => { const on = e.currentTarget.getAttribute("aria-pressed")!=="true"; e.currentTarget.setAttribute("aria-pressed", on); render(); };
-frLoadManifest().then(render); render();
+FR.files = {}; render();
+const qp = new URLSearchParams(location.search).get("manifest") || PINNED_MANIFEST;
+if (qp){ $("#srcIn").value = qp; loadPinned(qp); }
 })();
 </script>
 </body>
