@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -337,6 +337,22 @@
         },
         {
           "path": "captain-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "crown": {
+      "name": "Krone",
+      "slot": "hat",
+      "images": [
+        {
+          "path": "crown.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "crown-128.webp",
           "width": 128,
           "height": 128
         }
