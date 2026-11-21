@@ -1,5 +1,5 @@
 {
- "version": 7,
+ "version": 8,
  "files": {
   "king/front": {
    "w": 1024,
@@ -125,6 +125,26 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_adult_front.png"
+  },
+  "adult/3quarter": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_3quarter.png"
+  },
+  "adult/side": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_side.png"
+  },
+  "adult/back": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_back.png"
+  },
+  "adult/face": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_adult_face.png"
   }
  }
 }
