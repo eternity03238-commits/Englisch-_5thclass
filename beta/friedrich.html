@@ -159,10 +159,12 @@ const FR = {
   stageName: {egg:"Ei", chick:"Küken", young:"Jungmöwe", adult:"Möwe", captain:"Kapitänsmöwe", king:"Königsmöwe"},
   views: ["front","3quarter","side","back","face"],
   frames: ["blink","look_left","look_right","wave","celebrate","think","encourage"],
+  /* Zusätzliche Frames nur für einzelne Stufen: das Ei bekommt einen Riss und schlüpft */
+  extra: {egg:["crack","hatch"]},
   poseName: {front:"Vorderansicht", "3quarter":"Dreiviertelansicht", side:"Seitenansicht", back:"Rückansicht", face:"Gesicht",
-    blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
+    crack:"Riss", hatch:"Schlüpfen", blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
-  anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500]},
+  anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500], crack:["crack",900], hatch:["hatch",1600]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
   frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"},
   base: "assets/friedrich/",
@@ -170,6 +172,8 @@ const FR = {
 };
 FR.key = (s, p) => s + "/" + p;
 FR.baseOf = s => FR.frameBase[s] || "front";
+FR.framesOf = s => FR.frames.concat(FR.extra[s] || []);
+FR.posesOf = s => FR.views.concat(FR.framesOf(s));
 FR.has = (s, p) => !!(FR.files && FR.files[FR.key(s,p)]);
 FR.src = (s, p, w) => {
   const e = FR.files && FR.files[FR.key(s,p)];
@@ -206,7 +210,7 @@ function frPlaceholder(s, p, size){
 function frInner(s, p, size){
   if (!FR.has(s, p)) return frPlaceholder(s, p, size);
   /* Frames nur über ihr Grundbild legen, sonst würde die Figur beim Wechsel springen */
-  const layers = p !== FR.baseOf(s) ? "" : FR.frames.filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
+  const layers = p !== FR.baseOf(s) ? "" : FR.framesOf(s).filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
   return frImg(s, p, "fr-base") + layers;
 }
 /* size: xs (Avatar), sm (Hafen, Übung), md (Karten), lg (Bühne) */
@@ -254,7 +258,7 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/06710fc627c1b9dcab75a453efb61f7b15bee281/beta/assets/friedrich/manifest.json";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/ca2aeccc01ab7f646a0e9e730f2848b893b340bd/beta/assets/friedrich/manifest.json";
 /* Standardansicht je Stufe im Prüfstand */
 const DEFAULT_POSE = {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"};
 const defPose = s => DEFAULT_POSE[s] || "front";
@@ -262,8 +266,14 @@ let stage = "king", pose = defPose("king"), bg = "bg-light";
 const $ = s => document.querySelector(s);
 const stagesEl = $("#stages"), posesEl = $("#poses"), animsEl = $("#anims");
 stagesEl.innerHTML = FR.stages.map((s,i)=>`<button data-s="${s}" aria-pressed="${s===stage}">G0${i+1} ${FR.stageName[s]}</button>`).join("");
-posesEl.innerHTML = FR.views.concat(FR.frames).map(p=>`<button data-p="${p}" aria-pressed="${p===pose}">${FR.poseName[p]}</button>`).join("");
-animsEl.innerHTML = ["celebrate","levelup","think","encourage","wave","look_left","look_right"].map(a=>`<button data-a="${a}">${{celebrate:"Jubeln",levelup:"Level Up",think:"Nachdenken",encourage:"Ermutigen",wave:"Winken",look_left:"Blick links",look_right:"Blick rechts"}[a]}</button>`).join("");
+/* Erwartete Bilder je Stufe: das Ei hat statt der Vogel-Frames Riss und Schlüpfen */
+const expected = s => s==="egg" ? FR.views.concat(FR.extra.egg) : FR.views.concat(FR.frames);
+const ANIM_NAME = {celebrate:"Jubeln",levelup:"Level Up",think:"Nachdenken",encourage:"Ermutigen",wave:"Winken",look_left:"Blick links",look_right:"Blick rechts",crack:"Riss",hatch:"Schlüpfen"};
+const animsFor = s => s==="egg" ? ["crack","hatch"] : ["celebrate","levelup","think","encourage","wave","look_left","look_right"];
+function renderPoseButtons(){
+  posesEl.innerHTML = expected(stage).map(p=>`<button data-p="${p}" aria-pressed="${p===pose}">${FR.poseName[p]}</button>`).join("");
+  animsEl.innerHTML = animsFor(stage).map(a=>`<button data-a="${a}">${ANIM_NAME[a]}</button>`).join("");
+}
 function cellTag(s,p){
   const k = s+"/"+p;
   if (!FR.has(s,p)) return `<span class="tag miss" data-tag="${k}">fehlt</span>`;
@@ -276,8 +286,9 @@ const onionPose = () => FR.frames.includes(pose) ? FR.baseOf(stage) : (pose === 
 function render(){
   $("#box").innerHTML = friedrichEl({stage, pose, size:"lg"}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:onionPose(), size:"lg"})}</div>`;
   $("#oBtn").textContent = "Mit " + FR.poseName[onionPose()] + " überlagern";
-  $("#grid").innerHTML = FR.views.concat(FR.frames).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b>${cellTag(stage,p)}<code style="font-size:.7rem;color:var(--fr-slate);word-break:break-all">${FR.has(stage,p) && FR.files[stage+"/"+p].id ? esc(FR.files[stage+"/"+p].id) : stage+"/"+p+".webp"}</code></div>`).join("");
-  const all = FR.stages.map(s=>{ const n = FR.views.concat(FR.frames).filter(p=>FR.has(s,p)).length; const total = s==="egg" ? 1 : FR.views.length+FR.frames.length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${total} Bild${total===1?"":"ern"}${n>=total?" ✓":""}</td></tr>`; }).join("");
+  renderPoseButtons();
+  $("#grid").innerHTML = expected(stage).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b>${cellTag(stage,p)}<code style="font-size:.7rem;color:var(--fr-slate);word-break:break-all">${FR.has(stage,p) && FR.files[stage+"/"+p].id ? esc(FR.files[stage+"/"+p].id) : stage+"/"+p+".webp"}</code></div>`).join("");
+  const all = FR.stages.map(s=>{ const n = expected(s).filter(p=>FR.has(s,p)).length; const total = expected(s).length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${total} Bild${total===1?"":"ern"}${n>=total?" ✓":""}</td></tr>`; }).join("");
   $("#status").innerHTML = `<tr><th>Stufe</th><th>Geliefert</th></tr>` + all;
   stagesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===stage));
   posesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===pose));
@@ -336,7 +347,7 @@ function parsePinAny(f){
   }
   return null;
 }
-const ALLP = () => FR.views.concat(FR.frames);
+const ALLP = () => FR.views.concat(FR.frames, FR.extra.egg);
 function idToKey(id, e){
   const st = (e && e.stage) ? String(e.stage).toLowerCase() : null, po = (e && e.pose) ? String(e.pose).toLowerCase().replace(/-/g,"_") : null;
   if (st && po && FR.stages.includes(st) && ALLP().includes(po)) return st + "/" + po;

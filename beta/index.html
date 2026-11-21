@@ -704,12 +704,19 @@ body.scn-on .beta-badge{opacity:.75}
   padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
 .scn-place,.scn-menu{background:rgba(11,25,48,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#F7F4EC;border-radius:999px;font:800 .95rem/1 var(--fr-font);padding:10px 14px;min-height:40px;display:inline-flex;align-items:center}
 .scn-menu{border:1px solid rgba(255,255,255,.25)}
-.scn-say{position:absolute;z-index:4;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(48px + env(safe-area-inset-bottom,0px));
-  display:flex;flex-direction:column;gap:2px;background:rgba(255,253,246,.94);color:#16406B;border-radius:18px;padding:10px 14px;font:600 .95rem/1.3 var(--fr-font);box-shadow:0 8px 24px rgba(30,20,10,.25)}
+.scn-bottom{position:absolute;z-index:4;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(44px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
+.scn-say{display:flex;flex-direction:column;gap:2px;background:rgba(255,253,246,.94);color:#16406B;border-radius:18px;padding:10px 14px;font:600 .95rem/1.3 var(--fr-font);box-shadow:0 8px 24px rgba(30,20,10,.25)}
+.scn-nav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.scn-nav button{display:inline-flex;align-items:center;gap:6px;min-height:44px;max-width:44%;padding:6px 12px;border-radius:999px;background:rgba(11,25,48,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#F7F4EC;border:1px solid rgba(255,255,255,.22);font:800 .8rem/1.15 var(--fr-font)}
+.scn-nav button span{font-size:1.5rem;line-height:1;margin-top:-2px}
+.scn-nav button small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.scn-dots{display:flex;gap:5px}.scn-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(11,25,48,.35)}.scn-dots i.on{background:#FFD36E;width:16px;border-radius:4px}
+.scn-fade .scn-art,.scn-view.scn-fade{animation:scn-in .35s ease both}
+.scn-view{position:absolute;inset:0;z-index:6;overflow:hidden;container-type:size;background:#E9C99A}
 .scn-say b{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#3F8F73}
 .scn-wait{display:grid;place-items:center;background:var(--fr-navy)}
 .scn-msg{color:#F7F4EC;font:700 1rem/1.5 var(--fr-font);text-align:center;padding:24px;display:flex;flex-direction:column;gap:12px;align-items:center}
-.scn-stage.leaving .scn-art{transition:transform .9s ease,opacity .9s ease;transform:translate(-50%,-50%) scale(1.25);transform-origin:40% 48%;opacity:.0}
+.scn-stage.leaving .scn-art{transition:transform .9s ease,opacity .9s ease;transform:translate(-50%,-50%) scale(1.25);transform-origin:var(--zx,40%) var(--zy,48%);opacity:0}
 /* Wohnzimmer als Hintergrund der bestehenden Übung */
 #scnRoom{position:fixed;inset:0;z-index:0;display:none;background:#E9C99A;overflow:hidden}
 #scnRoom .scn-room-img{position:absolute;left:50%;top:0;height:100%;width:auto;min-width:100%;transform:translateX(-50%);object-fit:cover}
@@ -1597,7 +1604,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795284352";
+const BUILD = "1795286990";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2092,10 +2099,12 @@ const FR = {
   stageName: {egg:"Ei", chick:"Küken", young:"Jungmöwe", adult:"Möwe", captain:"Kapitänsmöwe", king:"Königsmöwe"},
   views: ["front","3quarter","side","back","face"],
   frames: ["blink","look_left","look_right","wave","celebrate","think","encourage"],
+  /* Zusätzliche Frames nur für einzelne Stufen: das Ei bekommt einen Riss und schlüpft */
+  extra: {egg:["crack","hatch"]},
   poseName: {front:"Vorderansicht", "3quarter":"Dreiviertelansicht", side:"Seitenansicht", back:"Rückansicht", face:"Gesicht",
-    blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
+    crack:"Riss", hatch:"Schlüpfen", blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
-  anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500]},
+  anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500], crack:["crack",900], hatch:["hatch",1600]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
   frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"},
   base: "assets/friedrich/",
@@ -2103,6 +2112,8 @@ const FR = {
 };
 FR.key = (s, p) => s + "/" + p;
 FR.baseOf = s => FR.frameBase[s] || "front";
+FR.framesOf = s => FR.frames.concat(FR.extra[s] || []);
+FR.posesOf = s => FR.views.concat(FR.framesOf(s));
 FR.has = (s, p) => !!(FR.files && FR.files[FR.key(s,p)]);
 FR.src = (s, p, w) => {
   const e = FR.files && FR.files[FR.key(s,p)];
@@ -2139,7 +2150,7 @@ function frPlaceholder(s, p, size){
 function frInner(s, p, size){
   if (!FR.has(s, p)) return frPlaceholder(s, p, size);
   /* Frames nur über ihr Grundbild legen, sonst würde die Figur beim Wechsel springen */
-  const layers = p !== FR.baseOf(s) ? "" : FR.frames.filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
+  const layers = p !== FR.baseOf(s) ? "" : FR.framesOf(s).filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
   return frImg(s, p, "fr-base") + layers;
 }
 /* size: xs (Avatar), sm (Hafen, Übung), md (Karten), lg (Bühne) */
@@ -2187,22 +2198,31 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-/* ============ FRIEDRICH 2.0: erste spielbare Szene "Das Haus am Hafen" (nur Beta) ============
+/* ============ FRIEDRICH 2.0: die Hafenstadt als spielbare Szenen (nur Beta) ============
    Grafiken kommen commitgenau aus eternity03238-commits/Englisch-_5thclass@SCN_COMMIT.
    Szenenpfade sind relativ zu beta/assets/world/, Friedrich-Pfade zu beta/assets/friedrich/.
-   Ablauf: Hafen (Startszene) → Tür antippen → Wohnzimmer + bestehende Karteikarten "haus"
-           → nach erfolgreichem Abschluss zurück zum Hafen, Jubeln + beleuchtetes Fenster. */
-const SCN_COMMIT = "ead6f657dea23a46a64d19bbd667c78781993da6";
+   Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
+   Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
+   Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
+const SCN_COMMIT = "ca2aeccc01ab7f646a0e9e730f2848b893b340bd";
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
+const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
 const scnCdn = p => `https://cdn.jsdelivr.net/gh/${SCN_REPO}@${SCN_COMMIT}/beta/assets/${p}`;
-/* Lage im Bild in Prozent der Bildbreite/-höhe (gemessen an haus-am-hafen.webp, 941 × 1672) */
+/* Lage im Bild in Prozent der Bildbreite/-höhe (gemessen an den 941 × 1672-Bildern).
+   spot = antippbare Fläche, fr = Fußpunkt und Breite von Friedrich, label = Beschriftung (sonst Name des Lernbereichs) */
 const SCN_LAYOUT = {
-  door: {x:36.2, y:43.1, w:7.8, h:11.0},      /* grüne Tür */
-  friedrich: {x:30, y:85, w:38}                 /* Fußpunkt auf dem Kai, Breite der Figur */
+  "haus-am-hafen":         {spot:{x:36.2, y:43.1, w:7.8,  h:11.0}, fr:{x:30, y:85, w:38}, hint:"Tippe auf die grüne Tür. Wir üben drinnen!"},
+  "marktplatz":            {spot:{x:22,   y:36,   w:46,   h:24},   fr:{x:72, y:87, w:34}, label:"Obststand", hint:"Komm, wir schauen uns den Obststand an!"},
+  "familien-picknick":     {spot:{x:20,   y:40,   w:67,   h:15},   fr:{x:30, y:87, w:36}, hint:"Setz dich zu uns aufs Picknick!"},
+  "schule-am-meer":        {spot:{x:35,   y:31,   w:20,   h:20},   fr:{x:70, y:87, w:36}, hint:"Ab in die Schule! Tippe auf die Tür."},
+  "strand-und-seebruecke": {spot:{x:33,   y:36,   w:34,   h:24},   fr:{x:26, y:89, w:36}, hint:"Lass uns auf die Seebrücke gehen!"},
+  "bunte-strandhuetten":   {spot:{x:6,    y:35,   w:90,   h:21},   fr:{x:30, y:89, w:36}, hint:"So viele Farben! Tippe auf die Hütten."}
 };
-const SCN = {world:null, ready:null, inRoom:false, success:false, rewardOn:false};
+const SCN_NAMES = {"marktplatz":"Der Marktplatz", "marktplatz-obststand":"Der Obststand", "haus-am-hafen-wohnzimmer":"Das Wohnzimmer", "schule-am-meer-klassenzimmer":"Das Klassenzimmer"};
+const SCN = {world:null, ready:null, cur:SCN_START, inRoom:false, origin:null, success:false, rewardOn:false, stage0:null};
 const scnRM = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const SCN_SIZES = "(max-width:560px) 130vw, 728px";
 
 function scnFetch(path){
   return fetch(scnRaw(path), {cache:"no-cache"}).then(r => r.ok ? r.json() : Promise.reject(r.status))
@@ -2212,10 +2232,10 @@ function scnFetch(path){
 function scnLoad(){
   if (SCN.ready) return SCN.ready;
   const fr = scnFetch("friedrich/manifest.json").then(m => {
-    const files = {}, poses = FR.views.concat(FR.frames);
+    const files = {};
     Object.keys((m && m.files) || {}).forEach(k => {
       const [s, p] = k.split("/");
-      if (!FR.stages.includes(s) || !poses.includes(p)) return;
+      if (!FR.stages.includes(s) || !FR.posesOf(s).includes(p)) return;
       files[k] = {id:k, url:scnRaw(`friedrich/${k}.webp`), url512:scnRaw(`friedrich/${k}-512.webp`), fb:scnCdn(`friedrich/${k}.webp`)};
     });
     FR.files = files; FR.ver = SCN_COMMIT.slice(0,7);
@@ -2232,73 +2252,123 @@ function scnSet(list){
   return {src: scnRaw("world/" + l[l.length-1].path), srcset: l.map(b => `${scnRaw("world/"+b.path)} ${b.width}w`).join(", "),
           ratio: l[l.length-1].width / l[l.length-1].height};
 }
-/* Beide Außenansichten (Grundbild und Belohnung) mit identischen Attributen: gleicher Ausschnitt, gleiche Auflösung */
-const scnImg = (set, cls) => `<img class="scn-img ${cls}" src="${set.src}" srcset="${set.srcset}" sizes="(max-width:560px) 130vw, 728px" alt="" decoding="async" draggable="false">`;
 const scnScene = id => SCN.world && SCN.world.scenes && SCN.world.scenes[id];
+const scnIds = () => Object.keys((SCN.world && SCN.world.scenes) || {}).filter(id => scnSet(scnScene(id).backgrounds));
+const scnOutdoor = () => { const ids = scnIds(); return ids.filter(id => !ids.some(o => o !== id && id.startsWith(o + "-"))); };
+const scnChild = id => scnIds().find(c => c.startsWith(id + "-")) || null;
+const scnArea = id => { const s = scnScene(id) || {}; return PMAP[s.learningArea] ? s.learningArea : null; };
+const scnName = id => SCN_NAMES[id] || (scnArea(id) && PMAP[scnArea(id)].place) || id.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
+/* Beide Außenansichten (Grundbild und Belohnung) mit identischen Attributen: gleicher Ausschnitt, gleiche Auflösung */
+const scnImg = (set, cls) => `<img class="scn-img ${cls}" src="${set.src}" srcset="${set.srcset}" sizes="${SCN_SIZES}" alt="" decoding="async" draggable="false">`;
+function scnPreload(set){ if (!set) return; const im = new Image(); im.sizes = SCN_SIZES; im.srcset = set.srcset; im.src = set.src; }
+/* Was passiert beim Antippen der Fläche: Innenszene öffnen und/oder Übung starten */
+function scnAction(id){
+  const child = scnChild(id), area = (child && scnArea(child)) || scnArea(id);
+  return {child, area};
+}
+const scnMsg = (t, btn) => `<div class="scn-stage scn-wait"><div class="scn-msg">${t}${btn ? `<br><button class="btn btn-soft" data-act="home">Zum Menü</button>` : ""}</div></div>`;
 
-function renderScene(){
+function renderScene(opts = {}){
   const el = $("#s-scene");
   if (!SCN.world){
-    if (SCN.loaded){ el.innerHTML = `<div class="scn-stage scn-wait"><div class="scn-msg">Die Hafen-Szene konnte nicht geladen werden. Bitte später noch einmal versuchen.<br><button class="btn btn-soft" data-act="home">Zum Menü</button></div></div>`; return; }
-    el.innerHTML = `<div class="scn-stage scn-wait"><div class="scn-msg">Die Hafen-Szene lädt …</div></div>`;
-    scnLoad().then(() => { if (!$("#s-scene").hidden) renderScene(); });
+    if (SCN.loaded){ el.innerHTML = scnMsg("Die Hafenstadt konnte nicht geladen werden. Bitte später noch einmal versuchen.", true); return; }
+    el.innerHTML = scnMsg("Die Hafenstadt lädt …");
+    scnLoad().then(() => { if (!$("#s-scene").hidden) renderScene(opts); });
     return;
   }
-  const sc = scnScene("haus-am-hafen"), base = scnSet(sc && sc.backgrounds), rew = scnSet(sc && sc.rewardBackgrounds);
-  if (!base){ el.innerHTML = `<div class="scn-stage scn-wait"><div class="scn-msg">Szene „haus-am-hafen“ fehlt im Manifest.<br><button class="btn btn-soft" data-act="home">Zum Menü</button></div></div>`; return; }
-  const stage = FR.stageOf(gullStage()), pose = FR.baseOf(stage), d = SCN_LAYOUT.door, f = SCN_LAYOUT.friedrich, p = PMAP[sc.learningArea] || PMAP.haus;
-  el.innerHTML = `<div class="scn-stage" style="--ratio:${base.ratio.toFixed(5)}">
+  const outs = scnOutdoor();
+  if (!outs.length){ el.innerHTML = scnMsg("Im Szenenmanifest ist keine Szene.", true); return; }
+  if (!outs.includes(SCN.cur)) SCN.cur = outs.includes(SCN_START) ? SCN_START : outs[0];
+  const id = SCN.cur, sc = scnScene(id), base = scnSet(sc.backgrounds), rew = scnSet(sc.rewardBackgrounds);
+  const L = SCN_LAYOUT[id] || {}, f = L.fr || {x:50, y:88, w:34}, act = scnAction(id);
+  const hatch = SCN.success && SCN.stage0 === 0 && gullStage() >= 1 && FR.has("egg","crack") && FR.has("egg","hatch") && !scnRM();
+  const stage = hatch ? "egg" : FR.stageOf(gullStage()), pose = FR.baseOf(stage);
+  const label = L.label || (act.area ? PMAP[act.area].name : (act.child ? scnName(act.child) : ""));
+  const i = outs.indexOf(id), prev = outs[(i - 1 + outs.length) % outs.length], next = outs[(i + 1) % outs.length];
+  let spot = "";
+  if (act.child || act.area){
+    const aria = act.area ? `${label}: ${act.child ? "hineingehen und " : ""}üben` : `${label} ansehen`;
+    spot = L.spot
+      ? `<button class="scn-door" data-act="scnSpot" style="left:${L.spot.x}%;top:${L.spot.y}%;width:${L.spot.w}%;height:${L.spot.h}%" aria-label="${esc(aria)}"><span class="scn-door-glow" aria-hidden="true"></span><span class="scn-door-label">${esc(label)}</span></button>`
+      : "";
+  }
+  el.innerHTML = `<div class="scn-stage ${opts.fade && !scnRM() ? "scn-fade" : ""}" style="--ratio:${base.ratio.toFixed(5)}">
       <div class="scn-art">
         ${scnImg(base, "scn-base")}${rew ? scnImg(rew, "scn-reward") : ""}
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit"})}</div>
-        <button class="scn-door" data-act="scnDoor" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%" aria-label="${esc(p.name)}: Tür öffnen und üben">
-          <span class="scn-door-glow" aria-hidden="true"></span><span class="scn-door-label">${esc(p.name)}</span></button>
+        ${spot}
       </div>
-      <div class="scn-top"><span class="scn-place">${esc(p.place)}</span><button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></div>
-      <div class="scn-say" id="scnSay"><b>${esc(G())}</b><span>Tippe auf die grüne Tür. Wir üben drinnen!</span></div>
+      <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></div>
+      <div class="scn-bottom">
+        ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main btn-block" data-act="scnSpot">${esc(label)}</button>` : ""}
+        ${outs.length > 1 ? `<div class="scn-nav"><button data-act="scnGo" data-id="${prev}" aria-label="Zurück nach ${esc(scnName(prev))}"><span aria-hidden="true">‹</span><small>${esc(scnName(prev))}</small></button>
+          <span class="scn-dots" aria-hidden="true">${outs.map(o => `<i class="${o===id?"on":""}"></i>`).join("")}</span>
+          <button data-act="scnGo" data-id="${next}" aria-label="Weiter nach ${esc(scnName(next))}"><small>${esc(scnName(next))}</small><span aria-hidden="true">›</span></button></div>` : ""}
+        <div class="scn-say" id="scnSay"><b>${esc(G())}</b><span>${esc(L.hint || (label ? `Tippe auf „${label}“!` : "Schön hier, oder?"))}</span></div>
+      </div>
     </div>`;
-  /* Wohnzimmer vorab laden, damit es beim Antippen sofort da ist */
-  const room = scnSet((scnScene("haus-am-hafen-wohnzimmer")||{}).backgrounds);
-  if (room){ const im = new Image(); im.sizes = "(max-width:560px) 130vw, 728px"; im.srcset = room.srcset; im.src = room.src; }
-  if (SCN.success) setTimeout(scnReward, 350);
+  /* vorab laden: Innenszene, Belohnung, Nachbarorte */
+  if (act.child) scnPreload(scnSet(scnScene(act.child).backgrounds));
+  setTimeout(() => { scnPreload(scnSet(scnScene(next).backgrounds)); scnPreload(scnSet(scnScene(prev).backgrounds)); }, 800);
+  if (SCN.success) setTimeout(() => scnReward(hatch), 350);
 }
-/* Belohnung: Fenster leuchtet kurz, Friedrich jubelt (falls die Pose für seine Stufe existiert) */
-async function scnReward(){
-  SCN.success = false;
-  const rew = $("#s-scene .scn-reward"), say = $("#scnSay"), frEl = $("#scnFr .fr");
-  if (!rew) return;
-  try { if (!rew.complete) await new Promise(r => { rew.onload = r; rew.onerror = r; }); await rew.decode(); } catch(e) {}
-  if (say) say.innerHTML = `<b>${esc(G())}</b><span>Well done! Das Fenster leuchtet für dich.</span>`;
+/* Belohnung: Friedrich schlüpft (beim ersten Mal), jubelt (falls Pose vorhanden), Belohnungsbild leuchtet (falls vorhanden) */
+async function scnReward(hatch){
+  SCN.success = false; SCN.stage0 = null;
+  const rew = $("#s-scene .scn-reward"), say = $("#scnSay");
+  let frEl = $("#scnFr .fr");
+  if (rew){ try { if (!rew.complete) await new Promise(r => { rew.onload = r; rew.onerror = r; }); await rew.decode(); } catch(e) {} }
+  const sayIt = t => { if (say) say.innerHTML = `<b>${esc(G())}</b><span>${t}</span>`; };
+  sayIt(rew ? "Well done! Das Fenster leuchtet für dich." : "Well done! Super geübt.");
   SCN.rewardOn = true;
+  const done = ms => setTimeout(() => { if (rew) rew.classList.remove("on"); SCN.rewardOn = false; }, ms);
   if (scnRM()){                                   /* reduzierte Bewegung: nur der beleuchtete Zustand */
-    rew.classList.add("on", "instant");
-    setTimeout(() => { rew.classList.remove("on"); SCN.rewardOn = false; }, 3500);
-    return;
+    if (rew) rew.classList.add("on", "instant");
+    return done(3500);
   }
-  rew.classList.remove("instant"); void rew.offsetWidth; rew.classList.add("on");
-  const stage = frEl && frEl.dataset.stage;
-  if (frEl && FR.has(stage, "celebrate")) setTimeout(() => frPlay(frEl, "celebrate"), 450);
-  setTimeout(() => { rew.classList.remove("on"); SCN.rewardOn = false; }, 3200);
+  if (rew){ rew.classList.remove("instant"); void rew.offsetWidth; rew.classList.add("on"); }
+  if (hatch && frEl){
+    sayIt(`${esc(G())} schlüpft!`);
+    await frPlay(frEl, "crack"); await frPlay(frEl, "hatch");
+    const stage = FR.stageOf(gullStage()), box = $("#scnFr");
+    if (box){ box.innerHTML = friedrichEl({stage, pose:FR.baseOf(stage), size:"fit"}); frEl = box.querySelector(".fr"); }
+    sayIt(`Hallo! Ich bin ${esc(G())}. Danke, dass du mit mir übst!`);
+  }
+  if (frEl && FR.has(frEl.dataset.stage, "celebrate")) setTimeout(() => frPlay(frEl, "celebrate"), hatch ? 150 : 450);
+  done(hatch ? 2600 : 3200);
 }
-function scnEnterRoom(){
-  const room = scnSet((scnScene("haus-am-hafen-wohnzimmer")||{}).backgrounds), area = (scnScene("haus-am-hafen-wohnzimmer")||{}).learningArea || "haus";
-  if (!room) return;
+/* Innenszene bzw. Szene als Hintergrund der bestehenden Übung */
+function scnBackdrop(set){
   let bg = $("#scnRoom");
   if (!bg){ document.body.insertAdjacentHTML("afterbegin", `<div id="scnRoom" aria-hidden="true"></div>`); bg = $("#scnRoom"); }
-  bg.innerHTML = `<img class="scn-room-img" src="${room.src}" srcset="${room.srcset}" sizes="(max-width:560px) 130vw, 728px" alt="" decoding="async">`;
-  SCN.inRoom = true;
-  /* Wohnzimmer erscheint zuerst ganz, dann startet die bestehende Übung */
+  bg.innerHTML = `<img class="scn-room-img" src="${set.src}" srcset="${set.srcset}" sizes="${SCN_SIZES}" alt="" decoding="async">`;
+  return bg;
+}
+function scnSpot(){
+  const id = SCN.cur, act = scnAction(id);
+  const set = scnSet(scnScene(act.child || id).backgrounds);
+  if (!set) return;
   const st = $("#s-scene .scn-stage");
+  if (!act.area){                                 /* Innenszene ohne Lernbereich: nur ansehen */
+    if (st) st.insertAdjacentHTML("beforeend", `<div class="scn-view ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}</div>
+      <div class="scn-top"><span class="scn-place">${esc(scnName(act.child))}</span></div>
+      <div class="scn-bottom"><div class="scn-say"><b>${esc(G())}</b><span>Hier gibt es noch keine Übung. Bald!</span></div>
+      <button class="btn btn-main btn-block" data-act="scnViewBack">Zurück: ${esc(scnName(id))}</button></div></div>`);
+    return;
+  }
+  scnBackdrop(set);
+  SCN.inRoom = true; SCN.origin = id; SCN.stage0 = gullStage();
   document.body.classList.add("scn-room", "scn-entering");
   if (st) st.classList.add("leaving");
-  setTimeout(() => { document.body.classList.remove("scn-entering"); DK.mode = "kid"; startCardsKey(area); }, scnRM() ? 250 : 1100);
+  const sp = (SCN_LAYOUT[id] || {}).spot; if (st && sp) st.style.setProperty("--zx", (sp.x + sp.w/2) + "%"), st.style.setProperty("--zy", (sp.y + sp.h/2) + "%");
+  setTimeout(() => { document.body.classList.remove("scn-entering"); DK.mode = "kid"; startCardsKey(act.area); }, scnRM() ? 250 : 1100);
 }
-/* Nach finishCards (Ergebnis bleibt sichtbar, Fortschritt ist gespeichert): Weg zurück zum Hafen */
+/* Nach finishCards (Ergebnis bleibt sichtbar, Fortschritt ist gespeichert): Weg zurück nach draußen */
 function sceneAfterFinish(){
   if (!SCN.inRoom) return;
   const box = $("#s-cards");
   [...box.querySelectorAll('[data-act="openDeck"], [data-act="home"]')].forEach(b => { const row = b.closest(".row"); (row || b).remove(); });
-  const btn = `<button class="btn btn-main btn-block scn-back" data-act="scnBack">Zurück zum Hafen</button>`;
+  const btn = `<button class="btn btn-main btn-block scn-back" data-act="scnBack">Zurück: ${esc(scnName(SCN.origin || SCN.cur))}</button>`;
   const res = box.querySelector(".result");   /* gleich unter dem Ergebnis, ohne Scrollen erreichbar */
   if (res) res.insertAdjacentHTML("afterend", btn); else box.insertAdjacentHTML("beforeend", btn);
 }
@@ -2308,22 +2378,41 @@ function sceneOnShow(name){
   document.body.classList.toggle("scn-on", name === "scene");
   if (name === "scene") renderScene();
 }
+function scnGo(id){ if (SCN.rewardOn || !scnScene(id)) return; SCN.cur = id; renderScene({fade:true}); }
+/* Wischen nach links/rechts wechselt den Ort */
+let scnSwipe = null, scnNoClick = false;
+function scnSwipeInit(){
+  const host = $("#s-scene");
+  host.addEventListener("pointerdown", e => { scnSwipe = {x:e.clientX, y:e.clientY}; }, {passive:true});
+  host.addEventListener("pointerup", e => {
+    if (!scnSwipe || host.querySelector(".scn-view")) return;
+    const dx = e.clientX - scnSwipe.x, dy = e.clientY - scnSwipe.y; scnSwipe = null;
+    if (Math.abs(dx) > 60 && Math.abs(dy) < 50){
+      const outs = scnOutdoor(), i = outs.indexOf(SCN.cur); if (outs.length < 2) return;
+      scnNoClick = true; setTimeout(() => scnNoClick = false, 350);
+      scnGo(outs[(i + (dx < 0 ? 1 : -1) + outs.length) % outs.length]);
+    }
+  }, {passive:true});
+  host.addEventListener("click", e => { if (scnNoClick){ e.stopPropagation(); e.preventDefault(); } }, true);
+}
 const SCENE_ACT = {
   openScene: () => show("scene"),
-  scnDoor: () => scnEnterRoom(),
-  scnBack: () => { SCN.inRoom = false; show("scene"); },
-  scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : "celebrate"); }
+  scnSpot: () => scnSpot(),
+  scnGo: b => scnGo(b.dataset.id),
+  scnViewBack: () => { const v = $("#s-scene .scn-view"); if (v) v.remove(); },
+  scnBack: () => { SCN.inRoom = false; if (SCN.origin) SCN.cur = SCN.origin; show("scene"); },
+  scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : FR.has(el.dataset.stage, "crack") ? "crack" : "celebrate"); }
 };
 function sceneBoot(){
   SCREENS.push("scene");
   $("#s-home").insertAdjacentHTML("beforebegin", `<section id="s-scene" hidden></section>`);
-  $("#s-home").insertAdjacentHTML("afterbegin", `<button class="scn-entry" data-act="openScene"><span>Das Haus am Hafen</span><small>Zur Szene</small></button>`);
-  const quit = ACT.cardsQuit, next = ACT.nextStack;
+  $("#s-home").insertAdjacentHTML("afterbegin", `<button class="scn-entry" data-act="openScene"><span>Die Hafenstadt</span><small>Zu den Szenen</small></button>`);
+  const quit = ACT.cardsQuit;
   Object.assign(ACT, SCENE_ACT, {
-    /* Abbruch ohne Antwort im Wohnzimmer: zurück zum Hafen statt ins Menü */
-    cardsQuit: b => { if (SCN.inRoom && !(C && Object.keys(C.first).length)){ C = null; SCN.inRoom = false; show("scene"); return; } quit(b); },
-    nextStack: b => next(b)
+    /* Abbruch ohne Antwort in der Übung: zurück nach draußen statt ins Menü */
+    cardsQuit: b => { if (SCN.inRoom && !(C && Object.keys(C.first).length)){ C = null; SCN.inRoom = false; SCN.stage0 = null; if (SCN.origin) SCN.cur = SCN.origin; show("scene"); return; } quit(b); }
   });
+  scnSwipeInit();
   scnLoad();
 }
 
