@@ -1,5 +1,5 @@
 {
-  "version": 23,
+  "version": 24,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -373,6 +373,21 @@
         },
         {
           "path": "brighton_reisekompass-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "schatzkammer_truhe": {
+      "name": "Truhe für die Schatzkammer",
+      "images": [
+        {
+          "path": "schatzkammer_truhe.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "schatzkammer_truhe-128.webp",
           "width": 128,
           "height": 128
         }
