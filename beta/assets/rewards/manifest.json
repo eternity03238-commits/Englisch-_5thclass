@@ -1,5 +1,5 @@
 {
-  "version": 29,
+  "version": 30,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -463,6 +463,21 @@
         },
         {
           "path": "unterricht_schulbuch-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "reisetagebuch_postkarte": {
+      "name": "Reisetagebuch mit Postkarte",
+      "images": [
+        {
+          "path": "reisetagebuch_postkarte.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "reisetagebuch_postkarte-128.webp",
           "width": 128,
           "height": 128
         }
