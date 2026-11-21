@@ -1,5 +1,5 @@
 {
- "version": 10,
+ "version": 11,
  "files": {
   "king/front": {
    "w": 1024,
@@ -205,6 +205,41 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_young_face.png"
+  },
+  "young/blink": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_blink.png"
+  },
+  "young/look_left": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_look_left.png"
+  },
+  "young/look_right": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_look_right.png"
+  },
+  "young/wave": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_wave.png"
+  },
+  "young/celebrate": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_celebrate.png"
+  },
+  "young/think": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_think.png"
+  },
+  "young/encourage": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_encourage.png"
   }
  }
 }
