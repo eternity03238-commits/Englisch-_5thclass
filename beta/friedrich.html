@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Friedrich Prüfstand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Baloo+2:wght@700&display=swap">
+<style>
+/* ============ FRIEDRICH 2.0: Design-Tokens und Charakterkomponente ============ */
+:root{
+  --fr-navy:#0B1930; --fr-navy-2:#13284A; --fr-royal:#1768E8; --fr-sky:#72C8FF; --fr-gold:#E4B45C;
+  --fr-orange:#FF9438; --fr-green:#21B879; --fr-ivory:#F7F4EC; --fr-slate:#A8BCD4;
+  --fr-glass:rgba(11,25,48,.72); --fr-radius:20px; --fr-shadow:0 10px 30px rgba(0,0,0,.35);
+  --fr-font:"Nunito",system-ui,sans-serif; --fr-font-head:"Baloo 2","Nunito",system-ui,sans-serif;
+}
+.fr{position:relative;display:inline-flex;align-items:flex-end;justify-content:center;aspect-ratio:1/1;width:100%;max-width:100%;transform-origin:50% 92%;user-select:none;-webkit-user-select:none}
+.fr{container-type:inline-size}.fr-fit{width:100%}.fr-xs{width:48px}.fr-sm{width:96px}.fr-md{width:180px}.fr-lg{width:min(360px,80vw)}
+.fr-body{position:relative;width:100%;height:100%;transform-origin:50% 90%;animation:fr-breathe 3.2s ease-in-out infinite;z-index:1}
+.fr-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.fr-frame{opacity:0;transition:opacity .08s linear}
+.fr-frame.on{opacity:1}
+.fr-frame.on ~ .fr-base, .fr-body:has(.fr-frame.on) .fr-base{opacity:0}
+.fr-shadow{position:absolute;left:50%;bottom:7%;width:46%;height:6%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.32),rgba(0,0,0,0));z-index:0;transition:transform .2s,opacity .2s}
+@keyframes fr-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.015)}}
+/* Zustände: nur Verschieben, Skalieren und höchstens 4° Neigung */
+.fr-a-celebrate .fr-body{animation:fr-hop .9s cubic-bezier(.3,1.4,.5,1)}
+.fr-a-levelup .fr-body{animation:fr-hop-big 1.7s cubic-bezier(.3,1.4,.5,1)}
+.fr-a-celebrate .fr-shadow,.fr-a-levelup .fr-shadow{animation:fr-shadow .9s ease}
+.fr-a-think .fr-body{animation:fr-tilt 1.4s ease-in-out}
+.fr-a-encourage .fr-body{animation:fr-nod 1.2s ease-in-out}
+.fr-a-wave .fr-body{animation:fr-sway 1.2s ease-in-out}
+@keyframes fr-hop{0%,100%{transform:translateY(0)}35%{transform:translateY(-8%) scale(1.02)}60%{transform:translateY(0) scaleY(.97)}}
+@keyframes fr-hop-big{0%,100%{transform:translateY(0)}20%{transform:translateY(-12%) scale(1.04)}40%{transform:translateY(0) scaleY(.96)}60%{transform:translateY(-6%)}80%{transform:translateY(0)}}
+@keyframes fr-shadow{35%{transform:translateX(-50%) scale(.7);opacity:.5}}
+@keyframes fr-tilt{0%,100%{transform:rotate(0)}30%,70%{transform:rotate(-4deg)}}
+@keyframes fr-nod{0%,100%{transform:translateY(0)}25%{transform:translateY(2%)}50%{transform:translateY(0)}75%{transform:translateY(2%)}}
+@keyframes fr-sway{0%,100%{transform:translateX(0)}25%{transform:translateX(-2%)}75%{transform:translateX(2%)}}
+.fr-halo{position:absolute;inset:-8%;border-radius:50%;background:radial-gradient(closest-side,rgba(228,180,92,.55),rgba(228,180,92,0) 70%);animation:fr-halo 1.7s ease-out forwards;z-index:0;pointer-events:none}
+@keyframes fr-halo{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.2);opacity:0}}
+/* Platzhalter: neutral, klar beschriftet, keine Ersatzfigur */
+.fr-ph{position:absolute;inset:6%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;border:2px dashed currentColor;border-radius:22%;color:#6F87A3;background:repeating-linear-gradient(45deg,rgba(114,200,255,.08) 0 8px,rgba(114,200,255,.16) 8px 16px);font-family:var(--fr-font);padding:6%}
+.fr-ph svg{width:34%;max-width:56px;height:auto}
+.fr-ph b{font-size:clamp(.7rem,4cqw,1rem);color:inherit}
+.fr-ph small{font-size:.72rem;line-height:1.2}
+.fr-ph code{font-size:.68rem;background:rgba(255,255,255,.6);border-radius:6px;padding:1px 6px;color:#16406B}
+.fr-ph-note{font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.6rem!important}
+.fr-xs .fr-ph,.fr-sm .fr-ph{inset:4%;border-radius:50%;padding:0}
+@container (max-width:130px){.fr-ph{inset:4%;border-radius:50%;padding:0}.fr-ph b,.fr-ph small,.fr-ph code{display:none}.fr-ph svg{width:52%}}
+.fr-xs .fr-ph svg,.fr-sm .fr-ph svg{width:52%}
+@media (prefers-reduced-motion:reduce){.fr-body,.fr-a-celebrate .fr-body,.fr-a-levelup .fr-body,.fr-a-think .fr-body,.fr-a-encourage .fr-body,.fr-a-wave .fr-body{animation:none}.fr-halo{display:none}}
+/* Beta-Kennzeichnung */
+.beta-badge{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:calc(8px + env(safe-area-inset-left,0px));opacity:.92;z-index:80;display:flex;gap:6px;align-items:center;background:var(--fr-navy);color:var(--fr-ivory);font:700 .72rem/1 var(--fr-font);letter-spacing:.06em;padding:6px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.beta-badge a{color:var(--fr-gold);text-decoration:none}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--fr-navy);color:var(--fr-ivory);font-family:var(--fr-font);padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 40px max(16px,env(safe-area-inset-left,0px))}
+h1{font-family:var(--fr-font-head);margin:0;font-size:1.8rem}
+h2{font-family:var(--fr-font-head);font-size:1.2rem;margin:22px 0 8px}
+p{color:var(--fr-slate);margin:4px 0 12px;max-width:62ch}
+a{color:var(--fr-sky)}
+.wrap{max-width:980px;margin:0 auto}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button,.btn{font:700 .92rem var(--fr-font);color:var(--fr-ivory);background:var(--fr-navy-2);border:1px solid rgba(114,200,255,.25);border-radius:999px;padding:9px 14px;min-height:40px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fr-royal);border-color:var(--fr-royal)}
+.btn.gold{background:linear-gradient(180deg,#F1CC80,var(--fr-gold));color:#3A2600;border:0}
+.stage{position:relative;display:grid;place-items:center;border-radius:var(--fr-radius);min-height:380px;overflow:hidden;box-shadow:var(--fr-shadow);margin-top:12px}
+.bg-light{background:linear-gradient(180deg,#BFE6FF,#F2FAFF)}
+.bg-dark{background:radial-gradient(120% 80% at 50% 0,#1C3A66,var(--fr-navy))}
+.bg-check{background:conic-gradient(#d7dde4 25%,#fff 0 50%,#d7dde4 0 75%,#fff 0) 0 0/24px 24px}
+.guides{position:absolute;inset:0;pointer-events:none;display:none}
+.guides.on{display:block}
+.guides i{position:absolute;left:0;right:0;border-top:1px dashed #FF5E5B;font:700 10px var(--fr-font);color:#FF5E5B}
+.guides i span{position:absolute;right:6px;top:-14px;background:rgba(255,255,255,.85);padding:0 4px;border-radius:4px}
+.stagebox{position:relative;width:min(360px,80vw);aspect-ratio:1/1}
+.stagebox .fr{position:absolute;inset:0;width:100%}
+.onion{position:absolute;inset:0;opacity:.45;pointer-events:none;display:none}
+.onion.on{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.cell{background:var(--fr-navy-2);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;min-width:0}
+.cell .fr{width:100%}
+.cell b{font-size:.9rem}
+.tag{font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:999px;letter-spacing:.04em}
+.ok{background:rgba(33,184,121,.2);color:#5BE3A8}.miss{background:rgba(255,148,56,.18);color:#FFB36B}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+td,th{padding:6px 8px;border-bottom:1px solid rgba(168,188,212,.2);text-align:left}
+.refimg{max-width:180px;border-radius:14px}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Friedrich Prüfstand</h1>
+<p>Hier prüfen wir jede gelieferte Grafik, bevor sie in die App geht: gleiche Figur, gleiche Größe, sauberer transparenter Hintergrund. Fehlende Bilder sind als Platzhalter markiert. <a href="index.html">Zur Beta-App</a></p>
+
+<h2>Stufe</h2>
+<div class="seg" id="stages"></div>
+
+<h2>Vorschau und Animation</h2>
+<div class="row">
+  <div class="seg" id="poses"></div>
+</div>
+<div class="row" style="margin-top:8px">
+  <div class="seg" id="bgs"><button data-bg="bg-light" aria-pressed="true">Hell</button><button data-bg="bg-dark">Dunkel</button><button data-bg="bg-check">Transparenz-Raster</button></div>
+  <button class="btn" id="gBtn" aria-pressed="false">Hilfslinien</button>
+  <button class="btn" id="oBtn" aria-pressed="false">Mit Vorderansicht überlagern</button>
+</div>
+<div class="stage bg-light" id="stage">
+  <div class="stagebox"><div id="box" style="position:absolute;inset:0"></div>
+  <div class="guides" id="guides">
+    <i style="top:10%"><span>Kronenspitze 10 %</span></i><i style="top:28%"><span>Kronenunterkante 28 %</span></i><i style="top:36.4%"><span>Augenlinie 36 %</span></i><i style="top:90%"><span>Fußsohle 90 %</span></i>
+  </div>
+  </div>
+</div>
+<div class="seg" id="anims" style="margin-top:10px"></div>
+
+<h2>Alle Bilder dieser Stufe</h2>
+<div class="grid" id="grid"></div>
+
+<h2>Referenz</h2>
+<p>Das Original ist verbindlich. Jedes neue Bild muss eindeutig diese Figur zeigen.</p>
+<img class="refimg" src="assets/friedrich/_reference/original.jpg" alt="Originalreferenz Friedrich mit Krone">
+
+<h2>Lieferstand</h2>
+<table id="status"></table>
+</div>
+<script>
+(() => {
+const gullStage = () => 5;
+/* ============ FRIEDRICH 2.0: Charakterkomponente ============
+   Zeigt Friedrich in 6 Stufen und beliebigen Posen aus gerenderten Bildern (WebP).
+   Welche Bilder es gibt, steht in assets/friedrich/manifest.json.
+   Fehlt ein Bild, erscheint ein klar beschrifteter Platzhalter, nie eine Ersatzfigur.
+   Animation = Bildwechsel zwischen Frames + sanfte 2D-Bewegung (atmen, wippen, max. 4° neigen). */
+const FR = {
+  stages: ["egg","chick","young","adult","captain","king"],
+  stageName: {egg:"Ei", chick:"Küken", young:"Jungmöwe", adult:"Möwe", captain:"Kapitänsmöwe", king:"Königsmöwe"},
+  views: ["front","3quarter","side","back","face"],
+  frames: ["blink","look_left","look_right","wave","celebrate","think","encourage"],
+  poseName: {front:"Vorderansicht", "3quarter":"Dreiviertelansicht", side:"Seitenansicht", back:"Rückansicht", face:"Gesicht",
+    blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
+  /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
+  anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500]},
+  base: "assets/friedrich/",
+  files: null, ver: 1
+};
+FR.key = (s, p) => s + "/" + p;
+FR.has = (s, p) => !!(FR.files && FR.files[FR.key(s,p)]);
+FR.src = (s, p, w) => `${FR.base}${s}/${p}${w===512 ? "-512" : ""}.webp?v=${FR.ver}`;
+FR.stageOf = st => typeof st === "number" ? FR.stages[Math.max(0, Math.min(FR.stages.length-1, st))] : (FR.stages.includes(st) ? st : "adult");
+function frLoadManifest(){
+  return fetch(FR.base + "manifest.json", {cache:"no-cache"})
+    .then(r => r.ok ? r.json() : null)
+    .then(j => { FR.files = (j && j.files) || {}; FR.ver = (j && j.version) || 1; document.querySelectorAll(".fr[data-stage]").forEach(frRefresh); return FR.files; })
+    .catch(() => { FR.files = {}; return FR.files; });
+}
+function frImg(s, p, cls){
+  return `<img class="fr-img ${cls||""}" src="${FR.src(s,p,1024)}" srcset="${FR.src(s,p,512)} 512w, ${FR.src(s,p,1024)} 1024w" sizes="(max-width:600px) 60vw, 360px" alt="" decoding="async" draggable="false">`;
+}
+function frPlaceholder(s, p, size){
+  const tiny = size==="xs" || size==="sm";
+  return `<div class="fr-ph" title="Grafik fehlt: ${s}/${p}">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-dasharray="3 2"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="M5 18l5-5 3 3 2-2 4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+    ${tiny ? "" : `<b>Friedrich</b><small>${FR.stageName[s]} · ${FR.poseName[p]||p}</small><code>${s}/${p}</code><small class="fr-ph-note">Grafik folgt</small>`}
+  </div>`;
+}
+function frInner(s, p, size){
+  if (!FR.has(s, p)) return frPlaceholder(s, p, size);
+  const layers = FR.frames.filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
+  return frImg(s, p, "fr-base") + layers;
+}
+/* size: xs (Avatar), sm (Hafen, Übung), md (Karten), lg (Bühne) */
+function friedrichEl(o = {}){
+  const s = FR.stageOf(o.stage!=null ? o.stage : (typeof gullStage==="function" ? gullStage() : 5));
+  const p = o.pose || "front", size = o.size || "md";
+  return `<div class="fr fr-${size} ${o.cls||""}" data-stage="${s}" data-pose="${p}" data-size="${size}" role="img" aria-label="Friedrich, ${FR.stageName[s]}">
+    <div class="fr-body">${frInner(s, p, size)}</div><div class="fr-shadow" aria-hidden="true"></div></div>`;
+}
+function frRefresh(el){ const b = el.querySelector(".fr-body"); if (b) b.innerHTML = frInner(el.dataset.stage, el.dataset.pose, el.dataset.size); }
+/* Animation abspielen: Frame einblenden (falls vorhanden) und passende Bewegung */
+function frPlay(el, state){
+  if (!el) return Promise.resolve();
+  if (typeof el === "string") el = document.querySelector(el);
+  if (!el || !el.classList.contains("fr")) return Promise.resolve();
+  const a = FR.anims[state]; if (!a) return Promise.resolve();
+  const [frame, ms] = a, f = el.querySelector(".fr-f-" + frame);
+  el.classList.remove(...[...el.classList].filter(c=>c.startsWith("fr-a-")));
+  void el.offsetWidth;
+  el.classList.add("fr-a-" + state);
+  if (f) f.classList.add("on");
+  if (state==="levelup"){ el.insertAdjacentHTML("beforeend", `<div class="fr-halo" aria-hidden="true"></div>`); }
+  return new Promise(res => setTimeout(() => {
+    el.classList.remove("fr-a-" + state); if (f) f.classList.remove("on");
+    const h = el.querySelector(".fr-halo"); if (h) h.remove(); res();
+  }, ms));
+}
+/* Leerlauf: zufälliges Blinzeln und seltenes Umschauen, nur wenn die Frames existieren */
+const FR_RM = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+setInterval(() => {
+  if (document.hidden) return;
+  document.querySelectorAll(".fr[data-stage]").forEach(el => {
+    const now = Date.now(), next = +el.dataset.next || 0;
+    if (!next){ el.dataset.next = now + 2000 + Math.random()*4000; return; }
+    if (now < next || el.className.includes("fr-a-")) return;
+    el.dataset.next = now + 3000 + Math.random()*3000;
+    const s = el.dataset.stage;
+    if (FR.has(s,"blink") && Math.random() < .8){ const b = el.querySelector(".fr-f-blink"); if (b){ b.classList.add("on"); setTimeout(()=>b.classList.remove("on"), 120); } }
+    else if (!FR_RM && Math.random() < .5){ const d = Math.random()<.5 ? "look_left" : "look_right"; if (FR.has(s,d)) frPlay(el, d); }
+  });
+}, 400);
+frLoadManifest();
+
+let stage = "king", pose = "front", bg = "bg-light";
+const $ = s => document.querySelector(s);
+const stagesEl = $("#stages"), posesEl = $("#poses"), animsEl = $("#anims");
+stagesEl.innerHTML = FR.stages.map((s,i)=>`<button data-s="${s}" aria-pressed="${s===stage}">G0${i+1} ${FR.stageName[s]}</button>`).join("");
+posesEl.innerHTML = FR.views.concat(FR.frames).map(p=>`<button data-p="${p}" aria-pressed="${p===pose}">${FR.poseName[p]}</button>`).join("");
+animsEl.innerHTML = ["celebrate","levelup","think","encourage","wave","look_left","look_right"].map(a=>`<button data-a="${a}">${{celebrate:"Jubeln",levelup:"Level Up",think:"Nachdenken",encourage:"Ermutigen",wave:"Winken",look_left:"Blick links",look_right:"Blick rechts"}[a]}</button>`).join("");
+function render(){
+  $("#box").innerHTML = friedrichEl({stage, pose, size:"lg"}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:"front", size:"lg"})}</div>`;
+  $("#grid").innerHTML = FR.views.concat(FR.frames).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b><span class="tag ${FR.has(stage,p)?"ok":"miss"}">${FR.has(stage,p)?"vorhanden":"fehlt"}</span><code style="font-size:.7rem;color:var(--fr-slate)">${stage}/${p}.webp</code></div>`).join("");
+  const all = FR.stages.map(s=>{ const n = FR.views.concat(FR.frames).filter(p=>FR.has(s,p)).length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${FR.views.length+FR.frames.length} Bildern</td></tr>`; }).join("");
+  $("#status").innerHTML = `<tr><th>Stufe</th><th>Geliefert</th></tr>` + all;
+  stagesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===stage));
+  posesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===pose));
+}
+stagesEl.onclick = e => { const b = e.target.closest("button"); if (b){ stage = b.dataset.s; render(); } };
+posesEl.onclick = e => { const b = e.target.closest("button"); if (b){ pose = b.dataset.p; render(); } };
+animsEl.onclick = e => { const b = e.target.closest("button"); if (b) frPlay($("#box > .fr"), b.dataset.a); };
+$("#bgs").onclick = e => { const b = e.target.closest("button"); if (!b) return; $("#stage").className = "stage " + b.dataset.bg; $("#bgs").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b)); };
+$("#gBtn").onclick = e => { const on = e.currentTarget.getAttribute("aria-pressed")!=="true"; e.currentTarget.setAttribute("aria-pressed", on); $("#guides").classList.toggle("on", on); };
+$("#oBtn").onclick = e => { const on = e.currentTarget.getAttribute("aria-pressed")!=="true"; e.currentTarget.setAttribute("aria-pressed", on); render(); };
+frLoadManifest().then(render); render();
+})();
+</script>
+</body>
+</html>
