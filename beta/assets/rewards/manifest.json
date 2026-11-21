@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -321,6 +321,22 @@
         },
         {
           "path": "star-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "captain": {
+      "name": "Kapitänsmütze",
+      "slot": "hat",
+      "images": [
+        {
+          "path": "captain.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "captain-128.webp",
           "width": 128,
           "height": 128
         }
