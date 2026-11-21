@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -313,6 +313,21 @@
         },
         {
           "path": "fehler_detektiv_lupe-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "wochenbericht_klemmbrett": {
+      "name": "Klemmbrett für den Wochenbericht",
+      "images": [
+        {
+          "path": "wochenbericht_klemmbrett.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "wochenbericht_klemmbrett-128.webp",
           "width": 128,
           "height": 128
         }
