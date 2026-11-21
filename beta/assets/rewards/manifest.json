@@ -1,5 +1,5 @@
 {
-  "version": 20,
+  "version": 21,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -328,6 +328,21 @@
         },
         {
           "path": "wochenbericht_klemmbrett-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "moewenpruefung_sprechblasen": {
+      "name": "Sprechblasen für die Möwen-Prüfung",
+      "images": [
+        {
+          "path": "moewenpruefung_sprechblasen.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "moewenpruefung_sprechblasen-128.webp",
           "width": 128,
           "height": 128
         }
