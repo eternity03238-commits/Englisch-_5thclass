@@ -1,5 +1,5 @@
 {
-  "version": 15,
+  "version": 16,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -253,6 +253,21 @@
         },
         {
           "path": "moewenpost_briefkasten-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "ortsdiplom_urkunde": {
+      "name": "Urkunde für das Ortsdiplom",
+      "images": [
+        {
+          "path": "ortsdiplom_urkunde.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "ortsdiplom_urkunde-128.webp",
           "width": 128,
           "height": 128
         }
