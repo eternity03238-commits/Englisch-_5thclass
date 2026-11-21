@@ -1549,7 +1549,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795282849";
+const BUILD = "1795283031";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2109,12 +2109,15 @@ function frPlay(el, state){
   const a = FR.anims[state]; if (!a) return Promise.resolve();
   const [frame, ms] = a, f = el.querySelector(".fr-f-" + frame);
   el.classList.remove(...[...el.classList].filter(c=>c.startsWith("fr-a-")));
+  el.querySelectorAll(".fr-frame.on, .fr-halo").forEach(x => x.classList.contains("fr-halo") ? x.remove() : x.classList.remove("on"));   /* laufende Animation sauber beenden */
+  const tok = el._frTok = (el._frTok||0) + 1;
   void el.offsetWidth;
   el.classList.add("fr-a-" + state);
   el.dataset.next = Date.now() + ms + 1500 + Math.random()*2000;   /* nach einer Animation kurz Ruhe, kein sofortiges Blinzeln */
   if (f) f.classList.add("on");
   if (state==="levelup"){ el.insertAdjacentHTML("beforeend", `<div class="fr-halo" aria-hidden="true"></div>`); }
   return new Promise(res => setTimeout(() => {
+    if (el._frTok !== tok) return res();   /* inzwischen läuft eine neue Animation */
     el.classList.remove("fr-a-" + state); if (f) f.classList.remove("on");
     const h = el.querySelector(".fr-halo"); if (h) h.remove(); res();
   }, ms));

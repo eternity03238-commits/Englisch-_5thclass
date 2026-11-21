@@ -225,12 +225,15 @@ function frPlay(el, state){
   const a = FR.anims[state]; if (!a) return Promise.resolve();
   const [frame, ms] = a, f = el.querySelector(".fr-f-" + frame);
   el.classList.remove(...[...el.classList].filter(c=>c.startsWith("fr-a-")));
+  el.querySelectorAll(".fr-frame.on, .fr-halo").forEach(x => x.classList.contains("fr-halo") ? x.remove() : x.classList.remove("on"));   /* laufende Animation sauber beenden */
+  const tok = el._frTok = (el._frTok||0) + 1;
   void el.offsetWidth;
   el.classList.add("fr-a-" + state);
   el.dataset.next = Date.now() + ms + 1500 + Math.random()*2000;   /* nach einer Animation kurz Ruhe, kein sofortiges Blinzeln */
   if (f) f.classList.add("on");
   if (state==="levelup"){ el.insertAdjacentHTML("beforeend", `<div class="fr-halo" aria-hidden="true"></div>`); }
   return new Promise(res => setTimeout(() => {
+    if (el._frTok !== tok) return res();   /* inzwischen läuft eine neue Animation */
     el.classList.remove("fr-a-" + state); if (f) f.classList.remove("on");
     const h = el.querySelector(".fr-halo"); if (h) h.remove(); res();
   }, ms));
@@ -386,7 +389,8 @@ async function loadPinned(link){
     const a = resolvePath(pin, f.main); if (a.err){ notes.push(esc(a.err)); continue; }
     const b = f.small ? resolvePath(pin, f.small) : null;
     if (files[key]) notes.push(`<code>${esc(id)}</code>: ${esc(key)} kommt doppelt vor, der erste Eintrag gilt`);
-    else files[key] = {id:String(id), path:a.path, url:pin.cdn(a.path), fb:pin.raw(a.path), url512: b && !b.err ? pin.cdn(b.path) : null};
+    /* Primär direkt von GitHub (raw): jsDelivr liefert bei Repos über 50 MB nicht zuverlässig. jsDelivr nur als Ersatz. */
+    else files[key] = {id:String(id), path:a.path, url:pin.raw(a.path), fb:pin.cdn(a.path), url512: b && !b.err ? pin.raw(b.path) : null, fb512: b && !b.err ? pin.cdn(b.path) : null};
   }
   if (ignored.length) notes.push("Nicht zugeordnet (Stufe oder Pose unbekannt): " + ignored.map(x => `<code>${esc(x)}</code>`).join(", "));
   FR.files = files; FR.ver = pin.sha.slice(0,7);
@@ -415,7 +419,7 @@ function checkLoads(){
     im.onload = () => { e.ok = true; e.w = im.naturalWidth; e.h = im.naturalHeight; if (im.naturalWidth !== im.naturalHeight) note(`<code>${esc(e.id)}</code>: nicht quadratisch (${im.naturalWidth} × ${im.naturalHeight})`); done(); };
     im.onerror = () => { if (im.src !== e.fb){ im.src = e.fb; return; } e.ok = false; note(`<code>${esc(e.id)}</code>: Datei <code>${esc(e.path)}</code> lädt nicht`); done(); };
     im.src = e.url;
-    if (e.url512){ const sm = new Image(); sm.onerror = () => { e.url512 = null; note(`<code>${esc(e.id)}</code>: 512-px-Variante fehlt, es wird die große Datei verwendet`); render(); }; sm.src = e.url512; }
+    if (e.url512){ const sm = new Image(); sm.onerror = () => { if (e.fb512 && sm.src !== e.fb512){ sm.src = e.fb512; return; } e.url512 = null; note(`<code>${esc(e.id)}</code>: 512-px-Variante fehlt, es wird die große Datei verwendet`); render(); }; sm.src = e.url512; }
   });
 }
 function note(h){ if (SOURCE){ SOURCE.notes.push(h); setSource(SOURCE); } }
