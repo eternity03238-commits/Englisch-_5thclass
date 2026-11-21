@@ -678,6 +678,54 @@ a.btn{text-decoration:none}
 /* Beta-Kennzeichnung */
 .beta-badge{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:calc(8px + env(safe-area-inset-left,0px));opacity:.92;z-index:80;display:flex;gap:6px;align-items:center;background:var(--fr-navy);color:var(--fr-ivory);font:700 .72rem/1 var(--fr-font);letter-spacing:.06em;padding:6px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .beta-badge a{color:var(--fr-gold);text-decoration:none}
+/* ============ Szene "Das Haus am Hafen" (nur Beta) ============ */
+#s-scene{position:fixed;inset:0;z-index:5;background:var(--fr-navy)}
+body.scn-on{overflow:hidden}
+body.scn-on .beta-badge{opacity:.75}
+.scn-stage{position:absolute;inset:0;margin:0 auto;max-width:560px;overflow:hidden;container-type:size;background:#E9C99A}
+/* Bild deckt die Bühne immer ganz ab (wie object-fit: cover), Prozentangaben bleiben dabei im Bild verankert */
+.scn-art{position:absolute;left:50%;top:50%;width:max(100cqw, calc(100cqh * var(--ratio)));aspect-ratio:var(--ratio);transform:translate(-50%,-50%)}
+.scn-img{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-select:none;pointer-events:none}
+.scn-reward{opacity:0;transition:opacity .7s ease}
+.scn-reward.on{opacity:1}
+.scn-reward.instant{transition:none}
+.scn-fr{position:absolute;transform:translate(-50%,-90%);z-index:2;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.scn-fr .fr{filter:drop-shadow(0 6px 10px rgba(60,30,10,.28))}
+/* Tür: Fläche über der Tür plus Beschriftung darunter, beides tippbar (mind. 44 px hoch) */
+.scn-door{position:absolute;z-index:3;padding:0;border-radius:10px 10px 4px 4px;-webkit-tap-highlight-color:transparent}
+.scn-door-glow{position:absolute;inset:-6%;border-radius:inherit;box-shadow:0 0 0 2px rgba(255,236,170,.85),0 0 18px 6px rgba(255,214,120,.55);animation:scn-glow 2.4s ease-in-out infinite}
+.scn-door-label{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;min-height:44px;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:999px;
+  background:rgba(255,253,246,.95);color:#16406B;font:800 1rem/1.1 var(--fr-font);box-shadow:0 4px 0 #2E7D5B,0 10px 22px rgba(30,20,10,.3)}
+.scn-door-label::before{content:"";width:12px;height:12px;border-radius:50%;background:#3F8F73;box-shadow:0 0 0 3px rgba(63,143,115,.25)}
+.scn-door:active .scn-door-label{transform:translateX(-50%) translateY(2px);box-shadow:0 2px 0 #2E7D5B,0 6px 14px rgba(30,20,10,.3)}
+.scn-door:focus-visible{outline:3px solid #FFFFFF;outline-offset:4px}
+@keyframes scn-glow{0%,100%{opacity:.55}50%{opacity:1}}
+.scn-top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:4;
+  padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
+.scn-place,.scn-menu{background:rgba(11,25,48,.62);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#F7F4EC;border-radius:999px;font:800 .95rem/1 var(--fr-font);padding:10px 14px;min-height:40px;display:inline-flex;align-items:center}
+.scn-menu{border:1px solid rgba(255,255,255,.25)}
+.scn-say{position:absolute;z-index:4;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(48px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-direction:column;gap:2px;background:rgba(255,253,246,.94);color:#16406B;border-radius:18px;padding:10px 14px;font:600 .95rem/1.3 var(--fr-font);box-shadow:0 8px 24px rgba(30,20,10,.25)}
+.scn-say b{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#3F8F73}
+.scn-wait{display:grid;place-items:center;background:var(--fr-navy)}
+.scn-msg{color:#F7F4EC;font:700 1rem/1.5 var(--fr-font);text-align:center;padding:24px;display:flex;flex-direction:column;gap:12px;align-items:center}
+.scn-stage.leaving .scn-art{transition:transform .9s ease,opacity .9s ease;transform:translate(-50%,-50%) scale(1.25);transform-origin:40% 48%;opacity:.0}
+/* Wohnzimmer als Hintergrund der bestehenden Übung */
+#scnRoom{position:fixed;inset:0;z-index:0;display:none;background:#E9C99A;overflow:hidden}
+#scnRoom .scn-room-img{position:absolute;left:50%;top:0;height:100%;width:auto;min-width:100%;transform:translateX(-50%);object-fit:cover}
+#scnRoom::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,250,240,.10),rgba(255,250,240,.35))}
+body.scn-room #scnRoom,body.scn-entering #scnRoom{display:block}
+body.scn-entering #scnRoom{z-index:6;animation:scn-in .9s ease both}
+@keyframes scn-in{from{opacity:0}to{opacity:1}}
+body.scn-room #s-cards .fc-face,body.scn-room #s-cards .panel,body.scn-room #s-cards .result,body.scn-room #s-cards .trophy{background-color:rgba(255,255,255,.94)}
+body.scn-room #s-cards .mbar{background:rgba(255,253,246,.85);border-radius:16px;padding:6px 8px}
+body.scn-room #s-cards > .row .label,body.scn-room #s-cards > .row small{background:rgba(255,253,246,.85);border-radius:8px;padding:2px 6px}
+.scn-back{margin-top:4px}
+/* Einstieg auf der Menüseite */
+.scn-entry{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:56px;padding:12px 16px;border-radius:18px;
+  background:linear-gradient(135deg,#2E7D5B,#3F8F73);color:#fff;font:800 1.05rem/1.2 var(--fr-font);box-shadow:0 5px 0 #1F5A41,0 10px 22px rgba(20,60,40,.3)}
+.scn-entry small{font-weight:700;opacity:.9}
+@media (prefers-reduced-motion:reduce){.scn-door-glow{animation:none;opacity:.9}.scn-reward{transition:none}.scn-stage.leaving .scn-art{transition:none}body.scn-entering #scnRoom{animation:none}}
 </style>
 
 </head>
@@ -1549,7 +1597,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795283031";
+const BUILD = "1795284352";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2033,6 +2081,7 @@ function gullStage(){
   let n = 1; for (let i=2;i<STAGES.length;i++) if (f>=STAGES[i].min) n = i;
   return n;
 }
+window.FR_NO_AUTOLOAD = true;
 /* ============ FRIEDRICH 2.0: Charakterkomponente ============
    Zeigt Friedrich in 6 Stufen und beliebigen Posen aus gerenderten Bildern (WebP).
    Welche Bilder es gibt, steht in assets/friedrich/manifest.json.
@@ -2137,6 +2186,146 @@ setInterval(() => {
   });
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
+
+/* ============ FRIEDRICH 2.0: erste spielbare Szene "Das Haus am Hafen" (nur Beta) ============
+   Grafiken kommen commitgenau aus eternity03238-commits/Englisch-_5thclass@SCN_COMMIT.
+   Szenenpfade sind relativ zu beta/assets/world/, Friedrich-Pfade zu beta/assets/friedrich/.
+   Ablauf: Hafen (Startszene) → Tür antippen → Wohnzimmer + bestehende Karteikarten "haus"
+           → nach erfolgreichem Abschluss zurück zum Hafen, Jubeln + beleuchtetes Fenster. */
+const SCN_COMMIT = "ead6f657dea23a46a64d19bbd667c78781993da6";
+const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
+const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
+const scnCdn = p => `https://cdn.jsdelivr.net/gh/${SCN_REPO}@${SCN_COMMIT}/beta/assets/${p}`;
+/* Lage im Bild in Prozent der Bildbreite/-höhe (gemessen an haus-am-hafen.webp, 941 × 1672) */
+const SCN_LAYOUT = {
+  door: {x:36.2, y:43.1, w:7.8, h:11.0},      /* grüne Tür */
+  friedrich: {x:30, y:85, w:38}                 /* Fußpunkt auf dem Kai, Breite der Figur */
+};
+const SCN = {world:null, ready:null, inRoom:false, success:false, rewardOn:false};
+const scnRM = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+function scnFetch(path){
+  return fetch(scnRaw(path), {cache:"no-cache"}).then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .catch(() => fetch(scnCdn(path)).then(r => r.ok ? r.json() : Promise.reject(r.status)));
+}
+/* Friedrich-Manifest (Schlüssel "stufe/pose") und Szenenmanifest aus demselben Commit laden */
+function scnLoad(){
+  if (SCN.ready) return SCN.ready;
+  const fr = scnFetch("friedrich/manifest.json").then(m => {
+    const files = {}, poses = FR.views.concat(FR.frames);
+    Object.keys((m && m.files) || {}).forEach(k => {
+      const [s, p] = k.split("/");
+      if (!FR.stages.includes(s) || !poses.includes(p)) return;
+      files[k] = {id:k, url:scnRaw(`friedrich/${k}.webp`), url512:scnRaw(`friedrich/${k}-512.webp`), fb:scnCdn(`friedrich/${k}.webp`)};
+    });
+    FR.files = files; FR.ver = SCN_COMMIT.slice(0,7);
+    document.querySelectorAll(".fr[data-stage]").forEach(frRefresh);
+  }).catch(() => { FR.files = FR.files || {}; });
+  const wd = scnFetch("world/manifest.json").then(m => { SCN.world = m; }).catch(() => { SCN.world = null; });
+  SCN.ready = Promise.all([fr, wd]).then(() => { SCN.loaded = true; });
+  return SCN.ready;
+}
+/* srcset aus den Hintergrund-Einträgen des Manifests; Pfade relativ zu beta/assets/world/ */
+function scnSet(list){
+  const l = (list||[]).filter(b => b && b.path && b.width).slice().sort((a,b) => a.width-b.width);
+  if (!l.length) return null;
+  return {src: scnRaw("world/" + l[l.length-1].path), srcset: l.map(b => `${scnRaw("world/"+b.path)} ${b.width}w`).join(", "),
+          ratio: l[l.length-1].width / l[l.length-1].height};
+}
+/* Beide Außenansichten (Grundbild und Belohnung) mit identischen Attributen: gleicher Ausschnitt, gleiche Auflösung */
+const scnImg = (set, cls) => `<img class="scn-img ${cls}" src="${set.src}" srcset="${set.srcset}" sizes="(max-width:560px) 130vw, 728px" alt="" decoding="async" draggable="false">`;
+const scnScene = id => SCN.world && SCN.world.scenes && SCN.world.scenes[id];
+
+function renderScene(){
+  const el = $("#s-scene");
+  if (!SCN.world){
+    if (SCN.loaded){ el.innerHTML = `<div class="scn-stage scn-wait"><div class="scn-msg">Die Hafen-Szene konnte nicht geladen werden. Bitte später noch einmal versuchen.<br><button class="btn btn-soft" data-act="home">Zum Menü</button></div></div>`; return; }
+    el.innerHTML = `<div class="scn-stage scn-wait"><div class="scn-msg">Die Hafen-Szene lädt …</div></div>`;
+    scnLoad().then(() => { if (!$("#s-scene").hidden) renderScene(); });
+    return;
+  }
+  const sc = scnScene("haus-am-hafen"), base = scnSet(sc && sc.backgrounds), rew = scnSet(sc && sc.rewardBackgrounds);
+  if (!base){ el.innerHTML = `<div class="scn-stage scn-wait"><div class="scn-msg">Szene „haus-am-hafen“ fehlt im Manifest.<br><button class="btn btn-soft" data-act="home">Zum Menü</button></div></div>`; return; }
+  const stage = FR.stageOf(gullStage()), pose = FR.baseOf(stage), d = SCN_LAYOUT.door, f = SCN_LAYOUT.friedrich, p = PMAP[sc.learningArea] || PMAP.haus;
+  el.innerHTML = `<div class="scn-stage" style="--ratio:${base.ratio.toFixed(5)}">
+      <div class="scn-art">
+        ${scnImg(base, "scn-base")}${rew ? scnImg(rew, "scn-reward") : ""}
+        <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit"})}</div>
+        <button class="scn-door" data-act="scnDoor" style="left:${d.x}%;top:${d.y}%;width:${d.w}%;height:${d.h}%" aria-label="${esc(p.name)}: Tür öffnen und üben">
+          <span class="scn-door-glow" aria-hidden="true"></span><span class="scn-door-label">${esc(p.name)}</span></button>
+      </div>
+      <div class="scn-top"><span class="scn-place">${esc(p.place)}</span><button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></div>
+      <div class="scn-say" id="scnSay"><b>${esc(G())}</b><span>Tippe auf die grüne Tür. Wir üben drinnen!</span></div>
+    </div>`;
+  /* Wohnzimmer vorab laden, damit es beim Antippen sofort da ist */
+  const room = scnSet((scnScene("haus-am-hafen-wohnzimmer")||{}).backgrounds);
+  if (room){ const im = new Image(); im.sizes = "(max-width:560px) 130vw, 728px"; im.srcset = room.srcset; im.src = room.src; }
+  if (SCN.success) setTimeout(scnReward, 350);
+}
+/* Belohnung: Fenster leuchtet kurz, Friedrich jubelt (falls die Pose für seine Stufe existiert) */
+async function scnReward(){
+  SCN.success = false;
+  const rew = $("#s-scene .scn-reward"), say = $("#scnSay"), frEl = $("#scnFr .fr");
+  if (!rew) return;
+  try { if (!rew.complete) await new Promise(r => { rew.onload = r; rew.onerror = r; }); await rew.decode(); } catch(e) {}
+  if (say) say.innerHTML = `<b>${esc(G())}</b><span>Well done! Das Fenster leuchtet für dich.</span>`;
+  SCN.rewardOn = true;
+  if (scnRM()){                                   /* reduzierte Bewegung: nur der beleuchtete Zustand */
+    rew.classList.add("on", "instant");
+    setTimeout(() => { rew.classList.remove("on"); SCN.rewardOn = false; }, 3500);
+    return;
+  }
+  rew.classList.remove("instant"); void rew.offsetWidth; rew.classList.add("on");
+  const stage = frEl && frEl.dataset.stage;
+  if (frEl && FR.has(stage, "celebrate")) setTimeout(() => frPlay(frEl, "celebrate"), 450);
+  setTimeout(() => { rew.classList.remove("on"); SCN.rewardOn = false; }, 3200);
+}
+function scnEnterRoom(){
+  const room = scnSet((scnScene("haus-am-hafen-wohnzimmer")||{}).backgrounds), area = (scnScene("haus-am-hafen-wohnzimmer")||{}).learningArea || "haus";
+  if (!room) return;
+  let bg = $("#scnRoom");
+  if (!bg){ document.body.insertAdjacentHTML("afterbegin", `<div id="scnRoom" aria-hidden="true"></div>`); bg = $("#scnRoom"); }
+  bg.innerHTML = `<img class="scn-room-img" src="${room.src}" srcset="${room.srcset}" sizes="(max-width:560px) 130vw, 728px" alt="" decoding="async">`;
+  SCN.inRoom = true;
+  /* Wohnzimmer erscheint zuerst ganz, dann startet die bestehende Übung */
+  const st = $("#s-scene .scn-stage");
+  document.body.classList.add("scn-room", "scn-entering");
+  if (st) st.classList.add("leaving");
+  setTimeout(() => { document.body.classList.remove("scn-entering"); DK.mode = "kid"; startCardsKey(area); }, scnRM() ? 250 : 1100);
+}
+/* Nach finishCards (Ergebnis bleibt sichtbar, Fortschritt ist gespeichert): Weg zurück zum Hafen */
+function sceneAfterFinish(){
+  if (!SCN.inRoom) return;
+  const box = $("#s-cards");
+  [...box.querySelectorAll('[data-act="openDeck"], [data-act="home"]')].forEach(b => { const row = b.closest(".row"); (row || b).remove(); });
+  const btn = `<button class="btn btn-main btn-block scn-back" data-act="scnBack">Zurück zum Hafen</button>`;
+  const res = box.querySelector(".result");   /* gleich unter dem Ergebnis, ohne Scrollen erreichbar */
+  if (res) res.insertAdjacentHTML("afterend", btn); else box.insertAdjacentHTML("beforeend", btn);
+}
+function sceneOnShow(name){
+  if (name !== "cards" && SCN.inRoom){ SCN.inRoom = false; }
+  document.body.classList.toggle("scn-room", SCN.inRoom && name === "cards");
+  document.body.classList.toggle("scn-on", name === "scene");
+  if (name === "scene") renderScene();
+}
+const SCENE_ACT = {
+  openScene: () => show("scene"),
+  scnDoor: () => scnEnterRoom(),
+  scnBack: () => { SCN.inRoom = false; show("scene"); },
+  scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : "celebrate"); }
+};
+function sceneBoot(){
+  SCREENS.push("scene");
+  $("#s-home").insertAdjacentHTML("beforebegin", `<section id="s-scene" hidden></section>`);
+  $("#s-home").insertAdjacentHTML("afterbegin", `<button class="scn-entry" data-act="openScene"><span>Das Haus am Hafen</span><small>Zur Szene</small></button>`);
+  const quit = ACT.cardsQuit, next = ACT.nextStack;
+  Object.assign(ACT, SCENE_ACT, {
+    /* Abbruch ohne Antwort im Wohnzimmer: zurück zum Hafen statt ins Menü */
+    cardsQuit: b => { if (SCN.inRoom && !(C && Object.keys(C.first).length)){ C = null; SCN.inRoom = false; show("scene"); return; } quit(b); },
+    nextStack: b => next(b)
+  });
+  scnLoad();
+}
 
 const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), size:"fit"}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
 function gullLine(){
@@ -2608,6 +2797,7 @@ function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
   if (name==="home") renderHome();
+  if (BETA) sceneOnShow(name);
 }
 let OB = {color:0};
 function renderOnboard(needKid){
@@ -3505,7 +3695,7 @@ function cardFaces(k){
   };
 }
 function renderCard(){
-  if (C.i >= C.queue.length) return finishCards();
+  if (C.i >= C.queue.length){ if (BETA && SCN.inRoom) SCN.success = true; return finishCards(); }
   const k = C.queue[C.i], f = cardFaces(k);
   const known = Object.values(C.first).filter(Boolean).length, wrongN = Object.values(C.first).filter(v=>v===false).length;
   const left = new Set(C.queue.slice(C.i)).size;
@@ -3589,6 +3779,7 @@ function finishCards(){
     ${more?`<button class="btn btn-main btn-block" data-act="nextStack" data-key="${C.key}" data-mode="${C.mode}">Nächste ${Math.min(DK.size,more)}: heute noch nicht dran</button>`:""}
     <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openDeck" data-mode="${C.mode}">Anderer Stapel</button><button class="btn btn-soft" style="flex:1" data-act="home">Zum Hafen</button></div>`;
   sfx("win"); confetti(); window.scrollTo(0,0);
+  if (BETA) sceneAfterFinish();
   C = null;
 }
 
@@ -4137,8 +4328,9 @@ document.addEventListener("pointermove", e => {
   el.classList.add("tilting");
 }, {passive:true});
 ["pointerup","pointercancel","pointerout"].forEach(t=>document.addEventListener(t, e => { const el = e.target.closest && e.target.closest(TILT); if (el && (t!=="pointerout" || !el.contains(e.relatedTarget))) tiltOff(el); }, {passive:true}));
+if (BETA) sceneBoot();
 if (!famBoot()){
-  if (S && S.name && S.gull) show("home");
+  if (S && S.name && S.gull) show(BETA ? "scene" : "home");
   else if (S && S.name){ renderOnboard(false); show("onboard"); }
   else { renderOnboard(true); show("onboard"); }
 }
