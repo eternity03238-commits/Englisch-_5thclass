@@ -11,7 +11,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Lexend:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Fredoka:wght@500;600;700&family=Lexend:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: one narrow column on a sunny seaside; the child's own seagull lives on a pier post at the top of home; feedback slides up from the bottom */
 *,*::before,*::after{box-sizing:border-box}
@@ -400,6 +400,42 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 @keyframes dotIn{to{opacity:1;transform:scale(1)}}
 .btn.mini{min-height:40px;padding:6px 12px;font-size:.88rem}
 @media (prefers-reduced-motion:reduce){.wd,.ringv{animation-duration:.01s}}
+.exclock{font-variant-numeric:tabular-nums;font-weight:700;background:#16406B;color:#fff;border-color:#16406B;min-width:70px;justify-content:center}
+.exclock.warn{background:#C0262D;border-color:#C0262D;animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.exhead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;border-bottom:2px dashed #C9DCEA;padding-bottom:10px}
+.exhead b{display:block;color:var(--navy);font-family:var(--f-display);font-size:1.05rem}
+.exhead small{color:var(--muted);font-size:.85rem}
+.exhead>span{text-align:right;font-weight:700;color:#08799E;font-variant-numeric:tabular-nums;flex:none}
+.card.handed{opacity:.55;transform:translateY(-6px) scale(.98);transition:all .25s}
+.paper{display:flex;flex-direction:column;gap:12px;background:#FFFEF8;border:2px solid #E6E0C8;border-radius:14px;padding:18px 16px 18px 26px;box-shadow:var(--shadow);position:relative;
+  background-image:linear-gradient(90deg,transparent 14px,#F3B3B3 14px,#F3B3B3 16px,transparent 16px),repeating-linear-gradient(#FFFEF8 0 29px,#DCE7F2 29px 30px)}
+.phead{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.ptab{width:100%;border-collapse:collapse;font-size:.92rem}
+.ptab td{padding:6px 4px;border-bottom:1px solid #E6E0C8}
+.ptab td:last-child{text-align:right;font-weight:700;white-space:nowrap}
+.ptab tr.sum td{font-weight:700;color:var(--navy);border-bottom:0;background:#FFF3D6}
+.hand{font-family:"Caveat","Bradley Hand","Segoe Print","Comic Sans MS",cursive;font-weight:700;font-size:1.45rem;line-height:1.15}
+.hand.big{font-size:2.3rem;color:#C0262D}
+.hand.red{color:#C0262D}
+.hand.blue{color:#2B4FA8}
+.hand s{text-decoration-color:#C0262D;text-decoration-thickness:2px}
+.red-note{color:#C0262D;font-weight:600}
+.gradebox{display:flex;align-items:center;gap:18px}
+.stamp{flex:none;width:118px;height:118px;border-radius:50%;border:5px solid var(--h);color:var(--h);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-12deg) scale(2.4);opacity:0;background:rgba(255,255,255,.6)}
+.stamp.in{animation:stampIn .45s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes stampIn{to{transform:rotate(-12deg) scale(1);opacity:1}}
+.stamp small{font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.72rem}
+.stamp b{font-family:"Caveat","Bradley Hand","Segoe Print","Comic Sans MS",cursive;font-size:3.6rem;line-height:.9}
+.stamp span{font-weight:700;font-size:.78rem}
+.parts{display:flex;flex-direction:column;gap:8px}
+.prow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) auto;align-items:center;gap:10px;font-size:.92rem}
+.prow .hand{font-size:1.25rem;color:#C0262D}
+.fixrow{display:flex;gap:10px;align-items:flex-start;border-bottom:1px dashed #E0D8BC;padding-bottom:10px}
+.fixrow:last-child{border-bottom:0}
+.fixrow .nr{flex:none;width:30px;height:30px;border-radius:50%;background:#FDE3E3;color:#C0262D;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.fixrow .pts{flex:none;font-size:1.2rem}
+@media (prefers-reduced-motion:reduce){.stamp{transform:rotate(-12deg);opacity:1}.stamp.in{animation:none}}
 </style>
 
 </head>
@@ -456,6 +492,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
       <button class="close" data-act="quit" aria-label="Beenden"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       <div class="prog"><i id="progBar"></i></div>
       <span class="pill combo" id="combo"><span aria-hidden="true">🔥</span><span id="comboN">0</span></span>
+      <span class="pill exclock" id="examClock" hidden aria-label="Restzeit">45:00</span>
     </div>
     <div id="bossBox" class="boss-box" hidden>
       <svg class="crab" id="crab" viewBox="0 0 120 100" aria-label="Krabbe Kneifer">
@@ -498,6 +535,10 @@ Bitte öffne sie über den Link, den du bekommen hast.
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 3.9.9 5.5L12 14.6l-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/><path d="M6 19h12v3H6z"/></svg></span>
         <b>Möwen-Prüfung</b><small>Mama, Papa, Oma, Opa … prüfen. Zählt doppelt!</small>
       </button>
+      <button class="tile t-flame" data-act="openExam">
+        <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 2h9l5 5v15H6z" opacity=".35"/><path d="M8 11h8v2H8zm0 4h8v2H8zm0-8h5v2H8z"/><path d="M14 2v6h6"/></svg></span>
+        <b>Probe-Klassenarbeit</b><small id="examSub"></small>
+      </button>
       <button class="tile t-flame" data-act="startFix">
         <span class="ti"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M10 2a8 8 0 016.3 12.9l5.4 5.4-1.4 1.4-5.4-5.4A8 8 0 1110 2zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg></span>
         <b>Fehler-Detektiv</b><small id="fixSub"></small>
@@ -529,6 +570,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
   <section id="s-journal" class="stack" hidden></section>
   <section id="s-sentpick" class="stack" hidden></section>
   <section id="s-overview" class="stack" hidden></section>
+  <section id="s-exam" class="stack" hidden></section>
   <section id="s-deck" class="stack" hidden></section>
   <section id="s-cards" class="stack" hidden></section>
   <section id="s-pin" class="stack" hidden></section>
@@ -548,14 +590,14 @@ try{ document.getElementById("nojs").remove(); }catch(e){}
 /* ============ ORTE (Themen) ============ */
 const PLANETS = [
   {id:"haus", name:"Haus & Wohnen", place:"Das Haus am Hafen", src:"Hefter, 06.11.", hue:"#F28C38"},
-  {id:"u1",   name:"Unit 1: At home with friends", place:"Bei Freunden in Brighton", src:"Englischbuch S. 231–233", hue:"#0B95C2"},
-  {id:"ich",  name:"Ich & Hobbys", place:"Der Steckbrief-Steg", src:"Hefter", hue:"#8E6AD8"},
+  {id:"u1",   name:"Unit 1: At home with friends", place:"Bei Freunden in Brighton", src:"Englischbuch S. 231–239", hue:"#0B95C2"},
+  {id:"ich",  name:"Ich & Hobbys", place:"Der Steckbrief-Steg", src:"Hefter + Buch S. 225–230", hue:"#8E6AD8"},
   {id:"fam",  name:"Familie", place:"Das Familien-Picknick", src:"Hefter, Interview", hue:"#E25C8A"},
-  {id:"sch",  name:"Schulsachen", place:"Die Schule am Meer", src:"Hefter, Arbeitsblatt", hue:"#2AA876"},
-  {id:"sea",  name:"Strand & Brighton", place:"Strand und Seebrücke", src:"Hefter", hue:"#F2B632"},
-  {id:"far",  name:"Farben & Wochentage", place:"Die bunten Strandhütten", src:"Hefter", hue:"#EF4D67"},
-  {id:"tie",  name:"Tiere & Eigenschaften", place:"Der Küsten-Tierpark", src:"Hefter", hue:"#6BAA2E"},
-  {id:"ver",  name:"Tun-Wörter", place:"Der Abenteuer-Pier", src:"Hefter", hue:"#3E7BD6"},
+  {id:"sch",  name:"Schulsachen", place:"Die Schule am Meer", src:"Hefter, Arbeitsblatt + Buch S. 225–230", hue:"#2AA876"},
+  {id:"sea",  name:"Strand & Brighton", place:"Strand und Seebrücke", src:"Hefter + Buch S. 225–230", hue:"#F2B632"},
+  {id:"far",  name:"Farben, Zahlen & Tage", place:"Die bunten Strandhütten", src:"Hefter + Buch S. 225–230", hue:"#EF4D67"},
+  {id:"tie",  name:"Tiere & Eigenschaften", place:"Der Küsten-Tierpark", src:"Hefter + Buch S. 225–230", hue:"#6BAA2E"},
+  {id:"ver",  name:"Tun-Wörter & Co.", place:"Der Abenteuer-Pier", src:"Hefter + Buch S. 225–230", hue:"#3E7BD6"},
   {id:"zim",  name:"Mein Zimmer", place:"Das Leuchtturm-Zimmer", src:"Arbeitsblätter Bedroom 1 und 2", hue:"#C77B3B"},
   {id:"hal",  name:"Halloween", place:"Das Spukschloss auf der Klippe", src:"Arbeitsblatt", hue:"#5A4A8A"}
 ];
@@ -643,7 +685,156 @@ const U1 = [
  {id:"u1-73",u:"u1",sec:3,en:"word",de:"das Wort",ipa:"wɜːd",ex:"What's this word?",exDe:"Was ist das für ein Wort?"},
  {id:"u1-74",u:"u1",sec:3,en:"like",de:"wie (wie Wörter in anderen Sprachen)",ipa:"laɪk",ex:"You're cool, like me.",exDe:"Du bist cool, so wie ich.",tip:"<b>like</b> = wie (beim Vergleichen). Aber: I like = ich mag."},
  {id:"u1-75",u:"u1",sec:3,en:"other",de:"andere(r, s)",ipa:"ˈʌðə",ex:"Where are the other kids?",exDe:"Wo sind die anderen Kinder?"},
- {id:"u1-76",u:"u1",sec:3,en:"language",de:"die Sprache",ipa:"ˈlæŋɡwɪdʒ",ex:"English is a cool language.",exDe:"Englisch ist eine coole Sprache."}
+ {id:"u1-76",u:"u1",sec:3,en:"language",de:"die Sprache",ipa:"ˈlæŋɡwɪdʒ",ex:"English is a cool language.",exDe:"Englisch ist eine coole Sprache."},
+ {"id": "u1-77", "u": "u1", "sec": 2, "en": "e.g.", "de": "z. B. (zum Beispiel)", "ipa": "ˌiː ˈdʒiː", "ex": "I like animals, e.g. cats and dogs.", "exDe": "Ich mag Tiere, z. B. Katzen und Hunde.", "tip": "<b>e.g.</b> kommt aus dem Lateinischen: exempli gratia.", "alt": ["eg"]},
+ {"id": "u1-78", "u": "u1", "sec": 2, "en": "(to) help", "de": "helfen", "ipa": "help", "ex": "Can you help me, please?", "exDe": "Kannst du mir bitte helfen?"},
+ {"id": "u1-79", "u": "u1", "sec": 2, "en": "help", "de": "die Hilfe", "ipa": "help", "ex": "Thanks for your help.", "exDe": "Danke für deine Hilfe.", "tip": "Dasselbe Wort: <b>(to) help</b> = helfen, <b>help</b> = die Hilfe."},
+ {"id": "u1-80", "u": "u1", "sec": 2, "en": "when", "de": "wenn (sobald)", "ipa": "wen", "ex": "Can we watch TV when you come home?", "exDe": "Können wir fernsehen, wenn du nach Hause kommst?", "tip": "<b>when</b> = wenn/sobald. <b>if</b> = wenn/falls."},
+ {"id": "u1-81", "u": "u1", "sec": 2, "en": "(to) learn", "de": "lernen", "ipa": "lɜːn", "ex": "We learn English with Mr Black.", "exDe": "Wir lernen Englisch bei Mr Black."},
+ {"id": "u1-82", "u": "u1", "sec": 2, "en": "umbrella", "de": "der Schirm, der Regenschirm", "ipa": "ʌmˈbrelə", "ex": "Take your umbrella. It's raining.", "exDe": "Nimm deinen Schirm mit. Es regnet.", "tip": "Zwei l: umbre<b>ll</b>a"},
+ {"id": "u1-83", "u": "u1", "sec": 2, "en": "(to) type", "de": "tippen", "ipa": "taɪp", "ex": "Type the word, please.", "exDe": "Tippe bitte das Wort.", "tip": "<b>type</b> mit y wie in t<b>y</b>pe."},
+ {"id": "u1-84", "u": "u1", "sec": 2, "en": "(to) pronounce", "de": "aussprechen", "ipa": "prəˈnaʊns", "ex": "How do you pronounce this word?", "exDe": "Wie spricht man dieses Wort aus?"},
+ {"id": "u1-85", "u": "u1", "sec": 2, "en": "then", "de": "dann", "ipa": "ðen", "ex": "Listen. Then write the words.", "exDe": "Hör zu. Dann schreib die Wörter.", "tip": "Nicht verwechseln: <b>then</b> = dann, <b>than</b> = als."},
+ {"id": "u1-86", "u": "u1", "sec": 2, "en": "(to) hear", "de": "hören", "ipa": "hɪə", "ex": "I can hear the doorbell.", "exDe": "Ich kann die Türklingel hören.", "tip": "<b>hear</b> = hören, <b>here</b> = hier. Klingen gleich!"},
+ {"id": "u1-87", "u": "u1", "sec": 2, "en": "(to) say", "de": "sagen", "ipa": "seɪ", "ex": "When you hear your name, say yes.", "exDe": "Wenn du deinen Namen hörst, sag ja."},
+ {"id": "u1-88", "u": "u1", "sec": 2, "en": "question", "de": "die Frage", "ipa": "ˈkwestʃən", "ex": "Can I ask a question?", "exDe": "Darf ich eine Frage stellen?", "tip": "qu-e-s-t-i-o-n. Gegenteil: <b>answer</b>"},
+ {"id": "u1-89", "u": "u1", "sec": 2, "en": "answer", "de": "die Antwort", "ipa": "ˈɑːnsə", "ex": "What is the answer?", "exDe": "Was ist die Antwort?", "tip": "Das w spricht man nicht: an<b>s</b>wer [ˈɑːnsə]"},
+ {"id": "u1-90", "u": "u1", "sec": 2, "en": "your favourite book", "de": "dein Lieblingsbuch", "ipa": "ˈfeɪvərɪt", "ex": "My favourite book is called The Monster.", "exDe": "Mein Lieblingsbuch heißt The Monster.", "tip": "Britisch mit <b>ou</b>: fav<b>ou</b>rite", "core": "favourite book"},
+ {"id": "u1-91", "u": "u1", "sec": 2, "en": "(to) use", "de": "benutzen, verwenden", "ipa": "juːz", "ex": "Can I use your phone, please?", "exDe": "Darf ich bitte dein Handy benutzen?"},
+ {"id": "u1-92", "u": "u1", "sec": 2, "en": "or", "de": "oder", "ipa": "ɔː", "ex": "Are you a boy or a girl?", "exDe": "Bist du ein Junge oder ein Mädchen?"},
+ {"id": "u1-93", "u": "u1", "sec": 2, "en": "before a, e, i, o, u", "de": "vor A, E, I, O, U", "ipa": "bɪˈfɔː", "ex": "I brush my teeth before school.", "exDe": "Vor der Schule putze ich mir die Zähne.", "tip": "<b>before</b> school = vor der Schule. Vor a, e, i, o, u sagt man <b>an</b>: an apple.", "alt": ["before"], "core": "before"},
+ {"id": "u1-94", "u": "u1", "sec": 2, "en": "letter", "de": "der Buchstabe; der Brief", "ipa": "ˈletə", "ex": "Lily's letter is very long.", "exDe": "Lilys Brief ist sehr lang.", "tip": "<b>letter</b> heißt 1. Buchstabe und 2. Brief."},
+ {"id": "u1-95", "u": "u1", "sec": 2, "en": "careful", "de": "vorsichtig", "ipa": "ˈkeəfl", "ex": "Be careful! The dog is scary.", "exDe": "Sei vorsichtig! Der Hund ist unheimlich.", "tip": "Nur ein l am Ende: care<b>ful</b>"},
+ {"id": "u1-96", "u": "u1", "sec": 2, "en": "conversation", "de": "das Gespräch, die Unterhaltung", "ipa": "ˌkɒnvəˈseɪʃn", "ex": "Listen to the conversation.", "exDe": "Hör dir das Gespräch an."},
+ {"id": "u1-97", "u": "u1", "sec": 2, "en": "There are ...", "de": "Es sind ... / Es gibt ...", "ipa": "ˈðeər ɑː", "ex": "There are two birds on the tree.", "exDe": "Es sind zwei Vögel auf dem Baum.", "tip": "Nicht <s>it gives</s>! Bei mehreren Dingen: <b>There are</b> two dogs.", "alt": ["there are"], "core": "there are"},
+ {"id": "u1-98", "u": "u1", "sec": 2, "en": "There's ...", "de": "Es ist ... / Es gibt ...", "ipa": "ðeəz", "ex": "There's a dog on the grass.", "exDe": "Es ist ein Hund auf dem Gras.", "tip": "<b>There's</b> = There is. Bei einem Ding: There's a cat.", "alt": ["there is"], "core": "there's"},
+ {"id": "u1-99", "u": "u1", "sec": 2, "en": "its", "de": "sein(e); ihr(e)", "ipa": "ɪts", "ex": "That's a nice cat. What is its name?", "exDe": "Das ist eine schöne Katze. Wie ist ihr Name?", "tip": "<b>its</b> = sein/ihr (bei Tieren und Dingen). <b>it's</b> = it is!"},
+ {"id": "u1-100", "u": "u1", "sec": 2, "en": "full stop", "de": "der Punkt (Satzzeichen)", "ipa": "ˌfʊl ˈstɒp", "ex": "Put a full stop at the end of the sentence.", "exDe": "Setz einen Punkt ans Ende des Satzes."},
+ {"id": "u1-101", "u": "u1", "sec": 2, "en": "in English / in German", "de": "auf Englisch / auf Deutsch", "ipa": "ɪn ˈɪŋɡlɪʃ", "ex": "Can you say it in English, please?", "exDe": "Kannst du es bitte auf Englisch sagen?", "tip": "Englisch heißt <b>in</b> English, nicht <s>on English</s>. Immer groß!", "alt": ["in English", "in German"], "core": "in English"},
+ {"id": "u1-102", "u": "u1", "sec": 2, "en": "the first word", "de": "das erste Wort", "ipa": "fɜːst", "ex": "The first word is hello.", "exDe": "Das erste Wort ist hello.", "core": "first word"},
+ {"id": "u1-103", "u": "u1", "sec": 2, "en": "sentence", "de": "der Satz", "ipa": "ˈsentəns", "ex": "Write a sentence about your family.", "exDe": "Schreib einen Satz über deine Familie.", "tip": "s-e-n-t-e-n-c-e"},
+ {"id": "u1-104", "u": "u1", "sec": 2, "en": "country", "de": "das Land (Staat)", "ipa": "ˈkʌntri", "ex": "Germany is a big country.", "exDe": "Deutschland ist ein großes Land.", "tip": "Mehrzahl: one country, two <b>countries</b>"},
+ {"id": "u1-105", "u": "u1", "sec": 2, "en": "missing", "de": "fehlend", "ipa": "ˈmɪsɪŋ", "ex": "What are the missing words?", "exDe": "Was sind die fehlenden Wörter?"},
+ {"id": "u1-106", "u": "u1", "sec": 2, "en": "order", "de": "die Reihenfolge", "ipa": "ˈɔːdə", "ex": "These words are in the wrong order.", "exDe": "Diese Wörter sind in der falschen Reihenfolge."},
+ {"id": "u1-107", "u": "u1", "sec": 2, "en": "step", "de": "der Schritt", "ipa": "step", "ex": "Step one: open your book.", "exDe": "Schritt eins: Öffne dein Buch."},
+ {"id": "u1-108", "u": "u1", "sec": 2, "en": "this classroom", "de": "dieses Klassenzimmer", "ipa": "ðɪs", "ex": "This classroom is very big.", "exDe": "Dieses Klassenzimmer ist sehr groß.", "tip": "<b>this</b> = dieser, diese, dieses (ganz nah).", "alt": ["this"], "core": "this"},
+ {"id": "u1-109", "u": "u1", "sec": 2, "en": "(to) look at sth./sb.", "de": "etwas/jn. anschauen, ansehen", "ipa": "lʊk", "ex": "Look at the picture on page 28.", "exDe": "Schau dir das Bild auf Seite 28 an.", "tip": "Immer mit <b>at</b>: look <b>at</b> me!", "alt": ["look at"], "core": "look at"},
+ {"id": "u1-110", "u": "u1", "sec": 2, "en": "(to) look sth. up", "de": "etwas nachschlagen", "ipa": "lʊk ʌp", "ex": "Look up the word in the dictionary.", "exDe": "Schlag das Wort im Wörterbuch nach.", "alt": ["look up", "look sth up"], "core": "look up"},
+ {"id": "u1-111", "u": "u1", "sec": 2, "en": "(to) check", "de": "(über)prüfen, kontrollieren", "ipa": "tʃek", "ex": "Check your partner's sentences.", "exDe": "Prüfe die Sätze deines Partners."},
+ {"id": "u1-112", "u": "u1", "sec": 3, "en": "(to) get", "de": "(sich) etwas besorgen, (sich) etwas holen", "ipa": "ɡet", "ex": "Can you go upstairs and get my book?", "exDe": "Kannst du nach oben gehen und mein Buch holen?"},
+ {"id": "u1-113", "u": "u1", "sec": 3, "en": "drink", "de": "das Getränk", "ipa": "drɪŋk", "ex": "Do you want a drink?", "exDe": "Möchtest du etwas zu trinken?"},
+ {"id": "u1-114", "u": "u1", "sec": 3, "en": "(to) drink", "de": "trinken", "ipa": "drɪŋk", "ex": "I drink milk in the morning.", "exDe": "Am Morgen trinke ich Milch.", "tip": "Dasselbe Wort: <b>drink</b> = das Getränk, <b>(to) drink</b> = trinken."},
+ {"id": "u1-115", "u": "u1", "sec": 3, "en": "Are there any ...?", "de": "Gibt es (irgendwelche) ...?", "ipa": "ˈeni", "ex": "Are there any cats in your garden?", "exDe": "Gibt es Katzen in deinem Garten?", "tip": "Antwort: Yes, there are. / No, there <b>aren't any</b>.", "alt": ["are there any"], "core": "are there any"},
+ {"id": "u1-116", "u": "u1", "sec": 3, "en": "glass", "de": "das Glas", "ipa": "ɡlɑːs", "ex": "Can I have a glass of water, please?", "exDe": "Kann ich bitte ein Glas Wasser haben?", "tip": "Zwei s: gla<b>ss</b>"},
+ {"id": "u1-117", "u": "u1", "sec": 3, "en": "(to) be fun", "de": "Spaß machen", "ipa": "fʌn", "ex": "Reading is fun.", "exDe": "Lesen macht Spaß.", "tip": "Englisch: Reading <b>is</b> fun. Nicht <s>makes fun</s>!", "alt": ["be fun", "is fun"], "core": "fun"},
+ {"id": "u1-118", "u": "u1", "sec": 3, "en": "(to) have fun", "de": "Spaß haben, sich amüsieren", "ipa": "fʌn", "ex": "I have fun when I watch films.", "exDe": "Ich habe Spaß, wenn ich Filme schaue.", "alt": ["have fun"], "core": "have fun"},
+ {"id": "u1-119", "u": "u1", "sec": 3, "en": "quiet", "de": "ruhig, still, leise", "ipa": "ˈkwaɪət", "ex": "Be quiet, please, 7L.", "exDe": "Seid bitte leise, 7L.", "tip": "<b>quiet</b> = leise. Nicht verwechseln mit <b>quite</b> (ziemlich)."},
+ {"id": "u1-120", "u": "u1", "sec": 3, "en": "tidy", "de": "ordentlich", "ipa": "ˈtaɪdi", "ex": "My room is very tidy.", "exDe": "Mein Zimmer ist sehr ordentlich."},
+ {"id": "u1-121", "u": "u1", "sec": 3, "en": "clothes", "de": "die Kleidung, die Kleidungsstücke", "ipa": "kləʊðz", "ex": "All her clothes are red.", "exDe": "Ihre ganze Kleidung ist rot.", "tip": "<b>clothes</b> ist ein Pluralwort: her clothes <b>are</b> red."},
+ {"id": "u1-122", "u": "u1", "sec": 3, "en": "on the bed", "de": "auf dem Bett", "ipa": "ɒn ðə ˈbed", "ex": "My cat is on the bed.", "exDe": "Meine Katze ist auf dem Bett.", "tip": "<b>on</b> = auf. on the bed, on the table", "core": "on the bed"},
+ {"id": "u1-123", "u": "u1", "sec": 3, "en": "on that chair", "de": "auf dem Stuhl (dort), auf jenem Stuhl", "ipa": "ðæt", "ex": "My bag is on that chair.", "exDe": "Meine Tasche ist auf dem Stuhl dort.", "tip": "<b>this</b> chair = hier, nah. <b>that</b> chair = dort, weiter weg.", "core": "that chair"},
+ {"id": "u1-124", "u": "u1", "sec": 3, "en": "behind", "de": "hinter", "ipa": "bɪˈhaɪnd", "ex": "The dog is behind the cat.", "exDe": "Der Hund ist hinter der Katze.", "tip": "Gegenteil: <b>in front of</b>"},
+ {"id": "u1-125", "u": "u1", "sec": 3, "en": "in front of", "de": "vor", "ipa": "ɪn ˈfrʌnt əv", "ex": "The cat is in front of the dog.", "exDe": "Die Katze ist vor dem Hund.", "tip": "Drei Wörter: in front <b>of</b>. Gegenteil: <b>behind</b>"},
+ {"id": "u1-126", "u": "u1", "sec": 3, "en": "door", "de": "die Tür", "ipa": "dɔː", "ex": "Close the door, please.", "exDe": "Mach bitte die Tür zu.", "tip": "Zwei o: d<b>oo</b>r"},
+ {"id": "u1-127", "u": "u1", "sec": 3, "en": "TV", "de": "der Fernseher, das Fernsehgerät", "ipa": "ˌtiːˈviː", "ex": "The TV is in the living room.", "exDe": "Der Fernseher ist im Wohnzimmer.", "alt": ["television"]},
+ {"id": "u1-128", "u": "u1", "sec": 3, "en": "(to) watch TV", "de": "fernsehen", "ipa": "wɒtʃ ˌtiːˈviː", "ex": "I watch TV in the evening.", "exDe": "Am Abend sehe ich fern.", "tip": "Englisch: <b>watch</b> TV, nicht <s>see TV</s>.", "alt": ["watch TV", "watch television"], "core": "watch TV"},
+ {"id": "u1-129", "u": "u1", "sec": 3, "en": "guys", "de": "Leute", "ipa": "ɡaɪz", "ex": "Hey, you guys! Wait for me.", "exDe": "Hey, Leute! Wartet auf mich.", "tip": "<b>guys</b> sagt man auch zu Mädchen und Frauen."},
+ {"id": "u1-130", "u": "u1", "sec": 3, "en": "photo", "de": "das Foto", "ipa": "ˈfəʊtəʊ", "ex": "You look great in the photo.", "exDe": "Du siehst auf dem Foto toll aus.", "tip": "Englisch: <b>in</b> the photo = <b>auf</b> dem Foto.", "alt": ["photograph"]},
+ {"id": "u1-131", "u": "u1", "sec": 3, "en": "young", "de": "jung", "ipa": "jʌŋ", "ex": "My sister is very young.", "exDe": "Meine Schwester ist sehr jung.", "tip": "Gegenteil: <b>old</b>"},
+ {"id": "u1-132", "u": "u1", "sec": 3, "en": "That's me.", "de": "Das bin ich.", "ipa": "ðæts miː", "ex": "Look at the photo. That's me.", "exDe": "Schau dir das Foto an. Das bin ich.", "tip": "Englisch: That's <b>me</b>. Nicht <s>That's I</s>.", "alt": ["that is me"], "core": "that's me"},
+ {"id": "u1-133", "u": "u1", "sec": 3, "en": "really", "de": "wirklich", "ipa": "ˈrɪəli", "ex": "Our maths teacher is really nice.", "exDe": "Unsere Mathelehrerin ist wirklich nett.", "tip": "Zwei l: rea<b>ll</b>y"},
+ {"id": "u1-134", "u": "u1", "sec": 3, "en": "next to", "de": "neben", "ipa": "ˈnekst tu", "ex": "Come and sit next to me.", "exDe": "Komm und setz dich neben mich."},
+ {"id": "u1-135", "u": "u1", "sec": 3, "en": "guitar", "de": "die Gitarre", "ipa": "ɡɪˈtɑː", "ex": "My guitar is in my bedroom.", "exDe": "Meine Gitarre ist in meinem Schlafzimmer.", "tip": "g-u-i-t-a-r. Betonung hinten: gui<b>tar</b>"},
+ {"id": "u1-136", "u": "u1", "sec": 3, "en": "late", "de": "spät", "ipa": "leɪt", "ex": "I'm late for school.", "exDe": "Ich bin zu spät für die Schule.", "tip": "<b>late</b> = spät, <b>later</b> = später."},
+ {"id": "u1-137", "u": "u1", "sec": 3, "en": "compliment", "de": "das Kompliment", "ipa": "ˈkɒmplɪmənt", "ex": "Thanks for the compliment!", "exDe": "Danke für das Kompliment!", "tip": "Englisch mit c und i: <b>c</b>ompl<b>i</b>ment"},
+ {"id": "u1-138", "u": "u1", "sec": 3, "en": "toilet", "de": "die Toilette", "ipa": "ˈtɔɪlət", "ex": "The toilet is next to the bathroom.", "exDe": "Die Toilette ist neben dem Badezimmer.", "tip": "Betonung vorne: <b>toi</b>let"},
+ {"id": "u1-139", "u": "u1", "sec": 3, "en": "bath", "de": "das Bad", "ipa": "bɑːθ", "ex": "I have a bath on Sundays.", "exDe": "Sonntags nehme ich ein Bad.", "tip": "<b>bath</b> = Badewanne/Bad. Das ganze Zimmer: <b>bathroom</b>"},
+ {"id": "u1-140", "u": "u1", "sec": 3, "en": "cupboard", "de": "der Schrank", "ipa": "ˈkʌbəd", "ex": "The glasses are in the cupboard.", "exDe": "Die Gläser sind im Schrank.", "tip": "Das p spricht man nicht: [ˈkʌbəd]"},
+ {"id": "u1-141", "u": "u1", "sec": 3, "en": "sink", "de": "das Abwaschbecken, das Spülbecken", "ipa": "sɪŋk", "ex": "The cups are in the sink.", "exDe": "Die Tassen sind im Spülbecken."},
+ {"id": "u1-142", "u": "u1", "sec": 3, "en": "sofa", "de": "das Sofa", "ipa": "ˈsəʊfə", "ex": "The cat is on the sofa.", "exDe": "Die Katze ist auf dem Sofa."},
+ {"id": "u1-143", "u": "u1", "sec": 3, "en": "table", "de": "der Tisch", "ipa": "ˈteɪbl", "ex": "The books are on the table.", "exDe": "Die Bücher sind auf dem Tisch."},
+ {"id": "u1-144", "u": "u1", "sec": 3, "en": "clock", "de": "die Uhr (Wand-, Stand-, Turmuhr)", "ipa": "klɒk", "ex": "The clock is on the wall.", "exDe": "Die Uhr ist an der Wand.", "tip": "Die Armbanduhr heißt <b>watch</b>."},
+ {"id": "u1-145", "u": "u1", "sec": 3, "en": "window", "de": "das Fenster", "ipa": "ˈwɪndəʊ", "ex": "Open the window, please.", "exDe": "Mach bitte das Fenster auf."},
+ {"id": "u1-146", "u": "u1", "sec": 3, "en": "wall", "de": "die Mauer; die Wand", "ipa": "wɔːl", "ex": "There's a poster on the wall.", "exDe": "An der Wand ist ein Poster.", "tip": "Zwei l: wa<b>ll</b>"},
+ {"id": "u1-147", "u": "u1", "sec": 3, "en": "drawing", "de": "die Zeichnung", "ipa": "ˈdrɔːɪŋ", "ex": "Look at my drawing!", "exDe": "Schau dir meine Zeichnung an!", "tip": "<b>(to) draw</b> = zeichnen, <b>drawing</b> = die Zeichnung"},
+ {"id": "u1-148", "u": "u1", "sec": 3, "en": "chant", "de": "der Sprechchor", "ipa": "tʃɑːnt", "ex": "Let's say the chant together.", "exDe": "Lasst uns den Sprechchor zusammen sagen."},
+ {"id": "u1-149", "u": "u1", "sec": 3, "en": "rule", "de": "die Regel, die Vorschrift", "ipa": "ruːl", "ex": "That's an important rule.", "exDe": "Das ist eine wichtige Regel.", "tip": "<b>rule</b> = Regel, <b>ruler</b> = Lineal"},
+ {"id": "u1-150", "u": "u1", "sec": 3, "en": "(to) describe sth. (to sb.)", "de": "(jm.) etwas beschreiben", "ipa": "dɪˈskraɪb", "ex": "Describe the picture to your group.", "exDe": "Beschreibe das Bild deiner Gruppe.", "tip": "Englisch: describe <b>to</b> your group = deiner Gruppe.", "alt": ["describe"], "core": "describe"},
+ {"id": "u1-151", "u": "u1", "sec": 3, "en": "area", "de": "das Gebiet, die Gegend", "ipa": "ˈeəriə", "ex": "I live in an area with lots of trees.", "exDe": "Ich wohne in einer Gegend mit vielen Bäumen.", "tip": "Vor a sagt man <b>an</b>: an area"},
+ {"id": "u1-152", "u": "u1", "sec": 3, "en": "(to) make", "de": "bilden; machen; herstellen", "ipa": "meɪk", "ex": "Make groups of four.", "exDe": "Bildet Vierergruppen.", "tip": "<b>make</b> = etwas herstellen. <b>do</b> = etwas tun."},
+ {"id": "u1-153", "u": "u1", "sec": 3, "en": "(to) do", "de": "machen, tun", "ipa": "duː", "ex": "What can we do now?", "exDe": "Was können wir jetzt machen?"},
+ {"id": "u1-154", "u": "u1", "sec": 3, "en": "(to) visit", "de": "besuchen", "ipa": "ˈvɪzɪt", "ex": "We visit Grandpa on Sundays.", "exDe": "Wir besuchen sonntags Opa."},
+ {"id": "u1-155", "u": "u1", "sec": 3, "en": "culture", "de": "die Kultur", "ipa": "ˈkʌltʃə", "ex": "I like English culture.", "exDe": "Ich mag die englische Kultur.", "tip": "Englisch mit c: <b>c</b>ulture"},
+ {"id": "u1-156", "u": "u1", "sec": 3, "en": "guest", "de": "der Gast", "ipa": "ɡest", "ex": "We have a guest at home.", "exDe": "Wir haben einen Gast zu Hause.", "tip": "g-u-e-s-t, das u spricht man nicht."},
+ {"id": "u1-157", "u": "u1", "sec": 3, "en": "easy", "de": "einfach, leicht", "ipa": "ˈiːzi", "ex": "The test is easy.", "exDe": "Der Test ist leicht."},
+ {"id": "u1-158", "u": "u1", "sec": 3, "en": "flat", "de": "die Wohnung", "ipa": "flæt", "ex": "I live in a flat, not a house.", "exDe": "Ich wohne in einer Wohnung, nicht in einem Haus."},
+ {"id": "u1-159", "u": "u1", "sec": 3, "en": "important", "de": "wichtig", "ipa": "ɪmˈpɔːtnt", "ex": "English is important.", "exDe": "Englisch ist wichtig."},
+ {"id": "u1-160", "u": "u1", "sec": 4, "en": "another", "de": "ein(e) andere(r, s); noch ein(e)", "ipa": "əˈnʌðə", "ex": "Can I have another sandwich, please?", "exDe": "Kann ich bitte noch ein Sandwich haben?", "tip": "Ein Wort: <b>another</b> = an + other"},
+ {"id": "u1-161", "u": "u1", "sec": 4, "en": "joke", "de": "der Witz", "ipa": "dʒəʊk", "ex": "Tell me a joke!", "exDe": "Erzähl mir einen Witz!"},
+ {"id": "u1-162", "u": "u1", "sec": 4, "en": "(to) play", "de": "spielen", "ipa": "pleɪ", "ex": "Let's play football.", "exDe": "Lass uns Fußball spielen."},
+ {"id": "u1-163", "u": "u1", "sec": 4, "en": "You're right.", "de": "Du hast Recht.", "ipa": "jɔː raɪt", "ex": "You're right. That's a good idea.", "exDe": "Du hast Recht. Das ist eine gute Idee.", "tip": "Englisch: You <b>are</b> right. Nicht <s>You have right</s>!", "alt": ["you are right"], "core": "you're right"},
+ {"id": "u1-164", "u": "u1", "sec": 4, "en": "You're wrong.", "de": "Du hast Unrecht.", "ipa": "jɔː rɒŋ", "ex": "No, you're wrong. It's Tuesday.", "exDe": "Nein, du hast Unrecht. Es ist Dienstag.", "tip": "Englisch: You <b>are</b> wrong. Das w spricht man nicht.", "alt": ["you are wrong"], "core": "you're wrong"},
+ {"id": "u1-165", "u": "u1", "sec": 4, "en": "I can't ...", "de": "ich kann nicht ...", "ipa": "kɑːnt", "ex": "I can speak English, but I can't speak French.", "exDe": "Ich kann Englisch sprechen, aber ich kann kein Französisch.", "tip": "<b>can't</b> = cannot", "core": "i can't"},
+ {"id": "u1-166", "u": "u1", "sec": 4, "en": "(to) play the guitar", "de": "Gitarre spielen", "ipa": "pleɪ ðə ɡɪˈtɑː", "ex": "My brother can play the guitar.", "exDe": "Mein Bruder kann Gitarre spielen.", "tip": "Englisch mit <b>the</b>: play <b>the</b> guitar.", "alt": ["play the guitar"], "core": "play the guitar"},
+ {"id": "u1-167", "u": "u1", "sec": 4, "en": "amazing", "de": "erstaunlich, unglaublich", "ipa": "əˈmeɪzɪŋ", "ex": "Your drawing is amazing!", "exDe": "Deine Zeichnung ist unglaublich!"},
+ {"id": "u1-168", "u": "u1", "sec": 4, "en": "bad", "de": "schlecht, schlimm", "ipa": "bæd", "ex": "That's a bad idea.", "exDe": "Das ist eine schlechte Idee.", "tip": "Gegenteil: <b>good</b>"},
+ {"id": "u1-169", "u": "u1", "sec": 4, "en": "dinner", "de": "das Abendessen, das Abendbrot", "ipa": "ˈdɪnə", "ex": "Dinner is ready!", "exDe": "Das Abendessen ist fertig!", "tip": "Zwei n: di<b>nn</b>er"},
+ {"id": "u1-170", "u": "u1", "sec": 4, "en": "(to) have breakfast", "de": "frühstücken", "ipa": "ˈbrekfəst", "ex": "I have breakfast at seven.", "exDe": "Ich frühstücke um sieben.", "tip": "Englisch: <b>have</b> breakfast.", "alt": ["have breakfast"], "core": "have breakfast"},
+ {"id": "u1-171", "u": "u1", "sec": 4, "en": "(to) have lunch", "de": "zu Mittag essen", "ipa": "lʌntʃ", "ex": "We have lunch at school.", "exDe": "Wir essen in der Schule zu Mittag.", "alt": ["have lunch"], "core": "have lunch"},
+ {"id": "u1-172", "u": "u1", "sec": 4, "en": "(to) have dinner", "de": "zu Abend essen", "ipa": "ˈdɪnə", "ex": "We have dinner in the kitchen.", "exDe": "Wir essen in der Küche zu Abend.", "alt": ["have dinner"], "core": "have dinner"},
+ {"id": "u1-173", "u": "u1", "sec": 4, "en": "time", "de": "die Zeit; die Uhrzeit", "ipa": "taɪm", "ex": "What time is it?", "exDe": "Wie spät ist es?"},
+ {"id": "u1-174", "u": "u1", "sec": 4, "en": "soon", "de": "bald", "ipa": "suːn", "ex": "See you soon!", "exDe": "Bis bald!"},
+ {"id": "u1-175", "u": "u1", "sec": 4, "en": "(to) open", "de": "öffnen, aufmachen", "ipa": "ˈəʊpən", "ex": "Open your books, please.", "exDe": "Öffnet bitte eure Bücher."},
+ {"id": "u1-176", "u": "u1", "sec": 4, "en": "open", "de": "offen", "ipa": "ˈəʊpən", "ex": "The window is open.", "exDe": "Das Fenster ist offen.", "tip": "Dasselbe Wort: <b>open</b> = offen, <b>(to) open</b> = öffnen."},
+ {"id": "u1-177", "u": "u1", "sec": 4, "en": "(to) stay", "de": "bleiben", "ipa": "steɪ", "ex": "I stay at home today.", "exDe": "Ich bleibe heute zu Hause."},
+ {"id": "u1-178", "u": "u1", "sec": 4, "en": "idea", "de": "die Idee; die Vorstellung", "ipa": "aɪˈdɪə", "ex": "I have a great idea!", "exDe": "Ich habe eine tolle Idee!", "tip": "Vor i sagt man <b>an</b>: an idea"},
+ {"id": "u1-179", "u": "u1", "sec": 4, "en": "many", "de": "viele", "ipa": "ˈmeni", "ex": "There are many books on the shelf.", "exDe": "Es sind viele Bücher im Regal."},
+ {"id": "u1-180", "u": "u1", "sec": 4, "en": "(to) remember (sth.)", "de": "sich erinnern (an etwas)", "ipa": "rɪˈmembə", "ex": "Can you remember me?", "exDe": "Kannst du dich an mich erinnern?", "tip": "Englisch ohne „sich“ und ohne „an“: Can you remember <b>me</b>?", "alt": ["remember"], "core": "remember"},
+ {"id": "u1-181", "u": "u1", "sec": 4, "en": "all", "de": "alles; alle", "ipa": "ɔːl", "ex": "All my friends are here.", "exDe": "Alle meine Freunde sind hier."},
+ {"id": "u1-182", "u": "u1", "sec": 4, "en": "face", "de": "das Gesicht", "ipa": "feɪs", "ex": "She has a friendly face.", "exDe": "Sie hat ein freundliches Gesicht."},
+ {"id": "u1-183", "u": "u1", "sec": 4, "en": "friendly", "de": "freundlich", "ipa": "ˈfrendli", "ex": "Our teacher is very friendly.", "exDe": "Unser Lehrer ist sehr freundlich.", "tip": "friend + ly. Das i nach r nicht vergessen: fr<b>ie</b>ndly"},
+ {"id": "u1-184", "u": "u1", "sec": 4, "en": "my best friend", "de": "mein bester Freund / meine beste Freundin", "ipa": "maɪ ˌbest ˈfrend", "ex": "Alice is my best friend.", "exDe": "Alice ist meine beste Freundin.", "core": "my best friend"},
+ {"id": "u1-185", "u": "u1", "sec": 4, "en": "a bit", "de": "ein bisschen, etwas", "ipa": "ə ˈbɪt", "ex": "I'm a bit tired.", "exDe": "Ich bin ein bisschen müde.", "core": "a bit"},
+ {"id": "u1-186", "u": "u1", "sec": 4, "en": "mean", "de": "gemein", "ipa": "miːn", "ex": "Don't be mean!", "exDe": "Sei nicht gemein!"},
+ {"id": "u1-187", "u": "u1", "sec": 4, "en": "(to) laugh", "de": "lachen", "ipa": "lɑːf", "ex": "We laugh a lot at school.", "exDe": "Wir lachen viel in der Schule.", "tip": "Das gh spricht man wie f: lau<b>gh</b> [lɑːf]"},
+ {"id": "u1-188", "u": "u1", "sec": 4, "en": "false", "de": "falsch", "ipa": "fɔːls", "ex": "True or false?", "exDe": "Richtig oder falsch?", "tip": "Gegenteil: <b>true</b>"},
+ {"id": "u1-189", "u": "u1", "sec": 4, "en": "true", "de": "wahr", "ipa": "truː", "ex": "That's true.", "exDe": "Das ist wahr.", "tip": "Gegenteil: <b>false</b>"},
+ {"id": "u1-190", "u": "u1", "sec": 4, "en": "line", "de": "die Zeile", "ipa": "laɪn", "ex": "Read line five, please.", "exDe": "Lies bitte Zeile fünf."},
+ {"id": "u1-191", "u": "u1", "sec": 4, "en": "character", "de": "der Charakter, die Figur, die Person", "ipa": "ˈkærəktə", "ex": "Who is your favourite character in the story?", "exDe": "Wer ist deine Lieblingsfigur in der Geschichte?", "tip": "Am Anfang <b>ch</b>, gesprochen wie k."},
+ {"id": "u1-192", "u": "u1", "sec": 4, "en": "already", "de": "schon, bereits", "ipa": "ɔːlˈredi", "ex": "I can already speak English.", "exDe": "Ich kann schon Englisch sprechen.", "tip": "Nur ein l: a<b>l</b>ready"},
+ {"id": "u1-193", "u": "u1", "sec": 4, "en": "story", "de": "die Geschichte, die Erzählung", "ipa": "ˈstɔːri", "ex": "Tell me a story, please.", "exDe": "Erzähl mir bitte eine Geschichte.", "tip": "Mehrzahl: one story, two <b>stories</b>"},
+ {"id": "u1-194", "u": "u1", "sec": 4, "en": "kid", "de": "das Kind; Jugendliche(r)", "ipa": "kɪd", "ex": "Zane is a nice kid.", "exDe": "Zane ist ein nettes Kind.", "tip": "<b>kid</b> ist umgangssprachlich für <b>child</b>."},
+ {"id": "u1-195", "u": "u1", "sec": 4, "en": "her", "de": "sie; ihr", "ipa": "hɜː", "ex": "Look, there's Lily. Can you see her?", "exDe": "Schau, da ist Lily. Kannst du sie sehen?", "tip": "Let's help <b>her</b>. = Lass uns ihr helfen."},
+ {"id": "u1-196", "u": "u1", "sec": 4, "en": "life skills", "de": "Lebenskompetenzen", "ipa": "ˈlaɪf skɪlz", "ex": "We learn life skills at school.", "exDe": "Wir lernen Lebenskompetenzen in der Schule."},
+ {"id": "u1-197", "u": "u1", "sec": 4, "en": "(to) make friends", "de": "Freunde finden", "ipa": "meɪk ˈfrendz", "ex": "It's easy to make friends here.", "exDe": "Hier ist es leicht, Freunde zu finden.", "tip": "Englisch: <b>make</b> friends, nicht <s>find friends</s>.", "alt": ["make friends"], "core": "make friends"},
+ {"id": "u1-198", "u": "u1", "sec": 4, "en": "(to) ask", "de": "fragen", "ipa": "ɑːsk", "ex": "Ask your teacher.", "exDe": "Frag deine Lehrerin.", "tip": "Gegenteil: <b>(to) answer</b>"},
+ {"id": "u1-199", "u": "u1", "sec": 4, "en": "(to) ask (sb.) a question", "de": "(jm.) eine Frage stellen", "ipa": "ɑːsk ə ˈkwestʃən", "ex": "Can I ask you a question?", "exDe": "Darf ich dir eine Frage stellen?", "tip": "Englisch: <b>ask</b> a question, nicht <s>put a question</s>.", "alt": ["ask a question", "ask sb a question"], "core": "ask"},
+ {"id": "u1-200", "u": "u1", "sec": 4, "en": "Have a go.", "de": "Versuch's mal.", "ipa": "ˌhæv ə ˈɡəʊ", "ex": "It's easy. Have a go!", "exDe": "Es ist leicht. Versuch's mal!", "alt": ["have a go"], "core": "have a go"},
+ {"id": "u1-201", "u": "u1", "sec": 4, "en": "high", "de": "hoch", "ipa": "haɪ", "ex": "Look at that bird. It's so high!", "exDe": "Schau dir den Vogel an. Er ist so hoch!", "tip": "Das gh spricht man nicht: [haɪ]"},
+ {"id": "u1-202", "u": "u1", "sec": 4, "en": "(to) put", "de": "legen, stellen, (etwas wohin) tun, setzen", "ipa": "pʊt", "ex": "Put the photos in the box.", "exDe": "Leg die Fotos in die Kiste."},
+ {"id": "u1-203", "u": "u1", "sec": 4, "en": "to", "de": "um zu", "ipa": "tuː", "ex": "We go to the park to play football.", "exDe": "Wir gehen in den Park, um Fußball zu spielen.", "tip": "Englisch: ... <b>to</b> play = um ... zu spielen."},
+ {"id": "u1-204", "u": "u1", "sec": 4, "en": "after the s", "de": "nach dem S", "ipa": "ˈɑːftə", "ex": "Write a full stop after the word.", "exDe": "Schreib einen Punkt nach dem Wort.", "tip": "Gegenteil: <b>before</b>", "alt": ["after"], "core": "after"},
+ {"id": "u1-205", "u": "u1", "sec": 4, "en": "zero", "de": "Null", "ipa": "ˈzɪərəʊ", "ex": "I can say the numbers from zero to 100.", "exDe": "Ich kann die Zahlen von null bis hundert sagen.", "tip": "Das z klingt wie ein weiches s wie in „Susie“."},
+ {"id": "u1-206", "u": "u1", "sec": 4, "en": "to (from ... to)", "de": "bis", "ipa": "tuː", "ex": "We have school from Monday to Friday.", "exDe": "Wir haben von Montag bis Freitag Schule.", "tip": "from zero <b>to</b> 100 = von null <b>bis</b> 100", "alt": ["to"], "core": "to"},
+ {"id": "u1-207", "u": "u1", "sec": 4, "en": "O", "de": "Null (in Telefonnummern)", "ipa": "əʊ", "ex": "My number is O one six two.", "exDe": "Meine Nummer ist null eins sechs zwei.", "tip": "Bei Telefonnummern sagt man <b>O</b>: 0166 = O one double six.", "alt": ["oh"]},
+ {"id": "u1-208", "u": "u1", "sec": 4, "en": "robot", "de": "der Roboter", "ipa": "ˈrəʊbɒt", "ex": "My robot can talk.", "exDe": "Mein Roboter kann sprechen."},
+ {"id": "u1-209", "u": "u1", "sec": 4, "en": "Good night.", "de": "Gute Nacht.", "ipa": "naɪt", "ex": "Good night, Mum!", "exDe": "Gute Nacht, Mama!", "tip": "night mit <b>gh</b>: ni<b>gh</b>t", "core": "good night"},
+ {"id": "u1-210", "u": "u1", "sec": 4, "en": "complete", "de": "komplett, vollständig", "ipa": "kəmˈpliːt", "ex": "Is the list complete?", "exDe": "Ist die Liste vollständig?"},
+ {"id": "u1-211", "u": "u1", "sec": 4, "en": "dark", "de": "dunkel", "ipa": "dɑːk", "ex": "It's very dark in the attic.", "exDe": "Auf dem Dachboden ist es sehr dunkel."},
+ {"id": "u1-212", "u": "u1", "sec": 4, "en": "box", "de": "der Kasten, die Kiste, das Kästchen", "ipa": "bɒks", "ex": "The toys are in the box.", "exDe": "Die Spielsachen sind in der Kiste.", "tip": "Mehrzahl: one box, two <b>boxes</b>"},
+ {"id": "u1-213", "u": "u1", "sec": 4, "en": "scared", "de": "verängstigt", "ipa": "skeəd", "ex": "I'm scared of spiders.", "exDe": "Ich habe Angst vor Spinnen.", "tip": "<b>scared</b> = ängstlich. <b>scary</b> = unheimlich."},
+ {"id": "u1-214", "u": "u1", "sec": 4, "en": "Well, ...", "de": "Nun, ... / Also, ... / Na ja, ...", "ipa": "wel", "ex": "Well, I don't know.", "exDe": "Na ja, ich weiß es nicht.", "alt": ["well"], "core": "well"},
+ {"id": "u1-215", "u": "u1", "sec": 4, "en": "(to) answer", "de": "antworten; beantworten", "ipa": "ˈɑːnsə", "ex": "Can you answer my question?", "exDe": "Kannst du meine Frage beantworten?", "tip": "Gegenteil: <b>(to) ask</b>"},
+ {"id": "u1-216", "u": "u1", "sec": 4, "en": "It's magic.", "de": "Es ist Magie. / Es ist magisch.", "ipa": "ˈmædʒɪk", "ex": "Look! It's magic!", "exDe": "Schau! Es ist magisch!", "alt": ["it is magic"], "core": "it's magic"},
+ {"id": "u1-217", "u": "u1", "sec": 4, "en": "ready", "de": "bereit, fertig", "ipa": "ˈredi", "ex": "Are you ready? Can we go?", "exDe": "Bist du fertig? Können wir gehen?"},
+ {"id": "u1-218", "u": "u1", "sec": 4, "en": "(to) tell sb. about sth.", "de": "jm. von etwas erzählen", "ipa": "tel", "ex": "Tell me about your family.", "exDe": "Erzähl mir von deiner Familie.", "tip": "Englisch: tell me <b>about</b> = erzähl mir <b>von</b>.", "alt": ["tell", "tell sb about sth", "tell me about"], "core": "tell"},
+ {"id": "u1-219", "u": "u1", "sec": 4, "en": "(to) take", "de": "nehmen, mitnehmen; (weg-, hin)bringen", "ipa": "teɪk", "ex": "Thanks for the book. Can I take it with me?", "exDe": "Danke für das Buch. Darf ich es mitnehmen?"},
+ {"id": "u1-220", "u": "u1", "sec": 4, "en": "back", "de": "zurück", "ipa": "bæk", "ex": "Come back soon!", "exDe": "Komm bald zurück!"},
+ {"id": "u1-221", "u": "u1", "sec": 4, "en": "around ...", "de": "um ... (herum)", "ipa": "əˈraʊnd", "ex": "Buddy likes to run around the park.", "exDe": "Buddy rennt gern im Park herum.", "alt": ["around"], "core": "around"},
+ {"id": "u1-222", "u": "u1", "sec": 4, "en": "just", "de": "(einfach) nur, bloß", "ipa": "dʒʌst", "ex": "Don't just sit there. Come and help me.", "exDe": "Sitz nicht bloß da. Komm und hilf mir."},
+ {"id": "u1-223", "u": "u1", "sec": 4, "en": "silly", "de": "albern; blöd", "ipa": "ˈsɪli", "ex": "Don't be silly!", "exDe": "Sei nicht albern!", "tip": "Zwei l: si<b>ll</b>y"},
+ {"id": "u1-224", "u": "u1", "sec": 4, "en": "toy", "de": "das Spielzeug", "ipa": "tɔɪ", "ex": "The robot is my favourite toy.", "exDe": "Der Roboter ist mein Lieblingsspielzeug."}
+
 ];
 /* Weitere Vokabeln aus Hefter und Arbeitsblättern.
    Format je Zeile: englisch | deutsch | Beispielsatz | Übersetzung | Tipp (optional) | weitere richtige Antworten mit ; (optional) */
@@ -691,7 +882,43 @@ boring|langweilig|The film is boring.|Der Film ist langweilig.
 I'm|ich bin (Kurzform von I am)|I'm at school.|Ich bin in der Schule.|<b>I'm</b> = I am. Verneint: <b>I'm not</b> (nicht: I'm don't!)|I am
 he's|er ist (Kurzform von he is)|He's my brother.|Er ist mein Bruder.|<b>he's</b> = he is. Verneint: <b>he isn't</b>|he is
 it's|es ist (Kurzform von it is)|It's big.|Es ist groß.|<b>it's</b> = it is. Verneint: <b>it isn't</b>|it is
-we're|wir sind (Kurzform von we are)|We're at home.|Wir sind zu Hause.|<b>we're</b> = we are. Verneint: <b>we aren't</b>|we are`,
+we're|wir sind (Kurzform von we are)|We're at home.|Wir sind zu Hause.|<b>we're</b> = we are. Verneint: <b>we aren't</b>|we are
+in England|in England|Brighton is in England.|Brighton liegt in England.|Ländernamen schreibt man groß: <b>E</b>ngland
+my friend|mein Freund / meine Freundin|My friend is called Max.|Mein Freund heißt Max.|fr-<b>ie</b>-nd: erst i, dann e
+Nice to meet you.|Freut mich, dich kennenzulernen.|Hello, I'm Alice. Nice to meet you.|Hallo, ich bin Alice. Freut mich, dich kennenzulernen.|Mit <b>to</b>: Nice <b>to</b> meet you.
+How old are you?|Wie alt bist du?|How old are you? – I'm eleven.|Wie alt bist du? – Ich bin elf.||
+Are you ...?|Bist du ...?|Are you from England?|Kommst du aus England?||
+Where are you from?|Woher kommst du?|Where are you from? – I'm from Leipzig.|Woher kommst du? – Ich komme aus Leipzig.||
+where?|wo? woher? wohin?|Where is my bag?|Wo ist meine Tasche?|<b>where</b> = wo. <b>who</b> = wer!
+hometown|die Heimatstadt|My hometown is Leipzig.|Meine Heimatstadt ist Leipzig.|home + town = hometown
+town|die Stadt|Brighton is a nice town.|Brighton ist eine schöne Stadt.||
+Hello.|Hallo. / Guten Tag.|Hello, Zane!|Hallo, Zane!|Zwei l: he<b>ll</b>o|hello
+today|heute|Today is Monday.|Heute ist Montag.||
+How are you?|Wie geht's? / Wie geht es dir?|Hi Lily, how are you?|Hallo Lily, wie geht's?||how are you
+I'm fine, thanks.|Gut, danke.|How are you? – I'm fine, thanks.|Wie geht's? – Gut, danke.||I am fine thanks;I'm fine;I'm fine thank you
+(to) live|wohnen; leben|I live in Brighton.|Ich wohne in Brighton.||
+Germany|Deutschland|I'm from Germany.|Ich komme aus Deutschland.|Ländernamen schreibt man groß: <b>G</b>ermany
+Bye. / Goodbye.|Tschüs. / Auf Wiedersehen.|Bye, Mum!|Tschüs, Mama!||bye;goodbye
+Let me show you ...|Lass mich dir ... zeigen.|Let me show you Brighton.|Lass mich dir Brighton zeigen.||
+me|mich; mir|Come and see me.|Besuch mich.|Ein Wort für zwei: <b>me</b> = mich und mir. Show <b>me</b>! = Zeig <b>mir</b>!|
+our|unser/e|Our house is big.|Unser Haus ist groß.||
+we|wir|We are in class 7L.|Wir sind in der Klasse 7L.||
+us|uns|We're here. Can you see us?|Wir sind hier. Kannst du uns sehen?||
+Thanks. / Thank you.|Danke.|Thanks for the book.|Danke für das Buch.|th wie in <b>th</b>ing|thanks;thank you
+with|mit, bei|Zane is with Sunita and Alice.|Zane ist bei Sunita und Alice.||
+Mr ...|Herr ...|Mr Black is our English teacher.|Herr Black ist unser Englischlehrer.|Ohne Punkt: <b>Mr</b>, nicht <s>Mr.</s>|
+Mrs ...|Frau ...|Mrs Lee is my class teacher.|Frau Lee ist meine Klassenlehrerin.|Ohne Punkt: <b>Mrs</b>|
+football|der Fußball|I play football on Saturdays.|Samstags spiele ich Fußball.||
+What about you?|Und du? / Und was ist mit dir?|I like dogs. What about you?|Ich mag Hunde. Und du?||what about you
+I don't like ...|Ich mag ... nicht. / Ich mag kein ...|I don't like snakes.|Ich mag keine Schlangen.|<b>don't</b> = do not
+what|was|What are your hobbies?|Was sind deine Hobbys?||
+(to) like|mögen|I like the picture.|Ich mag das Bild.||
+song|das Lied, der Song|I like this song.|Ich mag dieses Lied.||
+French|Französisch|Can you speak French?|Kannst du Französisch sprechen?|Sprachen schreibt man immer groß: <b>F</b>rench
+I don't have ...|Ich habe kein/keine/keinen ...|I don't have school on Sundays.|Sonntags habe ich keine Schule.||
+so cool|so cool|I like Scout. She's so cool.|Ich mag Scout. Sie ist so cool.||
+Here you are.|Hier, bitte.|Can I have the pen? – Here you are.|Kann ich den Stift haben? – Hier, bitte.||here you are
+world|die Welt|Brighton is my favourite place in the world.|Brighton ist mein Lieblingsort auf der Welt.||`,
 
 fam:`family|die Familie|I like a big family.|Ich mag eine große Familie.
 siblings|die Geschwister|I have got two siblings.|Ich habe zwei Geschwister.
@@ -719,7 +946,39 @@ school bag|die Schultasche|My school bag is black.|Meine Schultasche ist schwarz
 a pair of compasses|ein Zirkel|I need a pair of compasses.|Ich brauche einen Zirkel.||compasses
 exercise book|das Heft|Write it in your exercise book.|Schreib es in dein Heft.
 protractor|das Geodreieck, der Winkelmesser|My protractor is in my pencil case.|Mein Geodreieck ist in meinem Federmäppchen.
-blackboard|die Tafel|The teacher writes on the blackboard.|Die Lehrerin schreibt an die Tafel.`,
+blackboard|die Tafel|The teacher writes on the blackboard.|Die Lehrerin schreibt an die Tafel.
+school|die Schule|I go to school.|Ich gehe zur Schule.|Englisch: go <b>to</b> school
+class|die (Schul-)Klasse|There are 28 kids in my class.|In meiner Klasse sind 28 Kinder.|Zwei s: cla<b>ss</b>
+classroom|das Klassenzimmer|Our classroom is big.|Unser Klassenzimmer ist groß.|class + room = classroom
+blazer|der Blazer, die Sportjacke|My school blazer is blue.|Mein Schulblazer ist blau.||
+tie|der Schlips, die Krawatte|My tie is red.|Meine Krawatte ist rot.||
+uniform|die (Schul-)Uniform|Do you have a school uniform?|Habt ihr eine Schuluniform?||
+year|der Jahrgang (die Jahrgangsstufe)|I'm in Year 7.|Ich bin in der 7. Klasse.|<b>year</b> heißt auch: das Jahr
+board|die (Wand-)Tafel|Look at the board, please.|Schaut bitte an die Tafel.||
+student|Schüler/in; Student/in|I'm a student at Varndean School.|Ich bin Schüler an der Varndean School.||
+marker|der Textmarker|My marker is yellow.|Mein Textmarker ist gelb.||
+(to) teach|unterrichten|Mr Black teaches English.|Mr Black unterrichtet Englisch.|<b>teacher</b> = Lehrer/in
+art|die Kunst|I like art.|Ich mag Kunst.||
+history|die Geschichte (Schulfach)|I have history on Monday.|Montags habe ich Geschichte.|<b>history</b> = das Schulfach. <b>story</b> = eine Erzählung.
+class teacher|Klassenlehrer/in|Mrs Lee is our class teacher.|Frau Lee ist unsere Klassenlehrerin.||
+poem|das Gedicht|Read the poem, please.|Lies bitte das Gedicht.||
+dot|der Punkt, das Pünktchen|The i has a dot.|Das i hat einen Punkt.|Der Punkt am Satzende heißt <b>full stop</b>.
+problem|das Problem|No problem!|Kein Problem!|Betonung vorne: <b>pro</b>blem
+no ...|kein ..., keine ...|There's no school on Sundays.|Sonntags ist keine Schule.||
+No, that's wrong.|Nein, das ist falsch.|Two and two is five? – No, that's wrong.|Zwei und zwei ist fünf? – Nein, das ist falsch.||no that is wrong;that's wrong
+Yes, that's right.|Ja, das ist richtig.|Is Brighton in England? – Yes, that's right.|Liegt Brighton in England? – Ja, das stimmt.||yes that is right;that's right
+wrong|falsch, verkehrt|That's the wrong answer.|Das ist die falsche Antwort.|Das w spricht man nicht: [rɒŋ]
+now|nun, jetzt|We can go now.|Wir können jetzt gehen.||
+(It's) your turn.|Du bist dran. / Du bist an der Reihe.|Now it's your turn.|Jetzt bist du dran.||your turn;it's your turn;it is your turn
+your|dein/e; euer/eure; Ihr/e|What's your name?|Wie heißt du?||
+spelling|die Rechtschreibung|Check your spelling.|Prüfe deine Rechtschreibung.||
+please|bitte|Open the window, please.|Mach bitte das Fenster auf.||
+new|neu|My bag is new.|Meine Tasche ist neu.|Gegenteil: <b>old</b>
+at|an, bei, in (bei Ortsangaben)|I'm at school.|Ich bin in der Schule.|Englisch: <b>at</b> school = <b>in</b> der Schule
+thing|die Sache, das Ding|What's that thing?|Was ist das für ein Ding?||
+together|zusammen|Let's sit together.|Lass uns zusammen sitzen.||
+bag|die Tasche, der Beutel, die Tüte|My bag is under my chair.|Meine Tasche ist unter meinem Stuhl.||
+Simon says ...|Simon sagt ...|Simon says: sit down.|Simon sagt: Setz dich.||`,
 
 sea:`pier|die Seebrücke|The pier is very long.|Die Seebrücke ist sehr lang.
 beach|der Strand|They are on the beach.|Sie sind am Strand.|Im Satz klein: on the <b>beach</b>
@@ -736,7 +995,27 @@ little|klein|My little brother is six.|Mein kleiner Bruder ist sechs.
 big|groß|Brighton has got a big pier.|Brighton hat eine große Seebrücke.
 happy|glücklich, froh|The people are happy.|Die Leute sind glücklich.
 people|die Leute, die Menschen|There are a lot of people on the beach.|Am Strand sind viele Leute.|<b>people</b> ist schon Mehrzahl: people <b>are</b>
-park|der Park|We play in the park.|Wir spielen im Park.`,
+park|der Park|We play in the park.|Wir spielen im Park.
+a tour of Brighton|eine Rundfahrt durch Brighton|Let's go on a tour of Brighton.|Lass uns eine Rundfahrt durch Brighton machen.||tour;a tour
+garden|der Garten|The dogs are in the garden.|Die Hunde sind im Garten.||
+picture|das Bild|I like the picture.|Ich mag das Bild.|Englisch: <b>in</b> the picture = <b>auf</b> dem Bild
+tree|der Baum|There are two birds on the tree.|Es sind zwei Vögel auf dem Baum.|Zwei e: tr<b>ee</b>
+grass|das Gras; der Rasen|The dog is on the grass.|Der Hund ist auf dem Gras.||
+flower|die Blume; die Blüte|The flowers in the garden are red.|Die Blumen im Garten sind rot.||
+bee|die Biene|There's a bee on the flower.|Auf der Blume ist eine Biene.||
+ball|der Ball|Where is my ball?|Wo ist mein Ball?||
+balloon|der Luftballon|I have a red balloon.|Ich habe einen roten Luftballon.|Zwei l und zwei o: ba<b>ll</b><b>oo</b>n
+bike|das Fahrrad|My bike is blue.|Mein Fahrrad ist blau.||
+sandwich|das Sandwich, das belegte Brot|Can I have a sandwich, please?|Kann ich bitte ein Sandwich haben?||
+banana|die Banane|I like bananas.|Ich mag Bananen.||
+game|das Spiel|Let's play a game.|Lass uns ein Spiel spielen.||
+something|etwas|I have something for you.|Ich habe etwas für dich.|some + thing
+great|großartig|Brighton is great!|Brighton ist großartig!||
+small|klein|My room is small.|Mein Zimmer ist klein.|Gegenteil: <b>big</b>
+hot|heiß|It's hot today.|Heute ist es heiß.|Gegenteil: <b>cold</b>
+cold|kalt|The sea is cold.|Das Meer ist kalt.|Gegenteil: <b>hot</b>
+(to) see|sehen; besuchen|I can see the sea.|Ich kann das Meer sehen.|<b>see</b> und <b>sea</b> klingen gleich!
+(to) fly|fliegen|Seagulls can fly.|Möwen können fliegen.||`,
 
 far:`black|schwarz|My cat is black.|Meine Katze ist schwarz.
 red|rot|The car is red.|Das Auto ist rot.
@@ -757,7 +1036,22 @@ Wednesday|Mittwoch|Today is Wednesday.|Heute ist Mittwoch.|Das erste d hört man
 Thursday|Donnerstag|On Thursday I go swimming.|Am Donnerstag gehe ich schwimmen.
 Friday|Freitag|Friday is cool.|Freitag ist cool.
 Saturday|Samstag|On Saturday I'm at home.|Am Samstag bin ich zu Hause.
-Sunday|Sonntag|On Sunday we visit grandma.|Am Sonntag besuchen wir Oma.`,
+Sunday|Sonntag|On Sunday we visit grandma.|Am Sonntag besuchen wir Oma.
+one|eins|I have one brother.|Ich habe einen Bruder.||
+two|zwei|I have two cats.|Ich habe zwei Katzen.||
+three|drei|There are three boys in the park.|Es sind drei Jungen im Park.|th wie in <b>th</b>ank you
+four|vier|We are four in my family.|Wir sind vier in meiner Familie.|f-o-u-r
+five|fünf|I have five pencils.|Ich habe fünf Bleistifte.||
+six|sechs|My sister is six.|Meine Schwester ist sechs.||
+seven|sieben|There are seven days in a week.|Eine Woche hat sieben Tage.||
+eight|acht|I'm at school at eight.|Ich bin um acht in der Schule.|Das gh spricht man nicht: ei<b>gh</b>t [eɪt]
+nine|neun|My brother is nine.|Mein Bruder ist neun.||
+ten|zehn|I'm ten years old.|Ich bin zehn Jahre alt.||
+eleven|elf|I'm eleven years old.|Ich bin elf Jahre alt.||
+twelve|zwölf|There are twelve books on the shelf.|Es sind zwölf Bücher im Regal.|Am Ende <b>lve</b>: twe<b>lve</b>
+day|der Tag|Today is a great day.|Heute ist ein toller Tag.||
+week|die Woche|There are seven days in a week.|Eine Woche hat sieben Tage.|Zwei e: w<b>ee</b>k
+double|Doppel-|My number is O one double six.|Meine Nummer ist null eins sechs sechs.|Bei Telefonnummern: 66 = <b>double six</b>`,
 
 tie:`pet|das Haustier|My pet is a rabbit.|Mein Haustier ist ein Kaninchen.
 rabbit|das Kaninchen|The rabbit is cute.|Das Kaninchen ist süß.
@@ -771,7 +1065,15 @@ platypus|das Schnabeltier|A platypus is a weird animal.|Ein Schnabeltier ist ein
 elephant|der Elefant|An elephant is very big.|Ein Elefant ist sehr groß.|Mit <b>ph</b>: ele<b>ph</b>ant
 cute|süß, niedlich|My guinea pig is cute.|Mein Meerschweinchen ist süß.
 scary|gruselig, unheimlich|The spider is scary.|Die Spinne ist gruselig.
-cool|cool|Platypuses are cool.|Schnabeltiere sind cool.`,
+cool|cool|Platypuses are cool.|Schnabeltiere sind cool.
+budgie|der Wellensittich|My budgie is green.|Mein Wellensittich ist grün.||
+fish|der Fisch|I have two fish.|Ich habe zwei Fische.|Mehrzahl ohne s: one fish, two <b>fish</b>
+parrot|der Papagei|The parrot can talk.|Der Papagei kann sprechen.|Zwei r: pa<b>rr</b>ot
+rat|die Ratte|I don't like rats.|Ich mag keine Ratten.||
+dog|der Hund|My dog is called Buddy.|Mein Hund heißt Buddy.||
+awesome|klasse, großartig|Your bike is awesome!|Dein Fahrrad ist klasse!||
+under|unter|The cat is under the table.|Die Katze ist unter dem Tisch.||
+more|mehr|Go to page 147 for more help.|Auf Seite 147 gibt es mehr Hilfe.||`,
 
 ver:`(to) think|denken|I think it's cool.|Ich denke, es ist cool.
 (to) watch|(an)schauen|I watch TV.|Ich schaue fern.
@@ -779,7 +1081,22 @@ ver:`(to) think|denken|I think it's cool.|Ich denke, es ist cool.
 (to) read|lesen|I'm reading a book.|Ich lese gerade ein Buch.
 (to) write|schreiben|I write a word.|Ich schreibe ein Wort.|Das <b>w</b> hört man nicht: [raɪt]
 (to) talk|sich unterhalten, reden|We talk at school.|Wir unterhalten uns in der Schule.|Das <b>l</b> hört man nicht: [tɔːk]
-(to) speak|sprechen|I speak English.|Ich spreche Englisch.`,
+(to) speak|sprechen|I speak English.|Ich spreche Englisch.
+can|können|I can swim.|Ich kann schwimmen.|Verneint: <b>can't</b>
+(to) have|haben|I have a cat.|Ich habe eine Katze.||
+(to) find|finden|I can't find my pen.|Ich kann meinen Stift nicht finden.||
+(to) show|zeigen|Show me your drawing.|Zeig mir deine Zeichnung.|[ʃ] klingt wie „sch“ in „schön“
+(to) sing|singen|Let us sing a song.|Lasst uns ein Lied singen.||
+(to) know|wissen|I know the answer.|Ich weiß die Antwort.|Das k spricht man nicht: [nəʊ]
+(to) sit|sitzen; sich setzen|Come and sit next to me.|Komm und setz dich neben mich.||
+(to) go|gehen|We go to the park.|Wir gehen in den Park.||
+(to) watch a film|sich einen Film anschauen|Let's watch a film today.|Lass uns heute einen Film anschauen.||watch a film
+(to) run|rennen, laufen|Dogs like to run.|Hunde rennen gern.||
+(to) swim|schwimmen|I can swim.|Ich kann schwimmen.||
+(to) dance|tanzen|I like to dance.|Ich tanze gern.||
+(to) need|brauchen, benötigen|I need a pen.|Ich brauche einen Stift.||
+if|wenn, falls|If you need help, ask me.|Wenn du Hilfe brauchst, frag mich.|<b>if</b> = wenn/falls. <b>when</b> = wenn/sobald.
+but|aber|Luca is ten, but Jack is fourteen.|Luca ist zehn, aber Jack ist vierzehn.||`,
 
 zim:`bed|das Bett|My bed is big.|Mein Bett ist groß.
 sheet|das Bettlaken|The sheet is white.|Das Bettlaken ist weiß.
@@ -927,6 +1244,10 @@ PLANETS.forEach(p=>{
     W.push({id:p.id+"-"+String(i+1).padStart(2,"0"), pl:p.id, en, de, ex:ex||"", exDe:exDe||"", tip:tip||"", alt: alt ? alt.split(";") : []});
   });
 });
+/* Wörter, die in einem anderen Thema stehen, aber auch zu Unit 1 gehören (Buch S. 234–237) */
+const ALSO = {u1:["haus-03","haus-05","haus-07","haus-09","haus-10","haus-11","haus-14","ich-21","fam-09","sea-15","ver-03","ver-05","ver-06","zim-07","zim-10"]};
+Object.entries(ALSO).forEach(([pl,ids])=>ids.forEach(id=>{ const w = W.find(x=>x.id===id); if (w) (w.also = w.also||[]).push(pl); }));
+const inPl = (x, id) => x.pl===id || !!(x.also && x.also.includes(id));
 const WMAP = Object.fromEntries(W.map(w=>[w.id,w]));
 
 /* ============ HELPERS ============ */
@@ -1010,6 +1331,7 @@ function answerForms(w){
   if (w.core) exact.add(norm(w.core));
   return {exact,res};
 }
+const deParts = w => w.de.replace(/\([^)]*\)/g,"").split(/[,;\/]/).map(x=>x.trim().toLowerCase()).filter(x=>x.length>2);
 function checkWord(w, input){
   const n = norm(input); if (!n) return {ok:false};
   const {exact,res} = answerForms(w);
@@ -1444,7 +1766,7 @@ const ss = id => S.sent[id];
 const introduced = () => W.filter(w=>st(w.id));
 const isSafe = w => st(w.id) && st(w.id).b>=3;
 function testActive(){ return !!(S.test && S.test.pl && S.test.date && dayDiff(today(), S.test.date) >= 0); }
-const isTestWord = w => testActive() && w.pl===S.test.pl;
+const isTestWord = w => testActive() && inPl(w,S.test.pl);
 function dueWords(){
   const t = today();
   return W.filter(w=>{ const s=st(w.id); if(!s) return false; if (s.due<=t) return true; return isTestWord(w) && s.last!==t; })
@@ -1453,20 +1775,21 @@ function dueWords(){
 function newWords(){
   const order = PLANETS.map(p=>p.id), tp = testActive() ? S.test.pl : null;
   return W.filter(w=>!st(w.id)).sort((a,b)=>{
-    const pa = a.pl===tp ? -1 : order.indexOf(a.pl), pb = b.pl===tp ? -1 : order.indexOf(b.pl);
+    const pa = inPl(a,tp) ? -1 : order.indexOf(a.pl), pb = inPl(b,tp) ? -1 : order.indexOf(b.pl);
     return pa-pb;
   });
 }
 function planNew(dueCount){
-  if (testActive()){ const left = W.filter(w=>w.pl===S.test.pl && !st(w.id)).length; if (left) return Math.min(8, left); }
+  if (testActive()){ const left = W.filter(w=>inPl(w,S.test.pl) && !st(w.id)).length;
+    if (left){ const days = Math.max(1, dayDiff(today(), S.test.date)); return Math.min(left, Math.max(8, Math.min(14, Math.ceil(left/days)))); } }
   return dueCount>=16 ? 2 : dueCount>=10 ? 4 : 6;
 }
 function focusPlace(){
   if (testActive()) return PMAP[S.test.pl];
-  return PLANETS.find(p=>W.some(w=>w.pl===p.id && !isSafe(w))) || PLANETS[0];
+  return PLANETS.find(p=>W.some(w=>inPl(w,p.id) && !isSafe(w))) || PLANETS[0];
 }
 function placeStats(pid){
-  const ws = W.filter(w=>w.pl===pid);
+  const ws = W.filter(w=>inPl(w,pid));
   return {total:ws.length, seen:ws.filter(w=>st(w.id)).length, safe:ws.filter(isSafe).length, fixed:ws.filter(w=>st(w.id)&&st(w.id).b>=2).length};
 }
 function addXP(n){
@@ -1559,7 +1882,7 @@ const SALLMAP = Object.fromEntries(SALL.map(s=>[s.id,s]));
 /* Welche Vokabeln stecken in welchem Satz? */
 SALL.forEach(s=>{
   const en = fillN(s.en);
-  s.words = W.filter(w=>(w.pl===s.pl || s.pl==="gram") && WRE[w.id] && WRE[w.id].test(en)).map(w=>w.id);
+  s.words = W.filter(w=>(inPl(w,s.pl) || s.pl==="gram") && WRE[w.id] && WRE[w.id].test(en)).map(w=>w.id);
   if (s.auto){ const own = s.id.slice(3); if (!s.words.includes(own)) s.words.push(own); }
 });
 function sentPoolFor(pid){
@@ -1575,7 +1898,7 @@ function wordNeed(id){
 }
 function buildSentSession(pid){
   const pool = sentPoolFor(pid).slice();
-  const targets = new Set(pid==="gram" ? [] : W.filter(w=>w.pl===pid).map(w=>w.id));
+  const targets = new Set(pid==="gram" ? [] : W.filter(w=>inPl(w,pid)).map(w=>w.id));
   const chosen = [], covered = new Set(), t = today();
   const sentBonus = s => { const x = ss(s.id); if (!x) return .25; return (x.w>0 && x.b<=2 ? .5 : 0) + (x.due<=t ? .3 : 0) - (x.last===t ? .6 : 0); };
   while (chosen.length < SESSION_N && pool.length){
@@ -1601,12 +1924,12 @@ function startSentSession(pid){
   if (!q.length){ toast("Zu diesem Thema gibt es noch keine Sätze."); return; }
   begin("sent", q);
   M.place = pid;
-  M.sentWords = new Set(q.flatMap(it=>it.s.words).filter(id=>pid==="gram" || WMAP[id].pl===pid));
+  M.sentWords = new Set(q.flatMap(it=>it.s.words).filter(id=>pid==="gram" || inPl(WMAP[id],pid)));
 }
 function renderSentPick(){
   const cur = focusPlace(), cps = placeStats(cur.id);
   const covered = id => ((S.ws||{})[id]||{n:0}).n>0;
-  const row = p => { const ws = W.filter(w=>w.pl===p.id), n = sentPoolFor(p.id).length, cov = ws.filter(w=>covered(w.id)).length;
+  const row = p => { const ws = W.filter(w=>inPl(w,p.id)), n = sentPoolFor(p.id).length, cov = ws.filter(w=>covered(w.id)).length;
     return `<button class="deck" data-act="sentGo" data-pid="${p.id}">${placeDot(p)}<div style="min-width:0"><b>${esc(p.name)}</b><small>${n} Sätze · ${cov} von ${ws.length} Vokabeln schon in Sätzen geübt</small></div><span class="n">11</span></button>`; };
   $("#s-sentpick").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
     <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Satzwerkstatt</h1>
@@ -1645,7 +1968,7 @@ function pickSentences(n, only, needBad){
 }
 function testReadiness(){
   if (!testActive()) return null;
-  const ws = W.filter(w=>w.pl===S.test.pl);
+  const ws = W.filter(w=>inPl(w,S.test.pl));
   const famOk = ws.filter(w=>{ const s=st(w.id); return s && (s.b>=3 || (s.fam && dayDiff(s.fam,today())<=3)); }).length;
   const seen = ws.filter(w=>st(w.id)).length, fixed = ws.filter(w=>st(w.id)&&st(w.id).b>=2).length;
   if (famOk===ws.length) return {c:"#1FB97E", t:"Grün: testbereit", d:"Alle Wörter sitzen oder wurden bei der Möwen-Prüfung bestätigt."};
@@ -1689,7 +2012,7 @@ function checkBadges(ctx){
 }
 
 /* ============ BILDSCHIRME ============ */
-const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview"];
+const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview","exam"];
 function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
@@ -1775,12 +2098,12 @@ function renderTestCard(){
   const rd = testReadiness(), ready = rd.t.startsWith("Grün");
   const plan = ready ? "Super vorbereitet! Wiederhole kurz mit den Karteikarten, damit es so bleibt." :
     d===0 ? "Heute ist der Test! Kurz aufwärmen mit den Karteikarten." :
-    left>0 ? `Heute: ${Math.min(8,left)} neue Test-Wörter lernen.` :
+    left>0 ? `Heute: ${planNew(0)} neue Test-Wörter lernen. Noch ${left} neu.` :
     d===1 ? "Morgen ist der Test: Mach heute die Möwen-Prüfung mit allen Test-Wörtern." :
     "Heute: wiederholen und Sätze bauen.";
   box.innerHTML = `<div class="storm" style="flex-direction:column;gap:8px;${ready?"background:linear-gradient(160deg,#2C8C6A,#1E6E55);border-color:#1E6E55":""}">
     <div class="row" style="align-items:flex-start">
-      <div style="min-width:0"><span class="label">${ready?"Sturm verzogen":"Sturmwarnung"}: Vokabeltest</span><div style="font-family:var(--f-display);font-weight:700;font-size:1.15rem">${esc(p.name)}</div><small>am ${wdName(S.test.date)}, ${dmy(S.test.date).slice(0,6)}</small></div>
+      <div style="min-width:0"><span class="label">${ready?"Sturm verzogen":"Sturmwarnung"}: Test</span><div style="font-family:var(--f-display);font-weight:700;font-size:1.15rem">${esc(p.name)}</div><small>am ${wdName(S.test.date)}, ${dmy(S.test.date).slice(0,6)}</small></div>
       <span class="spacer"></span>
       <div class="center"><div class="count">${d===0?"!":d}</div><small>${d===0?"heute":d===1?"Tag":"Tage"}</small></div>
     </div>
@@ -1789,6 +2112,7 @@ function renderTestCard(){
     <span class="ampel" title="${esc(rd.d)}"><i style="background:${rd.c}"></i>${rd.t}</span>
     <div style="font-weight:700">${plan}</div>
     <div class="row"><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="startTest">Test-Training</button><button class="btn btn-soft" style="flex:1;min-height:44px;padding:0 10px" data-act="testCards">Karteikarten</button></div>
+    <button class="btn btn-main" style="min-height:48px" data-act="openExam">Probe-Klassenarbeit (45 Min.)</button>
   </div>`;
 }
 function renderHome(){
@@ -1834,6 +2158,7 @@ function renderExtras(){
   $("#ovSub").textContent = `${W.filter(w=>!st(w.id)).length} Wörter und ${SALL.filter(x=>!ss(x.id)).length} Sätze noch neu`;
   $("#sentSub").textContent = `${SALL.length} Sätze zu allen Vokabeln`;
   $("#fixSub").textContent = `${G()} macht Fehler. Findest du sie?`;
+  { const ka = (S.exams||[]).filter(e=>e.kind==="ka").pop(); $("#examSub").textContent = ka ? `Letzte Note: ${ka.g} · ${PMAP[examPid()].name}` : `45 Minuten wie in der Schule · ${PMAP[examPid()].name}`; }
   $("#wardSub").textContent = `${accUnlocked().length} von ${ACC.length} Sachen freigeschaltet`;
   const postOk = learnedSentences().length + W.filter(w=>st(w.id)&&st(w.id).b>=2&&w.ex).length >= 2;
   $("#postSub").textContent = postOk ? (S.lastPost && dayDiff(S.lastPost,today())<7 ? "Diese Woche schon verschickt" : "Postkarte an die Familie") : "Erst ein paar Sätze lernen";
@@ -1868,8 +2193,8 @@ function startDaily(){
 }
 function startTest(){
   if (!testActive()) return startDaily();
-  const pl = S.test.pl, ws = W.filter(w=>w.pl===pl);
-  const nws = ws.filter(w=>!st(w.id)).slice(0,8);
+  const pl = S.test.pl, ws = W.filter(w=>inPl(w,pl));
+  const nws = ws.filter(w=>!st(w.id)).slice(0, planNew(0));
   const rev = shuffle(ws.filter(w=>st(w.id) && st(w.id).last!==today())).slice(0,14);
   const q = buildWordQueue(nws, rev.length ? rev : shuffle(ws.filter(w=>st(w.id))).slice(0,10));
   pickSentences(3, pl).forEach(s=>q.push({kind:"sent",s}));
@@ -1883,15 +2208,170 @@ function startFix(){
   begin("fix", list.map(s=>({kind:"fix",s})));
 }
 function startBoss(pid){
-  const p = (typeof pid==="string" && PMAP[pid]) || focusPlace(), ws = W.filter(w=>w.pl===p.id);
+  const p = (typeof pid==="string" && PMAP[pid]) || focusPlace(), ws = W.filter(w=>inPl(w,p.id));
   if (!ws.every(w=>st(w.id))){ toast(`Krabbe Kneifer wartet noch. Lerne zuerst alle Wörter von ${esc(p.place)}!`); return; }
   begin("boss", shuffle(ws).slice(0,14).map(w=>({kind:"word",w,boss:true})), {hp:10,max:10,shields:3,pl:p.id});
 }
+/* ============ PROBE-KLASSENARBEIT: 45 Minuten wie in der Schule ============ */
+const EXAM_MIN = 45;
+const EXAM_PARTS = [
+  {k:"A", n:"Wortschatz", d:"Schreib das Wort auf Englisch.", pts:1},
+  {k:"B", n:"Hören", d:"Hör genau zu und schreib das Wort auf.", pts:1},
+  {k:"C", n:"Lückensätze", d:"Welches Wort fehlt im Satz?", pts:1},
+  {k:"D", n:"Grammatik", d:"Bau den Satz richtig zusammen. Achtung, Fallen!", pts:2},
+  {k:"E", n:"Übersetzen", d:"Schreib den ganzen Satz auf Englisch.", pts:2},
+  {k:"F", n:"Fehler finden", d:"Schreib den Satz richtig auf.", pts:2}
+];
+const EPART = Object.fromEntries(EXAM_PARTS.map(p=>[p.k,p]));
+const GRADE_TXT = ["","sehr gut","gut","befriedigend","ausreichend","mangelhaft","ungenügend"];
+const GRADE_MIN = [0,.92,.81,.67,.5,.3,0];
+const gradeOf = pct => pct>=.92?1:pct>=.81?2:pct>=.67?3:pct>=.5?4:pct>=.3?5:6;
+const fmtP = n => String(Math.round(n*2)/2).replace(".",",");
+const mmss = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return `${Math.floor(s/60)}:${pad(s%60)}`; };
+let examTimer = null;
+function examPid(){ return testActive() ? S.test.pl : "u1"; }
+function shortSent(s){ return fillN(s.en).split(" ").length <= 9; }
+function buildExam(pid){
+  const ws = shuffle(W.filter(w=>inPl(w,pid)));
+  const used = new Set(), take = (n, f) => { const out = []; for (const w of ws){ if (out.length>=n) break; if (!used.has(w.id) && f(w)){ used.add(w.id); out.push(w); } } return out; };
+  const q = [];
+  take(12, ()=>true).forEach(w=>q.push({kind:"word", w, type:"type", part:"A"}));
+  take(4, w=>!/\.\.\.|…|\//.test(w.en) && w.en.split(" ").length<=3).forEach(w=>q.push({kind:"word", w, type: HAS_TTS ? "listen" : "type", part:"B"}));
+  take(6, w=>gapMatch(w)!==null).forEach(w=>q.push({kind:"word", w, type:"gap", part:"C"}));
+  const gram = shuffle(SENT.filter(s=>s.pl==="gram")).slice(0,4);
+  gram.forEach(s=>q.push({kind:"sent", s, type:"puzzle", part:"D"}));
+  const pool = SALL.filter(s=>s.pl===pid && shortSent(s));
+  const tr = shuffle(pool.filter(s=>!s.auto)).slice(0,2);
+  shuffle(pool.filter(s=>s.auto)).forEach(s=>{ if (tr.length<4 && !tr.includes(s)) tr.push(s); });
+  tr.forEach(s=>q.push({kind:"sent", s, type:"translate", part:"E"}));
+  const fx = shuffle(pool.filter(s=>s.bad && !tr.includes(s)));
+  shuffle(SENT.filter(s=>s.bad && !gram.includes(s) && !fx.includes(s))).forEach(s=>fx.push(s));
+  fx.slice(0,3).forEach(s=>q.push({kind:"fix", s, type:"fixtype", part:"F"}));
+  return q;
+}
+function examMax(q){ return q.reduce((a,it)=>a+EPART[it.part].pts, 0); }
+function renderExamIntro(){
+  const pid = examPid(), p = PMAP[pid], q = buildExam(pid), max = examMax(q);
+  const last = (S.exams||[]).filter(e=>e.kind==="ka").pop();
+  $("#s-exam").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <div class="paper intro">
+      <div class="phead"><span>Englisch · Klasse 5</span><span>${dmy(today())}</span></div>
+      <h1 class="display" style="font-size:clamp(1.6rem,7vw,2.1rem);color:var(--navy);margin:4px 0 0">Probe-Klassenarbeit</h1>
+      <div style="font-weight:700;color:#08799E">${esc(p.name)}</div>
+      <p class="muted" style="margin:0">Wie in der Schule: ${EXAM_MIN} Minuten, keine Tipps, keine Hilfe. Erst ganz am Ende korrigiert ${esc(G())} mit dem Rotstift und gibt dir eine Note.</p>
+      <table class="ptab">${EXAM_PARTS.map(x=>{ const n = q.filter(i=>i.part===x.k).length; return n ? `<tr><td><b>Teil ${x.k}</b></td><td>${x.n}</td><td>${n} ${n===1?"Aufgabe":"Aufgaben"}</td><td>${n*x.pts} P.</td></tr>` : ""; }).join("")}
+        <tr class="sum"><td></td><td>Gesamt</td><td>${q.length} Aufgaben</td><td>${max} P.</td></tr></table>
+      <div class="tip"><b>So zählt es:</b> Ein kleiner Rechtschreibfehler gibt einen halben Punkt Abzug, ein falscher Groß- oder Kleinbuchstabe im Satz einen Punkt. Genau wie bei deiner Lehrerin.</div>
+      ${last?`<small class="muted">Letzte Probe-Klassenarbeit: ${dmy(last.d).slice(0,6)} · ${fmtP(last.ok)} von ${last.n} Punkten · Note ${last.g}</small>`:""}
+    </div>
+    <button class="btn btn-main btn-block" data-act="examGo" style="min-height:64px;font-size:1.15rem">Los geht's: ${EXAM_MIN} Minuten starten</button>
+    <p class="muted center" style="margin:0;font-size:.85rem">Buch und Heft zu! Ein Erwachsener darf die Zeit im Blick behalten.</p>`;
+  show("exam");
+  window.scrollTo(0,0);
+}
+function startExam(){
+  const pid = examPid(), q = buildExam(pid);
+  begin("exam", q);
+  M.exam = {pid, start:Date.now(), end:Date.now()+EXAM_MIN*60000, res:[], max:examMax(q)};
+  clearInterval(examTimer); examTimer = setInterval(examTick, 1000); examTick();
+}
+function examTick(){
+  const el = $("#examClock");
+  if (!M || M.mode!=="exam"){ clearInterval(examTimer); return; }
+  const left = M.exam.end - Date.now();
+  if (el){ el.textContent = mmss(left); el.classList.toggle("warn", left < 5*60000); }
+  if (left <= 0){ clearInterval(examTimer); hideSheet(); examFinish(true); }
+}
+function examDecorate(it){
+  const c = $("#card"), p = EPART[it.part];
+  c.querySelectorAll(".coach,[data-act=hint],.stagebadge").forEach(e=>e.remove());
+  const inPart = M.queue.filter(x=>x.part===it.part), idx = M.queue.slice(0, M.i+1).filter(x=>x.part===it.part).length;
+  const box = c.querySelector(".card");
+  if (box) box.insertAdjacentHTML("afterbegin", `<div class="exhead"><div><b>Teil ${p.k} · ${p.n}</b><small>${p.d}</small></div><span>${idx}/${inPart.length}<br><small>${p.pts} ${p.pts===1?"Punkt":"Punkte"}</small></span></div>`);
+}
+function examRecord(it, ok, opts, sol){
+  const p = EPART[it.part];
+  let pts = ok ? p.pts : 0;
+  if (ok && opts.typo) pts = p.pts - .5;
+  if (!ok && opts.cap) pts = p.pts - 1;
+  if (it.kind==="word") updateWord(it.w, ok, "mission", false);
+  else { updateSent(it.s, ok && !opts.cap, false); trackSentWords(it.s, ok, {type: it.type==="puzzle" ? "puzzle" : "translate"}); }
+  M.exam.res.push({part:it.part, ok, pts, max:p.pts, given:(opts.given||"").trim(), en:sol.en, de:sol.de, typo:!!opts.typo, cap:opts.cap||"", bad: it.kind==="fix" ? fillN(it.s.bad) : ""});
+  if (ok) M.right++; else M.wrong++;
+  sfx("tap");
+  const el = $("#card .card"); if (el) el.classList.add("handed");
+  setTimeout(()=>{ if (!M || M.mode!=="exam") return; M.i++; next(); }, 280);
+}
+function examFinish(timeUp){
+  clearInterval(examTimer);
+  const E = M.exam, used = Math.min(Date.now(), E.end) - E.start;
+  M.queue.slice(E.res.length).forEach(it=>{
+    const s = it.s, w = it.w;
+    E.res.push({part:it.part, ok:false, pts:0, max:EPART[it.part].pts, given:"", en: w ? w.en : fillN(s.en), de: w ? w.de : fillN(s.de), skipped:true, bad: it.kind==="fix" ? fillN(s.bad) : ""});
+  });
+  const pts = E.res.reduce((a,r)=>a+r.pts,0), max = E.max, pct = max ? pts/max : 0, g = gradeOf(pct);
+  S.exams = S.exams || [];
+  const prev = S.exams.filter(e=>e.kind==="ka").pop();
+  S.exams.push({d:today(), kind:"ka", deck:"Probe-Klassenarbeit", pl:E.pid, n:max, ok:pts, g, min:Math.round(used/60000)});
+  if (S.exams.length>40) S.exams = S.exams.slice(-40);
+  S.stats.missions++; markDay(); save(); addKm(60);
+  const newB = checkBadges({});
+  const fish0 = M.fish0, stage0 = M.stage0;
+  const wrongs = E.res.map((r,i)=>({...r, nr: r.part + (E.res.slice(0,i+1).filter(x=>x.part===r.part).length)})).filter(r=>r.pts < r.max);
+  const rights = E.res.filter(r=>r.pts===r.max).length;
+  const hue = g<=2 ? "#1FB97E" : g<=4 ? "#F2B632" : "#EF4D67";
+  let cmp = "";
+  if (prev){ const d = Math.round((pct - prev.ok/prev.n)*100);
+    cmp = `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.6rem" aria-hidden="true">${d>0?"📈":d<0?"📉":"➡️"}</span><div><b>${d>0?`${d} Prozentpunkte besser als beim letzten Mal!`:d<0?"Diesmal etwas weniger als beim letzten Mal.":"Genauso gut wie beim letzten Mal."}</b><div class="muted" style="font-size:.85rem">Letzte Probe: Note ${prev.g} · ${fmtP(prev.ok)} von ${prev.n} Punkten</div></div></div>`; }
+  $("#s-summary").innerHTML = `<div class="paper result-paper">
+      <div class="phead"><span>Probe-Klassenarbeit · ${esc(PMAP[E.pid].name)}</span><span>${dmy(today())}</span></div>
+      <div class="gradebox">
+        <div class="stamp" style="--h:${hue}"><small>Note</small><b>${g}</b><span>${GRADE_TXT[g]}</span></div>
+        <div class="stack" style="gap:4px;min-width:0">
+          <div class="hand big">${fmtP(pts)} / ${max} P.</div>
+          <b style="color:var(--navy)">${Math.round(pct*100)} % geschafft</b>
+          <small class="muted">${timeUp?"Die Zeit war um.":"Abgegeben nach "+mmss(used)+" Minuten."} ${rights} von ${E.res.length} Aufgaben ganz richtig.</small>
+        </div>
+      </div>
+      <div class="parts">${EXAM_PARTS.map(x=>{ const rs = E.res.filter(r=>r.part===x.k); if (!rs.length) return ""; const a = rs.reduce((s,r)=>s+r.pts,0), m = rs.reduce((s,r)=>s+r.max,0);
+        return `<div class="prow"><span><b>${x.k}</b> ${x.n}</span><div class="sbar"><i style="width:${(a/m*100).toFixed(1)}%;background:${a/m>=.8?"#1FB97E":a/m>=.5?"#F2B632":"#EF4D67"}"></i></div><span class="hand">${fmtP(a)}/${m}</span></div>`; }).join("")}</div>
+    </div>
+    ${cmp}
+    ${wrongs.length ? `<div class="paper">
+      <span class="label" style="color:#C0262D">Korrektur mit dem Rotstift</span>
+      ${wrongs.map(r=>`<div class="fixrow">
+        <span class="nr">${r.nr}</span>
+        <div style="min-width:0;flex:1">
+          <small class="muted">${esc(r.de)}</small>
+          ${r.bad?`<div class="muted" style="font-size:.85rem">Fehlersatz: ${esc(r.bad)}</div>`:""}
+          <div class="hand blue">${r.skipped ? "<i>nicht bearbeitet</i>" : r.given ? (r.pts>0 ? esc(r.given) : `<s>${esc(r.given)}</s>`) : "<i>keine Antwort</i>"}</div>
+          <div class="hand red">${esc(r.en)}</div>
+          ${r.typo?`<small class="red-note">Rechtschreibung: −½ Punkt</small>`:r.cap?`<small class="red-note">Groß-/Kleinschreibung: −1 Punkt</small>`:""}
+        </div>
+        <span class="hand red pts">${fmtP(r.pts)}/${r.max}</span>
+      </div>`).join("")}
+    </div>` : `<div class="panel" style="border-color:var(--good);text-align:center"><b style="font-size:1.2rem;color:#0E7C51">Alles richtig! Keine einzige Korrektur.</b></div>`}
+    <details class="panel"><summary style="font-weight:700;cursor:pointer">Notenschlüssel</summary>
+      <table class="ptab">${[1,2,3,4,5,6].map(n=>`<tr class="${n===g?"sum":""}"><td><b>${n}</b></td><td>${GRADE_TXT[n]}</td><td>${n===1?"ab 92 %":n===6?"unter 30 %":`ab ${Math.round(GRADE_MIN[n]*100)} %`}</td><td>${n===6?`unter ${fmtP(Math.ceil(max*.3*2)/2)} P.`:`ab ${fmtP(Math.ceil(max*GRADE_MIN[n]*2)/2)} P.`}</td></tr>`).join("")}</table>
+      <small class="muted">Ein üblicher Schlüssel. Die Schule kann etwas anders bewerten.</small>
+    </details>
+    ${growthPanel(fish0, stage0)}
+    ${stickerPanel(newB)}
+    ${accPanel(newAccessories())}
+    ${wrongs.length?`<button class="btn btn-main btn-block" data-act="ovCards" data-key="wrong">Fehlerwörter jetzt üben</button>`:""}
+    <div class="row"><button class="btn btn-soft" style="flex:1" data-act="openExam">Neue Probe-Klassenarbeit</button><button class="btn btn-soft" style="flex:1" data-act="home">Zum Hafen</button></div>`;
+  M = null;
+  show("summary"); window.scrollTo(0,0);
+  setTimeout(()=>{ sfx("hit"); const st = $("#s-summary .stamp"); if (st){ st.classList.add("in"); const [x,y] = centerOf(st); burst(x,y,40,[hue,"#fff",hue]); } }, 600);
+  if (g<=2) setTimeout(()=>{ sfx("win"); confetti(); }, 1100);
+}
+
 function begin(mode, queue, boss){
   const fish0 = S.fish||0, stage0 = gullStage();
   M = {mode, queue, boss:boss||null, i:0, right:0, wrong:0, combo:0, best:0, xp:0, wrongSet:new Set(), lastType:null,
        newCount:queue.filter(q=>q.kind==="intro").length, sentOk:0, sentTotal:0, missed:[], hatch: gullStage()===0, fish0, stage0};
   $("#bossBox").hidden = mode!=="boss";
+  $("#combo").hidden = mode==="exam"; $("#examClock").hidden = mode!=="exam";
   show("mission"); renderBoss(); next();
 }
 function next(){
@@ -1904,6 +2384,7 @@ function next(){
   else if (it.kind==="sent") renderSentence(it);
   else if (it.kind==="fix") renderFix(it);
   else renderWord(it);
+  if (M.mode==="exam") examDecorate(it);
 }
 function renderCombo(){ $("#comboN").textContent = M.combo; $("#combo").classList.toggle("hot", M.combo>=3); }
 function renderBoss(){
@@ -2018,6 +2499,8 @@ function doTypeCheck(){
   if (it.kind==="fix") return doFixType(val);
   const w = it.w;
   let res = checkWord(w, val);
+  /* Gleiche deutsche Bedeutung, anderes richtiges englisches Wort (z. B. falsch = false / wrong) */
+  if (!res.ok && it.type!=="gap"){ const mine = deParts(w); const twin = W.find(x=>x!==w && deParts(x).some(d=>mine.includes(d)) && checkWord(x,val).ok && !checkWord(x,val).typo); if (twin) res = {ok:true}; }
   if (!res.ok && it.type==="gap" && M.gap){ const n=norm(val), g=norm(M.gap.word); if (n===g) res={ok:true}; else if (g.length>=5 && lev(n,g)<=1) res={ok:true,typo:true}; }
   inp.blur();
   resolveWord(res.ok, {typo:res.typo, cap: res.ok ? capNote(w,val) : "", given: val});
@@ -2100,6 +2583,7 @@ function doFixType(val){
 function resolveWord(ok, opts={}){
   if (M.answered) return; M.answered = true;
   const it = M.queue[M.i], w = it.w;
+  if (M.mode==="exam") return examRecord(it, ok, opts, {en:w.en, de:w.de});
   updateWord(w, ok, "mission", M.wrongSet.has(w.id) || M.hintUsed || it.fresh);
   afterAnswer(ok, it);
   if (!ok){ M.wrongSet.add(w.id); if (!M.missed.includes(w.en)) M.missed.push(w.en); }
@@ -2108,6 +2592,7 @@ function resolveWord(ok, opts={}){
 function resolveSent(ok, opts={}){
   if (M.answered) return; M.answered = true;
   const it = M.queue[M.i], s = it.s;
+  if (M.mode==="exam") return examRecord(it, ok, opts, {en:fillN(s.en), de:fillN(s.de)});
   M.sentTotal++; if (ok) M.sentOk++;
   updateSent(s, ok, it.retry);
   trackSentWords(s, ok, it);
@@ -2203,6 +2688,7 @@ function growthPanel(f0, st0){
   return `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.8rem" aria-hidden="true">🐟</span><div><b>${esc(G())} hat ${gained} ${gained===1?"Fisch":"Fische"} bekommen</b><div class="muted" style="font-size:.88rem">${next?`Noch ${next.min-f} Fische bis zur ${next.n}.`:"Größer geht es nicht mehr!"}</div></div></div>`;
 }
 function finish(){
+  if (M.mode==="exam") return examFinish(false);
   hideSheet();
   const total = M.right + M.wrong, acc = total ? M.right/total : 1;
   let win = null;
@@ -2280,7 +2766,7 @@ function deckOptions(){
   out.push({key:"rec", order:"fixed", name:"Empfohlen für heute", sub:"Zuerst Fehlerwörter, dann fällige, ein paar Sätze und neue Wörter", items:recommendedItems(), star:true});
   if (testActive()){
     const p=PMAP[S.test.pl];
-    out.push({key:"test", name:`Test: ${p.name}`, sub:"Alle Wörter für den Test", items:W.filter(w=>w.pl===p.id).map(w=>kW(w.id)), hot:true});
+    out.push({key:"test", name:`Test: ${p.name}`, sub:"Alle Wörter für den Test", items:W.filter(w=>inPl(w,p.id)).map(w=>kW(w.id)), hot:true});
     out.push({key:"testsent", name:`Test: Sätze`, sub:`Alle Sätze zu ${p.name}`, items:SALL.filter(s=>s.pl===p.id).map(s=>kS(s.id)), hot:true});
   }
   out.push({key:"wrong", order:"fixed", name:"Fehlerwörter", sub:"Die zuletzt nicht gewussten zuerst. Raus nach 2 richtigen Tagen.", items:W.filter(isFehler).sort(fehlerSort).map(w=>kW(w.id)), red:true});
@@ -2290,15 +2776,15 @@ function deckOptions(){
   out.push({key:"rand", order:"random", name:"Zufall: alles gemischt", sub: intro.length>=10 ? "Quer durch alle gelernten Wörter" : "Quer durch alle Wörter", items:(intro.length>=10?intro:W).map(w=>kW(w.id))});
   out.push({key:"sentall", order:"random", name:"Sätze: alles gemischt", sub:"Quer durch alle Sätze", items:SALL.map(s=>kS(s.id))});
   out.push({key:"recent", name:"Zuletzt gelernt", sub:"Die letzten 3 Tage", items:W.filter(w=>st(w.id) && st(w.id).last && dayDiff(st(w.id).last,t)<=3).map(w=>kW(w.id))});
-  PLANETS.forEach(p=>{ const ps=placeStats(p.id); out.push({key:p.id, name:p.name, sub:`${ps.seen}/${ps.total} gesehen · ${ps.safe} sicher`, items:W.filter(w=>w.pl===p.id).map(w=>kW(w.id)), place:p}); });
+  PLANETS.forEach(p=>{ const ps=placeStats(p.id); out.push({key:p.id, name:p.name, sub:`${ps.seen}/${ps.total} gesehen · ${ps.safe} sicher`, items:W.filter(w=>inPl(w,p.id)).map(w=>kW(w.id)), place:p}); });
   return out;
 }
 function deckByKey(key){
   const m = key.match(/^(new|wrong|sent):(.+)$/);
   if (m){
     const p = PMAP[m[2]]; if (!p) return null;
-    if (m[1]==="new") return {key, order:"fixed", name:`Neu: ${p.name}`, sub:"", items:W.filter(w=>w.pl===p.id && !st(w.id)).map(w=>kW(w.id))};
-    if (m[1]==="wrong") return {key, order:"fixed", name:`Fehler: ${p.name}`, sub:"", items:W.filter(w=>w.pl===p.id && isFehler(w)).sort(fehlerSort).map(w=>kW(w.id))};
+    if (m[1]==="new") return {key, order:"fixed", name:`Neu: ${p.name}`, sub:"", items:W.filter(w=>inPl(w,p.id) && !st(w.id)).map(w=>kW(w.id))};
+    if (m[1]==="wrong") return {key, order:"fixed", name:`Fehler: ${p.name}`, sub:"", items:W.filter(w=>inPl(w,p.id) && isFehler(w)).sort(fehlerSort).map(w=>kW(w.id))};
     return {key, name:`Sätze: ${p.name}`, sub:"", items:SALL.filter(s=>s.pl===p.id).map(s=>kS(s.id))};
   }
   return deckOptions().find(o=>o.key===key) || null;
@@ -2494,7 +2980,7 @@ function renderOverview(back){
       <small class="muted">Fehlerwörter verlassen die Liste, wenn sie an 2 verschiedenen Tagen richtig waren, in der Unterrichtsstunde, der Satzwerkstatt oder der Möwen-Prüfung.</small>
     </div>
     ${PLANETS.map(p=>{
-      const ws = W.filter(w=>w.pl===p.id), c = countStates(ws), sp = SALL.filter(s=>s.pl===p.id), spd = sp.filter(s=>ss(s.id)).length;
+      const ws = W.filter(w=>inPl(w,p.id)), c = countStates(ws), sp = SALL.filter(s=>s.pl===p.id), spd = sp.filter(s=>ss(s.id)).length;
       return `<div class="panel ov">
         <div class="row">${placeDot(p)}<b style="color:var(--navy);flex:1;min-width:0">${esc(p.name)}</b><small class="muted">${ws.length-c.neu}/${ws.length}</small></div>
         ${stackBar(c, ws.length)}
@@ -2559,7 +3045,7 @@ function pinGo(){
 
 /* ============ KARTE / DIPLOME / ELTERN ============ */
 function wordRows(p, all){
-  return W.filter(w=>w.pl===p.id).map(w=>{
+  return W.filter(w=>inPl(w,p.id)).map(w=>{
     const s = st(w.id);
     if (!s && !all) return `<div class="witem unknown"><div class="txt"><b>???</b><small>Noch nicht beigebracht</small></div></div>`;
     return `<div class="witem"><div class="txt"><b>${esc(w.en)}</b><small>${esc(w.de)}</small></div>
@@ -2741,6 +3227,7 @@ function renderParents(){
       <pre style="margin:0;white-space:pre-wrap;font:inherit;font-size:.9rem">${esc(reportText(false))}</pre>
       <button class="btn btn-soft" data-act="shareReport">Bericht teilen</button>
     </div>
+    ${(S.exams||[]).some(e=>e.kind==="ka")?`<div class="panel"><span class="label">Probe-Klassenarbeiten</span>${(S.exams||[]).filter(e=>e.kind==="ka").slice(-6).reverse().map(e=>`<div class="row" style="justify-content:space-between"><span>${dmy(e.d).slice(0,6)} · ${esc((PMAP[e.pl]||{name:""}).name)}</span><b>${fmtP(e.ok)}/${e.n} P. · Note ${e.g}</b></div>`).join("")}<button class="btn btn-soft" data-act="openExam">Neue Probe-Klassenarbeit</button></div>`:`<button class="btn btn-soft btn-block" data-act="openExam">Probe-Klassenarbeit starten (45 Min.)</button>`}
     <div class="panel"><span class="label">Nächster Vokabeltest</span>
       <label class="muted" for="testPl" style="font-size:.85rem">Thema</label>
       <select id="testPl" class="field">${PLANETS.map(p=>`<option value="${p.id}" ${t.pl===p.id?"selected":""}>${esc(p.name)}</option>`).join("")}</select>
@@ -2866,7 +3353,8 @@ const ACT = {
     setTimeout(()=>resolveSent(ok, {fix:true}), 500);
   },
   cont: () => { hideSheet(); M.i++; setTimeout(next, 120); },
-  quit: () => { if (REC) try{REC.abort();}catch(e){} if (HAS_TTS) speechSynthesis.cancel(); if (M && (M.right+M.wrong)>0){ markDay(); save(); } M = null; show("home"); },
+  openExam: renderExamIntro, examGo: startExam,
+  quit: () => { clearInterval(examTimer); if (REC) try{REC.abort();}catch(e){} if (HAS_TTS) speechSynthesis.cancel(); if (M && (M.right+M.wrong)>0){ markDay(); save(); } M = null; show("home"); },
   postTo: b => { PC.to = b.dataset.v; renderPost(); },
   postShuffle: () => openPost(),
   postSay: b => speak(PC.lines.join(" "), false, b),
