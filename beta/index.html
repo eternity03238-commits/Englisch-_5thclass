@@ -694,10 +694,10 @@ body.scn-on .beta-badge{opacity:.75}
 /* Tür: Fläche über der Tür plus Beschriftung darunter, beides tippbar (mind. 44 px hoch) */
 .scn-door{position:absolute;z-index:3;padding:0;border-radius:10px 10px 4px 4px;-webkit-tap-highlight-color:transparent}
 .scn-door-glow{position:absolute;inset:-6%;border-radius:inherit;box-shadow:0 0 0 2px rgba(255,236,170,.85),0 0 18px 6px rgba(255,214,120,.55);animation:scn-glow 2.4s ease-in-out infinite}
-.scn-door-label{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(-50%);white-space:nowrap;min-height:44px;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:999px;
+.scn-door-label{position:absolute;left:50%;top:calc(100% + 6px);transform:translateX(calc(-50% + var(--dx,0px)));white-space:nowrap;min-height:44px;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:999px;
   background:rgba(255,253,246,.95);color:#16406B;font:800 1rem/1.1 var(--fr-font);box-shadow:0 4px 0 #2E7D5B,0 10px 22px rgba(30,20,10,.3)}
 .scn-door-label::before{content:"";width:12px;height:12px;border-radius:50%;background:#3F8F73;box-shadow:0 0 0 3px rgba(63,143,115,.25)}
-.scn-door:active .scn-door-label{transform:translateX(-50%) translateY(2px);box-shadow:0 2px 0 #2E7D5B,0 6px 14px rgba(30,20,10,.3)}
+.scn-door:active .scn-door-label{transform:translateX(calc(-50% + var(--dx,0px))) translateY(2px);box-shadow:0 2px 0 #2E7D5B,0 6px 14px rgba(30,20,10,.3)}
 .scn-door:focus-visible{outline:3px solid #FFFFFF;outline-offset:4px}
 @keyframes scn-glow{0%,100%{opacity:.55}50%{opacity:1}}
 .scn-top{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:4;
@@ -733,6 +733,20 @@ body.scn-room #s-cards > .row .label,body.scn-room #s-cards > .row small{backgro
   background:linear-gradient(135deg,#2E7D5B,#3F8F73);color:#fff;font:800 1.05rem/1.2 var(--fr-font);box-shadow:0 5px 0 #1F5A41,0 10px 22px rgba(20,60,40,.3)}
 .scn-entry small{font-weight:700;opacity:.9}
 @media (prefers-reduced-motion:reduce){.scn-door-glow{animation:none;opacity:.9}.scn-reward{transition:none}.scn-stage.leaving .scn-art{transition:none}body.scn-entering #scnRoom{animation:none}}
+.scn-topr{display:flex;gap:8px}
+/* Übersichtskarte */
+.scn-pin{position:absolute;z-index:3;transform:translate(-50%,-50%);display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:4px 12px 4px 8px;border-radius:999px;
+  background:rgba(255,253,246,.95);color:#16406B;font:800 .82rem/1 var(--fr-font);white-space:nowrap;box-shadow:0 3px 0 rgba(22,64,107,.35),0 6px 14px rgba(20,30,50,.3)}
+.scn-pin::after{content:"";position:absolute;inset:-6px -2px}
+.scn-pin.l{transform:translate(-12%,-50%)}.scn-pin.r{transform:translate(-88%,-50%)}
+.scn-pin i{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 2px #fff}
+.scn-pin.here{background:#FFD36E;box-shadow:0 3px 0 #B88A1E,0 6px 14px rgba(20,30,50,.3)}
+.scn-pin-ok{color:#1F9E6A;font-size:.9rem}
+.scn-pin-fr{position:absolute;left:50%;bottom:calc(100% - 4px);width:44px;transform:translateX(-50%);pointer-events:none}
+.scn-pin:active{transform:translate(-50%,-50%) translateY(2px)}.scn-pin.l:active{transform:translate(-12%,-50%) translateY(2px)}.scn-pin.r:active{transform:translate(-88%,-50%) translateY(2px)}
+.scn-pin:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.scn-count{color:#fff;font:800 .85rem/1 var(--fr-font);background:rgba(11,25,48,.55);border-radius:999px;padding:6px 10px;white-space:nowrap;flex:none}
+.scn-nav button{flex:0 1 auto}
 </style>
 
 </head>
@@ -1604,7 +1618,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795286990";
+const BUILD = "1795289320";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2204,7 +2218,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "ca2aeccc01ab7f646a0e9e730f2848b893b340bd";
+const SCN_COMMIT = "bc241afc433dbc0a0aa840c844a86a199951dc02";
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2212,14 +2226,28 @@ const scnCdn = p => `https://cdn.jsdelivr.net/gh/${SCN_REPO}@${SCN_COMMIT}/beta/
 /* Lage im Bild in Prozent der Bildbreite/-höhe (gemessen an den 941 × 1672-Bildern).
    spot = antippbare Fläche, fr = Fußpunkt und Breite von Friedrich, label = Beschriftung (sonst Name des Lernbereichs) */
 const SCN_LAYOUT = {
-  "haus-am-hafen":         {spot:{x:36.2, y:43.1, w:7.8,  h:11.0}, fr:{x:30, y:85, w:38}, hint:"Tippe auf die grüne Tür. Wir üben drinnen!"},
-  "marktplatz":            {spot:{x:22,   y:36,   w:46,   h:24},   fr:{x:72, y:87, w:34}, label:"Obststand", hint:"Komm, wir schauen uns den Obststand an!"},
-  "familien-picknick":     {spot:{x:20,   y:40,   w:67,   h:15},   fr:{x:30, y:87, w:36}, hint:"Setz dich zu uns aufs Picknick!"},
-  "schule-am-meer":        {spot:{x:35,   y:31,   w:20,   h:20},   fr:{x:70, y:87, w:36}, hint:"Ab in die Schule! Tippe auf die Tür."},
-  "strand-und-seebruecke": {spot:{x:33,   y:36,   w:34,   h:24},   fr:{x:26, y:89, w:36}, hint:"Lass uns auf die Seebrücke gehen!"},
-  "bunte-strandhuetten":   {spot:{x:6,    y:35,   w:90,   h:21},   fr:{x:30, y:89, w:36}, hint:"So viele Farben! Tippe auf die Hütten."}
+  "haus-am-hafen":         {spot:{x:36.2, y:43.1, w:7.8,  h:11.0}, fr:{x:30, y:79, w:38}, hint:"Tippe auf die grüne Tür. Wir üben drinnen!"},
+  "marktplatz":            {spot:{x:22,   y:36,   w:46,   h:24},   fr:{x:72, y:79, w:34}, label:"Obststand", hint:"Komm, wir schauen uns den Obststand an!"},
+  "familien-picknick":     {spot:{x:20,   y:40,   w:67,   h:15},   fr:{x:30, y:79, w:36}, hint:"Setz dich zu uns aufs Picknick!"},
+  "schule-am-meer":        {spot:{x:35,   y:31,   w:20,   h:20},   fr:{x:70, y:79, w:36}, hint:"Ab in die Schule! Tippe auf die Tür."},
+  "strand-und-seebruecke": {spot:{x:33,   y:36,   w:34,   h:24},   fr:{x:26, y:79, w:36}, hint:"Lass uns auf die Seebrücke gehen!"},
+  "bunte-strandhuetten":   {spot:{x:6,    y:35,   w:90,   h:21},   fr:{x:30, y:79, w:36}, hint:"So viele Farben! Tippe auf die Hütten."},
+  "kuesten-tierpark":      {spot:{x:20,   y:31,   w:62,   h:28},   fr:{x:28, y:79, w:36}, hint:"Schau mal, Tiere! Tippe auf das Tor."},
+  "abenteuer-pier":        {spot:{x:6,    y:32,   w:32,   h:22},   fr:{x:68, y:79, w:36}, hint:"Klettern, rennen, springen! Tippe auf die Kletterwand."},
+  "leuchtturm-zimmer":     {spot:{x:2,    y:40,   w:66,   h:22},   fr:{x:74, y:79, w:34}, hint:"Mein Zimmer im Leuchtturm! Tippe auf Bett und Schreibtisch."},
+  "spukschloss-auf-der-klippe": {spot:{x:26, y:31, w:30,   h:27},   fr:{x:72, y:79, w:34}, hint:"Huh, spooky! Traust du dich durch das Tor?"},
+  "steckbrief-steg":       {spot:{x:22,   y:22,   w:44,   h:30},   fr:{x:72, y:79, w:34}, hint:"Am Steckbrief-Brett erzählen wir von uns."},
+  "bei-freunden-in-brighton": {spot:{x:37, y:34,  w:12,   h:22},   fr:{x:28, y:79, w:34}, hint:"Wir besuchen Freunde in Brighton. Klingel an der Tür!"}
 };
-const SCN_NAMES = {"marktplatz":"Der Marktplatz", "marktplatz-obststand":"Der Obststand", "haus-am-hafen-wohnzimmer":"Das Wohnzimmer", "schule-am-meer-klassenzimmer":"Das Klassenzimmer"};
+/* Übersichtskarte: Lage der Orte auf lernwelt-uebersicht.webp in Prozent */
+const SCN_MAP_ID = "lernwelt-uebersicht";
+const SCN_MAP_PINS = {
+  "haus-am-hafen":[22,65], "marktplatz":[44,59], "familien-picknick":[33,52.5], "schule-am-meer":[63,52], "bunte-strandhuetten":[24,44],
+  "strand-und-seebruecke":[30,35], "kuesten-tierpark":[39,19], "abenteuer-pier":[82,36], "leuchtturm-zimmer":[63,19.5], "spukschloss-auf-der-klippe":[15,9],
+  "steckbrief-steg":[78,46.5], "bei-freunden-in-brighton":[91,11.5]
+};
+const SCN_SHORT = {"marktplatz":"Markt", "abenteuer-pier":"Abenteuer-Pier"};
+const SCN_NAMES = {"lernwelt-uebersicht":"Die Lernwelt", "marktplatz":"Der Marktplatz", "marktplatz-obststand":"Der Obststand", "haus-am-hafen-wohnzimmer":"Das Wohnzimmer", "schule-am-meer-klassenzimmer":"Das Klassenzimmer"};
 const SCN = {world:null, ready:null, cur:SCN_START, inRoom:false, origin:null, success:false, rewardOn:false, stage0:null};
 const scnRM = () => !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
 const SCN_SIZES = "(max-width:560px) 130vw, 728px";
@@ -2254,7 +2282,13 @@ function scnSet(list){
 }
 const scnScene = id => SCN.world && SCN.world.scenes && SCN.world.scenes[id];
 const scnIds = () => Object.keys((SCN.world && SCN.world.scenes) || {}).filter(id => scnSet(scnScene(id).backgrounds));
-const scnOutdoor = () => { const ids = scnIds(); return ids.filter(id => !ids.some(o => o !== id && id.startsWith(o + "-"))); };
+/* Außenorte in Lernreihenfolge (wie die Themen der App); Orte ohne Lernbereich bleiben hinter ihrem Vorgänger im Manifest */
+const scnOutdoor = () => {
+  const ids = scnIds().filter(id => id !== SCN_MAP_ID), outs = ids.filter(id => !ids.some(o => o !== id && id.startsWith(o + "-")));
+  let last = -1; const rank = {};
+  outs.forEach(id => { const a = scnArea(id), i = a ? PLANETS.findIndex(p => p.id === a) : -1; rank[id] = i >= 0 ? i : last + 0.5; if (i >= 0) last = i; else last += 0.01; });
+  return outs.slice().sort((a,b) => rank[a] - rank[b]);
+};
 const scnChild = id => scnIds().find(c => c.startsWith(id + "-")) || null;
 const scnArea = id => { const s = scnScene(id) || {}; return PMAP[s.learningArea] ? s.learningArea : null; };
 const scnName = id => SCN_NAMES[id] || (scnArea(id) && PMAP[scnArea(id)].place) || id.split("-").map(w => w[0].toUpperCase() + w.slice(1)).join(" ");
@@ -2298,20 +2332,35 @@ function renderScene(opts = {}){
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit"})}</div>
         ${spot}
       </div>
-      <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></div>
+      <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr">${scnScene(SCN_MAP_ID) ? `<button class="scn-menu" data-act="scnMap" aria-label="Übersichtskarte öffnen">Karte</button>` : ""}<button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></span></div>
       <div class="scn-bottom">
         ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main btn-block" data-act="scnSpot">${esc(label)}</button>` : ""}
         ${outs.length > 1 ? `<div class="scn-nav"><button data-act="scnGo" data-id="${prev}" aria-label="Zurück nach ${esc(scnName(prev))}"><span aria-hidden="true">‹</span><small>${esc(scnName(prev))}</small></button>
-          <span class="scn-dots" aria-hidden="true">${outs.map(o => `<i class="${o===id?"on":""}"></i>`).join("")}</span>
+          ${outs.length <= 7 ? `<span class="scn-dots" aria-hidden="true">${outs.map(o => `<i class="${o===id?"on":""}"></i>`).join("")}</span>` : `<span class="scn-count" aria-label="Ort ${i+1} von ${outs.length}">${i+1} / ${outs.length}</span>`}
           <button data-act="scnGo" data-id="${next}" aria-label="Weiter nach ${esc(scnName(next))}"><small>${esc(scnName(next))}</small><span aria-hidden="true">›</span></button></div>` : ""}
         <div class="scn-say" id="scnSay"><b>${esc(G())}</b><span>${esc(L.hint || (label ? `Tippe auf „${label}“!` : "Schön hier, oder?"))}</span></div>
       </div>
     </div>`;
+  scnClamp();
   /* vorab laden: Innenszene, Belohnung, Nachbarorte */
   if (act.child) scnPreload(scnSet(scnScene(act.child).backgrounds));
   setTimeout(() => { scnPreload(scnSet(scnScene(next).backgrounds)); scnPreload(scnSet(scnScene(prev).backgrounds)); }, 800);
   if (SCN.success) setTimeout(() => scnReward(hatch), 350);
 }
+/* Beschriftungen am Bildrand in den sichtbaren Bereich schieben */
+function scnClamp(){
+  requestAnimationFrame(() => {
+    const st = $("#s-scene .scn-stage"); if (!st) return;
+    const b = st.getBoundingClientRect();
+    st.querySelectorAll(".scn-door-label").forEach(l => {
+      l.style.setProperty("--dx", "0px");
+      const r = l.getBoundingClientRect(), pad = 10;
+      const dx = r.left < b.left + pad ? (b.left + pad - r.left) : r.right > b.right - pad ? (b.right - pad - r.right) : 0;
+      l.style.setProperty("--dx", Math.round(dx) + "px");
+    });
+  });
+}
+addEventListener("resize", () => { if (!$("#s-scene").hidden) scnClamp(); });
 /* Belohnung: Friedrich schlüpft (beim ersten Mal), jubelt (falls Pose vorhanden), Belohnungsbild leuchtet (falls vorhanden) */
 async function scnReward(hatch){
   SCN.success = false; SCN.stage0 = null;
@@ -2378,6 +2427,26 @@ function sceneOnShow(name){
   document.body.classList.toggle("scn-on", name === "scene");
   if (name === "scene") renderScene();
 }
+/* Übersichtskarte mit allen Orten; Antippen führt hin */
+function scnMap(){
+  const set = scnSet((scnScene(SCN_MAP_ID)||{}).backgrounds), st = $("#s-scene .scn-stage");
+  if (!set || !st || SCN.rewardOn) return;
+  const outs = scnOutdoor(), face = FR.stageOf(gullStage());
+  const pins = outs.filter(id => SCN_MAP_PINS[id]).map(id => {
+    const [x, y] = SCN_MAP_PINS[id], a = scnArea(id), p = a && PMAP[a], ps = a ? placeStats(a) : null, done = ps && ps.total && ps.safe === ps.total, here = id === SCN.cur;
+    const name = SCN_SHORT[id] || (a && SHORT[a]) || scnName(id);
+    return `<button class="scn-pin ${here ? "here" : ""} ${x > 75 ? "r" : x < 20 ? "l" : ""}" data-act="scnPin" data-id="${id}" style="left:${x}%;top:${y}%" aria-label="${esc(scnName(id))}${ps ? `, ${ps.safe} von ${ps.total} Wörtern sicher` : ""}">
+      ${here ? `<span class="scn-pin-fr">${friedrichEl({stage:face, pose:"face", size:"fit"})}</span>` : ""}
+      <i style="background:${p ? p.hue : "#8A6A4A"}"></i><b>${esc(name)}</b>${done ? `<span class="scn-pin-ok" aria-hidden="true">✓</span>` : ""}</button>`;
+  }).join("");
+  st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-mapview ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}${pins}</div>
+    <div class="scn-top"><span class="scn-place">${esc(scnName(SCN_MAP_ID))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Karte schließen">Schließen</button></span></div>
+    <div class="scn-bottom"><div class="scn-say"><b>${esc(G())}</b><span>Wohin fliegen wir? Tippe auf einen Ort.</span></div></div></div>`);
+  /* Ortsmarken am Rand in den sichtbaren Ausschnitt schieben */
+  requestAnimationFrame(() => { const v = st.querySelector(".scn-mapview"); if (!v) return; const b = v.getBoundingClientRect();
+    v.querySelectorAll(".scn-pin").forEach(p => { const r = p.getBoundingClientRect(), pad = 8;
+      const dx = r.left < b.left + pad ? (b.left + pad - r.left) : r.right > b.right - pad ? (b.right - pad - r.right) : 0; if (dx) p.style.marginLeft = Math.round(dx) + "px"; }); });
+}
 function scnGo(id){ if (SCN.rewardOn || !scnScene(id)) return; SCN.cur = id; renderScene({fade:true}); }
 /* Wischen nach links/rechts wechselt den Ort */
 let scnSwipe = null, scnNoClick = false;
@@ -2400,6 +2469,8 @@ const SCENE_ACT = {
   scnSpot: () => scnSpot(),
   scnGo: b => scnGo(b.dataset.id),
   scnViewBack: () => { const v = $("#s-scene .scn-view"); if (v) v.remove(); },
+  scnMap: () => scnMap(),
+  scnPin: b => { const v = $("#s-scene .scn-view"); if (v) v.remove(); if (b.dataset.id !== SCN.cur) scnGo(b.dataset.id); },
   scnBack: () => { SCN.inRoom = false; if (SCN.origin) SCN.cur = SCN.origin; show("scene"); },
   scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : FR.has(el.dataset.stage, "crack") ? "crack" : "celebrate"); }
 };
