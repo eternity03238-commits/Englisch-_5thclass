@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -81,6 +81,21 @@
         },
         {
           "path": "hafenstadt/familien-picknick-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "schule-am-meer": {
+      "learningArea": "sch",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/schule-am-meer.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/schule-am-meer-640.webp",
           "width": 640,
           "height": 1137
         }
