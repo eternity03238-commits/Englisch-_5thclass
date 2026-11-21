@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -11,6 +11,18 @@
         },
         {
           "path": "hafenstadt/haus-am-hafen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "rewardBackgrounds": [
+        {
+          "path": "hafenstadt/fensterlicht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/fensterlicht-640.webp",
           "width": 640,
           "height": 1137
         }
