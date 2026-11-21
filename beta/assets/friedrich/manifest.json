@@ -1,10 +1,30 @@
 {
- "version": 2,
+ "version": 3,
  "files": {
   "king/front": {
    "w": 1024,
    "h": 1024,
    "src": "friedrich_king_front.png"
+  },
+  "king/3quarter": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_king_3quarter.png"
+  },
+  "king/back": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_king_back.png"
+  },
+  "king/face": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_king_face.png"
+  },
+  "king/side": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_king_side.png"
   }
  }
 }
