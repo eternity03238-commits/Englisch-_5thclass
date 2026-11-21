@@ -1,5 +1,5 @@
 {
-  "version": 16,
+  "version": 17,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -231,6 +231,20 @@
         },
         {
           "path": "hafenstadt/bei-freunden-in-brighton-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "lernwelt-uebersicht": {
+      "backgrounds": [
+        {
+          "path": "hafenstadt/lernwelt-uebersicht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/lernwelt-uebersicht-640.webp",
           "width": 640,
           "height": 1137
         }
