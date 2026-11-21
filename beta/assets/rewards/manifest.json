@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -358,6 +358,21 @@
         },
         {
           "path": "testtraining_leuchtturm-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "brighton_reisekompass": {
+      "name": "Reisekompass für den Flug nach Brighton",
+      "images": [
+        {
+          "path": "brighton_reisekompass.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "brighton_reisekompass-128.webp",
           "width": 128,
           "height": 128
         }
