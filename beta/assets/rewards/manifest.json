@@ -1,5 +1,5 @@
 {
-  "version": 24,
+  "version": 25,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -388,6 +388,21 @@
         },
         {
           "path": "schatzkammer_truhe-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "belohnung_fisch": {
+      "name": "Fischsymbol für Friedrichs Belohnungen",
+      "images": [
+        {
+          "path": "belohnung_fisch.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "belohnung_fisch-128.webp",
           "width": 128,
           "height": 128
         }
