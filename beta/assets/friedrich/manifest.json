@@ -1,5 +1,5 @@
 {
- "version": 15,
+ "version": 16,
  "files": {
   "king/front": {
    "w": 1024,
@@ -305,6 +305,26 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_egg_front.png"
+  },
+  "egg/3quarter": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_egg_3quarter.png"
+  },
+  "egg/side": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_egg_side.png"
+  },
+  "egg/back": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_egg_back.png"
+  },
+  "egg/face": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_egg_face.png"
   }
  }
 }
