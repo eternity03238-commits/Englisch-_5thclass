@@ -1,5 +1,5 @@
 {
-  "version": 35,
+  "version": 36,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -553,6 +553,21 @@
         },
         {
           "path": "elternbereich_familie-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "extras_kacheln": {
+      "name": "Kachelsymbol für Friedrichs Extras-Menü",
+      "images": [
+        {
+          "path": "extras_kacheln.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "extras_kacheln-128.webp",
           "width": 128,
           "height": 128
         }
