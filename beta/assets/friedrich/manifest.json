@@ -1,5 +1,5 @@
 {
- "version": 4,
+ "version": 5,
  "files": {
   "king/front": {
    "w": 1024,
@@ -60,6 +60,31 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_king_encourage.png"
+  },
+  "captain/front": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_captain_front.png"
+  },
+  "captain/3quarter": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_captain_3quarter.png"
+  },
+  "captain/side": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_captain_side.png"
+  },
+  "captain/back": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_captain_back.png"
+  },
+  "captain/face": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_captain_face.png"
   }
  }
 }
