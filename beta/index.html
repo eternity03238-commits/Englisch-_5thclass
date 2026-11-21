@@ -818,6 +818,16 @@ img.stk-img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:con
 .scn-podium-text b{font:800 1.6rem/1.15 var(--fr-font-head)}
 .scn-podium-text span{font:600 .85rem/1 var(--fr-font);color:rgba(255,247,230,.75)}
 @media (prefers-reduced-motion:reduce){.scn-flyer{animation:none}}
+/* Kleiderschrank: Inventarbilder */
+img.out-img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;filter:drop-shadow(0 3px 4px rgba(20,30,50,.22))}
+.acc .pv{display:grid;place-items:center;aspect-ratio:1/1;border-radius:14px;background:radial-gradient(closest-side,rgba(114,200,255,.18),rgba(114,200,255,0))}
+.acc.locked img.out-img{filter:grayscale(1) contrast(.9);opacity:.45}
+.ward-slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.ward-slot{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;background:var(--panel,#fff);border:2px dashed rgba(22,64,107,.2);border-radius:14px;padding:8px 4px;min-width:0}
+.ward-slot.on{border-style:solid;border-color:rgba(33,184,121,.45)}
+.ward-slot-art{width:44px;height:44px;display:block}
+.ward-slot small{font:800 .65rem/1 var(--fr-font);letter-spacing:.06em;text-transform:uppercase;color:#5E7591}
+.ward-slot b{font:800 .74rem/1.15 var(--fr-font);color:#16406B;-webkit-hyphens:auto;hyphens:auto;overflow-wrap:break-word;max-width:100%}
 </style>
 
 </head>
@@ -1689,7 +1699,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795294704";
+const BUILD = "1795296593";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2289,7 +2299,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "ffdb89a65d3d534dfd074eaad739c1ddf4bfafc7";
+const SCN_COMMIT = "65e319e2bb687412da6d24d23471b3f58a965e17";
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2345,7 +2355,7 @@ function scnLoad(){
     document.querySelectorAll(".fr[data-stage]").forEach(frRefresh);
   }).catch(() => { FR.files = FR.files || {}; });
   const wd = scnFetch("world/manifest.json").then(m => { SCN.world = m; }).catch(() => { SCN.world = null; });
-  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; }).catch(() => { SCN.rewards = {}; SCN.illus = {}; });
+  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; SCN.outfits = (m && m.outfits) || {}; scnOutfitRefresh(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
   SCN.ready = Promise.all([fr, wd, rw]).then(() => { SCN.loaded = true; });
   return SCN.ready;
 }
@@ -2363,6 +2373,20 @@ function rwImg(id, cls, sizes){
   const src = scnRaw("rewards/" + l[l.length-1].path), set = l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", ");
   return `<img class="stk stk-img ${cls||""}" src="${src}" srcset="${set}" sizes="${sizes || "96px"}" alt="" decoding="async" draggable="false">`;
 }
+/* Kleiderschrank: Inventarbild eines Teils (outfits im Belohnungs-Manifest), sonst null */
+function rwOutfit(id, cls){
+  const b = SCN.outfits && SCN.outfits[id]; if (!b || !b.images || !b.images.length) return null;
+  const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
+  return `<img class="out-img ${cls||""}" src="${scnRaw("rewards/" + l[l.length-1].path)}" srcset="${l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", ")}" sizes="72px" alt="" decoding="async" draggable="false">`;
+}
+/* Ausrüstung neben Friedrich: was er in jedem Platz gerade trägt */
+function wardSlots(){
+  const wear = S.wear || {};
+  return `<div class="ward-slots">${SLOTS.map(([slot, label]) => { const a = ACC.find(x => x.id === wear[slot]);
+    return `<div class="ward-slot ${a ? "on" : ""}"><span class="ward-slot-art">${a ? (rwOutfit(a.id) || "") : ""}</span><small>${esc(label)}</small><b>${a ? esc(a.n) : "frei"}</b></div>`; }).join("")}</div>`;
+}
+/* Kleiderschrank neu zeichnen, wenn die Inventarbilder geladen sind */
+function scnOutfitRefresh(){ try { if (!$("#s-wardrobe").hidden) renderWardrobe(); } catch(e) {} }
 function rwIllus(id){
   const b = SCN.illus && SCN.illus[id]; if (!b || !b.images || !b.images.length) return null;
   const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
@@ -2826,12 +2850,12 @@ function renderWardrobe(){
   const unl = accUnlocked().map(a=>a.id);
   $("#s-wardrobe").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
     <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Kleiderschrank</h1>
-    <div class="ward-hero">${myGull()}</div>
+    <div class="ward-hero">${myGull()}</div>${BETA ? wardSlots() : ""}
     <p class="muted center" style="margin:0">${gullStage()===0?"Erst muss das Ei schlüpfen. Mach deine erste Unterrichtsstunde!":`Zieh ${esc(G())} an! Neue Sachen schaltest du durch Üben frei.`}</p>
     ${SLOTS.map(([slot,label])=>{ const items = ACC.filter(a=>a.slot===slot); return `<span class="label">${label}</span><div class="stack" style="gap:8px">${items.map(a=>{
       const on = S.wear[slot]===a.id, ok = unl.includes(a.id);
       return `<button class="acc ${on?"on":""} ${ok?"":"locked"}" data-act="wear" data-id="${a.id}" ${ok?"":"aria-disabled=\"true\""}>
-        <span class="pv">${gullSVG(Math.max(1,gullStage()), GC(), {wear:{[slot]:a.id}})}</span>
+        <span class="pv">${(BETA && rwOutfit(a.id)) || gullSVG(Math.max(1,gullStage()), GC(), {wear:{[slot]:a.id}})}</span>
         <div style="min-width:0"><b>${esc(a.n)}</b><small>${ok?(on?"Hat sie gerade an":"Antippen zum Anziehen"):`Gesperrt: ${esc(a.how)}`}</small></div>
         <span class="st">${on?"An":ok?"Anziehen":"🔒"}</span></button>`; }).join("")}</div>`; }).join("")}`;
   show("wardrobe");
@@ -3304,7 +3328,7 @@ function renderExtras(){
   show("extras");
 }
 function accPanel(list){
-  return list.length ? `<div class="panel" style="border-color:var(--good)"><span class="label" style="color:#0E7C51">Neu im Kleiderschrank!</span>${list.map(a=>`<div class="row"><div style="width:54px;flex:none">${gullSVG(Math.max(1,gullStage()), GC(), {wear:{[a.slot]:a.id}})}</div><b>${esc(a.n)}</b></div>`).join("")}<button class="btn btn-soft" data-act="openWardrobe">Gleich anziehen</button></div>` : "";
+  return list.length ? `<div class="panel" style="border-color:var(--good)"><span class="label" style="color:#0E7C51">Neu im Kleiderschrank!</span>${list.map(a=>`<div class="row"><div style="width:54px;flex:none">${(BETA && rwOutfit(a.id)) || gullSVG(Math.max(1,gullStage()), GC(), {wear:{[a.slot]:a.id}})}</div><b>${esc(a.n)}</b></div>`).join("")}<button class="btn btn-soft" data-act="openWardrobe">Gleich anziehen</button></div>` : "";
 }
 
 /* ============ UNTERRICHT ============ */
