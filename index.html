@@ -2261,7 +2261,10 @@ function renderOnboard(needKid){
       <span class="label" style="margin-top:4px">Farbe für ihr Halstuch</span>
       <div class="swatches">${GULL_COLORS.map((col,i)=>`<button class="swatch" style="background:${col}" data-act="pickColor" data-i="${i}" aria-pressed="${i===OB.color}" aria-label="Farbe ${i+1}"></button>`).join("")}</div>
     </div>
-    <button class="btn btn-main btn-block" data-act="onboardGo" data-kid="${needKid?1:0}">${needKid?"Los geht's!":"Speichern"}</button>`;
+    <button class="btn btn-main btn-block" data-act="onboardGo" data-kid="${needKid?1:0}">${needKid?"Los geht's!":"Speichern"}</button>
+    ${needKid && cloudOn() ? `<div class="panel" style="gap:8px"><b style="color:var(--navy)">Schon auf einem anderen Handy dabei?</b><small class="muted">Familiencode aus dem Elternbereich eingeben, dann kommt der ganze Lernstand hierher.</small>
+      <div class="row"><input id="famIn" class="field" style="flex:1;min-width:0" placeholder="MOEWE-XXXX-XXXX-XXXX-XXXX" autocapitalize="characters" autocomplete="off"><button class="btn btn-soft" data-act="famJoinIn">Verbinden</button></div>
+      <div id="famMsg" class="muted" style="font-size:.9rem"></div></div>` : ""}`;
 }
 function renderIntro(){
   $("#introCard").innerHTML = S.introSeen ? "" : `<div class="panel" style="border-color:var(--flame)">
