@@ -1,5 +1,5 @@
 {
- "version": 9,
+ "version": 10,
  "files": {
   "king/front": {
    "w": 1024,
@@ -185,6 +185,26 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_young_front.png"
+  },
+  "young/3quarter": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_3quarter.png"
+  },
+  "young/side": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_side.png"
+  },
+  "young/back": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_back.png"
+  },
+  "young/face": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_young_face.png"
   }
  }
 }
