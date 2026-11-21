@@ -1,5 +1,5 @@
 {
-  "version": 8,
+  "version": 9,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -111,6 +111,21 @@
         },
         {
           "path": "hafenstadt/klassenzimmer-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "strand-und-seebruecke": {
+      "learningArea": "sea",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/strand-und-seebruecke.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/strand-und-seebruecke-640.webp",
           "width": 640,
           "height": 1137
         }
