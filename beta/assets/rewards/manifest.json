@@ -1,5 +1,5 @@
 {
-  "version": 26,
+  "version": 27,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -418,6 +418,21 @@
         },
         {
           "path": "lernserie_flamme-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "lernorte_kartenpin": {
+      "name": "Kartenpin für die Lernorte",
+      "images": [
+        {
+          "path": "lernorte_kartenpin.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "lernorte_kartenpin-128.webp",
           "width": 128,
           "height": 128
         }
