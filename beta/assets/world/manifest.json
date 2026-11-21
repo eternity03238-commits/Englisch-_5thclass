@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -273,6 +273,20 @@
         },
         {
           "path": "hafenstadt/flug-nach-brighton-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "abflug-aus-leipzig": {
+      "backgrounds": [
+        {
+          "path": "hafenstadt/abflug-aus-leipzig.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/abflug-aus-leipzig-640.webp",
           "width": 640,
           "height": 1137
         }
