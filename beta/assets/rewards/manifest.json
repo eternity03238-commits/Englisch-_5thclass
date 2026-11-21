@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -223,6 +223,24 @@
         },
         {
           "path": "stufenaufstieg_podest-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    }
+  },
+  "outfits": {
+    "sun": {
+      "name": "Sonnenbrille",
+      "slot": "eyes",
+      "images": [
+        {
+          "path": "sun.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "sun-128.webp",
           "width": 128,
           "height": 128
         }
