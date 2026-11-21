@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -298,6 +298,21 @@
         },
         {
           "path": "karteikarten_stapel-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "fehler_detektiv_lupe": {
+      "name": "Lupe für den Fehler-Detektiv",
+      "images": [
+        {
+          "path": "fehler_detektiv_lupe.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "fehler_detektiv_lupe-128.webp",
           "width": 128,
           "height": 128
         }
