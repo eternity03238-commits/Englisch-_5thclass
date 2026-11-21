@@ -18,25 +18,26 @@
 .fr{container-type:inline-size}.fr-fit{width:100%}.fr-xs{width:48px}.fr-sm{width:96px}.fr-md{width:180px}.fr-lg{width:min(360px,80vw)}
 .fr-body{position:relative;width:100%;height:100%;transform-origin:50% 90%;animation:fr-breathe 3.2s ease-in-out infinite;z-index:1}
 .fr-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
-.fr-frame{opacity:0;transition:opacity .08s linear}
+.fr-frame{opacity:0}  /* harter Wechsel ohne Überblendung, sonst flackert die Figur kurz durchsichtig */
 .fr-frame.on{opacity:1}
 .fr-frame.on ~ .fr-base, .fr-body:has(.fr-frame.on) .fr-base{opacity:0}
 .fr-shadow{position:absolute;left:50%;bottom:7%;width:46%;height:6%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.32),rgba(0,0,0,0));z-index:0;transition:transform .2s,opacity .2s}
 .fr[data-pose="face"] .fr-shadow{display:none}
 @keyframes fr-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.015)}}
 /* Zustände: nur Verschieben, Skalieren und höchstens 4° Neigung */
-.fr-a-celebrate .fr-body{animation:fr-hop .9s cubic-bezier(.3,1.4,.5,1)}
+/* Alle Bewegungen setzen an der Fußlinie (50 % / 90 %) an, die Füße bleiben stehen. Nur Level Up springt. */
+.fr-a-celebrate .fr-body{animation:fr-bounce .9s cubic-bezier(.3,1.3,.5,1)}
 .fr-a-levelup .fr-body{animation:fr-hop-big 1.7s cubic-bezier(.3,1.4,.5,1)}
-.fr-a-celebrate .fr-shadow,.fr-a-levelup .fr-shadow{animation:fr-shadow .9s ease}
-.fr-a-think .fr-body{animation:fr-tilt 1.4s ease-in-out}
+.fr-a-levelup .fr-shadow{animation:fr-shadow .9s ease}
+.fr-a-think .fr-body{animation:fr-lean 1.4s ease-in-out}
 .fr-a-encourage .fr-body{animation:fr-nod 1.2s ease-in-out}
 .fr-a-wave .fr-body{animation:fr-sway 1.2s ease-in-out}
-@keyframes fr-hop{0%,100%{transform:translateY(0)}35%{transform:translateY(-8%) scale(1.02)}60%{transform:translateY(0) scaleY(.97)}}
+@keyframes fr-bounce{0%,100%{transform:none}25%{transform:scale(1.02,.95)}55%{transform:scale(.98,1.05)}80%{transform:scale(1.01,.99)}}
 @keyframes fr-hop-big{0%,100%{transform:translateY(0)}20%{transform:translateY(-12%) scale(1.04)}40%{transform:translateY(0) scaleY(.96)}60%{transform:translateY(-6%)}80%{transform:translateY(0)}}
 @keyframes fr-shadow{35%{transform:translateX(-50%) scale(.7);opacity:.5}}
-@keyframes fr-tilt{0%,100%{transform:rotate(0)}30%,70%{transform:rotate(-4deg)}}
-@keyframes fr-nod{0%,100%{transform:translateY(0)}25%{transform:translateY(2%)}50%{transform:translateY(0)}75%{transform:translateY(2%)}}
-@keyframes fr-sway{0%,100%{transform:translateX(0)}25%{transform:translateX(-2%)}75%{transform:translateX(2%)}}
+@keyframes fr-lean{0%,100%{transform:none}30%,70%{transform:skewX(-3deg)}}
+@keyframes fr-nod{0%,50%,100%{transform:none}25%,75%{transform:scaleY(.975)}}
+@keyframes fr-sway{0%,100%{transform:none}25%{transform:skewX(1.5deg)}75%{transform:skewX(-1.5deg)}}
 .fr-halo{position:absolute;inset:-8%;border-radius:50%;background:radial-gradient(closest-side,rgba(228,180,92,.55),rgba(228,180,92,0) 70%);animation:fr-halo 1.7s ease-out forwards;z-index:0;pointer-events:none}
 @keyframes fr-halo{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.2);opacity:0}}
 .fr-img.fr-broken{opacity:0}
@@ -123,7 +124,7 @@ td,th{padding:6px 8px;border-bottom:1px solid rgba(168,188,212,.2);text-align:le
 <div class="row" style="margin-top:8px">
   <div class="seg" id="bgs"><button data-bg="bg-light" aria-pressed="true">Hell</button><button data-bg="bg-dark">Dunkel</button><button data-bg="bg-check">Transparenz-Raster</button></div>
   <button class="btn" id="gBtn" aria-pressed="false">Hilfslinien</button>
-  <button class="btn" id="oBtn" aria-pressed="false">Mit Vorderansicht überlagern</button>
+  <button class="btn" id="oBtn" aria-pressed="false">Mit Grundbild überlagern</button>
 </div>
 <div class="stage bg-light" id="stage">
   <div class="stagebox"><div id="box" style="position:absolute;inset:0"></div>
@@ -162,10 +163,13 @@ const FR = {
     blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
   anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500]},
+  /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
+  frameBase: {king:"3quarter"},
   base: "assets/friedrich/",
   files: null, ver: 1
 };
 FR.key = (s, p) => s + "/" + p;
+FR.baseOf = s => FR.frameBase[s] || "front";
 FR.has = (s, p) => !!(FR.files && FR.files[FR.key(s,p)]);
 FR.src = (s, p, w) => {
   const e = FR.files && FR.files[FR.key(s,p)];
@@ -201,7 +205,8 @@ function frPlaceholder(s, p, size){
 }
 function frInner(s, p, size){
   if (!FR.has(s, p)) return frPlaceholder(s, p, size);
-  const layers = FR.frames.filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
+  /* Frames nur über ihr Grundbild legen, sonst würde die Figur beim Wechsel springen */
+  const layers = p !== FR.baseOf(s) ? "" : FR.frames.filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
   return frImg(s, p, "fr-base") + layers;
 }
 /* size: xs (Avatar), sm (Hafen, Übung), md (Karten), lg (Bühne) */
@@ -222,6 +227,7 @@ function frPlay(el, state){
   el.classList.remove(...[...el.classList].filter(c=>c.startsWith("fr-a-")));
   void el.offsetWidth;
   el.classList.add("fr-a-" + state);
+  el.dataset.next = Date.now() + ms + 1500 + Math.random()*2000;   /* nach einer Animation kurz Ruhe, kein sofortiges Blinzeln */
   if (f) f.classList.add("on");
   if (state==="levelup"){ el.insertAdjacentHTML("beforeend", `<div class="fr-halo" aria-hidden="true"></div>`); }
   return new Promise(res => setTimeout(() => {
@@ -245,7 +251,7 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/053fe13281f88982462074557eff023bc4df2428/beta/assets/friedrich/manifest.json";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/22fa83ceec57a72fdb36d0bf967c5e0ef07d8045/beta/assets/friedrich/manifest.json";
 /* Standardansicht je Stufe im Prüfstand */
 const DEFAULT_POSE = {king:"3quarter"};
 const defPose = s => DEFAULT_POSE[s] || "front";
@@ -262,8 +268,11 @@ function cellTag(s,p){
   if (e.ok === false) return `<span class="tag bad" data-tag="${k}">lädt nicht</span>`;
   return `<span class="tag ok" data-tag="${k}">${e.w ? e.w+" px" : "prüfe …"}</span>`;
 }
+/* Vergleichsbild: Frames gegen ihr Grundbild, Ansichten gegen die Vorderansicht */
+const onionPose = () => FR.frames.includes(pose) ? FR.baseOf(stage) : (pose === "front" ? FR.baseOf(stage) : "front");
 function render(){
-  $("#box").innerHTML = friedrichEl({stage, pose, size:"lg"}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:"front", size:"lg"})}</div>`;
+  $("#box").innerHTML = friedrichEl({stage, pose, size:"lg"}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:onionPose(), size:"lg"})}</div>`;
+  $("#oBtn").textContent = "Mit " + FR.poseName[onionPose()] + " überlagern";
   $("#grid").innerHTML = FR.views.concat(FR.frames).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b>${cellTag(stage,p)}<code style="font-size:.7rem;color:var(--fr-slate);word-break:break-all">${FR.has(stage,p) && FR.files[stage+"/"+p].id ? esc(FR.files[stage+"/"+p].id) : stage+"/"+p+".webp"}</code></div>`).join("");
   const all = FR.stages.map(s=>{ const n = FR.views.concat(FR.frames).filter(p=>FR.has(s,p)).length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${FR.views.length+FR.frames.length} Bildern</td></tr>`; }).join("");
   $("#status").innerHTML = `<tr><th>Stufe</th><th>Geliefert</th></tr>` + all;
@@ -272,7 +281,13 @@ function render(){
 }
 stagesEl.onclick = e => { const b = e.target.closest("button"); if (b){ stage = b.dataset.s; pose = defPose(stage); render(); } };
 posesEl.onclick = e => { const b = e.target.closest("button"); if (b){ pose = b.dataset.p; render(); } };
-animsEl.onclick = e => { const b = e.target.closest("button"); if (b) frPlay($("#box > .fr"), b.dataset.a); };
+/* Animation: läuft immer auf dem Grundbild, an dem die Frames ausgerichtet sind */
+animsEl.onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const fr = (FR.anims[b.dataset.a]||[])[0];
+  if (fr && FR.has(stage, fr) && pose !== FR.baseOf(stage)){ pose = FR.baseOf(stage); render(); }
+  frPlay($("#box > .fr"), b.dataset.a);
+};
 $("#bgs").onclick = e => { const b = e.target.closest("button"); if (!b) return; $("#stage").className = "stage " + b.dataset.bg; $("#bgs").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b)); };
 $("#gBtn").onclick = e => { const on = e.currentTarget.getAttribute("aria-pressed")!=="true"; e.currentTarget.setAttribute("aria-pressed", on); $("#guides").classList.toggle("on", on); };
 
