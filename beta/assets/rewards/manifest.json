@@ -1,5 +1,5 @@
 {
-  "version": 37,
+  "version": 38,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -583,6 +583,21 @@
         },
         {
           "path": "aussprache_lautsprecher-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "grammatik_mix_wuerfel": {
+      "name": "Satzzeichen-Würfel für den Grammatik-Mix",
+      "images": [
+        {
+          "path": "grammatik_mix_wuerfel.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "grammatik_mix_wuerfel-128.webp",
           "width": 128,
           "height": 128
         }
