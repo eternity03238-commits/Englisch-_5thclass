@@ -1,5 +1,5 @@
 {
-  "version": 21,
+  "version": 22,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -343,6 +343,21 @@
         },
         {
           "path": "moewenpruefung_sprechblasen-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "testtraining_leuchtturm": {
+      "name": "Leuchtturm für das Testtraining",
+      "images": [
+        {
+          "path": "testtraining_leuchtturm.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "testtraining_leuchtturm-128.webp",
           "width": 128,
           "height": 128
         }
