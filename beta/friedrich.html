@@ -164,7 +164,7 @@ const FR = {
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
   anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
-  frameBase: {king:"3quarter", captain:"3quarter"},
+  frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"},
   base: "assets/friedrich/",
   files: null, ver: 1
 };
@@ -251,9 +251,9 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/a39d6205444d41798f9b84c0f42c25ae5e08e562/beta/assets/friedrich/manifest.json";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/06710fc627c1b9dcab75a453efb61f7b15bee281/beta/assets/friedrich/manifest.json";
 /* Standardansicht je Stufe im Prüfstand */
-const DEFAULT_POSE = {king:"3quarter", captain:"3quarter"};
+const DEFAULT_POSE = {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"};
 const defPose = s => DEFAULT_POSE[s] || "front";
 let stage = "king", pose = defPose("king"), bg = "bg-light";
 const $ = s => document.querySelector(s);
@@ -274,7 +274,7 @@ function render(){
   $("#box").innerHTML = friedrichEl({stage, pose, size:"lg"}) + `<div class="onion ${$("#oBtn").getAttribute("aria-pressed")==="true"?"on":""}">${friedrichEl({stage, pose:onionPose(), size:"lg"})}</div>`;
   $("#oBtn").textContent = "Mit " + FR.poseName[onionPose()] + " überlagern";
   $("#grid").innerHTML = FR.views.concat(FR.frames).map(p=>`<div class="cell">${friedrichEl({stage, pose:p, size:"md"})}<b>${FR.poseName[p]}</b>${cellTag(stage,p)}<code style="font-size:.7rem;color:var(--fr-slate);word-break:break-all">${FR.has(stage,p) && FR.files[stage+"/"+p].id ? esc(FR.files[stage+"/"+p].id) : stage+"/"+p+".webp"}</code></div>`).join("");
-  const all = FR.stages.map(s=>{ const n = FR.views.concat(FR.frames).filter(p=>FR.has(s,p)).length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${FR.views.length+FR.frames.length} Bildern</td></tr>`; }).join("");
+  const all = FR.stages.map(s=>{ const n = FR.views.concat(FR.frames).filter(p=>FR.has(s,p)).length; const total = s==="egg" ? 1 : FR.views.length+FR.frames.length; return `<tr><td>${FR.stageName[s]}</td><td>${n} von ${total} Bild${total===1?"":"ern"}${n>=total?" ✓":""}</td></tr>`; }).join("");
   $("#status").innerHTML = `<tr><th>Stufe</th><th>Geliefert</th></tr>` + all;
   stagesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===stage));
   posesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===pose));
