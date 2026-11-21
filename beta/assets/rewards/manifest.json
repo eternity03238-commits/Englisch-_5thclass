@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -241,6 +241,22 @@
         },
         {
           "path": "sun-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "bow": {
+      "name": "Fliege",
+      "slot": "neck",
+      "images": [
+        {
+          "path": "bow.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "bow-128.webp",
           "width": 128,
           "height": 128
         }
