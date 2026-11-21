@@ -1,5 +1,5 @@
 {
-  "version": 31,
+  "version": 32,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -493,6 +493,21 @@
         },
         {
           "path": "stickeralbum-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "kleiderschrank": {
+      "name": "Friedrichs Kleiderschrank",
+      "images": [
+        {
+          "path": "kleiderschrank.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "kleiderschrank-128.webp",
           "width": 128,
           "height": 128
         }
