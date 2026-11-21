@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -11,6 +11,51 @@
         },
         {
           "path": "first-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "perfect": {
+      "name": "Fehlerfrei",
+      "images": [
+        {
+          "path": "perfect.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "perfect-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "combo10": {
+      "name": "Feuerschweif",
+      "images": [
+        {
+          "path": "combo10.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "combo10-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "streak3": {
+      "name": "Drei Tage Kurs",
+      "images": [
+        {
+          "path": "streak3.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "streak3-128.webp",
           "width": 128,
           "height": 128
         }
