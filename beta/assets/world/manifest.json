@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -96,6 +96,21 @@
         },
         {
           "path": "hafenstadt/schule-am-meer-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "schule-am-meer-klassenzimmer": {
+      "learningArea": "sch",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/klassenzimmer.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/klassenzimmer-640.webp",
           "width": 640,
           "height": 1137
         }
