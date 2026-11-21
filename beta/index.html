@@ -773,6 +773,24 @@ img.stk-img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:con
 @keyframes scn-fly-r{0%{transform:translate(calc(-50% + 160%),calc(-90% - 70%))}85%{transform:translate(-50%,calc(-90% - 6%))}100%{transform:translate(-50%,-90%)}}
 @keyframes scn-fly-t{0%{transform:translate(-50%,calc(-90% - 160%))}85%{transform:translate(-50%,calc(-90% - 6%))}100%{transform:translate(-50%,-90%)}}
 @media (prefers-reduced-motion:reduce){.scn-medal.pop,.scn-fr.scn-flyin{animation:none}}
+/* Medaille groß */
+.scn-zoom{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px max(16px,env(safe-area-inset-right,0px)) 24px max(16px,env(safe-area-inset-left,0px));
+  background:rgba(20,12,4,0);transition:background .35s ease;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.scn-zoom.on{background:rgba(20,12,4,.62)}
+.scn-zoom-card{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:#FFF7E6;max-width:420px}
+.scn-zoom-art{width:min(72vw,400px);transition:transform .38s cubic-bezier(.25,1.2,.4,1);transform-origin:50% 50%;will-change:transform}
+.scn-zoom-art .stk{width:100%;height:auto;filter:drop-shadow(0 18px 30px rgba(0,0,0,.45))}
+.scn-zoom-art.locked .stk{opacity:.85}
+.scn-zoom-card b,.scn-zoom-card span,.scn-zoom-card small,.scn-zoom-hint{opacity:0;transition:opacity .25s ease .15s}
+.scn-zoom.on .scn-zoom-card b,.scn-zoom.on .scn-zoom-card span,.scn-zoom.on .scn-zoom-card small,.scn-zoom.on .scn-zoom-hint{opacity:1}
+.scn-zoom-card b{font:800 1.6rem/1.15 var(--fr-font-head);margin-top:8px}
+.scn-zoom-card span{font:600 1.02rem/1.35 var(--fr-font)}
+.scn-zoom-card small{font:800 .8rem/1 var(--fr-font);letter-spacing:.06em;text-transform:uppercase;color:#FFD36E}
+.scn-zoom-hint{font:600 .8rem/1 var(--fr-font);color:rgba(255,247,230,.75)}
+.scn-zoom.instant,.scn-zoom.instant *{transition:none!important}
+.scn-medal.away{visibility:hidden}
+.scn-medal:not(.got) img.stk-img{filter:grayscale(1) brightness(.5) blur(1px);opacity:.7}
+.scn-zoom-art.locked img.stk-img{filter:grayscale(1) brightness(.5) blur(7px);opacity:.9}
 </style>
 
 </head>
@@ -1644,7 +1662,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795291545";
+const BUILD = "1795292562";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2310,11 +2328,11 @@ function scnSet(list){
           ratio: l[l.length-1].width / l[l.length-1].height};
 }
 /* Medaille aus dem Belohnungs-Manifest (Pfade relativ zu beta/assets/rewards/), sonst null → bisheriger Sticker */
-function rwImg(id, cls){
+function rwImg(id, cls, sizes){
   const b = SCN.rewards && SCN.rewards[id]; if (!b || !b.images || !b.images.length) return null;
   const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
   const src = scnRaw("rewards/" + l[l.length-1].path), set = l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", ");
-  return `<img class="stk stk-img ${cls||""}" src="${src}" srcset="${set}" sizes="96px" alt="" decoding="async" draggable="false">`;
+  return `<img class="stk stk-img ${cls||""}" src="${src}" srcset="${set}" sizes="${sizes || "96px"}" alt="" decoding="async" draggable="false">`;
 }
 const scnScene = id => SCN.world && SCN.world.scenes && SCN.world.scenes[id];
 const scnIds = () => Object.keys((SCN.world && SCN.world.scenes) || {}).filter(id => scnSet(scnScene(id).backgrounds));
@@ -2496,7 +2514,7 @@ function scnTreasure(){
   const items = BADGES.map((b, i) => {
     const row = Math.floor(i / S0.perRow), col = i % S0.perRow; if (row >= S0.ys.length) return "";
     const has = got.has(b.id);
-    return `<button class="scn-medal ${has ? "got" : ""}" data-act="scnMedal" data-id="${b.id}" style="left:${(S0.x0 + step*(col+.5)).toFixed(2)}%;top:${S0.ys[row]}%;width:${(step*.92).toFixed(2)}%" aria-label="${esc(b.n)}${has ? "" : " (noch nicht erreicht)"}">${sticker(b.id, has)}</button>`;
+    return `<button class="scn-medal ${has ? "got" : ""}" data-act="scnMedal" data-id="${b.id}" style="left:${(S0.x0 + step*(col+.5)).toFixed(2)}%;top:${S0.ys[row]}%;width:${(step*.92).toFixed(2)}%" aria-label="${esc(b.n)}${has ? "" : " (noch nicht erreicht)"}">${rwImg(b.id) || sticker(b.id, has)}</button>`;
   }).join("");
   const c = S0.chest, dipl = PLANETS.filter(p => { const ps = placeStats(p.id); return ps.total && ps.safe === ps.total; }).length;
   st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-treasure ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}${items}
@@ -2505,11 +2523,33 @@ function scnTreasure(){
     <div class="scn-bottom"><div class="scn-say" id="scnTSay"><b>${esc(G())}</b><span>${got.size} von ${BADGES.length} Schätzen gesammelt. Tippe auf einen!</span></div></div></div>`);
   requestAnimationFrame(() => { const v = st.querySelector(".scn-treasure"); if (v) scnClampIn(v, ".scn-door-label"); });
 }
+/* Medaille groß ansehen: wächst aus dem Regal in die Mitte, Antippen stellt sie zurück */
 function scnMedal(id){
-  const b = BADGES.find(x => x.id === id), say = $("#scnTSay"); if (!b || !say) return;
-  const has = (S.badges || []).includes(id);
-  say.innerHTML = `<b>${esc(b.n)}${has ? "" : " · noch nicht geschafft"}</b><span>${esc(b.d)}</span>`;
-  const el = $(`#s-scene .scn-medal[data-id="${id}"]`); if (el && has && !scnRM()){ el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop"); }
+  const b = BADGES.find(x => x.id === id), v = $("#s-scene .scn-treasure"); if (!b || !v) return;
+  const has = (S.badges || []).includes(id), from = v.querySelector(`.scn-medal[data-id="${id}"]`);
+  const say = $("#scnTSay"); if (say) say.innerHTML = `<b>${esc(b.n)}${has ? "" : " · noch nicht geschafft"}</b><span>${esc(b.d)}</span>`;
+  const art = rwImg(id, "big", "min(72vw, 400px)") || sticker(id, has, "big");   /* noch nicht erreicht: Silhouette */
+  v.insertAdjacentHTML("beforeend", `<div class="scn-zoom" data-act="scnMedalClose" role="dialog" aria-label="${esc(b.n)}">
+    <div class="scn-zoom-card"><div class="scn-zoom-art ${has ? "" : "locked"}">${art}</div>
+      <b>${esc(b.n)}</b><span>${esc(b.d)}</span><small>${has ? "Geschafft!" : "Noch nicht geschafft"}</small></div>
+    <span class="scn-zoom-hint">Tippen zum Zurückstellen</span></div>`);
+  const z = v.querySelector(".scn-zoom"), a = z.querySelector(".scn-zoom-art");
+  if (from && !scnRM()){                          /* aus der Regalposition heraus vergrößern */
+    const r0 = from.getBoundingClientRect(), r1 = a.getBoundingClientRect();
+    a.style.transform = `translate(${(r0.left + r0.width/2) - (r1.left + r1.width/2)}px, ${(r0.top + r0.height/2) - (r1.top + r1.height/2)}px) scale(${r0.width / r1.width})`;
+    from.classList.add("away");
+    requestAnimationFrame(() => requestAnimationFrame(() => { z.classList.add("on"); a.style.transform = ""; }));
+  } else { z.classList.add("on", "instant"); if (from) from.classList.add("away"); }
+}
+function scnMedalClose(){
+  const v = $("#s-scene .scn-treasure"), z = v && v.querySelector(".scn-zoom"); if (!z) return;
+  const from = v.querySelector(".scn-medal.away"), a = z.querySelector(".scn-zoom-art");
+  const done = () => { z.remove(); if (from) from.classList.remove("away"); };
+  if (!from || scnRM()) return done();
+  const r0 = from.getBoundingClientRect(), r1 = a.getBoundingClientRect();
+  z.classList.remove("on");
+  a.style.transform = `translate(${(r0.left + r0.width/2) - (r1.left + r1.width/2)}px, ${(r0.top + r0.height/2) - (r1.top + r1.height/2)}px) scale(${r0.width / r1.width})`;
+  setTimeout(done, 380);
 }
 function scnChest(){
   const v = $("#s-scene .scn-treasure"); if (!v) return;
@@ -2548,6 +2588,7 @@ const SCENE_ACT = {
   scnGo: b => scnGo(b.dataset.id, +b.dataset.dir || 0),
   scnTreasure: () => scnTreasure(),
   scnMedal: b => scnMedal(b.dataset.id),
+  scnMedalClose: () => scnMedalClose(),
   scnChest: () => scnChest(),
   scnViewBack: () => { const v = $("#s-scene .scn-view"); if (v) v.remove(); },
   scnMap: () => scnMap(),
