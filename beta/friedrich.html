@@ -22,6 +22,7 @@
 .fr-frame.on{opacity:1}
 .fr-frame.on ~ .fr-base, .fr-body:has(.fr-frame.on) .fr-base{opacity:0}
 .fr-shadow{position:absolute;left:50%;bottom:7%;width:46%;height:6%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.32),rgba(0,0,0,0));z-index:0;transition:transform .2s,opacity .2s}
+.fr[data-pose="face"] .fr-shadow{display:none}
 @keyframes fr-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.015)}}
 /* Zustände: nur Verschieben, Skalieren und höchstens 4° Neigung */
 .fr-a-celebrate .fr-body{animation:fr-hop .9s cubic-bezier(.3,1.4,.5,1)}
@@ -244,8 +245,11 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "";
-let stage = "king", pose = "front", bg = "bg-light";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/053fe13281f88982462074557eff023bc4df2428/beta/assets/friedrich/manifest.json";
+/* Standardansicht je Stufe im Prüfstand */
+const DEFAULT_POSE = {king:"3quarter"};
+const defPose = s => DEFAULT_POSE[s] || "front";
+let stage = "king", pose = defPose("king"), bg = "bg-light";
 const $ = s => document.querySelector(s);
 const stagesEl = $("#stages"), posesEl = $("#poses"), animsEl = $("#anims");
 stagesEl.innerHTML = FR.stages.map((s,i)=>`<button data-s="${s}" aria-pressed="${s===stage}">G0${i+1} ${FR.stageName[s]}</button>`).join("");
@@ -266,7 +270,7 @@ function render(){
   stagesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.s===stage));
   posesEl.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.p===pose));
 }
-stagesEl.onclick = e => { const b = e.target.closest("button"); if (b){ stage = b.dataset.s; render(); } };
+stagesEl.onclick = e => { const b = e.target.closest("button"); if (b){ stage = b.dataset.s; pose = defPose(stage); render(); } };
 posesEl.onclick = e => { const b = e.target.closest("button"); if (b){ pose = b.dataset.p; render(); } };
 animsEl.onclick = e => { const b = e.target.closest("button"); if (b) frPlay($("#box > .fr"), b.dataset.a); };
 $("#bgs").onclick = e => { const b = e.target.closest("button"); if (!b) return; $("#stage").className = "stage " + b.dataset.bg; $("#bgs").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b)); };
@@ -358,7 +362,11 @@ async function loadPinned(link){
     if (!e || typeof e !== "object"){ ignored.push(String(id)); continue; }
     const key = idToKey(id, e);
     if (!key){ ignored.push(String(id)); continue; }
-    const f = pickFiles(e);
+    let f = pickFiles(e);
+    /* Manifest im Format des Import-Werkzeugs: Schlüssel "stufe/pose", "src" nennt nur die Original-PNG.
+       Dann gelten die WebP-Dateien neben dem Manifest: <stufe>/<pose>.webp und <stufe>/<pose>-512.webp */
+    if (/^[a-z]+\/[a-z0-9_]+$/.test(String(id)) && !(f.main && /\.webp/i.test(f.main) && f.main !== e.src))
+      f = {main: id + ".webp", small: id + "-512.webp"};
     if (!f.main){ notes.push(`<code>${esc(id)}</code>: keine PNG- oder WebP-Datei angegeben`); continue; }
     const a = resolvePath(pin, f.main); if (a.err){ notes.push(esc(a.err)); continue; }
     const b = f.small ? resolvePath(pin, f.small) : null;
@@ -371,7 +379,7 @@ async function loadPinned(link){
   setSource(SOURCE);
   try { const u = new URL(location.href); u.searchParams.set("manifest", link); history.replaceState(null, "", u); } catch(e){}
   const first = FR.stages.slice().reverse().find(s => ALLP().some(p => FR.has(s,p)));
-  if (first) stage = first;
+  if (first && first !== stage){ stage = first; pose = defPose(stage); }
   render(); checkLoads();
   return true;
 }
@@ -392,11 +400,12 @@ function checkLoads(){
     im.onload = () => { e.ok = true; e.w = im.naturalWidth; e.h = im.naturalHeight; if (im.naturalWidth !== im.naturalHeight) note(`<code>${esc(e.id)}</code>: nicht quadratisch (${im.naturalWidth} × ${im.naturalHeight})`); done(); };
     im.onerror = () => { if (im.src !== e.fb){ im.src = e.fb; return; } e.ok = false; note(`<code>${esc(e.id)}</code>: Datei <code>${esc(e.path)}</code> lädt nicht`); done(); };
     im.src = e.url;
+    if (e.url512){ const sm = new Image(); sm.onerror = () => { e.url512 = null; note(`<code>${esc(e.id)}</code>: 512-px-Variante fehlt, es wird die große Datei verwendet`); render(); }; sm.src = e.url512; }
   });
 }
 function note(h){ if (SOURCE){ SOURCE.notes.push(h); setSource(SOURCE); } }
 $("#srcForm").onsubmit = e => { e.preventDefault(); const v = $("#srcIn").value; if (v.trim()) loadPinned(v); };
-$("#srcReset").onclick = () => { FR.files = {}; SOURCE = null; setSource(null); $("#srcIn").value = ""; try { const u = new URL(location.href); u.searchParams.delete("manifest"); history.replaceState(null, "", u); } catch(e){} stage = "king"; render(); };
+$("#srcReset").onclick = () => { FR.files = {}; SOURCE = null; setSource(null); $("#srcIn").value = ""; try { const u = new URL(location.href); u.searchParams.delete("manifest"); history.replaceState(null, "", u); } catch(e){} stage = "king"; pose = defPose(stage); render(); };
 $("#oBtn").onclick = e => { const on = e.currentTarget.getAttribute("aria-pressed")!=="true"; e.currentTarget.setAttribute("aria-pressed", on); render(); };
 FR.files = {}; render();
 const qp = new URLSearchParams(location.search).get("manifest") || PINNED_MANIFEST;

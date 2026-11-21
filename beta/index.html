@@ -644,6 +644,7 @@ a.btn{text-decoration:none}
 .fr-frame.on{opacity:1}
 .fr-frame.on ~ .fr-base, .fr-body:has(.fr-frame.on) .fr-base{opacity:0}
 .fr-shadow{position:absolute;left:50%;bottom:7%;width:46%;height:6%;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.32),rgba(0,0,0,0));z-index:0;transition:transform .2s,opacity .2s}
+.fr[data-pose="face"] .fr-shadow{display:none}
 @keyframes fr-breathe{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.015)}}
 /* Zustände: nur Verschieben, Skalieren und höchstens 4° Neigung */
 .fr-a-celebrate .fr-body{animation:fr-hop .9s cubic-bezier(.3,1.4,.5,1)}
@@ -1547,7 +1548,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795275322";
+const BUILD = "1795276383";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
