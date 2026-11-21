@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -158,6 +158,21 @@
           "path": "hafenstadt/kuesten-tierpark-640.webp",
           "width": 640,
           "height": 1137
+        }
+      ]
+    },
+    "abenteuer-pier": {
+      "learningArea": "ver",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/abenteuer-pier.webp",
+          "width": 941,
+          "height": 1671
+        },
+        {
+          "path": "hafenstadt/abenteuer-pier-640.webp",
+          "width": 640,
+          "height": 1136
         }
       ]
     }
