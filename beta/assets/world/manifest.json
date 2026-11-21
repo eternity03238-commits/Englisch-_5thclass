@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -259,6 +259,20 @@
         },
         {
           "path": "hafenstadt/schatzkammer-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "flug-nach-brighton": {
+      "backgrounds": [
+        {
+          "path": "hafenstadt/flug-nach-brighton.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/flug-nach-brighton-640.webp",
           "width": 640,
           "height": 1137
         }
