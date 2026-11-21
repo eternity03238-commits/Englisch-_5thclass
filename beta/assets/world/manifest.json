@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -173,6 +173,21 @@
           "path": "hafenstadt/abenteuer-pier-640.webp",
           "width": 640,
           "height": 1136
+        }
+      ]
+    },
+    "leuchtturm-zimmer": {
+      "learningArea": "zim",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/leuchtturm-zimmer.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/leuchtturm-zimmer-640.webp",
+          "width": 640,
+          "height": 1137
         }
       ]
     }
