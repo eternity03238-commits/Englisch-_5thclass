@@ -1,5 +1,5 @@
 {
-  "version": 39,
+  "version": 40,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -613,6 +613,21 @@
         },
         {
           "path": "start_moewennest-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "schluepfen": {
+      "name": "Friedrich schlüpft",
+      "images": [
+        {
+          "path": "schluepfen.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "schluepfen-128.webp",
           "width": 128,
           "height": 128
         }
