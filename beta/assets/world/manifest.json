@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -141,6 +141,21 @@
         },
         {
           "path": "hafenstadt/bunte-strandhuetten-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "kuesten-tierpark": {
+      "learningArea": "tie",
+      "backgrounds": [
+        {
+          "path": "hafenstadt/kuesten-tierpark.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "hafenstadt/kuesten-tierpark-640.webp",
           "width": 640,
           "height": 1137
         }
