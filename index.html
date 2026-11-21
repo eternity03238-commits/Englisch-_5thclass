@@ -451,6 +451,8 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .pc:not(.locked),.postcard,.fc{transition:transform .18s ease-out;transform-style:preserve-3d;will-change:transform}
 .pc.tilting::after,.postcard.tilting::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.55),rgba(255,255,255,0) 55%);mix-blend-mode:soft-light}
 .postcard{position:relative}
+.updbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#16406B;color:#fff;font-weight:700;box-shadow:0 -6px 20px rgba(14,42,71,.25)}
+.updbar .btn{min-height:44px;flex:none}
 </style>
 
 </head>
@@ -1316,6 +1318,15 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
+const BUILD = "1795257590";
+/* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
+function checkUpdate(){
+  if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
+  fetch(location.pathname + "?v=" + Date.now(), {cache:"no-store"}).then(r=>r.text()).then(t=>{
+    const m = t.match(/const BUILD = "(\d+)"/); if (!m || m[1]===BUILD || $("#updBar")) return;
+    document.body.insertAdjacentHTML("beforeend", `<div id="updBar" class="updbar"><span>Neue Version von Möwenflug ist da!</span><button class="btn btn-main" data-act="doUpdate" data-v="${m[1]}">Jetzt laden</button></div>`);
+  }).catch(()=>{});
+}
 const cloudOn = () => !!(CLOUD.project && CLOUD.key);
 let famCode = null; try { famCode = localStorage.getItem(FAM_KEY); } catch(e) {}
 const SYNC = {busy:false, last:0, err:"", timer:null, again:false};
@@ -3458,6 +3469,13 @@ function renderParents(){
     <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Elternbereich</h1>
     <button class="btn btn-soft btn-block" data-act="openOverview" data-back="openParents">Lernstand: alle Wörter und Sätze auf einen Blick</button>
     ${famPanel()}
+    <div class="panel"><span class="label">Name und PIN</span>
+      <label class="muted" for="kidName" style="font-size:.85rem">Name des Kindes</label>
+      <div class="row"><input id="kidName" class="field" style="flex:1;min-width:0" maxlength="20" value="${esc(S.name)}" autocomplete="off"><button class="btn btn-soft" data-act="kidRename">Speichern</button></div>
+      <button class="btn btn-ghost" data-act="renameGull">Möwe umbenennen oder Farbe ändern (${esc(G())})</button>
+      <button class="btn btn-ghost" data-act="pinReset">${S.pin?"Eltern-PIN ändern":"Eltern-PIN festlegen"}</button>
+      ${famCode?`<small class="muted">Name und PIN gelten nach dem Abgleich auf allen Handys der Familie.</small>`:""}
+    </div>
     <div class="panel"><span class="label">Wochenbericht</span>
       <pre style="margin:0;white-space:pre-wrap;font:inherit;font-size:.9rem">${esc(reportText(false))}</pre>
       <button class="btn btn-soft" data-act="shareReport">Bericht teilen</button>
@@ -3504,8 +3522,7 @@ function renderParents(){
       <button class="btn btn-soft" data-act="importCode">Fortschritt laden</button>
       <div id="impMsg" class="muted"></div>
     </div>
-    <div class="panel"><span class="label">Möwe</span><button class="btn btn-ghost" data-act="renameGull">Möwe umbenennen oder Farbe ändern</button></div>
-    <div class="panel"><span class="label">PIN für Erwachsene</span><button class="btn btn-ghost" data-act="pinReset">${S.pin?"PIN ändern":"PIN festlegen"}</button></div>
+
     <div class="panel"><span class="label">Neu starten</span><div id="resetBox"><button class="btn btn-ghost" data-act="resetAsk">Alle Daten löschen</button></div></div>`;
   $("#expCode").value = backupCode();
   show("parents");
@@ -3528,6 +3545,7 @@ const ACT = {
     S.gull = {name:g, color:OB.color}; save(); sfx("gull"); show("home");
     setTimeout(()=>toast(`Das Ei von ${esc(g)} wartet auf die erste Stunde!`),400);
   },
+  kidRename: () => { const n = $("#kidName").value.trim(); if (!n){ toast("Bitte einen Namen eingeben."); return; } S.name = n; save(); toast(`Name gespeichert: ${esc(n)}`); renderParents(); },
   renameGull: () => { OB.color = S.gull ? S.gull.color : 0; renderOnboard(false); show("onboard"); $("#gullIn").value = G(); },
   introOk: () => { S.introSeen = true; save(); renderHome(); },
   startDaily, startTest, startSentences, startFix, openPost,
@@ -3632,7 +3650,9 @@ document.addEventListener("keydown", e => { if (e.key==="Enter" && (e.target.id=
 
 /* ============ START ============ */
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); } catch(e) {}
-Object.assign(ACT, FAM_ACT);
+Object.assign(ACT, FAM_ACT, {doUpdate: b => { location.replace(location.pathname + "?v=" + b.dataset.v + location.hash); }});
+setTimeout(checkUpdate, 1500);
+document.addEventListener("visibilitychange", ()=>{ if (document.visibilityState==="visible") checkUpdate(); });
 /* 3D-Kippeffekt: Postkarten und Karteikarten folgen dem Finger, mit Glanzlicht */
 const TILT = ".pc:not(.locked), .postcard, .fc";
 const tiltOff = el => { el.style.transform = ""; el.classList.remove("tilting"); };
