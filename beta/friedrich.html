@@ -251,9 +251,9 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/22fa83ceec57a72fdb36d0bf967c5e0ef07d8045/beta/assets/friedrich/manifest.json";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/c996fbd9e6ec4be9ff303f4ff845f599bf6aba9f/beta/assets/friedrich/manifest.json";
 /* Standardansicht je Stufe im Prüfstand */
-const DEFAULT_POSE = {king:"3quarter"};
+const DEFAULT_POSE = {king:"3quarter", captain:"3quarter"};
 const defPose = s => DEFAULT_POSE[s] || "front";
 let stage = "king", pose = defPose("king"), bg = "bg-light";
 const $ = s => document.querySelector(s);
