@@ -1,5 +1,5 @@
 {
-  "version": 40,
+  "version": 41,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -628,6 +628,21 @@
         },
         {
           "path": "schluepfen-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "erster_flug": {
+      "name": "Friedrichs erster Flug",
+      "images": [
+        {
+          "path": "erster_flug.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "erster_flug-128.webp",
           "width": 128,
           "height": 128
         }
