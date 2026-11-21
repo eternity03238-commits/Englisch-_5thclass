@@ -1,5 +1,5 @@
 {
-  "version": 14,
+  "version": 15,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -238,6 +238,21 @@
         },
         {
           "path": "krabbe_kneifer-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "moewenpost_briefkasten": {
+      "name": "Briefkasten für die Möwen-Post",
+      "images": [
+        {
+          "path": "moewenpost_briefkasten.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "moewenpost_briefkasten-128.webp",
           "width": 128,
           "height": 128
         }
