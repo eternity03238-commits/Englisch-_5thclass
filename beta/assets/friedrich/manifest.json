@@ -1,5 +1,5 @@
 {
- "version": 12,
+ "version": 13,
  "files": {
   "king/front": {
    "w": 1024,
@@ -245,6 +245,26 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_chick_front.png"
+  },
+  "chick/3quarter": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_chick_3quarter.png"
+  },
+  "chick/side": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_chick_side.png"
+  },
+  "chick/back": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_chick_back.png"
+  },
+  "chick/face": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_chick_face.png"
   }
  }
 }
