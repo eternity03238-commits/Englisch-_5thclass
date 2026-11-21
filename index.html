@@ -603,6 +603,33 @@ body{background:radial-gradient(120% 60% at 85% -10%,#FFF6C9 0,rgba(255,246,201,
 .stars-row svg{width:64px;height:64px;filter:drop-shadow(0 4px 0 rgba(201,138,18,.45))}
 .stat b{font-size:1.7rem}
 @media (prefers-reduced-motion:reduce){.world .boat,.world .bird,.world .jump,.world .due,.world .flag,.play-ic,.chest svg{animation:none}}
+
+/* Eltern-Zugang auf der Startseite */
+.pdock{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:22px;text-align:left;color:#fff;background:linear-gradient(180deg,#2E5C8E,#16406B);box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 6px 0 #0B2747,0 12px 22px rgba(14,42,71,.25)}
+.pdock:active{transform:translateY(4px);box-shadow:inset 0 2px 0 rgba(255,255,255,.25),0 2px 0 #0B2747}
+.pdock .pd-ic{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;background:rgba(255,255,255,.14);box-shadow:inset 0 2px 0 rgba(255,255,255,.2)}
+.pdock b{display:block;font-family:var(--f-display);font-size:1.1rem}
+.pdock small{display:block;opacity:.85;font-size:.8rem}
+.pdock .pd-lock{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#FFD23F;box-shadow:0 3px 0 #C98A12;font-size:.95rem}
+/* Elternbereich */
+.ptabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:5px;border-radius:18px;background:#E3F1F9;box-shadow:inset 0 2px 0 rgba(14,42,71,.07);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.ptabs button{min-height:42px;border-radius:14px;font-weight:700;font-size:.88rem;color:var(--muted);font-family:var(--f-display)}
+.ptabs button[aria-selected="true"]{background:#fff;color:var(--navy);box-shadow:0 3px 0 #BCD8E8}
+.phero{flex-direction:row;align-items:center;gap:12px}
+.ampel-l{display:inline-flex;align-items:center;gap:6px;margin-top:4px;font-weight:600;font-size:.88rem}
+.ampel-l i{width:12px;height:12px;border-radius:50%;display:inline-block}
+.pact{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pbtn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border-radius:20px;text-align:left;background:linear-gradient(180deg,#fff,#F3F9FD);box-shadow:var(--lift);min-width:0}
+.pbtn:active{transform:translateY(3px)}
+.pbtn span{font-size:1.4rem}
+.pbtn b{font-family:var(--f-display);color:var(--navy);font-size:1.05rem}
+.pbtn small{color:var(--muted);font-size:.78rem;line-height:1.25}
+.tour{align-items:center;text-align:center;padding:26px 20px;gap:12px}
+.tour-ic{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-size:2.6rem;background:radial-gradient(circle at 35% 30%,#fff,#DDF2FD);box-shadow:0 5px 0 #A9CFE3,0 10px 20px rgba(14,42,71,.12)}
+.tour-dots{display:flex;gap:6px;margin-top:6px}
+.tour-dots i{width:10px;height:10px;border-radius:50%;background:#D3E8F3}
+.tour-dots i.on{background:var(--flame);width:26px;border-radius:999px}
+a.btn{text-decoration:none}
 </style>
 
 </head>
@@ -648,10 +675,10 @@ Bitte öffne sie über den Link, den du bekommen hast.
     </div>
     <button class="journey" id="flightCard" data-act="openJournal"></button>
     <div id="backupCard"></div>
+    <button class="pdock" data-act="openParents"><span class="pd-ic" aria-hidden="true">👨‍👩‍👦</span><span style="min-width:0;flex:1"><b>Für Eltern</b><small>Abfragen · Lernstand · Test · Familie</small></span><span class="pd-lock" aria-hidden="true">🔒</span></button>
     <div class="foot">
       <button class="btn btn-ghost" data-act="toggleSound" id="soundBtn"></button>
       <button class="btn btn-ghost" data-act="toggleSlow" id="slowBtn"></button>
-      <button class="btn btn-ghost" data-act="openParents">Für Eltern</button>
     </div>
   </section>
 
@@ -1469,7 +1496,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795260064";
+const BUILD = "1795260660";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3663,29 +3690,78 @@ function renderBadges(){
 }
 
 function openParents(){ if (S.pin && !pinOk()) return askPin(renderParents); renderParents(); }
+const APP_URL = "https://eternity03238-commits.github.io/Englisch-_5thclass/";
+const HOERTEXT = "Hi, I'm Lily. I'm eleven years old and I live in Brighton with my mum and my brother Jack. Our house is in Park Street. My dad lives in London. My parents are divorced. My best friend is Alice. She's really friendly and funny. On Saturdays Alice and I hang out at my place. We listen to music in my bedroom. My room is upstairs, next to the bathroom. It isn't very tidy! There are a lot of clothes on the bed, and my guitar is behind the door. Jack's room is downstairs. He has a pet rat. It's called Ratty. I don't like rats!";
+function playHoertext(btn){
+  if (!HAS_TTS){ toast("Dieses Gerät kann nicht vorlesen. Bitte den Text aus dem Lösungs-PDF vorlesen."); return; }
+  speechSynthesis.cancel();
+  const mk = () => { const u = new SpeechSynthesisUtterance(HOERTEXT); u.lang = "en-GB"; if (VOICE) u.voice = VOICE; u.rate = .82; return u; };
+  const u1 = mk(), u2 = mk();
+  btn.textContent = "Erstes Mal …";
+  u1.onend = () => { btn.textContent = "Kurze Pause …"; setTimeout(()=>{ btn.textContent = "Zweites Mal …"; speechSynthesis.speak(u2); }, 5000); };
+  u2.onend = () => { btn.textContent = "Hörtext nochmal vorspielen"; };
+  speechSynthesis.speak(u1);
+}
+let PTAB = "start";
+const PTOUR_KEY = "moewenflug-ptour";
+const PTOUR = [
+  ["👋","Willkommen im Elternbereich","Hier sehen Sie, was Ihr Kind wirklich kann: welche Wörter sitzen, welche nicht, und wie es um den nächsten Test steht. Die PIN sorgt dafür, dass nur Erwachsene hier hineinkommen."],
+  ["⭐","Abfragen zählt am meisten","Die Möwen-Prüfung ist Ihr wichtigstes Werkzeug. Abends 10 Karten mit „Fehlerwörter“ oder „Neue Wörter“: Ihr Kind sagt die Antwort laut, Sie bewerten ehrlich. Was sofort sitzt, zählt sofort als sicher."],
+  ["📅","Test eintragen","Tragen Sie im Reiter „Test“ das Datum der nächsten Arbeit ein. Dann plant die App jeden Tag die richtigen Wörter, die Ampel zeigt, wie gut Ihr Kind vorbereitet ist, und am Hafen zieht ein Sturm auf, der sich mit dem Lernen verzieht."],
+  ["👨‍👩‍👦","Ganze Familie verbinden","Im Reiter „Familie“ legen Sie Ihre Familie an und schicken Papa, Mama, Oma oder Opa den Einladungslink. Dann sehen alle Handys denselben Lernstand."]
+];
+function parentTour(i){
+  const n = PTOUR.length, t = PTOUR[i];
+  $("#s-parents").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button><span class="spacer"></span><button class="btn btn-ghost" data-act="ptourEnd">Überspringen</button></div>
+    <div class="panel tour">
+      <div class="tour-ic" aria-hidden="true">${t[0]}</div>
+      <span class="label">Schritt ${i+1} von ${n}</span>
+      <h1 class="display" style="font-size:1.6rem;color:var(--navy)">${t[1]}</h1>
+      <p style="margin:0;font-size:1.02rem">${t[2]}</p>
+      <div class="tour-dots">${PTOUR.map((_,k)=>`<i class="${k===i?"on":""}"></i>`).join("")}</div>
+    </div>
+    <div class="row">${i>0?`<button class="btn btn-soft" style="flex:1" data-act="ptour" data-i="${i-1}">Zurück</button>`:""}<button class="btn btn-main" style="flex:2" data-act="${i<n-1?"ptour":"ptourEnd"}" data-i="${i+1}">${i<n-1?"Weiter":"Los geht's"}</button></div>`;
+  show("parents");
+}
 function renderParents(){
+  let seenTour = false; try { seenTour = !!localStorage.getItem(PTOUR_KEY); } catch(e) {}
+  if (!seenTour) return parentTour(0);
   const intro = introduced(), safe = W.filter(isSafe).length, master = W.filter(w=>st(w.id)&&st(w.id).b>=5).length;
   const problems = intro.filter(w=>st(w.id).w>0).sort((a,b)=>(st(b.id).w-st(b.id).r*.3)-(st(a.id).w-st(a.id).r*.3)).slice(0,12);
   const sentProb = SENT.filter(s=>ss(s.id) && ss(s.id).w>0).sort((a,b)=>ss(b.id).w-ss(a.id).w).slice(0,6);
   const days = []; for (let i=27;i>=0;i--) days.push(addDays(today(),-i));
   const accRate = S.stats.answers ? Math.round(S.stats.right/S.stats.answers*100) : 0;
   const t = S.test || {}, rd = testReadiness();
-  $("#s-parents").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
-    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Elternbereich</h1>
-    <button class="btn btn-soft btn-block" data-act="openOverview" data-back="openParents">Lernstand: alle Wörter und Sätze auf einen Blick</button>
-    ${famPanel()}
-    <div class="panel"><span class="label">Name und PIN</span>
-      <label class="muted" for="kidName" style="font-size:.85rem">Name des Kindes</label>
-      <div class="row"><input id="kidName" class="field" style="flex:1;min-width:0" maxlength="20" value="${esc(S.name)}" autocomplete="off"><button class="btn btn-soft" data-act="kidRename">Speichern</button></div>
-      <button class="btn btn-ghost" data-act="renameGull">Möwe umbenennen oder Farbe ändern (${esc(G())})</button>
-      <button class="btn btn-ghost" data-act="pinReset">${S.pin?"Eltern-PIN ändern":"Eltern-PIN festlegen"}</button>
-      ${famCode?`<small class="muted">Name und PIN gelten nach dem Abgleich auf allen Handys der Familie.</small>`:""}
+  const tabs = [["start","Überblick"],["test","Test"],["fam","Familie"],["more","Mehr"]];
+  const fe = W.filter(isFehler).length;
+  let body = "";
+  if (PTAB==="start") body = `
+    <div class="panel phero">
+      <div style="width:70px;flex:none">${myGull()}</div>
+      <div style="min-width:0;flex:1"><b class="display" style="font-size:1.25rem;color:var(--navy)">${esc(S.name)} & ${esc(G())}</b>
+        <div class="muted" style="font-size:.88rem">${intro.length} von ${W.length} Wörtern gelernt · ${safe} sicher · Serie ${S.streak} Tage</div>
+        ${rd?`<div class="ampel-l"><i style="background:${rd.c}"></i>${esc(rd.t)}</div>`:""}</div>
+    </div>
+    <div class="pact">
+      <button class="pbtn" data-act="openDeck" data-mode="mama"><span>⭐</span><b>Jetzt abfragen</b><small>${fe?`${fe} Fehlerwörter warten`:"Möwen-Prüfung"}</small></button>
+      <button class="pbtn" data-act="openOverview" data-back="openParents"><span>🟢</span><b>Lernstand</b><small>Alle Wörter auf einen Blick</small></button>
     </div>
     <div class="panel"><span class="label">Wochenbericht</span>
       <pre style="margin:0;white-space:pre-wrap;font:inherit;font-size:.9rem">${esc(reportText(false))}</pre>
       <button class="btn btn-soft" data-act="shareReport">Bericht teilen</button>
     </div>
-    ${(S.exams||[]).some(e=>e.kind==="ka")?`<div class="panel"><span class="label">Probe-Klassenarbeiten</span>${(S.exams||[]).filter(e=>e.kind==="ka").slice(-6).reverse().map(e=>`<div class="row" style="justify-content:space-between"><span>${dmy(e.d).slice(0,6)} · ${esc((PMAP[e.pl]||{name:""}).name)}</span><b>${fmtP(e.ok)}/${e.n} P. · Note ${e.g}</b></div>`).join("")}<button class="btn btn-soft" data-act="openExam">Neue Probe-Klassenarbeit</button></div>`:`<button class="btn btn-soft btn-block" data-act="openExam">Probe-Klassenarbeit starten (45 Min.)</button>`}
+    <div class="panel"><span class="label">Letzte 4 Wochen</span><div class="cal">${days.map(d=>`<i class="${S.days.includes(d)?"on":""}" title="${d}"></i>`).join("")}</div></div>
+    <div class="panel"><span class="label">Problemwörter</span>${problems.length?problems.map(w=>`<div class="problem"><div><b>${esc(w.en)}</b> <span class="muted" style="font-weight:400">${esc(w.de)}</span></div><span>${st(w.id).w}× falsch</span></div>`).join(""):`<p class="muted" style="margin:0">Noch keine.</p>`}</div>
+    <div class="panel"><span class="label">Schwierige Sätze</span>${sentProb.length?sentProb.map(s=>`<div class="problem"><div>${esc(fillN(s.en))}</div><span>${ss(s.id).w}×</span></div>`).join(""):`<p class="muted" style="margin:0">Noch keine.</p>`}</div>
+    <div class="statgrid">
+      <div class="stat"><b>${intro.length}</b><small>von ${W.length} gelernt</small></div>
+      <div class="stat"><b>${safe}</b><small>sicher (Stufe 3+)</small></div>
+      <div class="stat"><b>${master}</b><small>gemeistert</small></div>
+      <div class="stat"><b>${S.days.length}</b><small>Übungstage</small></div>
+      <div class="stat"><b>${accRate}%</b><small>Trefferquote</small></div>
+      <div class="stat"><b>${S.stats.mama}</b><small>Prüfungen</small></div>
+    </div>`;
+  else if (PTAB==="test") body = `
     <div class="panel"><span class="label">Nächster Vokabeltest</span>
       <label class="muted" for="testPl" style="font-size:.85rem">Thema</label>
       <select id="testPl" class="field">${PLANETS.map(p=>`<option value="${p.id}" ${t.pl===p.id?"selected":""}>${esc(p.name)}</option>`).join("")}</select>
@@ -3694,19 +3770,34 @@ function renderParents(){
       <div class="row"><button class="btn btn-main" style="flex:1" data-act="testSave">Test speichern</button>${S.test?`<button class="btn btn-ghost" data-act="testClear">Entfernen</button>`:""}</div>
       <div id="testMsg" class="muted" style="font-size:.9rem">${testActive()?`Aktiv: ${esc(PMAP[t.pl].name)} am ${dmy(t.date)}. Bis dahin kommen diese Wörter jeden Tag dran. Ampel: ${rd.t}. ${esc(rd.d)}`:"Kein Test eingetragen."}</div>
     </div>
+    <div class="panel"><span class="label">Klassenarbeit Unit 1 zum Ausdrucken</span>
+      <p style="margin:0" class="muted">Eine Probe-Klassenarbeit wie in der Schule: 45 Minuten, 74 Punkte, mit Hören, Wortschatz, Grammatik, Lesen und Schreiben.</p>
+      <a class="btn btn-main" href="${APP_URL}pdf/klassenarbeit-unit1.pdf" target="_blank" rel="noopener">Arbeitsblatt (PDF)</a>
+      <a class="btn btn-soft" href="${APP_URL}pdf/klassenarbeit-unit1-loesung.pdf" target="_blank" rel="noopener">Lösungen und Vorlesetext (PDF)</a>
+      <div class="tip"><b>Teil 1 Hören:</b> Den Text liest ein Erwachsener vor, er steht im Lösungs-PDF. Oder Sie lassen ihn hier von der App mit englischer Aussprache vorlesen, zweimal mit Pause dazwischen.</div>
+      <button class="btn btn-ice" data-act="hoertext">Hörtext vorspielen</button>
+    </div>
+    ${(S.exams||[]).some(e=>e.kind==="ka")?`<div class="panel"><span class="label">Probe-Klassenarbeiten</span>${(S.exams||[]).filter(e=>e.kind==="ka").slice(-6).reverse().map(e=>`<div class="row" style="justify-content:space-between"><span>${dmy(e.d).slice(0,6)} · ${esc((PMAP[e.pl]||{name:""}).name)}</span><b>${fmtP(e.ok)}/${e.n} P. · Note ${e.g}</b></div>`).join("")}<button class="btn btn-soft" data-act="openExam">Neue Probe-Klassenarbeit</button></div>`:`<button class="btn btn-soft btn-block" data-act="openExam">Probe-Klassenarbeit starten (45 Min.)</button>`}`;
+  else if (PTAB==="fam") body = `
+    ${famPanel()}
+    <div class="panel"><span class="label">Name und PIN</span>
+      <label class="muted" for="kidName" style="font-size:.85rem">Name des Kindes</label>
+      <div class="row"><input id="kidName" class="field" style="flex:1;min-width:0" maxlength="20" value="${esc(S.name)}" autocomplete="off"><button class="btn btn-soft" data-act="kidRename">Speichern</button></div>
+      <button class="btn btn-ghost" data-act="renameGull">Möwe umbenennen oder Farbe ändern (${esc(G())})</button>
+      <button class="btn btn-ghost" data-act="pinReset">${S.pin?"Eltern-PIN ändern":"Eltern-PIN festlegen"}</button>
+      ${famCode?`<small class="muted">Name und PIN gelten nach dem Abgleich auf allen Handys der Familie.</small>`:""}
+    </div>
     <div class="panel"><span class="label">Belohnung</span>
       <label class="muted" for="rewardIn" style="font-size:.85rem">Was gibt es, wenn die Möwe in Brighton landet (1.170 km)? Jede Unterrichtsstunde bringt 50 km, das sind etwa 4 Wochen tägliches Üben.</label>
       <input id="rewardIn" class="field" maxlength="60" value="${esc(S.reward||"")}" placeholder="z. B. Kinoabend mit Popcorn">
       <button class="btn btn-soft" data-act="rewardSave">Belohnung speichern</button>
+    </div>`;
+  else body = `
+    <div class="panel"><span class="label">App an andere Eltern schicken</span>
+      <p style="margin:0" class="muted">Jede Familie, die den Link öffnet, startet mit einem eigenen, leeren Stand. Sie sehen nichts von Ihrem Kind und Sie nichts von ihrem.</p>
+      <button class="btn btn-main" data-act="shareApp">Link per WhatsApp schicken</button>
     </div>
-    <div class="statgrid">
-      <div class="stat"><b>${intro.length}</b><small>von ${W.length} gelernt</small></div>
-      <div class="stat"><b>${safe}</b><small>sicher (Stufe 3+)</small></div>
-      <div class="stat"><b>${master}</b><small>gemeistert</small></div>
-      <div class="stat"><b>${S.days.length}</b><small>Übungstage</small></div>
-      <div class="stat"><b>${accRate}%</b><small>Trefferquote</small></div>
-      <div class="stat"><b>${S.stats.mama}</b><small>Prüfungen</small></div>
-    </div>
+    <button class="btn btn-soft btn-block" data-act="ptour" data-i="0">Einführung nochmal ansehen</button>
     <div class="panel"><span class="label">So lernt die App</span>
       <p style="margin:0">Es zählt nur, was ${esc(S.name)} selbst schreibt oder sagt. Ein Wort steigt höchstens einmal pro Tag eine Stufe auf und kommt nach 1, 3, 7, 14 und 30 Tagen wieder. Falsch heißt: zurück auf Stufe 1.</p>
       <p style="margin:0">Im Fehler-Detektiv macht die Möwe genau die Fehler aus seinen Diktaten, zum Beispiel „I'm don't“ oder „They names“. Wer Fehler korrigiert, lernt die Regel besonders gründlich.</p>
@@ -3714,9 +3805,6 @@ function renderParents(){
       <p style="margin:0">Die Möwe wächst mit Fischen: 1 Fisch für jedes neue Wort und 1 Fisch für jede Stufe, die ein Wort aufsteigt. Fische gehen nie verloren. Jungmöwe ab 60, Möwe ab 180, Kapitänsmöwe ab 450 Fischen.</p>
       <p style="margin:0">Ist das Tagesziel erreicht, schläft die Möwe. Extra-Übungen gehen weiter, aber es gibt keinen Druck, endlos weiterzuspielen.</p>
     </div>
-    <div class="panel"><span class="label">Letzte 4 Wochen</span><div class="cal">${days.map(d=>`<i class="${S.days.includes(d)?"on":""}" title="${d}"></i>`).join("")}</div></div>
-    <div class="panel"><span class="label">Problemwörter</span>${problems.length?problems.map(w=>`<div class="problem"><div><b>${esc(w.en)}</b> <span class="muted" style="font-weight:400">${esc(w.de)}</span></div><span>${st(w.id).w}× falsch</span></div>`).join(""):`<p class="muted" style="margin:0">Noch keine.</p>`}</div>
-    <div class="panel"><span class="label">Schwierige Sätze</span>${sentProb.length?sentProb.map(s=>`<div class="problem"><div>${esc(fillN(s.en))}</div><span>${ss(s.id).w}×</span></div>`).join(""):`<p class="muted" style="margin:0">Noch keine.</p>`}</div>
     <button class="btn btn-soft btn-block" data-act="openAll">Alle ${W.length} Wörter ansehen</button>
     <div class="panel"><span class="label">Fortschritt sichern</span>
       <p style="margin:0" class="muted">Der Fortschritt liegt in diesem Browser. Mit dem Code übertragen Sie ihn auf ein anderes Gerät. Der wöchentliche Möwen-Bericht enthält ihn auch.</p>
@@ -3727,9 +3815,12 @@ function renderParents(){
       <button class="btn btn-soft" data-act="importCode">Fortschritt laden</button>
       <div id="impMsg" class="muted"></div>
     </div>
-
     <div class="panel"><span class="label">Neu starten</span><div id="resetBox"><button class="btn btn-ghost" data-act="resetAsk">Alle Daten löschen</button></div></div>`;
-  $("#expCode").value = backupCode();
+  $("#s-parents").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button><span class="spacer"></span><span class="pill">🔒 Eltern</span></div>
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy)">Elternbereich</h1>
+    <div class="ptabs" role="tablist">${tabs.map(([k,n])=>`<button role="tab" aria-selected="${PTAB===k}" data-act="ptab" data-t="${k}">${n}</button>`).join("")}</div>
+    ${body}`;
+  const ec = $("#expCode"); if (ec) ec.value = backupCode();
   show("parents");
 }
 
@@ -3754,6 +3845,11 @@ const ACT = {
   renameGull: () => { OB.color = S.gull ? S.gull.color : 0; renderOnboard(false); show("onboard"); $("#gullIn").value = G(); },
   introOk: () => { S.introSeen = true; save(); renderHome(); },
   openChest: b => openChest(b),
+  ptab: b => { PTAB = b.dataset.t; renderParents(); },
+  ptour: b => parentTour(+b.dataset.i),
+  ptourEnd: () => { try { localStorage.setItem(PTOUR_KEY, "1"); } catch(e) {} PTAB = "start"; renderParents(); },
+  hoertext: b => playHoertext(b),
+  shareApp: b => shareText("Möwenflug", `Mit dieser App lernt mein Kind die Englisch-Vokabeln aus Unit 1 (mit Sätzen, Abfragen und Probe-Klassenarbeit). Kostenlos, ohne Anmeldung, jede Familie hat ihren eigenen Stand:\n${APP_URL}\n\nTipp: In Safari „Teilen“ und „Zum Home-Bildschirm“ tippen, dann ist sie wie eine App da.`, msg => { b.textContent = msg; }),
   toggleTest: () => { const d = testActive() ? dayDiff(today(), S.test.date) : 9; testOpen = !(testOpen==null ? d<=1 : testOpen); renderTestCard(); },
   gullTap: () => {
     const el = $("#hGullEl"); if (!el) return;
