@@ -1,0 +1,239 @@
+{
+ "titel": "Bildauftrag Admiralsmöwe (Möwenflug, Klasse 5)",
+ "stand": "2026-11-22",
+ "zweck": "Neue Wachstumsstufe von Friedrich zwischen Kapitänsmöwe (ab 450 Fischen) und Königsmöwe (ab 2000 Fischen). Die Admiralsmöwe gibt es ab 1100 Fischen. Die App ist fertig und zeigt bis zur Lieferung die Kapitänsmöwe.",
+ "stufe": {
+  "key": "admiral",
+  "name": "Admiralsmöwe",
+  "ab_fischen": 1100,
+  "zwischen": [
+   "captain",
+   "king"
+  ]
+ },
+ "ablauf": [
+  "Bilder der Reihe nach erzeugen, zuerst 3quarter; alle Frames deckungsgleich dazu.",
+  "PNGs mit den Dateinamen unten in einen Ordner legen und im Repo ausführen: python3 tools/import_friedrich.py <ordner> --repo .",
+  "Das Skript legt Originale unter art-source/friedrich/admiral/ ab, erzeugt beta/assets/friedrich/admiral/<pose>.webp und <pose>-512.webp und trägt admiral/<pose> in beta/assets/friedrich/manifest.json ein.",
+  "Die Manifest-Version erhöht das Skript selbst. Danach auf Branch beta/friedrich-2-assets committen, hier status auf \"geliefert\" setzen.",
+  "Katharina gibt die Bilder frei und schickt Claude den commitgenauen Manifest-Link; erst dann baut die App sie fest ein."
+ ],
+ "vorlagen": {
+  "gleiche_figur_und_position": "art-source/friedrich/captain/<pose>.png",
+  "festlichkeit_knapp_darunter": "art-source/friedrich/king/<pose>.png"
+ },
+ "figur": {
+  "gleich_wie_kapitaensmoewe": "Körper, Gefieder, Gesicht, Augen, Schnabel, Beine und Proportionen exakt wie captain; nur die Kopfbedeckung ist neu.",
+  "kopfbedeckung": "Admirals-Zweispitz aus dunklem Marineblau-Filz, quer auf dem Kopf (Spitzen links und rechts), breite goldene Borte, vorne runde goldene Kokarde mit kleinem Anker, oben eine kleine weiße Feder. Etwas größer und edler als die Kapitänsmütze, nicht so hoch wie die Krone, verdeckt die Augen nicht. Weiche 3D-Optik, gleiche Lichtrichtung.",
+  "nicht_im_bild": [
+   "keine Jacke, keine Schulterklappen, keine Orden",
+   "nichts am Hals oder Rücken (die App setzt dort Kleidungsstücke auf)",
+   "keine Schrift, keine Zahlen, kein Rahmen",
+   "kein Bodenschatten, keine Bodenfläche"
+  ]
+ },
+ "technik": {
+  "format": "PNG, quadratisch, mindestens 1024 × 1024 px (besser 2048)",
+  "hintergrund": "echter Alphakanal (transparent)",
+  "figur": "etwa 80 % der Bildhöhe, mittig bei 50 % der Breite, Füße auf derselben Höhe wie bei captain",
+  "rand": "Hutspitze und Feder mindestens 4 % vom oberen Bildrand",
+  "frames": "deckungsgleich zu admiral/3quarter, nur die beschriebenen Teile ändern sich"
+ },
+ "bilder": [
+  {
+   "nr": 1,
+   "datei": "friedrich_admiral_3quarter.png",
+   "manifest_key": "admiral/3quarter",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/3quarter.webp",
+    "beta/assets/friedrich/admiral/3quarter-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/3quarter.png",
+   "pose": "Dreiviertelansicht",
+   "motiv": "Grundansicht wie captain/3quarter: steht, Blick nach rechts, freundlich und stolz",
+   "ausgerichtet_an": null,
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 2,
+   "datei": "friedrich_admiral_front.png",
+   "manifest_key": "admiral/front",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/front.webp",
+    "beta/assets/friedrich/admiral/front-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/front.png",
+   "pose": "Vorderansicht",
+   "motiv": "wie captain/front, Blick zum Betrachter",
+   "ausgerichtet_an": null,
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 3,
+   "datei": "friedrich_admiral_side.png",
+   "manifest_key": "admiral/side",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/side.webp",
+    "beta/assets/friedrich/admiral/side-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/side.png",
+   "pose": "Seitenansicht",
+   "motiv": "wie captain/side, Profil nach rechts",
+   "ausgerichtet_an": null,
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 4,
+   "datei": "friedrich_admiral_back.png",
+   "manifest_key": "admiral/back",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/back.webp",
+    "beta/assets/friedrich/admiral/back-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/back.png",
+   "pose": "Rückenansicht",
+   "motiv": "wie captain/back, Zweispitz von hinten mit Feder",
+   "ausgerichtet_an": null,
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 5,
+   "datei": "friedrich_admiral_face.png",
+   "manifest_key": "admiral/face",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/face.webp",
+    "beta/assets/friedrich/admiral/face-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/face.png",
+   "pose": "Kopf-Porträt",
+   "motiv": "wie captain/face: nur Kopf mit Hut, groß, für das runde Profilbild",
+   "ausgerichtet_an": null,
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 6,
+   "datei": "friedrich_admiral_blink.png",
+   "manifest_key": "admiral/blink",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/blink.webp",
+    "beta/assets/friedrich/admiral/blink-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/blink.png",
+   "pose": "Frame: Blinzeln",
+   "motiv": "beide Augen geschlossen (entspannt, nicht schlafend)",
+   "ausgerichtet_an": "admiral/3quarter",
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 7,
+   "datei": "friedrich_admiral_look_left.png",
+   "manifest_key": "admiral/look_left",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/look_left.webp",
+    "beta/assets/friedrich/admiral/look_left-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/look_left.png",
+   "pose": "Frame: Blick links",
+   "motiv": "Augen und Kopf leicht nach links gedreht",
+   "ausgerichtet_an": "admiral/3quarter",
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 8,
+   "datei": "friedrich_admiral_look_right.png",
+   "manifest_key": "admiral/look_right",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/look_right.webp",
+    "beta/assets/friedrich/admiral/look_right-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/look_right.png",
+   "pose": "Frame: Blick rechts",
+   "motiv": "Augen und Kopf leicht nach rechts gedreht",
+   "ausgerichtet_an": "admiral/3quarter",
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 9,
+   "datei": "friedrich_admiral_wave.png",
+   "manifest_key": "admiral/wave",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/wave.webp",
+    "beta/assets/friedrich/admiral/wave-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/wave.png",
+   "pose": "Frame: Winken",
+   "motiv": "vorderer Flügel zum Gruß erhoben",
+   "ausgerichtet_an": "admiral/3quarter",
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 10,
+   "datei": "friedrich_admiral_celebrate.png",
+   "manifest_key": "admiral/celebrate",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/celebrate.webp",
+    "beta/assets/friedrich/admiral/celebrate-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/celebrate.png",
+   "pose": "Frame: Jubeln",
+   "motiv": "beide Flügel hoch, Augen fröhlich, Schnabel offen",
+   "ausgerichtet_an": "admiral/3quarter",
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 11,
+   "datei": "friedrich_admiral_think.png",
+   "manifest_key": "admiral/think",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/think.webp",
+    "beta/assets/friedrich/admiral/think-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/think.png",
+   "pose": "Frame: Nachdenken",
+   "motiv": "Flügelspitze am Schnabel, Blick nach oben",
+   "ausgerichtet_an": "admiral/3quarter",
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 12,
+   "datei": "friedrich_admiral_encourage.png",
+   "manifest_key": "admiral/encourage",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/encourage.webp",
+    "beta/assets/friedrich/admiral/encourage-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/encourage.png",
+   "pose": "Frame: Mutmachen",
+   "motiv": "Flügel nach vorn gestreckt wie ein Daumen hoch, aufmunternder Blick",
+   "ausgerichtet_an": "admiral/3quarter",
+   "pflicht": true,
+   "status": "offen"
+  },
+  {
+   "nr": 13,
+   "datei": "friedrich_admiral_fly.png",
+   "manifest_key": "admiral/fly",
+   "app_dateien": [
+    "beta/assets/friedrich/admiral/fly.webp",
+    "beta/assets/friedrich/admiral/fly-512.webp"
+   ],
+   "original": "art-source/friedrich/admiral/fly.png",
+   "pose": "Fliegen",
+   "motiv": "wie king/fly: im Gleitflug, Flügel ausgebreitet, Hut sitzt fest",
+   "ausgerichtet_an": null,
+   "pflicht": false,
+   "status": "offen"
+  }
+ ]
+}

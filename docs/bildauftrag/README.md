@@ -2,6 +2,8 @@
 
 Möwenflug, Englisch Klasse 5 · Stand 22.11.2026 · maschinenlesbar: [`units-2-4.json`](units-2-4.json)
 
+> **Neuer Auftrag:** [Admiralsmöwe](admiralsmoewe.md): neue Wachstumsstufe von Friedrich (13 Figurenbilder, offen).
+
 Für Units 2–4 sind **57 neue Bilder** im Beta-Branch geliefert. Diese Datei sagt für jedes Bild, was darauf zu sehen ist, in welchem Format es geliefert wird, wohin die Datei kommt und welcher Manifest-Eintrag dazugehört. Wiederverwendete Bilder stehen unten und müssen nicht neu gestaltet werden.
 
 ## So wird der Auftrag abgearbeitet
