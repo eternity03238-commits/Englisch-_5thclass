@@ -254,12 +254,13 @@ FR.fitPts = {
 };
 FR.fitFar = .7;   /* hinteres Glas wirkt durch die Drehung kleiner */
 /* Größe je Teil relativ zum Ankerpunkt (die Krone ist schmaler als eine Mütze) */
-FR.fitScale = {crown:.72, captain:.95, sailor:.95};
-FR.fitDy = {crown:-3};   /* Feinkorrektur der Höhe in % */
+FR.fitScale = {crown:.72, captain:.95, sailor:.95, tie:.42, chef:.86, sou_wester:1.02};
+FR.fitDy = {crown:-3, tie:13, chef:-4};   /* Feinkorrektur der Höhe in % */
 /* Welcher Ankerpunkt für welches Teil; Sichtbereich des Inventarbilds (x0, y0, x1, y1 in % des Bildes) */
-FR.fitSlot = {sun:"eyes", star:"eyes", bow:"neck", pack:"back", sailor:"head", captain:"head", crown:"head", phones:"ears"};
+FR.fitSlot = {sun:"eyes", star:"eyes", bow:"neck", pack:"back", sailor:"head", captain:"head", crown:"head", phones:"ears", tie:"neck", chef:"head", sou_wester:"head"};
 FR.fitBox = {sun:[5.9,35.2,93.6,72.3], star:[15.6,34.8,84,65.4], bow:[12.5,32.2,87.1,73.2], pack:[13.3,9,87.1,92.2],
-  sailor:[4.3,22.3,94.5,80.9], captain:[5.7,20.1,93.9,83], crown:[4.3,12.7,94.9,86.9], phones:[7.2,7.2,91.6,94.7]};
+  sailor:[4.3,22.3,94.5,80.9], captain:[5.7,20.1,93.9,83], crown:[4.3,12.7,94.9,86.9], phones:[7.2,7.2,91.6,94.7],
+  tie:[35.7,0.8,64.1,99], chef:[2.5,13.5,96.9,87.7], sou_wester:[3.9,7.2,96.1,92.8]};
 FR.fitArt = null;   /* wird von der App gesetzt: item → {src, srcset} */
 FR.canFit = (s, w) => { const a = FR.fit[s], slot = FR.fitSlot[w]; return !!(a && slot && a[slot] && FR.fitBox[w] && FR.fitArt && FR.fitArt(w)); };
 function frFitTag(w, art, slot, style, extra){
