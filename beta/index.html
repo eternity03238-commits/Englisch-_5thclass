@@ -2791,7 +2791,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795378320";
+const BUILD = "1795378785";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -6575,6 +6575,7 @@ const unitOf = pl => (PMAP[pl] && PMAP[pl].unit) || "u1";
 const unitWords = uid => { const inW = W.filter(w => unitOf(w.pl) === uid); return inW.length || !UNIT_DATA[uid] ? inW : UNIT_DATA[uid].words; };
 /* Freigeschaltete Units 2–4: Lernort und Wörter aufnehmen, gesperrte wieder herausnehmen (Fortschritt in S.words bleibt erhalten) */
 function unitsApply(){
+  if (!S) return;   /* neues Gerät: noch kein Profil, erst nach der Anmeldung */
   const open = U().open;
   Object.entries(UNIT_DATA).forEach(([uid, d]) => {
     const has = !!PMAP[uid], want = open.includes(uid) && d.words.length;

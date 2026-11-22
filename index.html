@@ -6498,6 +6498,7 @@ const unitOf = pl => (PMAP[pl] && PMAP[pl].unit) || "u1";
 const unitWords = uid => { const inW = W.filter(w => unitOf(w.pl) === uid); return inW.length || !UNIT_DATA[uid] ? inW : UNIT_DATA[uid].words; };
 /* Freigeschaltete Units 2–4: Lernort und Wörter aufnehmen, gesperrte wieder herausnehmen (Fortschritt in S.words bleibt erhalten) */
 function unitsApply(){
+  if (!S) return;   /* neues Gerät: noch kein Profil, erst nach der Anmeldung */
   const open = U().open;
   Object.entries(UNIT_DATA).forEach(([uid, d]) => {
     const has = !!PMAP[uid], want = open.includes(uid) && d.words.length;
