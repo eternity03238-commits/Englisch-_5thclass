@@ -44,6 +44,9 @@
 .fr[data-broken="1"] .fr-body{outline:2px dashed #FF5E5B;outline-offset:-4px;border-radius:14%}
 /* Kleidungs-Ebenen liegen über Grundbild und Frames */
 .fr-wear,.fr-wear-f{z-index:2}
+/* Anprobe mit Inventarbild: leichter Kontaktschatten, Rucksack hinter dem Körper */
+.fr-tryon{position:absolute;max-width:none;filter:drop-shadow(0 2px 2px rgba(60,40,20,.28)) saturate(.95);transition:opacity .12s}
+.fr-tryon-back{z-index:0;filter:drop-shadow(0 3px 4px rgba(60,40,20,.3)) brightness(.92)}
 .fr-wear.off{opacity:0}
 .fr-wear-f{opacity:0}
 .fr-wear-f.on{opacity:1}
@@ -229,18 +232,53 @@ function frWearFrame(el, frame){
 }
 FR.wearKey = (item, frame) => "wear-" + item + (frame ? "-" + frame : "");
 FR.wearOf = s => Object.keys(FR.files || {}).filter(k => k.startsWith(s + "/wear-") && !FR.framesOf(s).some(f => k.endsWith("-" + f))).map(k => k.slice(s.length + 6));
+/* ---------- Anprobe ohne eigene Ebene: das Inventarbild sitzt an Ankerpunkten der Ruhepose ----------
+   Werte in Prozent der Friedrich-Box, gemessen an <stufe>/3quarter (Schnabel zeigt nach rechts).
+   head = Scheitel (Mütze sitzt darauf), ears = Kopfmitte (Kopfhörer), eyes = Mitte zwischen den Augen mit Neigung,
+   neck = unter dem Schnabel, back = Rücken links, wird hinter den Körper gelegt.
+   Kapitäns- und Königsmöwe tragen Mütze bzw. Krone fest im Bild: dort keine Kopfteile. */
+FR.fit = {
+  chick:   {head:{x:49, y:14, w:38, r:-6}, ears:{x:50, y:29, w:54, sy:.8},  eyes:{x:57.5, y:32.5, w:34, r:-8},  neck:{x:59, y:46, w:18}, back:{x:30, y:54, w:32}},
+  young:   {head:{x:51, y:12, w:36, r:-6}, ears:{x:51, y:25, w:48, sy:.78}, eyes:{x:61,   y:29.5, w:32, r:-12}, neck:{x:61, y:42, w:17}, back:{x:29, y:53, w:32}},
+  adult:   {head:{x:52, y:14, w:38, r:-6}, ears:{x:52, y:24, w:47, sy:.76}, eyes:{x:58,   y:23.5, w:34, r:-9},  neck:{x:59, y:37, w:18}, back:{x:26, y:52, w:34}},
+  captain: {head:null,                     ears:null,                       eyes:{x:57,   y:31,   w:31, r:-12}, neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},
+  king:    {head:null,                     ears:null,                       eyes:{x:61,   y:33,   w:29, r:-12}, neck:{x:62, y:46, w:15}, back:{x:32, y:59, w:29}}
+};
+/* Größe je Teil relativ zum Ankerpunkt (die Krone ist schmaler als eine Mütze) */
+FR.fitScale = {crown:.72, captain:.95, sailor:.95};
+FR.fitDy = {crown:-3};   /* Feinkorrektur der Höhe in % */
+/* Welcher Ankerpunkt für welches Teil; Sichtbereich des Inventarbilds (x0, y0, x1, y1 in % des Bildes) */
+FR.fitSlot = {sun:"eyes", star:"eyes", bow:"neck", pack:"back", sailor:"head", captain:"head", crown:"head", phones:"ears"};
+FR.fitBox = {sun:[5.9,35.2,93.6,72.3], star:[15.6,34.8,84,65.4], bow:[12.5,32.2,87.1,73.2], pack:[13.3,9,87.1,92.2],
+  sailor:[4.3,22.3,94.5,80.9], captain:[5.7,20.1,93.9,83], crown:[4.3,12.7,94.9,86.9], phones:[7.2,7.2,91.6,94.7]};
+FR.fitArt = null;   /* wird von der App gesetzt: item → {src, srcset} */
+FR.canFit = (s, w) => { const a = FR.fit[s], slot = FR.fitSlot[w]; return !!(a && slot && a[slot] && FR.fitBox[w] && FR.fitArt && FR.fitArt(w)); };
+function frFitImg(s, w){
+  const a = FR.fit[s][FR.fitSlot[w]], b = FR.fitBox[w], art = FR.fitArt(w), bw = b[2] - b[0];
+  const size = a.w * (FR.fitScale[w] || 1) / bw * 100;         /* sichtbare Breite = a.w */
+  const ax = (b[0] + b[2]) / 2, ay = FR.fitSlot[w] === "head" ? b[3] - (b[3] - b[1]) * 0.18 : (b[1] + b[3]) / 2;   /* Mützen sitzen etwas über dem Rand auf */
+  return `<img class="fr-img fr-wear fr-tryon fr-tryon-${FR.fitSlot[w]} fr-w-${w}" src="${art.src}" srcset="${art.srcset}" sizes="40vw" alt="" decoding="async" draggable="false"
+    style="inset:auto;left:${a.x}%;top:${a.y + (FR.fitDy[w] || 0)}%;width:${size.toFixed(2)}%;height:auto;transform:translate(-${ax}%,-${ay}%) rotate(${a.r||0}deg)${a.sy ? ` scale(1,${a.sy})` : ""};transform-origin:${ax}% ${ay}%">`;
+}
 function frWear(s, wear){
-  return (wear || []).filter(w => FR.has(s, FR.wearKey(w))).map(w =>
-    frImg(s, FR.wearKey(w), "fr-wear fr-w-" + w) +
-    FR.framesOf(s).filter(f => FR.has(s, FR.wearKey(w, f))).map(f => frImg(s, FR.wearKey(w, f), `fr-wear-f fr-wf-${f} fr-w-${w}`)).join("")
-  ).join("");
+  const out = {behind:"", front:""};
+  (wear || []).forEach(w => {
+    if (FR.has(s, FR.wearKey(w))){
+      out.front += frImg(s, FR.wearKey(w), "fr-wear fr-w-" + w) +
+        FR.framesOf(s).filter(f => FR.has(s, FR.wearKey(w, f))).map(f => frImg(s, FR.wearKey(w, f), `fr-wear-f fr-wf-${f} fr-w-${w}`)).join("");
+    } else if (FR.canFit(s, w)){
+      if (FR.fitSlot[w] === "back") out.behind += frFitImg(s, w); else out.front += frFitImg(s, w);
+    }
+  });
+  return out;
 }
 function frInner(s, p, size, wear){
   if (!FR.has(s, p)) return frPlaceholder(s, p, size);
   /* Frames und Kleidung nur über das Grundbild legen, sonst würde die Figur beim Wechsel springen */
   const onBase = p === FR.baseOf(s);
   const layers = !onBase ? "" : FR.framesOf(s).filter(f => f!==p && FR.has(s, f)).map(f => frImg(s, f, "fr-frame fr-f-" + f)).join("");
-  return frImg(s, p, "fr-base") + layers + (onBase ? frWear(s, wear) : "");
+  const wr = onBase ? frWear(s, wear) : {behind:"", front:""};
+  return wr.behind + frImg(s, p, "fr-base") + layers + wr.front;
 }
 /* size: xs (Avatar), sm (Hafen, Übung), md (Karten), lg (Bühne) */
 function friedrichEl(o = {}){
