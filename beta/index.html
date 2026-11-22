@@ -1215,6 +1215,23 @@ body.mw-themed #sky{display:none}
 .hz-unlock .hz-fog{animation:hzFogAway 2.2s .5s ease-in forwards}
 @keyframes hzFogAway{to{opacity:0;transform:scale(1.4)}}
 @media (prefers-reduced-motion:reduce){.hz-fog{animation:none}.hz-unlock .hz-fog{display:none}}
+
+/* Nichts geht verloren: Zusatzzeilen, Schalter, Hilfe, Fällig-Markierung */
+.hz-toggles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hz-tog{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:8px 4px;border-radius:16px;border:1px solid var(--hz-line);background:#fff;color:var(--hz-navy);cursor:pointer}
+.hz-tog b{font:800 .82rem/1.1 var(--fr-font)}.hz-tog span{font:700 .74rem/1.1 var(--fr-font);color:var(--hz-teal)}
+.hz-tog[aria-pressed="false"] span{color:var(--hz-muted)}
+.hz-h2{margin:0;padding-right:44px;font:700 1.45rem/1.1 "Baloo 2",var(--fr-font-head,sans-serif);color:var(--hz-navy)}
+.hz-steps{margin:0;padding:0 0 0 22px;display:flex;flex-direction:column;gap:10px}
+.hz-steps li{font:800 .95rem/1.3 var(--fr-font);color:var(--hz-teal)}
+.hz-steps li b{display:block;color:var(--hz-navy)}.hz-steps li span{display:block;font-weight:600;font-size:.86rem;color:var(--hz-muted)}
+.scn-due{display:inline-grid;place-items:center;width:20px;height:20px;margin-left:6px;border-radius:50%;background:#EE6A4E;color:#fff;font:900 .8rem/1 var(--fr-font);font-style:normal;vertical-align:1px;box-shadow:0 0 0 2px #fff}
+.hz-say-en{font-weight:800;color:#13234A;font-size:1rem}
+.hz-say small{font:600 .78rem/1.3 var(--fr-font);color:#646B80}
+.hz-say .speak{align-self:flex-end;margin-top:2px}
+.hz-today-more{display:flex;flex-wrap:wrap;gap:5px;margin-top:-2px}
+.hz-today-more .hz-today-extra{width:auto;margin:0;padding:6px 10px;border:1px solid var(--hz-line);border-radius:999px;background:#fff;font-size:.74rem;white-space:nowrap}
+.hz-today-more .hz-today-extra img{display:none}
 </style>
 
 </head>
@@ -2089,7 +2106,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795367955";
+const BUILD = "1795369641";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2994,7 +3011,7 @@ function renderScene(opts = {}){
   if (act.child || act.area){
     const aria = act.area ? `${label}: ${act.child ? "hineingehen und " : ""}üben` : `${label} ansehen`;
     spot = L.spot
-      ? `<button class="scn-door" data-act="scnSpot" style="left:${L.spot.x}%;top:${L.spot.y}%;width:${L.spot.w}%;height:${L.spot.h}%" aria-label="${esc(aria)}"><span class="scn-door-glow" aria-hidden="true"></span><span class="scn-door-label">${esc(label)}</span></button>`
+      ? `<button class="scn-door" data-act="scnSpot" style="left:${L.spot.x}%;top:${L.spot.y}%;width:${L.spot.w}%;height:${L.spot.h}%" aria-label="${esc(aria)}"><span class="scn-door-glow" aria-hidden="true"></span><span class="scn-door-label">${esc(label)}${act.area && dueWords().some(w => inPl(w, act.area)) ? `<i class="scn-due" aria-label="Wörter zum Wiederholen">!</i>` : ""}</span></button>`
       : "";
   }
   el.innerHTML = `<div class="scn-stage ${opts.fade && !scnRM() ? "scn-fade" : ""}" style="--ratio:${base.ratio.toFixed(5)}">
@@ -3111,7 +3128,7 @@ function scnMap(){
     const name = SCN_SHORT[id] || (a && SHORT[a]) || scnName(id);
     return `<button class="scn-pin ${here ? "here" : ""} ${x > 75 ? "r" : x < 20 ? "l" : ""}" data-act="scnPin" data-id="${id}" style="left:${x}%;top:${y}%" aria-label="${esc(scnName(id))}${ps ? `, ${ps.safe} von ${ps.total} Wörtern sicher` : ""}">
       ${here ? `<span class="scn-pin-fr">${friedrichEl({stage:face, pose:"face", size:"fit"})}</span>` : ""}
-      <i style="background:${p ? p.hue : "#8A6A4A"}"></i><b>${esc(name)}</b>${done ? `<span class="scn-pin-ok" aria-hidden="true">✓</span>` : ""}</button>`;
+      <i style="background:${p ? p.hue : "#8A6A4A"}"></i><b>${esc(name)}</b>${done ? `<span class="scn-pin-ok" aria-hidden="true">✓</span>` : a && dueWords().some(w => inPl(w, a)) ? `<i class="scn-due" aria-hidden="true">!</i>` : ""}</button>`;
   }).join("");
   st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-mapview ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}${pins}</div>
     <div class="scn-top"><span class="scn-place">${esc(scnName(SCN_MAP_ID))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Karte schließen">Schließen</button></span></div>
@@ -3255,7 +3272,7 @@ const SCENE_ACT = {
   scnMap: () => scnMap(),
   scnPin: b => { const v = $("#s-scene .scn-view"); if (v) v.remove(); if (b.dataset.id !== SCN.cur) scnGo(b.dataset.id); },
   scnBack: () => { SCN.inRoom = false; if (SCN.origin) SCN.cur = SCN.origin; show("scene"); },
-  scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn){ frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : FR.has(el.dataset.stage, "crack") ? "crack" : "celebrate"); const L = hzLesson(); hzSay(esc(L.done ? ((SCN_LAYOUT[SCN.cur] || {}).hint || "Schön hier, oder?") : L.say), 6000, L.done ? null : L.act); } }
+  scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn){ frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : FR.has(el.dataset.stage, "crack") ? "crack" : "celebrate"); ACT.hzSpeak(); } }
 };
 function sceneBoot(){
   SCREENS.push("scene");
@@ -3422,9 +3439,15 @@ const HZ_ACT = {
   hzUnlockClose: () => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); },
   hzProfile: () => hzSheet("profile"),
   hzHere: () => ACT.scnFr(),
+  hzReport: () => shareText("Möwen-Bericht", reportText(true), msg => { S.lastBackup = today(); save(); toast(msg); renderScene(); }),
   hzTrip: () => hzSheet("trip"),
+  hzIntro: () => hzSheet("intro"),
   hzSheetClose: () => hzSheetClose(),
-  hzSheetGo: b => { const a = b.dataset.go; hzSheetClose(true); setTimeout(() => ACT[a] && ACT[a](b), 10); }
+  hzSheetGo: b => { const a = b.dataset.go; hzSheetClose(true); setTimeout(() => ACT[a] && ACT[a](b), 10); },
+  hzToggle: b => { const k = b.dataset.k; S.settings[k] = !S.settings[k]; save(); if (k === "slow") speak("Hello! This is my speed."); hzSheet("profile"); },
+  hzIntroOk: () => { S.introSeen = true; save(); hzSheetClose(); },
+  hzSpeak: () => { const L = hzLine(); hzSay(`<span class="hz-say-en">${esc(L.en)}</span>${L.de ? `<small>${esc(L.de)}</small>` : ""}${L.en.length > 3 ? `<button class="speak" data-act="say" data-t="${esc(L.en)}" aria-label="Anhören">${I.speaker}</button>` : ""}`, 9000);
+    if (L.en.length > 3 && S.settings.sound) try { speak(L.en); } catch(e){} }
 };
 /* Was heute dran ist: immer genau EINE Empfehlung */
 function hzLesson(){
@@ -3466,7 +3489,7 @@ function hzTop(){
       <button class="hz-me" data-act="hzProfile" aria-label="${esc(G())}, ${esc(I.st.n)}. Profil öffnen">
         <span class="hz-ring" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span></span>
         <span class="hz-who"><b id="hzName"></b><small>${esc(I.st.n)}</small></span></button>
-      <span class="hz-chip" id="hzFishChip" aria-label="${I.fish} Fische">${hzIc("belohnung_fisch", "40px")}<b id="hzFish">${shown}</b></span>
+      <button class="hz-chip" id="hzFishChip" data-act="growthInfo" aria-label="${I.fish} Fische. Wofür gibt es Fische?">${hzIc("belohnung_fisch", "40px")}<b id="hzFish">${shown}</b></button>
     </div>`;
 }
 /* Wege zu den Nachbarorten: nur dezente Halbpfeile, Wischen ist der Hauptweg */
@@ -3479,15 +3502,20 @@ function hzNav(outs, i){
 function hzBottom(){
   const P = hzPick(), post = hzNewPost();
   let extra = "";
+  /* Wird der Wortcheck empfohlen, bleibt die Unterrichtsstunde trotzdem direkt erreichbar */
+  if (P.kind === "check" && !hzLesson().done) extra += `<button class="hz-today-extra" data-act="startDaily">Lieber Unterricht ›</button>`;
   if (testActive()){
     const d = dayDiff(today(), S.test.date);
-    extra = `<button class="hz-today-extra" data-act="startTest">${d <= 0 ? "Heute ist Test" : d === 1 ? "Morgen ist Test" : `Test in ${d} Tagen`} · Testtraining ›</button>`;
+    extra += `<button class="hz-today-extra" data-act="startTest" aria-label="Testtraining">${d <= 0 ? "Heute ist Test" : d === 1 ? "Morgen ist Test" : `Test in ${d} Tagen`} ›</button>`;
   }
+  /* Wochenbericht: sichert zugleich den Spielstand (die Beta hat keinen Familien-Abgleich) */
+  if (introduced().length > 0 && (!S.lastBackup || dayDiff(S.lastBackup, today()) >= 7))
+    extra += `<button class="hz-today-extra" data-act="hzReport" aria-label="Wochenbericht an Mama oder Papa schicken, sichert deinen Spielstand">Wochenbericht senden ›</button>`;
   return `<div class="hz-bottom">
     <section class="hz-today ${P.kind}" aria-label="${esc(P.label)}">
       <div class="hz-today-txt"><small>${esc(P.label)}</small><b>${esc(P.title)}</b><span>${esc(P.meta)}</span></div>
       <button class="hz-cta ${P.kind === "done" ? "soft" : ""}" data-act="${P.act}">${esc(P.btn)} ${HZ_SVG.arrow}</button>
-      ${extra}
+      ${extra ? `<div class="hz-today-more">${extra}</div>` : ""}
     </section>
     <nav class="hz-tabs" aria-label="Hauptmenü">
       <button class="hz-tab on" aria-current="page" data-act="hzHere">${HZ_SVG.hafen}<b>Hafen</b></button>
@@ -3511,9 +3539,25 @@ function hzSheet(kind){
       <div class="hz-grid">
         ${item("openWardrobe", "kleiderschrank", "Kleiderschrank")}
         ${scnScene(SCN_TREASURE_ID) ? item("scnTreasure", "schatzkammer_truhe", "Schatzkammer", "Medaillen") : ""}
-        ${item("openExtras", "extras_kacheln", "Extras", "Spiele & mehr")}
-        ${item("openParents", "elternbereich_familie", "Für Eltern", "mit PIN", "lock")}
+        ${item("openExtras", "extras_kacheln", "Extras", "Spiele, Diplome, Küstenkarte")}
+        <button class="hz-item" data-act="hzSheetGo" data-go="openDeck" data-mode="mama">${hzIc("moewenpruefung_sprechblasen", "64px")}<b>Möwen-Prüfung</b><small>mit Mama oder Papa</small></button>
+      </div>
+      <button class="hz-li" data-act="hzSheetGo" data-go="openParents">${hzIc("elternbereich_familie", "64px")}<span><b>Für Eltern</b><small>Wochenbericht, Lernstand, Units, Wortcheck · mit PIN</small></span><em aria-hidden="true">›</em></button>
+      <div class="hz-toggles">
+        <button class="hz-tog" data-act="hzToggle" data-k="sound" aria-pressed="${!!S.settings.sound}"><b>Ton</b><span>${S.settings.sound ? "an" : "aus"}</span></button>
+        <button class="hz-tog" data-act="hzToggle" data-k="slow" aria-pressed="${!!S.settings.slow}"><b>Sprechtempo</b><span>${S.settings.slow ? "langsam" : "normal"}</span></button>
+        <button class="hz-tog" data-act="hzSheetGo" data-go="hzIntro"><b>So geht's</b><span>Hilfe</span></button>
       </div>`;
+  } else if (kind === "intro"){
+    body = `<h2 class="hz-h2">So funktioniert Möwenflug</h2>
+      <ol class="hz-steps">
+        <li><b>Unten steht, was heute dran ist.</b><span>Ein Knopf, ein Ziel. Meist ist es die Unterrichtsstunde: etwa 10 Minuten, neue Wörter und Wiederholung.</span></li>
+        <li><b>${esc(G())} wächst mit.</b><span>Jedes Wort, das du beibringst oder an einem anderen Tag wieder weißt, ist ein Fisch. Mit genug Fischen wird ${esc(G())} größer.</span></li>
+        <li><b>Die Hafenstadt ist eure Welt.</b><span>Wisch nach links oder rechts zu den anderen Orten. Jede leuchtende Tür ist ein Thema. Ein rotes ! heißt: Hier warten Wörter zum Wiederholen.</span></li>
+        <li><b>Tipp auf ${esc(G())}.</b><span>Dann sagt sie einen englischen Satz, den du schon gelernt hast.</span></li>
+        <li><b>Dein Bild oben links</b><span>öffnet Kleiderschrank, Schatzkammer, Extras und die Möwen-Prüfung mit der Familie.</span></li>
+      </ol>
+      <button class="hz-cta" data-act="hzIntroOk">Verstanden ${HZ_SVG.arrow}</button>`;
   } else {
     const km = S.km || 0, goal = 1170, pct = Math.min(100, km / goal * 100), post = hzNewPost(), next = CITIES.find(c => km < c.km);
     body = `<div class="hz-trip2"><div class="hz-trip2-row"><small>Leipzig</small><span class="hz-track"><i style="width:${pct.toFixed(1)}%"></i><b class="hz-plane" style="left:${pct.toFixed(1)}%">${hzIc("erster_flug", "40px")}</b></span><small>Brighton</small></div>
@@ -3525,7 +3569,7 @@ function hzSheet(kind){
       </div>`;
   }
   st.insertAdjacentHTML("beforeend", `<div class="hz-sheet-bg" data-act="hzSheetClose"></div>
-    <div class="hz-sheet" role="dialog" aria-label="${kind === "profile" ? "Profil" : "Reise"}"><span class="hz-grab" aria-hidden="true"></span>
+    <div class="hz-sheet" role="dialog" aria-label="${kind === "profile" ? "Profil" : kind === "intro" ? "So funktioniert Möwenflug" : "Reise"}"><span class="hz-grab" aria-hidden="true"></span>
       <button class="hz-x" data-act="hzSheetClose" aria-label="Schließen">✕</button>${body}</div>`);
   const nm = $("#hzSheetName"); if (nm) nm.textContent = G();
   requestAnimationFrame(() => st.classList.add("hz-sheet-on"));
@@ -3555,8 +3599,13 @@ function hzClampSay(st){
   b.style.setProperty("--dx", Math.round(dx) + "px");
 }
 /* Nach dem Zeichnen: Name als Text, Fische fliegen in den Zähler, Reisefaden wächst, Lichter nach der Tagesübung */
+/* Was Friedrich sagt, wenn man sie antippt: ein englischer Satz, den Friedrich schon gelernt hat */
+function hzLine(){
+  if (isAsleep()) return {en:"Zzz …", de:`${G()} schläft. Morgen geht der Unterricht weiter!`};
+  return gullLine();
+}
 function hzAfter(hint){
-  setTimeout(hzUnlockShow, 900);
+  setTimeout(() => { if (!hzUnlockShow() && !S.introSeen && !$("#s-scene .hz-sheet")) hzSheet("intro"); }, 900);
   const nm = $("#hzName"); if (nm) nm.textContent = G();
   const fish = S.fish || 0, L = hzLesson();
   const rew = $("#s-scene .scn-reward");
