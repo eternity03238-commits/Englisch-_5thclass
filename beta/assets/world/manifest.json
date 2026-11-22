@@ -1,5 +1,5 @@
 {
-  "version": 21,
+  "version": 22,
   "scenes": {
     "haus-am-hafen": {
       "learningArea": "haus",
@@ -55,7 +55,20 @@
           "width": 640,
           "height": 1137
         }
-      ]
+      ],
+      "rewardBackgrounds": [
+        {
+          "path": "freizeit/marktplatz-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/marktplatz-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_markt"
     },
     "marktplatz-obststand": {
       "backgrounds": [
@@ -69,7 +82,8 @@
           "width": 640,
           "height": 1137
         }
-      ]
+      ],
+      "learningArea": "u3_markt"
     },
     "familien-picknick": {
       "learningArea": "fam",
@@ -305,6 +319,747 @@
           "height": 1136
         }
       ]
+    },
+    "varndean-uebersicht": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-uebersicht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-uebersicht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "freizeit-uebersicht": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-uebersicht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-uebersicht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "stadt-uebersicht": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-uebersicht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-uebersicht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "varndean-schultor": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-schultor.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-schultor-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_weg",
+      "rewardBackgrounds": [
+        {
+          "path": "varndean/varndean-schultor-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-schultor-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "varndean-schultor-innen": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-schultor-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-schultor-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_weg"
+    },
+    "varndean-uhrturm": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-uhrturm.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-uhrturm-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_uhr",
+      "rewardBackgrounds": [
+        {
+          "path": "varndean/varndean-uhrturm-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-uhrturm-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "varndean-uhrturm-innen": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-uhrturm-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-uhrturm-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_uhr"
+    },
+    "varndean-klassenfluegel": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-klassenfluegel.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-klassenfluegel-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_klasse",
+      "rewardBackgrounds": [
+        {
+          "path": "varndean/varndean-klassenfluegel-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-klassenfluegel-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "varndean-kantine": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-kantine.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-kantine-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_kantine",
+      "rewardBackgrounds": [
+        {
+          "path": "varndean/varndean-kantine-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-kantine-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "varndean-kantine-innen": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-kantine-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-kantine-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_kantine"
+    },
+    "varndean-aula": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-aula.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-aula-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_aula",
+      "rewardBackgrounds": [
+        {
+          "path": "varndean/varndean-aula-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-aula-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "varndean-aula-innen": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-aula-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-aula-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_aula"
+    },
+    "varndean-kalender": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-kalender.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-kalender-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_kalender",
+      "rewardBackgrounds": [
+        {
+          "path": "varndean/varndean-kalender-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-kalender-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "varndean-kalender-innen": {
+      "backgrounds": [
+        {
+          "path": "varndean/varndean-kalender-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "varndean/varndean-kalender-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u2_kalender"
+    },
+    "freizeit-clubhaus": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-clubhaus.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-clubhaus-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_club",
+      "rewardBackgrounds": [
+        {
+          "path": "freizeit/freizeit-clubhaus-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-clubhaus-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "freizeit-clubhaus-innen": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-clubhaus-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-clubhaus-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_club"
+    },
+    "freizeit-sportplatz": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-sportplatz.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-sportplatz-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_sport",
+      "rewardBackgrounds": [
+        {
+          "path": "freizeit/freizeit-sportplatz-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-sportplatz-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "freizeit-sportplatz-innen": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-sportplatz-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-sportplatz-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_sport"
+    },
+    "freizeit-gefuehle": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-gefuehle.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-gefuehle-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_gefuehle",
+      "rewardBackgrounds": [
+        {
+          "path": "freizeit/freizeit-gefuehle-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-gefuehle-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "freizeit-gefuehle-innen": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-gefuehle-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-gefuehle-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_gefuehle"
+    },
+    "freizeit-backstube": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-backstube.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-backstube-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_back",
+      "rewardBackgrounds": [
+        {
+          "path": "freizeit/freizeit-backstube-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-backstube-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "freizeit-backstube-innen": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-backstube-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-backstube-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_back"
+    },
+    "freizeit-picknick": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-picknick.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-picknick-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_party",
+      "rewardBackgrounds": [
+        {
+          "path": "freizeit/freizeit-picknick-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-picknick-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "freizeit-picknick-innen": {
+      "backgrounds": [
+        {
+          "path": "freizeit/freizeit-picknick-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "freizeit/freizeit-picknick-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u3_party"
+    },
+    "stadt-aussicht": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-aussicht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-aussicht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_aussicht",
+      "rewardBackgrounds": [
+        {
+          "path": "stadt/stadt-aussicht-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-aussicht-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "stadt-aussicht-innen": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-aussicht-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-aussicht-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_aussicht"
+    },
+    "stadt-wetter": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-wetter.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-wetter-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_wetter",
+      "rewardBackgrounds": [
+        {
+          "path": "stadt/stadt-wetter-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-wetter-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "stadt-wetter-innen": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-wetter-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-wetter-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_wetter"
+    },
+    "stadt-laeden": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-laeden.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-laeden-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_laeden",
+      "rewardBackgrounds": [
+        {
+          "path": "stadt/stadt-laeden-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-laeden-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "stadt-laeden-innen": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-laeden-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-laeden-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_laeden"
+    },
+    "stadt-kino": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-kino.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-kino-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_kino",
+      "rewardBackgrounds": [
+        {
+          "path": "stadt/stadt-kino-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-kino-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "stadt-kino-innen": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-kino-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-kino-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_kino"
+    },
+    "stadt-bildwerkstatt": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-bildwerkstatt.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-bildwerkstatt-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_bild",
+      "rewardBackgrounds": [
+        {
+          "path": "stadt/stadt-bildwerkstatt-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-bildwerkstatt-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "stadt-bildwerkstatt-innen": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-bildwerkstatt-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-bildwerkstatt-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_bild"
+    },
+    "stadt-buddy": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-buddy.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-buddy-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_buddy",
+      "rewardBackgrounds": [
+        {
+          "path": "stadt/stadt-buddy-licht.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-buddy-licht-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ]
+    },
+    "stadt-buddy-innen": {
+      "backgrounds": [
+        {
+          "path": "stadt/stadt-buddy-innen.webp",
+          "width": 941,
+          "height": 1672
+        },
+        {
+          "path": "stadt/stadt-buddy-innen-640.webp",
+          "width": 640,
+          "height": 1137
+        }
+      ],
+      "learningArea": "u4_buddy"
     }
   }
 }

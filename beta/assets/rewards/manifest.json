@@ -1,5 +1,5 @@
 {
-  "version": 51,
+  "version": 52,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -863,6 +863,54 @@
         },
         {
           "path": "crown-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "tie": {
+      "name": "Schulkrawatte",
+      "slot": "neck",
+      "images": [
+        {
+          "path": "tie.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "tie-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "chef": {
+      "name": "Kochmütze",
+      "slot": "hat",
+      "images": [
+        {
+          "path": "chef.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "chef-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "sou_wester": {
+      "name": "Südwester",
+      "slot": "hat",
+      "images": [
+        {
+          "path": "sou_wester.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "sou_wester-128.webp",
           "width": 128,
           "height": 128
         }
