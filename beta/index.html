@@ -1218,7 +1218,7 @@ body.mw-themed #sky{display:none}
 @media (prefers-reduced-motion:reduce){.hz-fog{animation:none}.hz-unlock .hz-fog{display:none}}
 
 /* Nichts geht verloren: Zusatzzeilen, Schalter, Hilfe, Fällig-Markierung */
-.hz-toggles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hz-toggles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .hz-tog{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:8px 4px;border-radius:16px;border:1px solid var(--hz-line);background:#fff;color:var(--hz-navy);cursor:pointer}
 .hz-tog b{font:800 .82rem/1.1 var(--fr-font)}.hz-tog span{font:700 .74rem/1.1 var(--fr-font);color:var(--hz-teal)}
 .hz-tog[aria-pressed="false"] span{color:var(--hz-muted)}
@@ -2664,7 +2664,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795372303";
+const BUILD = "1795372517";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2946,6 +2946,27 @@ function pickVoice(){
        || vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
 }
 if (HAS_TTS){ pickVoice(); try{ speechSynthesis.onvoiceschanged = pickVoice; }catch(e){} }
+/* Möwenstimme (Beta): Fridolin spricht die Wörter mit höherer, hellerer Stimme; ein kurzer Möwenruf kündigt an.
+   Die Aussprache bleibt dieselbe (nur die Tonhöhe ändert sich). Abschaltbar im Profil und im Elternmenü. */
+const gullVoice = () => BETA && S && S.settings && S.settings.voice !== "normal";
+let lastCall = 0;
+function gullCall(){
+  if (!S || !S.settings.sound || Date.now() - lastCall < 6000) return;
+  lastCall = Date.now();
+  try {
+    AC = AC || new (window.AudioContext||window.webkitAudioContext)();
+    const t0 = AC.currentTime + .01, out = AC.createGain(), bp = AC.createBiquadFilter();
+    bp.type = "bandpass"; bp.frequency.value = 1700; bp.Q.value = 1.4;
+    out.gain.value = .09; bp.connect(out); out.connect(AC.destination);
+    [[0, 1750, 1150, .16], [.2, 1650, 1050, .2]].forEach(([d, f1, f2, len]) => {
+      const o = AC.createOscillator(), g = AC.createGain(), lfo = AC.createOscillator(), lg = AC.createGain(), t = t0 + d;
+      o.type = "sawtooth"; o.frequency.setValueAtTime(f1, t); o.frequency.exponentialRampToValueAtTime(f2, t + len);
+      lfo.frequency.value = 28; lg.gain.value = 45; lfo.connect(lg); lg.connect(o.frequency);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(1, t + .02); g.gain.exponentialRampToValueAtTime(.0001, t + len);
+      o.connect(g); g.connect(bp); o.start(t); lfo.start(t); o.stop(t + len + .02); lfo.stop(t + len + .02);
+    });
+  } catch(e) {}
+}
 function speak(text, slow, btn){
   if (!HAS_TTS || !text) return;
   try {
@@ -2953,6 +2974,7 @@ function speak(text, slow, btn){
     const u = new SpeechSynthesisUtterance(text);
     u.lang = "en-GB"; if (VOICE) u.voice = VOICE;
     u.rate = slow ? .55 : (S && S.settings.slow ? .72 : .9);
+    if (gullVoice()){ u.pitch = 1.6; u.rate = Math.min(1, u.rate + .04); gullCall(); }
     if (btn){ btn.classList.add("playing"); u.onend = u.onerror = () => btn.classList.remove("playing"); }
     speechSynthesis.speak(u);
   } catch(e) {}
@@ -3929,7 +3951,7 @@ function renderPMenu(){
       <button class="mw-row" data-act="openCheck"><span class="mw-ic mw-bolt" aria-hidden="true">⚡</span><span class="mw-sep"></span><b>Wortcheck <small>${wcPool().length} Wörter noch nie geübt</small></b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openUnits">${mwIc("unterricht_schulbuch")}<span class="mw-sep"></span><b>Units & Lernplan <small>${esc(UMAP[U().cur].n)} läuft gerade</small></b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="mwPTab" data-t="test">${mwIc("testtraining_leuchtturm")}<span class="mw-sep"></span><b>Testtraining</b><span class="mw-go">${mwArrow}</span></button>
-      <div class="mw-toggles"><button class="mw-chip" data-act="mwToggle" data-k="sound">${S.settings.sound ? "🔊 Ton an" : "🔈 Ton aus"}</button><button class="mw-chip" data-act="mwToggle" data-k="slow">${S.settings.slow ? "🐢 Sprechtempo langsam" : "🗣️ Sprechtempo normal"}</button></div>
+      <div class="mw-toggles"><button class="mw-chip" data-act="mwToggle" data-k="sound">${S.settings.sound ? "🔊 Ton an" : "🔈 Ton aus"}</button><button class="mw-chip" data-act="mwToggle" data-k="slow">${S.settings.slow ? "🐢 Sprechtempo langsam" : "🗣️ Sprechtempo normal"}</button><button class="mw-chip" data-act="mwVoice">${S.settings.voice !== "normal" ? "🐦 Stimme: Möwe" : "🗣️ Stimme: normal"}</button></div>
       <button class="mw-link" data-act="mwPTab" data-t="more">Familie, PIN und weitere Einstellungen</button>
     </div></div>`;
   show("pmenu");
@@ -3944,6 +3966,7 @@ const MW_ACT = {
   mwStart: () => show("start"),
   mwEye: b => { const i = $("#mwPin"); if (!i) return; const on = i.type === "password"; i.type = on ? "text" : "password"; b.setAttribute("aria-label", on ? "PIN verbergen" : "PIN zeigen"); },
   mwPTab: b => { PTAB = b.dataset.t; renderParents(); },
+  mwVoice: () => { S.settings.voice = S.settings.voice === "normal" ? "gull" : "normal"; save(); lastCall = 0; speak("Hello! I'm " + G() + "."); renderPMenu(); },
   mwToggle: b => { const k = b.dataset.k; S.settings[k] = !S.settings[k]; save(); if (k === "slow") speak("Hello! This is my speed."); renderPMenu(); },
   mwFr: b => { const el = b.querySelector(".fr"); if (el && !scnRM()) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : "celebrate"); },
   openParents: () => { if (S.pin && !pinOk()) return askPin(renderPMenu); renderPMenu(); }
@@ -4003,6 +4026,7 @@ const HZ_ACT = {
   hzSheetClose: () => hzSheetClose(),
   hzSheetGo: b => { const a = b.dataset.go; hzSheetClose(true); setTimeout(() => ACT[a] && ACT[a](b), 10); },
   hzToggle: b => { const k = b.dataset.k; S.settings[k] = !S.settings[k]; save(); if (k === "slow") speak("Hello! This is my speed."); hzSheet("profile"); },
+  hzVoice: () => { S.settings.voice = S.settings.voice === "normal" ? "gull" : "normal"; save(); lastCall = 0; speak("Hello! I'm " + G() + "."); hzSheet("profile"); },
   hzIntroOk: () => { S.introSeen = true; save(); hzSheetClose(); setTimeout(hzHints, 500); },
   hzSpeak: () => { const L = hzLine(); hzSay(`<span class="hz-say-en">${esc(L.en)}</span>${L.de ? `<small>${esc(L.de)}</small>` : ""}${L.en.length > 3 ? `<button class="speak" data-act="say" data-t="${esc(L.en)}" aria-label="Anhören">${I.speaker}</button>` : ""}`, 9000);
     if (L.en.length > 3 && S.settings.sound) try { speak(L.en); } catch(e){} }
@@ -4102,6 +4126,7 @@ function hzSheet(kind){
       <div class="hz-toggles">
         <button class="hz-tog" data-act="hzToggle" data-k="sound" aria-pressed="${!!S.settings.sound}"><b>Ton</b><span>${S.settings.sound ? "an" : "aus"}</span></button>
         <button class="hz-tog" data-act="hzToggle" data-k="slow" aria-pressed="${!!S.settings.slow}"><b>Sprechtempo</b><span>${S.settings.slow ? "langsam" : "normal"}</span></button>
+        <button class="hz-tog" data-act="hzVoice" aria-pressed="${S.settings.voice !== "normal"}"><b>Stimme</b><span>${S.settings.voice !== "normal" ? "Möwe" : "normal"}</span></button>
         <button class="hz-tog" data-act="hzSheetGo" data-go="hzIntro"><b>So geht's</b><span>Hilfe</span></button>
       </div>`;
   } else if (kind === "intro"){
