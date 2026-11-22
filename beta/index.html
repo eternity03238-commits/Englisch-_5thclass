@@ -987,6 +987,8 @@ body.mw-themed #app > section:not([hidden]) > h1,body.mw-themed #app > section:n
   align-self:flex-start;background:rgba(255,251,244,.92);border-radius:14px;padding:4px 12px;box-shadow:0 4px 14px rgba(60,40,20,.12)}
 body.mw-themed #app > section:not([hidden]) > p{align-self:stretch}
 body.mw-themed #app .panel,body.mw-themed #app .tile,body.mw-themed #app .pc,body.mw-themed #app .fc-face{box-shadow:0 8px 22px rgba(60,40,20,.18)}
+body.mw-themed #s-cards > .row .label,body.mw-themed #s-cards > .row small,body.mw-themed #s-deck > .row > span,body.mw-themed #s-deck > div > span:not([class]){background:rgba(255,251,244,.9);border-radius:8px;padding:2px 6px}
+body.mw-themed #s-cards .mbar{background:rgba(255,251,244,.85);border-radius:16px;padding:6px 8px}
 
 /* ============ Hafenstadt als Hauptmenü (nur Beta) ============ */
 .hz-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;flex-direction:column;gap:8px;pointer-events:none;
@@ -1962,7 +1964,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795346106";
+const BUILD = "1795346601";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2652,7 +2654,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "00d3ca4a8a5f0d1dc76c58b99e5b8b0d061b6a18";
+const SCN_COMMIT = "bd2f2ba1ea24f2a8cd5d716a6140e8dd7dc56b89"
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2709,7 +2711,7 @@ function scnLoad(){
   }).catch(() => { FR.files = FR.files || {}; });
   const wd = scnFetch("world/manifest.json").then(m => { SCN.world = m; }).catch(() => { SCN.world = null; });
   const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; SCN.outfits = (m && m.outfits) || {};
-    SCN.screenBg = (m && m.screenBackgrounds) || {}; SCN.bgPlan = (m && m.menuBackgroundPlan) || {}; scnOutfitRefresh(); uiIconsInit(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
+    SCN.screenBg = (m && m.screenBackgrounds) || {}; SCN.bgPlan = (m && m.menuBackgroundPlan) || {}; SCN.bgVariants = (m && m.menuBackgroundVariants) || {}; scnOutfitRefresh(); uiIconsInit(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
   SCN.ready = Promise.all([fr, wd, rw]).then(() => { SCN.loaded = true; });
   return SCN.ready;
 }
@@ -3245,9 +3247,12 @@ const MW_ACT = {
   openParents: () => { if (S.pin && !pinOk()) return askPin(renderPMenu); renderPMenu(); }
 };
 /* Menü-Hintergründe aus menuBackgroundPlan: Bild oben sichtbar, Inhalte stehen darauf */
-const MW_BG_TOP = ["journal","wardrobe","badges","extras","parents","overview","post","sentpick","deck"];
+const MW_BG_TOP = ["journal","wardrobe","badges","extras","parents","overview","post","sentpick","deck","map"];
 function mwBackdrop(name){
-  const plan = SCN.bgPlan || {}, id = plan[name], set = id && !(name === "cards" && SCN.inRoom) ? rwBg(id) : null;
+  /* Varianten je Modus: Möwen-Prüfung (Karten mit der Familie), Satzwerkstatt (Unterricht mit Sätzen) */
+  const mode = name === "mission" ? (M && M.mode) : (name === "cards" || name === "deck") ? ((C && C.mode) || DK.mode) : null;
+  const vr = ((SCN.bgVariants || {})[name] || {})[mode];
+  const plan = SCN.bgPlan || {}, id = (vr && rwBg(vr) ? vr : plan[name]), set = id && !(name === "cards" && SCN.inRoom) ? rwBg(id) : null;
   let bg = $("#mwBack");
   document.body.classList.toggle("mw-themed", !!set);
   document.body.classList.toggle("mw-roomy", !!set && MW_BG_TOP.includes(name));
