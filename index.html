@@ -421,6 +421,10 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
   background-image:linear-gradient(90deg,transparent 14px,#F3B3B3 14px,#F3B3B3 16px,transparent 16px),repeating-linear-gradient(#FFFEF8 0 29px,#DCE7F2 29px 30px)}
 .phead{display:flex;justify-content:space-between;gap:8px;font-size:.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .ptab{width:100%;border-collapse:collapse;font-size:.92rem}
+.exscope{display:flex;flex-direction:column;gap:8px}
+.exs{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border:2px solid #E6E0C8;border-radius:12px;background:#fff;text-align:left;font:inherit;color:var(--navy);cursor:pointer}
+.exs b{font-size:1rem}.exs small{color:#5E6478;font-size:.84rem}
+.exs.on{border-color:#0B95C2;background:#EAF7FD;box-shadow:inset 0 0 0 1px #0B95C2}
 .ptab td{padding:6px 4px;border-bottom:1px solid #E6E0C8}
 .ptab td:last-child{text-align:right;font-weight:700;white-space:nowrap}
 .ptab tr.sum td{font-weight:700;color:var(--navy);border-bottom:0;background:#FFF3D6}
@@ -717,6 +721,17 @@ a.btn{text-decoration:none}
 /* Beta-Kennzeichnung */
 .beta-badge{position:fixed;bottom:calc(8px + env(safe-area-inset-bottom,0px));left:calc(8px + env(safe-area-inset-left,0px));opacity:.92;z-index:80;display:flex;gap:6px;align-items:center;background:var(--fr-navy);color:var(--fr-ivory);font:700 .72rem/1 var(--fr-font);letter-spacing:.06em;padding:6px 10px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .beta-badge a{color:var(--fr-gold);text-decoration:none}
+
+/* Kopfhörer: gezeichnet, hintere Muschel hinter dem Kopf, Noten schweben */
+.fr-hp{overflow:visible}
+.fr-hp-back{z-index:0;filter:brightness(.9)}
+.fr-hp-front{z-index:2;filter:drop-shadow(0 1.5px 1.5px rgba(30,20,10,.3))}
+.fr-hp-notes text{opacity:0;animation:frNote 3.2s ease-out infinite}
+.fr-hp-notes .n2{animation-delay:1.6s}
+@keyframes frNote{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}80%{opacity:.85}100%{opacity:0;transform:translate(-3px,-9px) rotate(-12deg)}}
+.fr-xs .fr-hp-notes,.fr-sm .fr-hp-notes{display:none}
+@media (prefers-reduced-motion:reduce){.fr-hp-notes text{animation:none;opacity:.9}}
+.fr-hp-icon{display:block;width:100%;height:100%}
 /* ============ Szene "Das Haus am Hafen" (nur Beta) ============ */
 #s-scene{position:fixed;inset:0;z-index:5;background:var(--fr-navy)}
 body.scn-on{overflow:hidden}
@@ -1080,6 +1095,15 @@ div.mw-step{cursor:default}
 .mw-step.ok i{background:var(--mw-teal);border-color:var(--mw-teal)}
 .mw-step.ok span{color:var(--mw-muted)}
 .mw-step em{margin-left:auto;font-style:normal;color:var(--mw-teal);font-size:1.3rem}
+
+/* Startseite: Möwe fliegt ein und landet, das Ei wackelt */
+.mw-flyin > .fr{animation:mwFlyIn 1.5s cubic-bezier(.2,.75,.25,1) var(--mw-d,0ms) both}
+@keyframes mwFlyIn{0%{transform:translate(140%,-170%) scale(.5) rotate(10deg);opacity:0}12%{opacity:1}72%{transform:translate(-5%,-10%) scale(1.03) rotate(-4deg)}100%{transform:none}}
+.mw-hopin > .fr{transform-origin:50% 95%;animation:mwHopIn 1.5s cubic-bezier(.3,.7,.3,1) var(--mw-d,0ms) both}
+@keyframes mwHopIn{0%{transform:translate(90%,-150%) rotate(18deg) scale(.7);opacity:0}15%{opacity:1}55%{transform:translate(0,-8%) rotate(-6deg) scale(1)}68%{transform:translate(0,0) scale(1.08,.9)}80%{transform:translate(0,-5%) scale(.96,1.04)}92%{transform:translate(0,0) scale(1.02,.98)}100%{transform:none}}
+.mw-egg > .fr{transform-origin:50% 90%;animation:mwEgg 3.4s ease-in-out infinite}
+@keyframes mwEgg{0%,70%,100%{transform:rotate(0)}76%{transform:rotate(-6deg)}82%{transform:rotate(5deg)}88%{transform:rotate(-3deg)}94%{transform:rotate(1deg)}}
+@media (prefers-reduced-motion:reduce){.mw-flyin > .fr,.mw-hopin > .fr,.mw-egg > .fr{animation:none}}
 
 /* ============ Hafenstadt als Hauptmenü (nur Beta): ruhig, klar, eine Handlung ============
    Eine Bildsprache: helle Creme-Flächen mit weichem Schatten, Navy für Text, Petrol für aktiv, Koralle nur für den einen Hauptknopf. */
@@ -2842,7 +2866,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795380575";
+const BUILD = "1795381736";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3380,7 +3404,7 @@ const FR = {
   views: ["front","3quarter","side","back","face"],
   frames: ["blink","look_left","look_right","wave","celebrate","think","encourage"],
   /* Zusätzliche Frames nur für einzelne Stufen: das Ei bekommt einen Riss und schlüpft */
-  extra: {egg:["crack","hatch"], king:["fly"]},
+  extra: {egg:["crack","hatch"], admiral:["fly"], king:["fly"]},
   poseName: {front:"Vorderansicht", "3quarter":"Dreiviertelansicht", side:"Seitenansicht", back:"Rückansicht", face:"Gesicht",
     crack:"Riss", hatch:"Schlüpfen", fly:"Fliegen", blink:"Blinzeln", look_left:"Blick links", look_right:"Blick rechts", wave:"Winken", celebrate:"Jubeln", think:"Nachdenken", encourage:"Ermutigen"},
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
@@ -3504,10 +3528,52 @@ function frFitImg(s, w){
   const ax = (b[0] + b[2]) / 2, ay = slot === "head" ? b[3] - (b[3] - b[1]) * 0.18 : (b[1] + b[3]) / 2;   /* Mützen sitzen etwas über dem Rand auf */
   return frFitTag(w, art, slot, `left:${a.x}%;top:${a.y + (FR.fitDy[w] || 0)}%;width:${size.toFixed(2)}%;height:auto;transform:translate(-${ax}%,-${ay}%) rotate(${a.r||0}deg)${a.sy ? ` scale(1,${a.sy})` : ""};transform-origin:${ax}% ${ay}%`);
 }
+/* Kopfhörer: für jede Stufe passend gezeichnet (Bügel folgt dem Kopf, hintere Muschel hinter dem Kopf), mit Musiknoten */
+FR.phones = {"chick":{"n":[31.5,39],"f":[74.5,32],"rx":6.4,"ry":9.4,"front":"M32.1 30.5C32.0 30.4 31.5 30.0 31.3 29.5C31.1 29.1 30.9 28.5 30.8 27.8C30.7 27.2 30.7 26.4 30.8 25.5C30.9 24.6 31.0 23.6 31.3 22.5C31.5 21.5 31.9 20.3 32.3 19.1C32.8 17.9 33.4 16.1 34.0 15.2C34.5 14.3 35.1 14.2 35.7 13.8C36.3 13.3 36.8 12.9 37.5 12.5C38.1 12.1 38.7 11.8 39.3 11.4C39.9 11.1 40.6 10.8 41.2 10.5C41.9 10.3 42.5 10.0 43.2 9.8C43.8 9.6 44.5 9.4 45.2 9.3C45.8 9.1 46.5 9.0 47.2 9.0C47.9 8.9 48.6 8.8 49.2 8.8C49.9 8.8 50.6 8.9 51.3 8.9C52.0 9.0 52.6 9.1 53.3 9.2C54.0 9.3 54.7 9.5 55.3 9.7C56.0 9.8 56.7 10.1 57.3 10.3C58.0 10.6 58.9 11.0 59.2 11.2","back":"M59.2 11.2C59.5 11.4 60.5 11.8 61.1 12.2C61.7 12.6 62.3 13.0 62.9 13.4C63.5 13.9 63.8 14.1 64.6 14.8C65.4 15.6 66.6 16.9 67.5 17.9C68.4 18.8 69.1 19.7 69.8 20.5C70.5 21.3 71.0 22.0 71.5 22.6C72.0 23.2 72.4 23.7 72.8 24.1C73.1 24.5 73.3 24.8 73.5 25.0C73.7 25.2 73.8 25.2 73.9 25.2"},"young":{"n":[33,36],"f":[73.5,30],"rx":6.0,"ry":8.8,"front":"M33.6 28.1C33.5 28.0 33.1 27.8 32.9 27.6C32.8 27.3 32.6 26.9 32.5 26.4C32.4 25.9 32.4 25.2 32.4 24.5C32.4 23.8 32.5 23.0 32.7 22.1C32.9 21.2 33.1 20.2 33.5 19.2C33.8 18.1 34.3 16.6 34.8 15.7C35.2 14.9 35.7 14.7 36.2 14.3C36.7 13.8 37.2 13.3 37.8 12.9C38.3 12.5 38.9 12.1 39.5 11.8C40.0 11.4 40.6 11.1 41.2 10.8C41.9 10.5 42.5 10.2 43.1 10.0C43.7 9.7 44.4 9.5 45.0 9.4C45.7 9.2 46.3 9.0 47.0 8.9C47.6 8.8 48.3 8.8 49.0 8.7C49.6 8.7 50.3 8.7 51.0 8.7C51.6 8.7 52.3 8.8 52.9 8.9C53.6 9.0 54.3 9.1 54.9 9.3C55.6 9.4 56.2 9.6 56.8 9.8C57.5 10.1 58.1 10.3 58.7 10.6C59.3 10.9 60.2 11.4 60.5 11.6","back":"M60.5 11.6C60.8 11.8 61.6 12.3 62.2 12.7C62.7 13.1 63.1 13.3 63.8 14.0C64.5 14.7 65.7 16.0 66.5 16.8C67.4 17.7 68.1 18.5 68.7 19.3C69.3 20.0 69.9 20.7 70.4 21.2C70.8 21.8 71.2 22.3 71.6 22.7C71.9 23.0 72.2 23.3 72.4 23.5C72.6 23.7 72.8 23.6 72.9 23.7"},"adult":{"n":[34.5,33.5],"f":[73.5,26.5],"rx":5.8,"ry":8.4,"front":"M35.1 25.9C35.0 25.9 34.8 25.7 34.6 25.5C34.5 25.2 34.4 24.9 34.4 24.4C34.4 24.0 34.4 23.4 34.5 22.8C34.6 22.2 34.8 21.5 35.0 20.7C35.2 19.9 35.5 19.1 35.9 18.1C36.3 17.2 36.9 15.9 37.3 15.2C37.8 14.5 38.2 14.3 38.7 13.9C39.2 13.5 39.7 13.1 40.2 12.7C40.7 12.4 41.2 12.0 41.7 11.7C42.2 11.4 42.8 11.1 43.3 10.8C43.9 10.6 44.5 10.3 45.0 10.1C45.6 9.9 46.2 9.7 46.8 9.5C47.4 9.4 48.0 9.2 48.6 9.1C49.2 9.0 49.8 8.9 50.4 8.9C51.0 8.8 51.6 8.8 52.3 8.8C52.9 8.8 53.5 8.8 54.1 8.8C54.7 8.9 55.3 9.0 55.9 9.1C56.5 9.2 57.1 9.3 57.7 9.5C58.3 9.6 59.2 9.9 59.5 10.0","back":"M59.5 10.0C59.8 10.1 60.6 10.5 61.2 10.7C61.7 11.0 62.3 11.3 62.8 11.6C63.4 11.9 63.7 12.1 64.4 12.6C65.1 13.1 66.3 14.2 67.0 14.9C67.8 15.6 68.5 16.2 69.1 16.8C69.7 17.4 70.3 18.0 70.7 18.4C71.2 18.9 71.5 19.3 71.8 19.6C72.1 19.9 72.4 20.1 72.5 20.3C72.7 20.4 72.8 20.4 72.9 20.5"}};
+function frPhones(s){
+  const P = FR.phones[s]; if (!P) return null;
+  const [nx, ny] = P.n, [fx, fy] = P.f, rx = P.rx, ry = P.ry;
+  const u = "hp" + (FR._hp = (FR._hp || 0) + 1);   /* eigene IDs je Bild: Verläufe in versteckten Bildschirmen würden sonst nicht gezeichnet */
+  const svg = (cls, body) => `<svg class="fr-img fr-wear fr-hp ${cls}" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${body}</svg>`;
+  const defs = `<defs><linearGradient id="${u}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B4A6B"/><stop offset="1" stop-color="#151E33"/></linearGradient>
+    <radialGradient id="${u}s" cx=".34" cy=".3" r=".8"><stop offset="0" stop-color="#7CF5E2"/><stop offset=".45" stop-color="#19B9A6"/><stop offset="1" stop-color="#0B5E5A"/></radialGradient>
+    <radialGradient id="${u}c" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#FF9C86"/><stop offset="1" stop-color="#D93A55"/></radialGradient></defs>`;
+  const band = d => `<path d="${d}" fill="none" stroke="#0E1526" stroke-width="4.6" stroke-linecap="round"/><path d="${d}" fill="none" stroke="url(#${u}b)" stroke-width="3.6" stroke-linecap="round"/>`;
+  const back = svg("fr-hp-back", defs + band(P.back) +
+    `<g transform="rotate(-6 ${fx} ${fy})"><ellipse cx="${fx}" cy="${fy}" rx="${(rx * .62).toFixed(1)}" ry="${(ry * .9).toFixed(1)}" fill="url(#${u}s)" stroke="#0A3F3C" stroke-width=".5"/>
+     <ellipse cx="${fx - 1.2}" cy="${fy}" rx="${(rx * .32).toFixed(1)}" ry="${(ry * .7).toFixed(1)}" fill="url(#${u}c)"/></g>`);
+  const front = svg("fr-hp-front", defs + band(P.front) +
+    `<path d="${P.front}" fill="none" stroke="#FFFFFF" stroke-opacity=".28" stroke-width=".8" stroke-linecap="round" transform="translate(-.3 -.5)"/>
+     <g transform="rotate(-10 ${nx} ${ny})">
+      <rect x="${nx - 1.5}" y="${ny - ry - 1.6}" width="3" height="4.2" rx="1.2" fill="#151E33"/>
+      <ellipse cx="${nx + rx * .38}" cy="${ny + .3}" rx="${(rx * .86).toFixed(1)}" ry="${(ry * .97).toFixed(1)}" fill="url(#${u}c)"/>
+      <ellipse cx="${nx}" cy="${ny}" rx="${rx}" ry="${ry}" fill="url(#${u}s)" stroke="#0A3F3C" stroke-width=".55"/>
+      <ellipse cx="${nx}" cy="${ny}" rx="${(rx * .62).toFixed(1)}" ry="${(ry * .64).toFixed(1)}" fill="none" stroke="#E6FFFA" stroke-opacity=".55" stroke-width=".7"/>
+      <ellipse cx="${nx - rx * .35}" cy="${ny - ry * .45}" rx="${(rx * .28).toFixed(1)}" ry="${(ry * .16).toFixed(1)}" fill="#fff" fill-opacity=".6" transform="rotate(-25 ${nx - rx * .35} ${ny - ry * .45})"/>
+      <path d="M${nx - .6} ${ny + 2.6}v-5.4l3.2-1v4.6" fill="none" stroke="#fff" stroke-width=".85" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${nx - 1.4}" cy="${ny + 2.7}" r="1.05" fill="#fff"/><circle cx="${nx + 1.8}" cy="${ny + 1.8}" r="1.05" fill="#fff"/>
+      <circle cx="${nx + rx * .55}" cy="${ny + ry * .62}" r=".7" fill="#FFE066"/></g>
+     <g class="fr-hp-notes" fill="#FFFFFF" stroke="#0B5E5A" stroke-width=".35"><text class="n1" x="${nx - rx - 3}" y="${ny - ry}" font-size="6.5" font-weight="700">♪</text><text class="n2" x="${nx - rx - .5}" y="${ny - ry - 5}" font-size="5" font-weight="700">♫</text></g>`);
+  return {behind:back, front};
+}
+/* Kopfhörer als Bild für Kleiderschrank und Reiter (Vorderansicht, gleiche Farben wie an der Figur) */
+function frPhonesIcon(cls){
+  const u = "hi" + (FR._hp = (FR._hp || 0) + 1);
+  const cup = (x, flip) => `<g transform="translate(${x} 62)${flip ? " scale(-1 1)" : ""}"><rect x="-4" y="-21" width="8" height="9" rx="3" fill="#151E33"/>
+    <ellipse cx="6" cy="2" rx="11" ry="17" fill="url(#${u}c)"/><ellipse cx="0" cy="0" rx="13" ry="19" fill="url(#${u}s)" stroke="#0A3F3C" stroke-width="1.2"/>
+    <ellipse cx="0" cy="0" rx="8" ry="12" fill="none" stroke="#E6FFFA" stroke-opacity=".55" stroke-width="1.4"/><ellipse cx="-5" cy="-9" rx="4" ry="2.4" fill="#fff" fill-opacity=".6" transform="rotate(-25 -5 -9)"/></g>`;
+  return `<svg class="${cls || ""} fr-hp-icon" viewBox="0 0 100 100" role="img" aria-label="Kopfhörer"><defs><linearGradient id="${u}b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B4A6B"/><stop offset="1" stop-color="#151E33"/></linearGradient>
+    <radialGradient id="${u}s" cx=".34" cy=".3" r=".8"><stop offset="0" stop-color="#7CF5E2"/><stop offset=".45" stop-color="#19B9A6"/><stop offset="1" stop-color="#0B5E5A"/></radialGradient>
+    <radialGradient id="${u}c" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#FF9C86"/><stop offset="1" stop-color="#D93A55"/></radialGradient></defs>
+    <path d="M22 44C22 12 78 12 78 44" fill="none" stroke="#0E1526" stroke-width="10" stroke-linecap="round"/><path d="M22 44C22 12 78 12 78 44" fill="none" stroke="url(#${u}b)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M38 19.5C45 17 55 17 62 19.5" fill="none" stroke="#FF8A7A" stroke-width="5" stroke-linecap="round"/>
+    ${cup(22, false)}${cup(78, true)}
+    <path d="M19.6 68v-10l6-1.8v8.6" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="18.2" cy="68.2" r="1.9" fill="#fff"/><circle cx="24.2" cy="66.6" r="1.9" fill="#fff"/></svg>`;
+}
 function frWear(s, wear){
   const out = {behind:"", front:""};
   (wear || []).forEach(w => {
-    if (FR.has(s, FR.wearKey(w))){
+    if (w === "phones" && FR.phones[s]){ const t = frPhones(s); out.behind += t.behind; out.front += t.front; }
+    else if (FR.has(s, FR.wearKey(w))){
       out.front += frImg(s, FR.wearKey(w), "fr-wear fr-w-" + w) +
         FR.framesOf(s).filter(f => FR.has(s, FR.wearKey(w, f))).map(f => frImg(s, FR.wearKey(w, f), `fr-wear-f fr-wf-${f} fr-w-${w}`)).join("");
     } else if (FR.canFit(s, w)){
@@ -3683,6 +3749,7 @@ function rwImg(id, cls, sizes){
 }
 /* Kleiderschrank: Inventarbild eines Teils (outfits im Belohnungs-Manifest), sonst null */
 function rwOutfit(id, cls){
+  if (id === "phones" && typeof frPhonesIcon === "function") return frPhonesIcon(cls);   /* gezeichnete Kopfhörer passend zur Figur */
   const b = SCN.outfits && SCN.outfits[id]; if (!b || !b.images || !b.images.length) return null;
   const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
   return `<img class="out-img ${cls||""}" src="${scnRaw("rewards/" + l[l.length-1].path)}" srcset="${l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", ")}" sizes="72px" alt="" decoding="async" draggable="false">`;
@@ -4152,8 +4219,13 @@ const mwArrow = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-
 const mwBack = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H6m5-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 /* Startseite: Friedrich winkt auf dem Steg */
+let mwArrived = false, mwFly = null;   /* mwFly: {t, cls} während die Landung läuft (Startseite wird evtl. neu gezeichnet) */
 function renderStart(){
-  $("#s-start").innerHTML = `<div class="mw-screen">${mwHero("start", s => FR.baseOf(s))}
+  /* Beim Öffnen fliegt die Möwe ein und landet auf dem Steg (einmal pro Start, sobald die Bilder da sind) */
+  const st = FR.stageOf(Math.max(S && S.name ? 1 : 0, S ? gullStage() : 0)), fly = !mwArrived && !scnRM() && st !== "egg" && FR.has(st, FR.baseOf(st)), wing = fly && FR.has(st, "fly");
+  if (fly){ mwArrived = true; mwFly = {t:Date.now(), cls:wing ? "mw-flyin" : "mw-hopin", wing}; }
+  const flying = mwFly && Date.now() - mwFly.t < 1500 ? mwFly : null;
+  $("#s-start").innerHTML = `<div class="mw-screen">${mwHero("start", s => flying && flying.wing ? "fly" : FR.baseOf(s))}
     <div class="mw-panel mw-wave">
       <h1 class="mw-logo"><span class="mw-spark l" aria-hidden="true"></span>Möwenflug<span class="mw-spark r" aria-hidden="true"></span></h1>
       <p class="mw-sub">Englisch lernen</p>
@@ -4161,7 +4233,15 @@ function renderStart(){
       <button class="mw-btn mw-outline" data-act="mwLogin">Für Eltern</button>` : `<button class="mw-btn mw-main" data-act="mwGo">Neu anfangen ${mwArrow}</button>
       <button class="mw-link mw-small" data-act="mwLogin">Wir nutzen Möwenflug schon (Familiencode)</button>`}
     </div></div>`;
-  mwPlay("#s-start", "wave", 700);
+  const box = $("#s-start .mw-fr");
+  if (flying && box){
+    const left = 1500 - (Date.now() - flying.t);
+    box.classList.add(flying.cls);   /* mit Flugbild: Gleitflug, sonst: Landung von oben */
+    box.style.setProperty("--mw-d", -(1500 - left) + "ms");
+    if (fly) setTimeout(() => { const b = $("#s-start .mw-fr"); if (!b) return; b.classList.remove("mw-flyin", "mw-hopin");
+      if (flying.wing) b.innerHTML = friedrichEl({stage:st, pose:FR.baseOf(st), size:"fit", wear:scnWearList()}); b.style.removeProperty("--mw-d"); mwPlay("#s-start", "wave", 250); }, 1550);
+  } else if (box && st === "egg") box.classList.add("mw-egg");
+  else mwPlay("#s-start", "wave", 700);
 }
 /* Anmelden: Familiencode (neues Gerät) und Eltern-PIN. E-Mail/Passwort aus dem Entwurf sind ersetzt (Vorgabe "login"). */
 function renderLogin(){
@@ -5486,7 +5566,7 @@ function renderExtras(){
   $("#ovSub").textContent = `${W.filter(w=>!st(w.id)).length} Wörter und ${SALL.filter(x=>!ss(x.id)).length} Sätze noch neu`;
   $("#sentSub").textContent = `${SALL.length} Sätze zu allen Vokabeln`;
   $("#fixSub").textContent = `${G()} macht Fehler. Findest du sie?`;
-  { const ka = (S.exams||[]).filter(e=>e.kind==="ka").pop(); $("#examSub").textContent = ka ? `Letzte Note: ${ka.g} · ${PMAP[examPid()].name}` : `45 Minuten wie in der Schule · ${PMAP[examPid()].name}`; }
+  { const ka = (S.exams||[]).filter(e=>e.kind==="ka").pop(); $("#examSub").textContent = ka ? `Letzte Note: ${ka.g} · ${examName(examPid())}` : `45 Minuten wie in der Schule · ${examName(examPid())}`; }
   $("#wardSub").textContent = `${accUnlocked().length} von ${ACC.length} Sachen freigeschaltet`;
   const postOk = learnedSentences().length + W.filter(w=>st(w.id)&&st(w.id).b>=2&&w.ex).length >= 2;
   $("#postSub").textContent = postOk ? (S.lastPost && dayDiff(S.lastPost,today())<7 ? "Diese Woche schon verschickt" : "Postkarte an die Familie") : "Erst ein paar Sätze lernen";
@@ -5557,18 +5637,23 @@ const gradeOf = pct => pct>=.92?1:pct>=.81?2:pct>=.67?3:pct>=.5?4:pct>=.3?5:6;
 const fmtP = n => String(Math.round(n*2)/2).replace(".",",");
 const mmss = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return `${Math.floor(s/60)}:${pad(s%60)}`; };
 let examTimer = null;
-function examPid(){ return testActive() ? S.test.pl : "u1"; }
+/* Umfang: ein Thema (pid) oder eine ganze Unit ("all:u1" = alle Wörter der Unit, z. B. alle Hafenstadt-Themen) */
+let EXAM_SCOPE = null;
+function examPid(){ return EXAM_SCOPE || (testActive() ? S.test.pl : "all:" + U().cur); }
+const examAll = pid => String(pid).startsWith("all:") ? pid.slice(4) : null;
+const examWords = pid => { const u = examAll(pid); return u ? W.filter(w => unitOf(w.pl) === u) : W.filter(w => inPl(w, pid)); };
+const examName = pid => { const u = examAll(pid); return u ? `${UMAP[u] ? UMAP[u].n : u} komplett · alle ${examWords(pid).length} Wörter` : ((PMAP[pid] || {}).name || ""); };
 function shortSent(s){ return fillN(s.en).split(" ").length <= 9; }
 function buildExam(pid){
-  const ws = shuffle(W.filter(w=>inPl(w,pid)));
+  const ws = shuffle(examWords(pid)), unit = examAll(pid);
   const used = new Set(), take = (n, f) => { const out = []; for (const w of ws){ if (out.length>=n) break; if (!used.has(w.id) && f(w)){ used.add(w.id); out.push(w); } } return out; };
   const q = [];
-  take(12, ()=>true).forEach(w=>q.push({kind:"word", w, type:"type", part:"A"}));
+  take(unit ? 14 : 12, ()=>true).forEach(w=>q.push({kind:"word", w, type:"type", part:"A"}));
   take(4, w=>!/\.\.\.|…|\//.test(w.en) && w.en.split(" ").length<=3).forEach(w=>q.push({kind:"word", w, type: HAS_TTS ? "listen" : "type", part:"B"}));
   take(6, w=>gapMatch(w)!==null).forEach(w=>q.push({kind:"word", w, type:"gap", part:"C"}));
   const gram = shuffle(SENT.filter(s=>s.pl==="gram")).slice(0,4);
   gram.forEach(s=>q.push({kind:"sent", s, type:"puzzle", part:"D"}));
-  const pool = SALL.filter(s=>s.pl===pid && shortSent(s));
+  const pool = SALL.filter(s=>(unit ? unitOf(s.pl)===unit : s.pl===pid) && shortSent(s));
   const tr = shuffle(pool.filter(s=>!s.auto)).slice(0,2);
   shuffle(pool.filter(s=>s.auto)).forEach(s=>{ if (tr.length<4 && !tr.includes(s)) tr.push(s); });
   tr.forEach(s=>q.push({kind:"sent", s, type:"translate", part:"E"}));
@@ -5579,13 +5664,17 @@ function buildExam(pid){
 }
 function examMax(q){ return q.reduce((a,it)=>a+EPART[it.part].pts, 0); }
 function renderExamIntro(){
-  const pid = examPid(), p = PMAP[pid], q = buildExam(pid), max = examMax(q);
+  const pid = examPid(), p = {name:examName(pid)}, q = buildExam(pid), max = examMax(q);
+  const u = U().cur, opts = [["all:" + u, `${esc(UMAP[u].n)} komplett`, `alle ${examWords("all:" + u).length} Wörter aus allen Themen`]];
+  if (PMAP[u] && examWords(u).length) opts.push([u, esc(PMAP[u].name), "nur die Wörter aus dem Buchkapitel"]);
+  if (testActive() && S.test.pl !== u) opts.push([S.test.pl, esc(PMAP[S.test.pl].name), "Thema des nächsten Tests"]);
   const last = (S.exams||[]).filter(e=>e.kind==="ka").pop();
   $("#s-exam").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
     <div class="paper intro">
       <div class="phead"><span>Englisch · Klasse 5</span><span>${dmy(today())}</span></div>
       <h1 class="display" style="font-size:clamp(1.6rem,7vw,2.1rem);color:var(--navy);margin:4px 0 0">Probe-Klassenarbeit</h1>
       <div style="font-weight:700;color:#08799E">${esc(p.name)}</div>
+      ${opts.length > 1 ? `<div class="exscope" role="radiogroup" aria-label="Was soll drankommen?">${opts.map(([id, t, sub]) => `<button class="exs ${id === pid ? "on" : ""}" role="radio" aria-checked="${id === pid}" data-act="examScope" data-p="${id}"><b>${t}</b><small>${sub}</small></button>`).join("")}</div>` : ""}
       <p class="muted" style="margin:0">Wie in der Schule: ${EXAM_MIN} Minuten, keine Tipps, keine Hilfe. Erst ganz am Ende korrigiert ${esc(G())} mit dem Rotstift und gibt dir eine Note.</p>
       <table class="ptab">${EXAM_PARTS.map(x=>{ const n = q.filter(i=>i.part===x.k).length; return n ? `<tr><td><b>Teil ${x.k}</b></td><td>${x.n}</td><td>${n} ${n===1?"Aufgabe":"Aufgaben"}</td><td>${n*x.pts} P.</td></tr>` : ""; }).join("")}
         <tr class="sum"><td></td><td>Gesamt</td><td>${q.length} Aufgaben</td><td>${max} P.</td></tr></table>
@@ -5640,7 +5729,7 @@ function examFinish(timeUp){
   const pts = E.res.reduce((a,r)=>a+r.pts,0), max = E.max, pct = max ? pts/max : 0, g = gradeOf(pct);
   S.exams = S.exams || [];
   const prev = S.exams.filter(e=>e.kind==="ka").pop();
-  S.exams.push({d:today(), kind:"ka", deck:"Probe-Klassenarbeit", pl:E.pid, n:max, ok:pts, g, min:Math.round(used/60000)});
+  S.exams.push({d:today(), kind:"ka", deck:"Probe-Klassenarbeit", pl:E.pid, name:examName(E.pid), n:max, ok:pts, g, min:Math.round(used/60000)});
   if (S.exams.length>40) S.exams = S.exams.slice(-40);
   S.stats.missions++; markDay(); save(); addKm(60);
   const newB = checkBadges({});
@@ -5652,7 +5741,7 @@ function examFinish(timeUp){
   if (prev){ const d = Math.round((pct - prev.ok/prev.n)*100);
     cmp = `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.6rem" aria-hidden="true">${d>0?"📈":d<0?"📉":"➡️"}</span><div><b>${d>0?`${d} Prozentpunkte besser als beim letzten Mal!`:d<0?"Diesmal etwas weniger als beim letzten Mal.":"Genauso gut wie beim letzten Mal."}</b><div class="muted" style="font-size:.85rem">Letzte Probe: Note ${prev.g} · ${fmtP(prev.ok)} von ${prev.n} Punkten</div></div></div>`; }
   $("#s-summary").innerHTML = `<div class="paper result-paper">
-      <div class="phead"><span>Probe-Klassenarbeit · ${esc(PMAP[E.pid].name)}</span><span>${dmy(today())}</span></div>
+      <div class="phead"><span>Probe-Klassenarbeit · ${esc(examName(E.pid))}</span><span>${dmy(today())}</span></div>
       <div class="gradebox">
         <div class="gstamp" style="--h:${hue}"><small>Note</small><b>${g}</b><span>${GRADE_TXT[g]}</span></div>
         <div class="stack" style="gap:4px;min-width:0">
@@ -6672,7 +6761,14 @@ function renderParents(){
       <div class="tip"><b>Teil 1 Hören:</b> Den Text liest ein Erwachsener vor, er steht im Lösungs-PDF. Oder Sie lassen ihn hier von der App mit englischer Aussprache vorlesen, zweimal mit Pause dazwischen.</div>
       <button class="btn btn-ice" data-act="hoertext">Hörtext vorspielen</button>
     </div>
-    ${(S.exams||[]).some(e=>e.kind==="ka")?`<div class="panel"><span class="label">Probe-Klassenarbeiten</span>${(S.exams||[]).filter(e=>e.kind==="ka").slice(-6).reverse().map(e=>`<div class="row" style="justify-content:space-between"><span>${dmy(e.d).slice(0,6)} · ${esc((PMAP[e.pl]||{name:""}).name)}</span><b>${fmtP(e.ok)}/${e.n} P. · Note ${e.g}</b></div>`).join("")}<button class="btn btn-soft" data-act="openExam">Neue Probe-Klassenarbeit</button></div>`:`<button class="btn btn-soft btn-block" data-act="openExam">Probe-Klassenarbeit starten (45 Min.)</button>`}`;
+    <div class="panel"><span class="label">Klassenarbeit Unit 1: alle Wörter</span>
+      <p style="margin:0" class="muted">Wortschatz aus allen Themen der Hafenstadt (über 500 Wörter): Diktat, Vokabeln in beide Richtungen, Wörter im Satz, Wortgruppen, Übersetzen und Fehler finden. 45 Minuten, 62 Punkte, mit Notenschlüssel.</p>
+      <a class="btn btn-main" href="${APP_URL}pdf/klassenarbeit-unit1-alle-woerter.pdf" target="_blank" rel="noopener">Arbeitsblatt (PDF)</a>
+      <a class="btn btn-soft" href="${APP_URL}pdf/klassenarbeit-unit1-alle-woerter-loesung.pdf" target="_blank" rel="noopener">Lösungen und Diktat (PDF)</a>
+      <button class="btn btn-ice" data-act="examScope" data-p="all:u1">Online-Klassenarbeit für das Kind starten</button>
+      <div class="tip">Online wird die Klassenarbeit jedes Mal neu aus allen Unit-1-Wörtern gemischt, die App liest das Diktat selbst vor und korrigiert am Ende mit Note.</div>
+    </div>
+    ${(S.exams||[]).some(e=>e.kind==="ka")?`<div class="panel"><span class="label">Probe-Klassenarbeiten</span>${(S.exams||[]).filter(e=>e.kind==="ka").slice(-6).reverse().map(e=>`<div class="row" style="justify-content:space-between"><span>${dmy(e.d).slice(0,6)} · ${esc(e.name || (PMAP[e.pl]||{name:""}).name)}</span><b>${fmtP(e.ok)}/${e.n} P. · Note ${e.g}</b></div>`).join("")}<button class="btn btn-soft" data-act="openExam">Neue Probe-Klassenarbeit</button></div>`:`<button class="btn btn-soft btn-block" data-act="openExam">Probe-Klassenarbeit starten (45 Min.)</button>`}`;
   else if (PTAB==="fam") body = `
     ${famPanel()}
     <div class="panel"><span class="label">Name und PIN</span>
@@ -7051,7 +7147,7 @@ const ACT = {
     setTimeout(()=>resolveSent(ok, {fix:true}), 500);
   },
   cont: () => { hideSheet(); M.i++; setTimeout(next, 120); },
-  openExam: renderExamIntro, examGo: startExam,
+  openExam: renderExamIntro, examGo: startExam, examScope: b => { EXAM_SCOPE = b.dataset.p; renderExamIntro(); },
   quit: () => { clearInterval(examTimer); if (REC) try{REC.abort();}catch(e){} if (HAS_TTS) speechSynthesis.cancel(); if (M && (M.right+M.wrong)>0){ markDay(); save(); } M = null; show("home"); },
   postTo: b => { PC.to = b.dataset.v; renderPost(); },
   postShuffle: () => openPost(),
