@@ -1,5 +1,5 @@
 {
-  "version": 45,
+  "version": 46,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -989,13 +989,73 @@
           "height": 768
         }
       ]
+    },
+    "design_v3_startseite": {
+      "name": "Startseite",
+      "images": [
+        {
+          "path": "design_v3_startseite.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v3_startseite-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_v3_login": {
+      "name": "Login",
+      "images": [
+        {
+          "path": "design_v3_login.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v3_login-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_v3_hauptbildschirm": {
+      "name": "Hauptbildschirm",
+      "images": [
+        {
+          "path": "design_v3_hauptbildschirm.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v3_hauptbildschirm-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_v3_elternmenue": {
+      "name": "Elternmenü",
+      "images": [
+        {
+          "path": "design_v3_elternmenue.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v3_elternmenue-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
     }
   },
   "activeScreenDesigns": [
-    "design_v2_startseite",
-    "design_v2_login",
-    "design_v2_hauptbildschirm",
-    "design_v2_elternmenue"
+    "design_v3_startseite",
+    "design_v3_login",
+    "design_v3_hauptbildschirm",
+    "design_v3_elternmenue"
   ],
   "screenDesignGuidance": {
     "nameSource": "S.gull",
@@ -1003,6 +1063,7 @@
     "nameRendering": "Als dynamischen HTML-Text mit textContent einsetzen. Keine Namen in Bilddateien.",
     "nameCss": "font-size: clamp(1.5rem, 1rem + 2vw, 3rem); overflow-wrap: anywhere; min-inline-size: 0; white-space: normal;",
     "layout": "Mobile-first. Bei schmalen Ansichten einspaltig, bei breiten Ansichten flexibel aufteilen. Karten und Namensbereich wachsen mit dem Inhalt. Bilder responsiv und getrennt von Formularen, Texten und Bedienelementen einbinden.",
-    "login": "E-Mail und Passwort sind ein Entwurf. Bestehenden Einstieg und Eltern-PIN bei der Umsetzung berücksichtigen."
+    "login": "E-Mail und Passwort sind ein Entwurf. Bestehenden Einstieg und Eltern-PIN bei der Umsetzung berücksichtigen.",
+    "character": "Vorhandene flauschige 3D-Möwenfigur und ihre Entwicklungsstufen aus dem Figurenmanifest verwenden. Krone in den Entwürfen zeigt die Königsstufe."
   }
 }
