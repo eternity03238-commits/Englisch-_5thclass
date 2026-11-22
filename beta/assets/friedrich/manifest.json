@@ -1,5 +1,5 @@
 {
- "version": 19,
+ "version": 20,
  "files": {
   "king/front": {
    "w": 1024,
@@ -340,6 +340,71 @@
    "w": 1024,
    "h": 1024,
    "src": "friedrich_king_fly.png"
+  },
+  "admiral/3quarter": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_3quarter.png"
+  },
+  "admiral/front": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_front.png"
+  },
+  "admiral/side": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_side.png"
+  },
+  "admiral/back": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_back.png"
+  },
+  "admiral/face": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_face.png"
+  },
+  "admiral/blink": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_blink.png"
+  },
+  "admiral/look_left": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_look_left.png"
+  },
+  "admiral/look_right": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_look_right.png"
+  },
+  "admiral/wave": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_wave.png"
+  },
+  "admiral/celebrate": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_celebrate.png"
+  },
+  "admiral/think": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_think.png"
+  },
+  "admiral/encourage": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_encourage.png"
+  },
+  "admiral/fly": {
+   "w": 1024,
+   "h": 1024,
+   "src": "friedrich_admiral_fly.png"
   }
  }
 }

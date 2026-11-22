@@ -53,7 +53,7 @@
    "motiv": "Grundansicht wie captain/3quarter: steht, Blick nach rechts, freundlich und stolz",
    "ausgerichtet_an": null,
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 2,
@@ -68,7 +68,7 @@
    "motiv": "wie captain/front, Blick zum Betrachter",
    "ausgerichtet_an": null,
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 3,
@@ -83,7 +83,7 @@
    "motiv": "wie captain/side, Profil nach rechts",
    "ausgerichtet_an": null,
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 4,
@@ -98,7 +98,7 @@
    "motiv": "wie captain/back, Zweispitz von hinten mit Feder",
    "ausgerichtet_an": null,
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 5,
@@ -113,7 +113,7 @@
    "motiv": "wie captain/face: nur Kopf mit Hut, groß, für das runde Profilbild",
    "ausgerichtet_an": null,
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 6,
@@ -128,7 +128,7 @@
    "motiv": "beide Augen geschlossen (entspannt, nicht schlafend)",
    "ausgerichtet_an": "admiral/3quarter",
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 7,
@@ -143,7 +143,7 @@
    "motiv": "Augen und Kopf leicht nach links gedreht",
    "ausgerichtet_an": "admiral/3quarter",
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 8,
@@ -158,7 +158,7 @@
    "motiv": "Augen und Kopf leicht nach rechts gedreht",
    "ausgerichtet_an": "admiral/3quarter",
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 9,
@@ -173,7 +173,7 @@
    "motiv": "vorderer Flügel zum Gruß erhoben",
    "ausgerichtet_an": "admiral/3quarter",
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 10,
@@ -188,7 +188,7 @@
    "motiv": "beide Flügel hoch, Augen fröhlich, Schnabel offen",
    "ausgerichtet_an": "admiral/3quarter",
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 11,
@@ -203,7 +203,7 @@
    "motiv": "Flügelspitze am Schnabel, Blick nach oben",
    "ausgerichtet_an": "admiral/3quarter",
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 12,
@@ -218,7 +218,7 @@
    "motiv": "Flügel nach vorn gestreckt wie ein Daumen hoch, aufmunternder Blick",
    "ausgerichtet_an": "admiral/3quarter",
    "pflicht": true,
-   "status": "offen"
+   "status": "geliefert"
   },
   {
    "nr": 13,
@@ -233,7 +233,7 @@
    "motiv": "wie king/fly: im Gleitflug, Flügel ausgebreitet, Hut sitzt fest",
    "ausgerichtet_an": null,
    "pflicht": false,
-   "status": "offen"
+   "status": "geliefert"
   }
  ]
 }
