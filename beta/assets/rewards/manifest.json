@@ -1,5 +1,5 @@
 {
-  "version": 47,
+  "version": 48,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -1126,5 +1126,22 @@
     "login": "E-Mail und Passwort sind ein Entwurf. Bestehenden Einstieg und Eltern-PIN bei der Umsetzung berücksichtigen.",
     "character": "Vorhandene flauschige 3D-Möwenfigur und ihre Entwicklungsstufen aus dem Figurenmanifest verwenden. Krone in den Entwürfen zeigt die Königsstufe.",
     "harbor": "Hafen als gemeinsamen Hintergrund verwenden. Posen: winkend, hinter einem Poller hervorschauend, fliegend und seitlich auf einem Poller sitzend. Den Möwennamen als dynamischen Text im separaten Bereich anzeigen."
+  },
+  "screenBackgrounds": {
+    "hafen_hintergrund": {
+      "name": "Hafenhintergrund für die Bildschirm-Entwürfe",
+      "images": [
+        {
+          "path": "hafen_hintergrund.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hafen_hintergrund-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    }
   }
 }
