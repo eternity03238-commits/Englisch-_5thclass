@@ -865,6 +865,118 @@ img.ill-pre{display:inline-block;width:1.45em;height:1.45em;margin:-.2em .35em -
 }
 .scn-place{min-width:0}
 .ward-slot em{font:700 .62rem/1.2 var(--fr-font);color:#A15C12;font-style:normal}
+
+/* Reise-Andenken aus Brighton: vor der Ankunft grau, danach farbig */
+.scn-souv{display:flex;justify-content:center;gap:10px;margin-top:2px}
+.scn-souv span{display:flex;flex-direction:column;align-items:center;gap:2px;width:64px}
+.scn-souv img{width:52px;height:52px;object-fit:contain;filter:grayscale(1) opacity(.45)}
+.scn-souv span.on img{filter:none}
+.scn-souv small{font:700 .7rem/1 var(--fr-font);color:#A8BCD4}
+.scn-souv span.on small{color:#FFD36E}
+
+/* ============ Bildschirme nach Entwurf v4 (nur Beta) ============ */
+:root{--mw-cream:#FBF5EA;--mw-card:#FFFBF4;--mw-line:#EADFCB;--mw-navy:#13234A;--mw-teal:#0E5258;--mw-teal2:#0A3F44;--mw-coral:#EE6A4E;--mw-muted:#5E6478}
+#s-start,#s-login,#s-pmenu,body.mw-beta #s-home{position:fixed;inset:0;z-index:5;overflow-y:auto;overscroll-behavior:contain;background:var(--mw-cream);-webkit-overflow-scrolling:touch}
+body.mw-beta #s-home{padding:0;gap:0;display:block}
+.mw-main-screen{width:100%}
+body.mw-beta #s-home > :not(.mw-main-screen){display:none!important}
+body.mw-on{overflow:hidden}
+.mw-screen{position:relative;max-width:560px;min-height:100%;margin:0 auto;background:var(--mw-cream);display:flex;flex-direction:column;color:var(--mw-navy);font-family:Nunito,system-ui,sans-serif}
+/* Kopfbild: Hafen als gemeinsamer Hintergrund, Ausschnitt per Container-Einheiten */
+.mw-hero{position:relative;flex:none;height:clamp(300px,54svh,560px);overflow:hidden;container-type:size;background:#BFD7DA}
+.mw-hero-main{height:clamp(250px,40svh,480px)}
+.mw-front{z-index:2}
+.mw-bg{position:absolute;max-width:none;width:calc(var(--z) * 100cqw);height:auto;
+  left:calc(var(--hx) * 100cqw - var(--fx) * var(--z) * 100cqw);
+  top:calc(var(--hy) * 100cqh - var(--fy) * var(--z) * 100cqw / var(--ar));
+  filter:saturate(1.08);user-select:none;pointer-events:none}
+.mw-hero::after{content:"";position:absolute;inset:auto 0 0;height:22%;background:linear-gradient(to bottom,transparent,rgba(251,245,234,.35));pointer-events:none}
+.mw-fr{position:absolute;transform:translate(-50%,-90%);z-index:1;cursor:pointer;-webkit-tap-highlight-color:transparent;filter:drop-shadow(0 10px 8px rgba(30,25,15,.28))}
+.mw-fr .fr{width:100%}
+.mw-fr-login{filter:drop-shadow(0 -2px 10px rgba(30,25,15,.18))}
+.mw-hover{animation:mwHover 3.2s ease-in-out infinite}
+@keyframes mwHover{0%,100%{transform:translate(-50%,-90%)}50%{transform:translate(-50%,-94%)}}
+@media (prefers-reduced-motion:reduce){.mw-hover{animation:none}}
+/* Unterer Bereich */
+.mw-panel{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;gap:14px;align-items:stretch;
+  padding:22px max(18px,env(safe-area-inset-right,0px)) calc(48px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));background:var(--mw-cream)}
+.mw-wave{margin-top:-26px;padding-top:30px;border-radius:50% 50% 0 0 / 26px 26px 0 0;box-shadow:0 -3px 0 rgba(238,106,78,.55)}
+.mw-round{margin-top:-34px;border-radius:34px 34px 0 0;padding-top:18px;gap:12px}
+.mw-logo,.mw-title,.mw-ptitle{font-family:"Baloo 2",Nunito,system-ui,sans-serif;font-weight:700;color:var(--mw-navy);margin:0;text-align:center;line-height:1.05;text-wrap:balance}
+.mw-logo{font-size:clamp(2.5rem,1.6rem + 4vw,3.4rem);display:flex;align-items:center;justify-content:center;gap:12px}
+.mw-title{font-size:clamp(2rem,1.4rem + 3vw,2.6rem)}
+.mw-sparks{display:flex;align-items:center;justify-content:center;gap:12px}
+.mw-spark{width:26px;height:30px;flex:none;background:
+  linear-gradient(var(--mw-coral),var(--mw-coral)) 50% 0/4px 9px no-repeat,
+  linear-gradient(var(--mw-coral),var(--mw-coral)) 50% 50%/12px 4px no-repeat,
+  linear-gradient(var(--mw-coral),var(--mw-coral)) 50% 100%/4px 9px no-repeat;border-radius:2px}
+.mw-spark.l{transform:rotate(-14deg);background:
+  linear-gradient(28deg,transparent 42%,var(--mw-coral) 42% 58%,transparent 58%) 100% 0/14px 10px no-repeat,
+  linear-gradient(var(--mw-coral),var(--mw-coral)) 0 50%/16px 4px no-repeat,
+  linear-gradient(-28deg,transparent 42%,var(--mw-coral) 42% 58%,transparent 58%) 100% 100%/14px 10px no-repeat}
+.mw-spark.r{transform:rotate(14deg);background:
+  linear-gradient(-28deg,transparent 42%,var(--mw-coral) 42% 58%,transparent 58%) 0 0/14px 10px no-repeat,
+  linear-gradient(var(--mw-coral),var(--mw-coral)) 100% 50%/16px 4px no-repeat,
+  linear-gradient(28deg,transparent 42%,var(--mw-coral) 42% 58%,transparent 58%) 0 100%/14px 10px no-repeat}
+.mw-sub{margin:-8px 0 6px;text-align:center;font-family:"Baloo 2",Nunito,sans-serif;font-weight:700;font-size:1.5rem;color:var(--mw-navy);
+  background:radial-gradient(60% 6px at 50% 100%,var(--mw-coral) 0 98%,transparent) 50% 100%/62% 6px no-repeat;padding-bottom:10px;align-self:center}
+.mw-btn{display:flex;align-items:center;justify-content:center;gap:12px;min-height:60px;border-radius:999px;font:700 1.35rem/1.1 "Baloo 2",Nunito,sans-serif;cursor:pointer;border:2.5px solid var(--mw-teal);padding:0 22px;-webkit-tap-highlight-color:transparent}
+.mw-btn svg{width:28px;height:28px;flex:none}
+.mw-main{background:var(--mw-teal);color:#fff;box-shadow:0 6px 14px rgba(14,82,88,.25)}
+.mw-main svg{color:var(--mw-coral)}
+.mw-main:active,.mw-outline:active,.mw-tile:active,.mw-row:active{transform:translateY(1px) scale(.99)}
+.mw-outline{background:transparent;color:var(--mw-navy);min-height:54px;font-size:1.2rem}
+.mw-link{display:inline-flex;align-self:center;align-items:center;gap:8px;background:none;border:0;color:var(--mw-navy);font:700 1.1rem Nunito,sans-serif;padding:10px 12px;cursor:pointer}
+.mw-link svg{width:24px;height:24px;color:var(--mw-coral)}
+.mw-sep{width:2.5px;align-self:stretch;margin:6px 0;background:var(--mw-coral);border-radius:2px;flex:none}
+/* Anmelden */
+.mw-login{gap:14px;padding-top:24px;box-shadow:0 -10px 24px rgba(30,25,15,.12)}
+.mw-field{display:flex;align-items:center;gap:12px;min-height:58px;padding:0 14px;border:2px solid var(--mw-line);border-radius:18px;background:var(--mw-card)}
+.mw-field:focus-within{border-color:var(--mw-teal)}
+.mw-fic{display:grid;place-items:center;color:var(--mw-coral)}
+.mw-fic svg,.mw-eye svg{width:28px;height:28px}
+.mw-field .mw-sep{margin:14px 0}
+.mw-field input{flex:1;min-width:0;border:0;background:transparent;font:600 1.15rem Nunito,sans-serif;color:var(--mw-navy);padding:14px 0;outline:none}
+.mw-field input::placeholder{color:#525a6e}
+.mw-eye{background:none;border:0;color:var(--mw-teal);padding:8px;cursor:pointer;display:grid;place-items:center}
+.mw-msg{margin:0;color:var(--mw-muted);font-size:.95rem;text-align:center}
+.mw-msg:empty{display:none}
+/* Hauptbildschirm */
+.mw-namebox{border:2.5px solid var(--mw-coral);border-radius:20px;background:var(--mw-card);padding:10px 16px;min-height:62px;display:flex;align-items:center;justify-content:center;margin:0 4%}
+.mw-name{font-family:"Baloo 2",Nunito,sans-serif;font-weight:700;color:var(--mw-teal);text-align:center;line-height:1.1;
+  font-size:clamp(1.5rem, 1rem + 2vw, 3rem);overflow-wrap:anywhere;min-inline-size:0;white-space:normal}
+.mw-tiles{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.mw-panel > *{min-width:0}
+.mw-tests{min-width:0;overflow:hidden}
+.mw-tile{display:flex;align-items:center;gap:8px;min-height:64px;min-width:0;padding:6px 8px;background:var(--mw-card);border:1.5px solid var(--mw-line);border-radius:22px;box-shadow:0 4px 10px rgba(80,60,30,.08);cursor:pointer;color:var(--mw-navy);text-align:left}
+.mw-tile b{font:700 clamp(.92rem,.8rem + .6vw,1.08rem)/1.1 "Baloo 2",Nunito,sans-serif;min-width:0}
+.mw-ic{width:48px;height:48px;flex:none;display:grid;place-items:center}
+.mw-ic img{width:100%;height:100%;object-fit:contain}
+.mw-parents{margin:2px 6%}
+.mw-parents .mw-ic{width:40px;height:40px}
+.mw-parents .mw-sep{background:var(--mw-coral);opacity:.9}
+.mw-more{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.mw-chip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:4px 14px 4px 6px;border-radius:999px;border:1.5px solid var(--mw-line);background:var(--mw-card);color:var(--mw-navy);font:700 .95rem Nunito,sans-serif;cursor:pointer}
+.mw-chip img{width:32px;height:32px;object-fit:contain}
+.mw-tests:empty{display:none}
+.mw-tests #testCard{display:block}
+@media (max-width:420px){.mw-tile .mw-sep{display:none}.mw-tile .mw-ic{width:40px;height:40px}}
+@media (max-width:340px){.mw-tile{flex-direction:column;text-align:center;gap:4px}}
+/* Elternmenü */
+.mw-hero-wrap{position:relative}
+.mw-topbar{position:absolute;inset:0 0 auto;z-index:3;display:flex;align-items:center;gap:12px;padding:calc(12px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px))}
+.mw-pill{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px 0 12px;border-radius:999px;border:0;background:var(--mw-teal);color:#fff;font:700 1rem Nunito,sans-serif;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.18)}
+.mw-pill svg{width:22px;height:22px}
+.mw-ptitle{flex:1;font-size:clamp(1.7rem,1.2rem + 2.4vw,2.3rem);padding:2px 10px 6px;text-align:center;
+  background:radial-gradient(closest-side,rgba(255,250,240,.92),rgba(255,250,240,.6) 70%,transparent);border-radius:20px;
+  text-decoration:underline var(--mw-coral) 4px;text-underline-offset:8px;margin-right:60px}
+.mw-rows{gap:10px;padding-top:14px}
+.mw-row{display:flex;align-items:center;gap:12px;min-height:76px;padding:8px 12px;background:var(--mw-card);border:1.5px solid var(--mw-line);border-radius:22px;cursor:pointer;color:var(--mw-navy);text-align:left}
+.mw-row b{flex:1;min-width:0;font:700 1.3rem/1.1 "Baloo 2",Nunito,sans-serif;overflow-wrap:anywhere}
+.mw-go{width:46px;height:40px;flex:none;border-radius:999px;background:var(--mw-teal);color:#fff;display:grid;place-items:center}
+.mw-go svg{width:24px;height:24px}
+.mw-rows .mw-link{font-size:1rem;color:var(--mw-teal);text-decoration:underline;text-underline-offset:4px}
+@media (min-width:561px){.mw-screen{box-shadow:0 0 0 1px var(--mw-line),0 10px 40px rgba(0,0,0,.08)}#s-start,#s-login,#s-pmenu,body.mw-beta #s-home{background:#E9E0CF}}
 </style>
 
 </head>
@@ -1736,7 +1848,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795342087";
+const BUILD = "1795343824";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2395,7 +2507,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "08c6340381fde31f397d0ad93ebc9e07957f04ab";
+const SCN_COMMIT = "b1e9a4bc4f74321f77923ce07604ab31afaa5406";
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2746,10 +2858,23 @@ function scnFlight(){
   st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-flight ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}
       <div class="scn-fr scn-flyer" style="left:50%;top:52%;width:46%">${friedrichEl({stage, pose, size:"fit"})}</div></div>
     <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Reise schließen">Schließen</button></span></div>
-    <div class="scn-bottom"><div class="scn-trip"><div class="scn-trip-row"><span class="scn-trip-ic">${illImg(km < (STOPS[1] ? STOPS[1][1] : 260) ? "erster_flug" : "brighton_reisekompass", "", "56px")}</span><b style="flex:1">${km} km${km < (STOPS[1] ? STOPS[1][1] : 260) ? " · Dein erster Flug" : ""}</b><small>${km >= goal ? "Ziel erreicht" : `${Math.round(pct)} % bis Brighton`}</small></div>
+    <div class="scn-bottom"><div class="scn-trip"><div class="scn-trip-row"><span class="scn-trip-ic">${illImg(scnTripIll(km)[0], "", "56px")}</span><b style="flex:1">${km} km${scnTripIll(km)[1] ? " · " + scnTripIll(km)[1] : ""}</b><small>${km >= goal ? "Ziel erreicht" : `${Math.round(pct)} % bis Brighton`}</small></div>
       <div class="scn-trip-bar"><i style="width:${pct.toFixed(1)}%"></i>${stops.map(x => `<span class="${km >= x[1] ? "on" : ""} ${x[0]==="Brighton" ? "goal" : ""}" style="left:${(x[1]/goal*100).toFixed(1)}%" title="${x[0]}"></span>`).join("")}</div>
-      <div class="scn-trip-row"><small>Leipzig</small><small>Brighton</small></div></div>
+      <div class="scn-trip-row"><small>Leipzig</small><small>Brighton</small></div>${scnSouvenirs(km)}</div>
       <div class="scn-say"><b>${esc(G())}</b><span>${esc(line)} Jede Übung bringt uns weiter!</span></div></div></div>`);
+}
+/* Reisebilder je Abschnitt: Abflug, Ärmelkanal, Ankunft am Pier; in Brighton dazu die Andenken */
+function scnTripIll(km){
+  if (km < 260) return ["erster_flug", "Dein erster Flug"];
+  if (km < 920) return [rwIllus("reise_abflug_leipzig") ? "reise_abflug_leipzig" : "brighton_reisekompass", "Unterwegs von Leipzig"];
+  if (km < 1170) return [rwIllus("reise_aermelkanal") ? "reise_aermelkanal" : "brighton_reisekompass", "Über dem Ärmelkanal"];
+  return [rwIllus("brighton_ankunft_pier") ? "brighton_ankunft_pier" : "brighton_reisekompass", "Angekommen am Pier"];
+}
+const SCN_SOUVENIRS = [["reise_brighton_strand", "Strand"], ["reise_brighton_strandhuette", "Strandhütte"], ["reise_brighton_souvenir", "Andenken"]];
+function scnSouvenirs(km){
+  const l = SCN_SOUVENIRS.filter(x => rwIllus(x[0])); if (!l.length) return "";
+  const on = km >= 1170;
+  return `<div class="scn-souv" aria-label="${on ? "Andenken aus Brighton" : "Andenken warten in Brighton"}">${l.map(x => `<span class="${on ? "on" : ""}">${illImg(x[0], "", "64px")}<small>${x[1]}</small></span>`).join("")}</div>`;
 }
 /* Stufenaufstieg: Friedrich steht auf dem Podest in seiner neuen Stufe */
 function scnPodium(stage0){
@@ -2867,6 +2992,144 @@ function sceneBoot(){
   });
   scnSwipeInit();
   scnLoad();
+}
+
+/* ============ FRIEDRICH 2.0: Bildschirme nach den Entwürfen v4 (nur Beta) ============
+   Quelle: activeScreenDesigns und screenDesignGuidance im Belohnungs-Manifest (Startseite, Login, Hauptbildschirm, Elternmenü).
+   Die Entwurfsbilder sind Vorlagen, nicht Hintergründe: Oben steht der Hafen als gemeinsamer Hintergrund (Szene haus-am-hafen)
+   mit Friedrich in seiner echten Stufe und Pose, darunter Bedienung und Texte als HTML. Der Name kommt als Text (textContent). */
+/* Bildausschnitt je Bildschirm: Punkt fx/fy (Anteil im Hafenbild) erscheint bei hx/hy (Anteil der Kopfzeile), z = Vergrößerung */
+const MW_HERO = {
+  start:   {fx:.68, fy:.80, z:1.6,  hx:.50, hy:.88, fr:{ix:.62, iy:.838, w:58}},
+  login:   {fx:.842, fy:.78, z:3,   hx:.62, hy:.70, fr:{ix:.765, iy:.812, w:64}, front:1},
+  main:    {fx:.60, fy:.35, z:1.25, hx:.50, hy:.50, fr:{x:50, y:86, w:64}},
+  parents: {fx:.842, fy:.746, z:2.2, hx:.66, hy:.80, fr:{ix:.842, iy:.746, w:50}}
+};
+/* Poller mit Tau im Hafenbild (Anteile in %), liegt beim Anmelden vor Friedrich: er schaut dahinter hervor */
+const MW_BOLLARD = "polygon(79.7% 75.2%, 80.6% 73.9%, 84.2% 73.5%, 88% 74.1%, 88.8% 75.4%, 88% 76.8%, 88% 78.6%, 89.6% 78.6%, 90.7% 80%, 90% 81.8%, 81.1% 81.9%, 77.9% 80.4%, 77.5% 78.8%, 79.3% 77.2%, 80.3% 76%)";
+const mwName = () => (S && S.gull && S.gull.name) || "Deine Möwe";
+function mwHero(kind, pose){
+  const h = MW_HERO[kind], set = scnSet((scnScene("haus-am-hafen") || {}).backgrounds);
+  const stage = FR.stageOf(Math.max(S && S.name ? 1 : 0, S ? gullStage() : 0));
+  const p = pose(stage), vars = `--fx:${h.fx};--fy:${h.fy};--z:${h.z};--hx:${h.hx};--hy:${h.hy};--ar:${set ? set.ratio.toFixed(5) : 0.5628}`;
+  const img = cls => set ? `<img class="${cls}" src="${set.src}" srcset="${set.srcset}" sizes="(max-width:560px) ${Math.round(h.z*100)}vw, ${Math.round(h.z*560)}px" alt="" decoding="async" draggable="false"${cls === "mw-bg mw-front" ? ` style="clip-path:${MW_BOLLARD}"` : ""}>` : "";
+  /* Friedrich steht an einem Punkt im Hafenbild (ix/iy), sonst an einer Stelle der Kopfzeile (x/y) */
+  const f = h.fr, pos = f.ix != null && set ? `left:calc(var(--hx) * 100cqw + ${(f.ix - h.fx).toFixed(4)} * var(--z) * 100cqw);top:calc(var(--hy) * 100cqh + ${(f.iy - h.fy).toFixed(4)} * var(--z) * 100cqw / var(--ar))`
+    : `left:${f.x != null ? f.x : 50}%;top:${f.y != null ? f.y : 90}%`;
+  return `<div class="mw-hero mw-hero-${kind}" style="${vars}">${img("mw-bg")}
+    <div class="mw-fr mw-fr-${kind}" data-act="mwFr" style="${pos};width:${f.w}%">${friedrichEl({stage, pose:p, size:"fit", wear:p === FR.baseOf(stage) ? scnWearList() : []})}</div>${h.front ? img("mw-bg mw-front") : ""}</div>`;
+}
+const mwIc = id => `<span class="mw-ic" aria-hidden="true">${illImg(id, "", "56px")}</span>`;
+const mwArrow = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const mwBack = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H6m5-6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* Startseite: Friedrich winkt auf dem Steg */
+function renderStart(){
+  $("#s-start").innerHTML = `<div class="mw-screen">${mwHero("start", s => FR.baseOf(s))}
+    <div class="mw-panel mw-wave">
+      <h1 class="mw-logo"><span class="mw-spark l" aria-hidden="true"></span>Möwenflug<span class="mw-spark r" aria-hidden="true"></span></h1>
+      <p class="mw-sub">Englisch lernen</p>
+      <button class="mw-btn mw-main" data-act="mwGo">Los geht's ${mwArrow}</button>
+      <button class="mw-btn mw-outline" data-act="mwLogin">Anmelden</button>
+    </div></div>`;
+  mwPlay("#s-start", "wave", 700);
+}
+/* Anmelden: Familiencode (neues Gerät) und Eltern-PIN. E-Mail/Passwort aus dem Entwurf sind ersetzt (Vorgabe "login"). */
+function renderLogin(){
+  const known = !!(S && S.name);
+  $("#s-login").innerHTML = `<div class="mw-screen">${mwHero("login", s => FR.baseOf(s))}
+    <form class="mw-panel mw-login" id="mwLoginForm" autocomplete="off" novalidate>
+      <h1 class="mw-title">Anmelden</h1>
+      ${known ? "" : `<label class="mw-field"><span class="mw-fic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 7a4 4 0 1 1-3.5 5.9L4 20H2v-3l1.5-1.5H5V14h1.5l3.1-3.1A4 4 0 0 1 15 7zm1 2.5a1 1 0 1 0 0 .01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+        <span class="mw-sep" aria-hidden="true"></span><input id="mwCode" placeholder="Familiencode" autocapitalize="characters" aria-label="Familiencode, z. B. MOEWE-XXXX-XXXX-XXXX-XXXX"></label>`}
+      <label class="mw-field"><span class="mw-fic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="15" r="1.4" fill="currentColor"/></svg></span>
+        <span class="mw-sep" aria-hidden="true"></span><input id="mwPin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="${known && !S.pin ? "Neue Eltern-PIN (4 Ziffern)" : "Eltern-PIN"}" aria-label="Eltern-PIN, 4 Ziffern">
+        <button type="button" class="mw-eye" data-act="mwEye" aria-label="PIN zeigen"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></label>
+      <p class="mw-msg" id="mwMsg" role="status">${known ? `Für Erwachsene: Mit der Eltern-PIN geht es in den Elternbereich von ${esc(S.name)}.` : "Schon auf einem anderen Handy dabei? Familiencode aus dem Elternbereich eingeben."}</p>
+      <span id="famMsg" class="mw-msg"></span>
+      <button class="mw-btn mw-main" type="submit">Anmelden</button>
+      <button class="mw-link" type="button" data-act="mwStart">${mwBack} Zurück</button>
+    </form></div>`;
+  $("#mwLoginForm").addEventListener("submit", e => { e.preventDefault(); mwLogin(); });
+}
+function mwLogin(){
+  const msg = $("#mwMsg"), pin = ($("#mwPin").value || "").trim();
+  if (S && S.name){
+    if (!/^\d{4}$/.test(pin)){ msg.textContent = "Bitte die 4-stellige Eltern-PIN eingeben."; return; }
+    if (!S.pin){ S.pin = pin; save(); }
+    else if (S.pin !== pin){ msg.textContent = "Die PIN stimmt nicht."; $("#mwPin").value = ""; return; }
+    pinUntil = Date.now() + 15*60*1000;
+    return renderPMenu();
+  }
+  const code = normCode(($("#mwCode") || {}).value || "");
+  if (!validCode(code)){ msg.textContent = "Der Familiencode hat die Form MOEWE-XXXX-XXXX-XXXX-XXXX."; return; }
+  if (!cloudOn()){ msg.textContent = "In der Beta ist das Verbinden ausgeschaltet, damit kein echter Lernstand verändert wird. Starte hier mit „Los geht's“."; return; }
+  famJoin(code);
+}
+/* Hauptbildschirm: Friedrich fliegt, Name als Text, vier Kacheln, Für Eltern */
+function renderMain(){
+  const host = $("#s-home"); let box = host.querySelector(".mw-main-screen");
+  if (!box){ host.insertAdjacentHTML("afterbegin", `<div class="mw-screen mw-main-screen"></div>`); box = host.querySelector(".mw-main-screen"); }
+  const tc0 = $("#testCard"); if (tc0 && box.contains(tc0)) host.appendChild(tc0);   /* Testkarte vor dem Neuzeichnen retten */
+  const flyPose = s => FR.has(s, "fly") ? "fly" : FR.has(s, "celebrate") ? "celebrate" : FR.baseOf(s);
+  box.innerHTML = `${mwHero("main", flyPose)}
+    <div class="mw-panel mw-round">
+      <h1 class="mw-title mw-sparks"><span class="mw-spark l" aria-hidden="true"></span>Deine Möwe<span class="mw-spark r" aria-hidden="true"></span></h1>
+      <div class="mw-namebox"><span class="mw-name" id="mwName"></span></div>
+      <div class="mw-tests" id="mwTest"></div>
+      <div class="mw-tiles">
+        <button class="mw-tile" data-act="startDaily">${mwIc("unterricht_schulbuch")}<span class="mw-sep"></span><b>Weiterlernen</b></button>
+        <button class="mw-tile" data-act="startSentences">${mwIc("satzwerkstatt_bausteine")}<span class="mw-sep"></span><b>Satzwerkstatt</b></button>
+        <button class="mw-tile" data-act="openDeck" data-mode="kid">${mwIc("karteikarten_stapel")}<span class="mw-sep"></span><b>Karteikarten</b></button>
+        <button class="mw-tile" data-act="openMap">${mwIc("lernwelt_hafenkarte")}<span class="mw-sep"></span><b>Küstenkarte</b></button>
+      </div>
+      <button class="mw-btn mw-main mw-parents" data-act="openParents">${mwIc("elternbereich_familie")}<span class="mw-sep"></span>Für Eltern</button>
+      <div class="mw-more"><button class="mw-chip" data-act="openScene">${illImg("lernorte_kartenpin", "", "32px")}Hafenstadt</button><button class="mw-chip" data-act="openExtras">${illImg("extras_kacheln", "", "32px")}Extras</button><button class="mw-chip" data-act="openWardrobe">${illImg("kleiderschrank", "", "32px")}Kleiderschrank</button></div>
+    </div>`;
+  $("#mwName").textContent = mwName();   /* dynamischer Name, nie im Bild */
+  const tc = $("#testCard"); if (tc && tc.innerHTML.trim()) $("#mwTest").appendChild(tc);   /* Test-Hinweis bleibt sichtbar */
+  const fe = box.querySelector(".mw-fr"); if (fe) fe.classList.add("mw-hover");
+}
+/* Elternmenü: Friedrich sitzt seitlich auf dem Poller */
+function renderPMenu(){
+  $("#s-pmenu").innerHTML = `<div class="mw-screen">
+    <div class="mw-hero-wrap">${mwHero("parents", s => FR.has(s, "side") ? "side" : FR.baseOf(s))}
+      <div class="mw-topbar"><button class="mw-pill" data-act="home">${mwBack} Zurück</button><h1 class="mw-ptitle">Für Eltern</h1></div></div>
+    <div class="mw-panel mw-rows">
+      <button class="mw-row" data-act="mwPTab" data-t="start">${mwIc("wochenbericht_klemmbrett")}<span class="mw-sep"></span><b>Wochenbericht</b><span class="mw-go">${mwArrow}</span></button>
+      <button class="mw-row" data-act="openOverview" data-back="openParents">${mwIc("lernstand_anzeige")}<span class="mw-sep"></span><b>Lernstand</b><span class="mw-go">${mwArrow}</span></button>
+      <button class="mw-row" data-act="openDeck" data-mode="mama">${mwIc("moewenpruefung_sprechblasen")}<span class="mw-sep"></span><b>Möwen-Prüfung</b><span class="mw-go">${mwArrow}</span></button>
+      <button class="mw-row" data-act="mwPTab" data-t="test">${mwIc("testtraining_leuchtturm")}<span class="mw-sep"></span><b>Testtraining</b><span class="mw-go">${mwArrow}</span></button>
+      <button class="mw-link" data-act="mwPTab" data-t="more">Familie, PIN und weitere Einstellungen</button>
+    </div></div>`;
+  show("pmenu");
+}
+function mwPlay(sel, anim, delay){
+  if (scnRM()) return;
+  setTimeout(() => { const el = $(sel + " .mw-fr .fr"); if (el && FR.has(el.dataset.stage, anim)) frPlay(el, anim); }, delay || 0);
+}
+const MW_ACT = {
+  mwGo: () => { if (S && S.name && S.gull) show("scene"); else { renderOnboard(!S || !S.name); show("onboard"); } },
+  mwLogin: () => { renderLogin(); show("login"); },
+  mwStart: () => show("start"),
+  mwEye: b => { const i = $("#mwPin"); if (!i) return; const on = i.type === "password"; i.type = on ? "text" : "password"; b.setAttribute("aria-label", on ? "PIN verbergen" : "PIN zeigen"); },
+  mwPTab: b => { PTAB = b.dataset.t; renderParents(); },
+  mwFr: b => { const el = b.querySelector(".fr"); if (el && !scnRM()) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : "celebrate"); },
+  openParents: () => { if (S.pin && !pinOk()) return askPin(renderPMenu); renderPMenu(); }
+};
+function screensOnShow(name){
+  document.body.classList.toggle("mw-on", ["start","login","pmenu","home"].includes(name));
+  if (name === "start") renderStart();
+  if (name === "home") renderMain();
+}
+function screensBoot(){
+  SCREENS.push("start", "login", "pmenu");
+  $("#s-home").insertAdjacentHTML("beforebegin", `<section id="s-start" hidden></section><section id="s-login" hidden></section><section id="s-pmenu" hidden></section>`);
+  document.body.classList.add("mw-beta");
+  Object.assign(ACT, MW_ACT);
+  /* sobald Hafenbild und Figuren da sind, sichtbaren Bildschirm neu zeichnen */
+  scnLoad().then(() => { const v = SCREENS.find(n => { const e = $("#s-" + n); return e && !e.hidden; });
+    if (v === "start") renderStart(); else if (v === "home") renderMain(); else if (v === "login") renderLogin(); else if (v === "pmenu") renderPMenu(); });
 }
 
 const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), pose:FR.baseOf(FR.stageOf(Math.max(1,gullStage()))), size:"fit", wear:scnWearList()}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
@@ -3339,7 +3602,7 @@ function show(name){
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
   if (name==="home") renderHome();
-  if (BETA) sceneOnShow(name);
+  if (BETA){ sceneOnShow(name); screensOnShow(name); }
 }
 let OB = {color:0};
 function renderOnboard(needKid){
@@ -4871,9 +5134,10 @@ document.addEventListener("pointermove", e => {
   el.classList.add("tilting");
 }, {passive:true});
 ["pointerup","pointercancel","pointerout"].forEach(t=>document.addEventListener(t, e => { const el = e.target.closest && e.target.closest(TILT); if (el && (t!=="pointerout" || !el.contains(e.relatedTarget))) tiltOff(el); }, {passive:true}));
-if (BETA) sceneBoot();
+if (BETA){ sceneBoot(); screensBoot(); }
 if (!famBoot()){
-  if (S && S.name && S.gull) show(BETA ? "scene" : "home");
+  if (BETA) show("start");   /* Beta: Startseite nach Entwurf v4, "Los geht's" führt weiter */
+  else if (S && S.name && S.gull) show("home");
   else if (S && S.name){ renderOnboard(false); show("onboard"); }
   else { renderOnboard(true); show("onboard"); }
 }
