@@ -1,5 +1,5 @@
 {
-  "version": 43,
+  "version": 44,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -865,6 +865,68 @@
           "path": "crown-128.webp",
           "width": 128,
           "height": 128
+        }
+      ]
+    }
+  },
+  "screenDesigns": {
+    "design_startseite": {
+      "name": "Startseite",
+      "images": [
+        {
+          "path": "design_startseite.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_startseite-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_login": {
+      "name": "Login",
+      "images": [
+        {
+          "path": "design_login.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_login-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_hauptbildschirm": {
+      "name": "Hauptbildschirm",
+      "images": [
+        {
+          "path": "design_hauptbildschirm.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_hauptbildschirm-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_elternmenue": {
+      "name": "Elternmenü",
+      "images": [
+        {
+          "path": "design_elternmenue.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_elternmenue-512.webp",
+          "width": 512,
+          "height": 768
         }
       ]
     }
