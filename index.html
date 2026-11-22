@@ -2842,7 +2842,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795380133";
+const BUILD = "1795380575";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3455,7 +3455,7 @@ FR.fit = {
   young:   {head:{x:51, y:12, w:36, r:-6}, ears:{n:[36,35], f:[61,32], top:10.5},   eyes:{n:[49.4,28.8], f:[66.6,26.9]}, neck:{x:61, y:42, w:17}, back:{x:29, y:53, w:32}},
   adult:   {head:{x:52, y:14, w:38, r:-6}, ears:{n:[38,34], f:[64,31], top:11},     eyes:{n:[51,24.4],   f:[67.3,23.1]}, neck:{x:59, y:37, w:18}, back:{x:26, y:52, w:34}},
   captain: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},
-  admiral: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},   /* vorläufig wie Kapitän, nach Lieferung im Prüfstand feinjustieren */
+  admiral: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},   /* Körper deckungsgleich mit der Kapitänsmöwe (geprüft), daher dieselben Anker */
   king:    {head:null,                     ears:null,                               eyes:{n:[52.2,36.2], f:[66,35]},     neck:{x:62, y:46, w:15}, back:{x:32, y:59, w:29}}
 };
 /* Brillen und Kopfhörer in der Dreiviertelansicht: Punkte im Inventarbild (in %).
@@ -3578,7 +3578,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "25e560e59f0af473d187e7b174786228fda5b714"
+const SCN_COMMIT = "d1a75db97d5650be47c6a2a02485ad40610ead5e"
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -6763,8 +6763,9 @@ const wOpen = w => U().open.includes(unitOf(w.pl));
 const WC_ROUND = 40, WC_MIN = 25;
 const wcTarget = () => testActive() ? {pl:S.test.pl, name:PMAP[S.test.pl].name} : {unit:U().cur, name:UMAP[U().cur].n + (UMAP[U().cur].t ? ": " + UMAP[U().cur].t : "")};
 function wcPool(){
-  const tg = wcTarget();
-  return W.filter(w => !st(w.id) && wOpen(w) && (tg.pl ? inPl(w, tg.pl) : unitOf(w.pl) === tg.unit));
+  const tg = wcTarget(), c = S.wc || {}, done = new Set([...(c.need || []), ...Object.keys(c.res || {})]);
+  /* schon geprüfte Wörter (auch "zum Üben") nicht noch einmal abfragen: die kommen jetzt im Unterricht dran */
+  return W.filter(w => !st(w.id) && wOpen(w) && !done.has(w.id) && (tg.pl ? inPl(w, tg.pl) : unitOf(w.pl) === tg.unit));
 }
 const wcGroup = w => w.pl + ":" + (w.sec != null ? w.sec : Math.floor((parseInt(String(w.id).split("-").pop(), 10) || 0) / 10));
 function wcStart(mode){
