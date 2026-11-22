@@ -1045,6 +1045,40 @@ body.mw-barred.mw-roomy #app > section:not([hidden]) > .row:first-child + .mw-h-
 /* Beta-Hinweis nur noch auf der Startseite */
 body .beta-badge{display:none}
 body:has(#s-start:not([hidden])) .beta-badge{display:flex}
+/* ---------- Einrichtung für neue Familien ---------- */
+#s-setup{position:fixed;inset:0;z-index:5;overflow-y:auto;overscroll-behavior:contain;background:var(--mw-cream);-webkit-overflow-scrolling:touch}
+#s-setup .mw-hero{height:clamp(200px,32svh,360px)}
+.su-panel{gap:12px}
+.su-steps{display:flex;align-items:center;justify-content:center;gap:6px}
+.su-steps i{width:8px;height:8px;border-radius:50%;background:var(--mw-line)}
+.su-steps i.on{width:22px;border-radius:999px;background:var(--mw-teal)}
+.su-steps i.done{background:var(--mw-teal);opacity:.45}
+.su-steps small{margin-left:6px;font:800 .78rem/1 Nunito,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mw-muted)}
+.su-title{font-size:clamp(1.7rem,1.2rem + 2.4vw,2.2rem)}
+.su-lab{flex:none;width:52px;font:800 .9rem/1 Nunito,sans-serif;color:var(--mw-teal)}
+.su-units{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.su-unit{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-height:74px;padding:12px 14px;border:2px solid var(--mw-line);border-radius:18px;background:var(--mw-card);color:var(--mw-navy);text-align:left;font:inherit;cursor:pointer}
+.su-unit b{font:800 1.05rem/1.1 Nunito,sans-serif}
+.su-unit small{font:600 .82rem/1.25 Nunito,sans-serif;color:var(--mw-muted)}
+.su-unit.on{border-color:var(--mw-teal);background:#E7F2F1;box-shadow:inset 0 0 0 1px var(--mw-teal)}
+.su-check{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:18px;background:var(--mw-card);border:2px solid var(--mw-line);cursor:pointer}
+.su-check input{flex:none;width:22px;height:22px;margin:2px 0 0;accent-color:var(--mw-teal)}
+.su-check span{display:flex;flex-direction:column;gap:3px}
+.su-check b{font:800 .98rem/1.25 Nunito,sans-serif;color:var(--mw-navy)}
+.su-check small{font:600 .85rem/1.35 Nunito,sans-serif;color:var(--mw-muted)}
+.mw-link.mw-small{font-size:.98rem;color:var(--mw-teal);text-decoration:underline;text-underline-offset:4px}
+/* Erste Schritte im Elternmenü */
+.mw-steps{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:18px;background:#E9F3F1;border:2px solid #CFE3DF}
+.mw-steps-head{display:flex;align-items:baseline;gap:8px;margin-bottom:4px}
+.mw-steps-head b{font:800 1.05rem/1.2 Nunito,sans-serif;color:var(--mw-navy)}
+.mw-steps-head small{font:700 .85rem/1 Nunito,sans-serif;color:var(--mw-muted)}
+.mw-steps-x{margin-left:auto;border:0;background:none;color:var(--mw-teal);font:700 .85rem/1 Nunito,sans-serif;text-decoration:underline;cursor:pointer;padding:4px}
+.mw-step{display:flex;align-items:center;gap:10px;min-height:40px;padding:4px 0;border:0;background:none;text-align:left;font:700 .95rem/1.25 Nunito,sans-serif;color:var(--mw-navy);cursor:pointer;width:100%}
+div.mw-step{cursor:default}
+.mw-step i{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;border:2px solid #9DBFB9;font-style:normal;font-size:.8rem;color:#fff}
+.mw-step.ok i{background:var(--mw-teal);border-color:var(--mw-teal)}
+.mw-step.ok span{color:var(--mw-muted)}
+.mw-step em{margin-left:auto;font-style:normal;color:var(--mw-teal);font-size:1.3rem}
 
 /* ============ Hafenstadt als Hauptmenü (nur Beta): ruhig, klar, eine Handlung ============
    Eine Bildsprache: helle Creme-Flächen mit weichem Schatten, Navy für Text, Petrol für aktiv, Koralle nur für den einen Hauptknopf. */
@@ -1375,6 +1409,22 @@ body.scn-on:has(.hz-tabs) .beta-badge{top:auto;bottom:calc(76px + env(safe-area-
 .hz-unlock-art>img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
 .hz-unlock .hz-alt{align-self:center;margin-top:2px}
 @media (prefers-reduced-motion:reduce){.hz-where.hz-pulse{animation:none;outline:3px solid #EF6A4C}}
+/* ---------- Ruhigere Kopfzeile: Möwe, Stufe und Fische in einer Anzeige ---------- */
+.hz-fishin{display:inline-flex;align-items:center;gap:2px;vertical-align:middle;font:800 .8rem/1 var(--fr-font);color:var(--hz-navy);transition:transform .2s}
+.hz-fishin .hz-ill{width:18px;height:18px;object-fit:contain}
+.hz-fishin b{font:inherit}
+.hz-fishin.pop{transform:scale(1.25)}
+.hz-me{max-width:calc(100% - 4px)}
+.hz-fishwhy{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;white-space:nowrap;padding:0;border:0;background:none;font:inherit;color:var(--hz-navy);cursor:pointer;text-align:left}
+.hz-fishwhy .hz-ill{width:22px;height:22px;object-fit:contain}
+.hz-fishwhy b{font:800 .86rem/1.2 var(--fr-font)}
+.hz-fishwhy span{font:700 .78rem/1.2 var(--fr-font);color:var(--hz-teal);text-decoration:underline;text-underline-offset:3px}
+.hz-bottom.notabs{padding-bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+/* frisch erschienene Funktion leuchtet kurz */
+.hz-fresh{animation:hzFresh 1.2s ease-in-out 4}
+@keyframes hzFresh{0%,100%{box-shadow:0 0 0 0 rgba(239,106,76,.55)}50%{box-shadow:0 0 0 10px rgba(239,106,76,0)}}
+.hz-tab.hz-fresh{border-radius:16px}
+@media (prefers-reduced-motion:reduce){.hz-fresh{animation:none;outline:3px solid #EF6A4C;outline-offset:2px}}
 </style>
 
 </head>
@@ -2791,7 +2841,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795378785";
+const BUILD = "1795380133";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3767,6 +3817,7 @@ function renderScene(opts = {}){
   }
   const outs = scnOutdoor();
   if (!outs.length){ el.innerHTML = scnMsg("Im Szenenmanifest ist keine Szene.", true); return; }
+  if (!SCN.picked){ SCN.picked = true; hzStartPlace(); }
   if (!outs.includes(SCN.cur)) SCN.cur = outs.includes(SCN_START) ? SCN_START : outs[0];
   const id = SCN.cur, sc = scnScene(id), base = scnSet(sc.backgrounds), rew = scnSet(sc.rewardBackgrounds);
   const L = SCN_LAYOUT[id] || {}, f = L.fr || {x:50, y:88, w:34}, act = scnAction(id);
@@ -3776,7 +3827,7 @@ function renderScene(opts = {}){
   const ring = scnRing(id), i = ring.indexOf(id), prev = ring[(i - 1 + ring.length) % ring.length], next = ring[(i + 1) % ring.length];
   hzBeen(scnWorldOf(id));
   let spot = "";
-  if (act.child || act.area){
+  if ((act.child || act.area) && hzOn("orte")){
     const aria = act.area ? `${label}: ${act.child ? "hineingehen und " : ""}üben` : `${label} ansehen`;
     spot = L.spot
       ? `<button class="scn-door" data-act="scnSpot" style="left:${L.spot.x}%;top:${L.spot.y}%;width:${L.spot.w}%;height:${L.spot.h}%" aria-label="${esc(aria)}"><span class="scn-door-glow" aria-hidden="true"></span>${S.hints && S.hints.door ? "" : `<span class="hz-hand" aria-hidden="true">👆</span>`}<span class="scn-door-label">${esc(label)}${act.area && dueWords().some(w => inPl(w, act.area)) ? `<i class="scn-due" aria-label="Wörter zum Wiederholen">!</i>` : ""}</span></button>`
@@ -3786,10 +3837,10 @@ function renderScene(opts = {}){
       <div class="scn-art">
         ${scnImg(base, "scn-base")}${rew ? scnImg(rew, "scn-reward") : ""}
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}<div class="hz-say" id="scnSay" role="status" aria-live="polite"></div></div>
-        ${spot}${hzGates(id, L)}
+        ${spot}${hzOn("orte") ? hzGates(id, L) : ""}
       </div>
       ${hzTop(id, ring, i)}
-      ${hzNav(ring, i)}
+      ${hzOn("orte") ? hzNav(ring, i) : ""}
       ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main hz-spotbtn" data-act="scnSpot">${esc(label)}</button>` : ""}
       ${hzBottom()}
     </div>`;
@@ -3829,7 +3880,8 @@ async function scnReward(hatch){
   const sayIt = t => hzSay(t, 5000);
   sayIt(rew ? "Well done! Das Fenster leuchtet für dich." : "Well done! Super geübt.");
   SCN.rewardOn = true;
-  const done = ms => setTimeout(() => { if (rew && !rew.dataset.keep) rew.classList.remove("on"); SCN.rewardOn = false; }, ms);
+  const done = ms => setTimeout(() => { if (rew && !rew.dataset.keep) rew.classList.remove("on"); SCN.rewardOn = false;
+    setTimeout(() => { if (!$("#s-scene").hidden) hzHints(); }, 2600); }, ms);   /* danach: neu erschienene Funktion erklären */
   if (scnRM()){                                   /* reduzierte Bewegung: nur der beleuchtete Zustand */
     if (rew) rew.classList.add("on", "instant");
     return done(3500);
@@ -4033,7 +4085,7 @@ function scnSwipeInit(){
     if (!scnSwipe || host.querySelector(".scn-view")) return;
     const dx = e.clientX - scnSwipe.x, dy = e.clientY - scnSwipe.y; scnSwipe = null;
     if (Math.abs(dx) > 60 && Math.abs(dy) < 50){
-      const outs = scnRing(SCN.cur), i = outs.indexOf(SCN.cur); if (outs.length < 2) return;
+      const outs = scnRing(SCN.cur), i = outs.indexOf(SCN.cur); if (outs.length < 2 || !hzOn("orte")) return;
       scnNoClick = true; setTimeout(() => scnNoClick = false, 350);
       scnGo(outs[(i + (dx < 0 ? 1 : -1) + outs.length) % outs.length], dx < 0 ? 1 : -1);
     }
@@ -4104,8 +4156,9 @@ function renderStart(){
     <div class="mw-panel mw-wave">
       <h1 class="mw-logo"><span class="mw-spark l" aria-hidden="true"></span>Möwenflug<span class="mw-spark r" aria-hidden="true"></span></h1>
       <p class="mw-sub">Englisch lernen</p>
-      <button class="mw-btn mw-main" data-act="mwGo">Los geht's ${mwArrow}</button>
-      <button class="mw-btn mw-outline" data-act="mwLogin">Für Eltern</button>
+      ${S && S.name ? `<button class="mw-btn mw-main" data-act="mwGo">Los geht's ${mwArrow}</button>
+      <button class="mw-btn mw-outline" data-act="mwLogin">Für Eltern</button>` : `<button class="mw-btn mw-main" data-act="mwGo">Neu anfangen ${mwArrow}</button>
+      <button class="mw-link mw-small" data-act="mwLogin">Wir nutzen Möwenflug schon (Familiencode)</button>`}
     </div></div>`;
   mwPlay("#s-start", "wave", 700);
 }
@@ -4141,12 +4194,78 @@ function mwLogin(){
   if (!cloudOn()){ msg.textContent = "In der Beta ist das Verbinden ausgeschaltet, damit kein echter Lernstand verändert wird. Starte hier mit „Los geht's“."; return; }
   famJoin(code);
 }
+/* ---------- Einrichtung für neue Familien: drei kurze Schritte, erst am Ende wird das Profil angelegt ---------- */
+let SU = {step:1, unit:"u1", check:false};
+function renderSetup(){
+  const n = SU.step, dots = [1,2,3].map(k => `<i class="${k === n ? "on" : k < n ? "done" : ""}"></i>`).join("");
+  const head = (t, sub) => `<div class="su-steps" aria-label="Schritt ${n} von 3">${dots}<small>Schritt ${n} von 3</small></div><h1 class="mw-title su-title">${t}</h1>${sub ? `<p class="mw-msg">${sub}</p>` : ""}`;
+  let body = "";
+  if (n === 1) body = `${head("Wer lernt hier?", "Ihr Kind bekommt eine eigene Möwe und bringt ihr Englisch bei.")}
+      <label class="mw-field"><span class="su-lab">Kind</span><span class="mw-sep" aria-hidden="true"></span><input id="suKid" maxlength="20" placeholder="Vorname" autocomplete="off" value="${esc(SU.kid || "")}" aria-label="Vorname des Kindes"></label>
+      <label class="mw-field"><span class="su-lab">Möwe</span><span class="mw-sep" aria-hidden="true"></span><input id="suGull" maxlength="16" placeholder="z. B. Fridolin" autocomplete="off" value="${esc(SU.gull || "")}" aria-label="Name der Möwe"></label>
+      <p class="mw-msg" id="suMsg" role="status"></p>
+      <button class="mw-btn mw-main" data-act="suNext">Weiter ${mwArrow}</button>
+      <button class="mw-link" data-act="mwStart">${mwBack} Zurück</button>`;
+  else if (n === 2) body = `${head("Eltern-PIN festlegen", "Mit der PIN kommen nur Erwachsene in den Elternbereich: Units freischalten, Wochenbericht, Lernstand.")}
+      <label class="mw-field"><span class="mw-fic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span><span class="mw-sep" aria-hidden="true"></span>
+        <input id="mwPin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]*" placeholder="4 Ziffern" value="${esc(SU.pin || "")}" aria-label="Eltern-PIN, 4 Ziffern">
+        <button type="button" class="mw-eye" data-act="mwEye" aria-label="PIN zeigen"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></label>
+      <p class="mw-msg" id="suMsg" role="status"></p>
+      <button class="mw-btn mw-main" data-act="suNext">Weiter ${mwArrow}</button>
+      <button class="mw-link" data-act="suSkip">Später festlegen</button>`;
+  else {
+    const list = UNITS.filter(x => x.id === "u1" || unitWords(x.id).length);
+    const idx = list.findIndex(x => x.id === SU.unit);
+    body = `${head("Was ist gerade in der Schule dran?", "Danach richtet sich, welche Wörter zuerst kommen. Ändern können Sie das jederzeit im Elternbereich.")}
+      <div class="su-units" role="radiogroup" aria-label="Aktuelle Unit">${list.map((x, k) => `<button class="su-unit ${x.id === SU.unit ? "on" : ""}" role="radio" aria-checked="${x.id === SU.unit}" data-act="suUnit" data-u="${x.id}"><b>${esc(x.n)}</b><small>${esc(x.t)}</small></button>`).join("")}</div>
+      <label class="su-check"><input type="checkbox" id="suCheck" ${SU.check ? "checked" : ""}><span><b>${idx > 0 ? `${esc(list.slice(0, idx).map(x => x.n).join(", "))} kennt mein Kind schon` : "Mein Kind hat mit Unit 1 schon angefangen"}</b><small>Dann startet die App mit einem kurzen Wortcheck: Ihr Kind zeigt, welche Wörter es schon kann, und übt nur den Rest.</small></span></label>
+      <button class="mw-btn mw-main" data-act="suDone">Fertig: Möwe ausbrüten ${mwArrow}</button>
+      <button class="mw-link" data-act="suBack">${mwBack} Zurück</button>`;
+  }
+  $("#s-setup").innerHTML = `<div class="mw-screen">${mwHero("start", s => FR.baseOf(s))}<div class="mw-panel mw-round su-panel">${body}</div></div>`;
+  const f = $("#s-setup input:not([type=checkbox])"); if (f && n < 3) setTimeout(() => { try { f.focus({preventScroll:true}); } catch(e){} }, 50);
+}
+function suKeep(){
+  const k = $("#suKid"), g = $("#suGull"), p = $("#mwPin"), c = $("#suCheck");
+  if (k) SU.kid = k.value.trim(); if (g) SU.gull = g.value.trim(); if (p) SU.pin = p.value.trim(); if (c) SU.check = c.checked;
+}
+const SU_ACT = {
+  suNext: () => { suKeep(); const m = $("#suMsg");
+    if (SU.step === 1){ if (!SU.kid) return m.textContent = "Bitte den Vornamen des Kindes eingeben."; if (!SU.gull) return m.textContent = "Wie soll die Möwe heißen?"; }
+    if (SU.step === 2 && !/^\d{4}$/.test(SU.pin || "")) return m.textContent = "Die PIN hat genau 4 Ziffern.";
+    SU.step++; renderSetup(); },
+  suSkip: () => { SU.pin = ""; SU.step = 3; renderSetup(); },
+  suBack: () => { suKeep(); SU.step = Math.max(1, SU.step - 1); renderSetup(); },
+  suUnit: b => { suKeep(); SU.unit = b.dataset.u; SU.check = SU.unit !== "u1"; renderSetup(); },
+  suDone: () => { suKeep();
+    const list = UNITS.filter(x => x.id === "u1" || unitWords(x.id).length).map(x => x.id), upto = list.slice(0, list.indexOf(SU.unit) + 1);
+    S = blank(); S.name = SU.kid; S.gull = {name:SU.gull, color:0}; S.pin = /^\d{4}$/.test(SU.pin || "") ? SU.pin : null;
+    S.units = {open:upto, cur:SU.unit, seen:upto.slice()}; S.setup = {check:!!SU.check, day:today(), unit:SU.unit};
+    S.feat = {}; S.introSeen = true; S.stageV = 2; S.worldsBeen = ["u1"];
+    unitsApply(); save(); SCN.picked = false; sfx("gull"); show("scene"); }
+};
+/* Erste Schritte im Elternbereich: nur für Familien, die über die Einrichtung gestartet sind */
+function mwFirstSteps(){
+  if (!S.setup || S.setup.hide) return "";
+  const home = (() => { try { return matchMedia("(display-mode: standalone)").matches || navigator.standalone === true; } catch(e){ return false; } })();
+  const items = [
+    [!!S.pin, "Eltern-PIN festgelegt", "mwPTab", "more"],
+    [true, `${esc(UMAP[U().cur].n)} läuft gerade`, "openUnits", ""],
+    [gullStage() >= 1, "Erste Unterrichtsstunde gemacht", "", ""],
+    [home, "Auf den Home-Bildschirm gelegt", "mwHomeHelp", ""],
+    ...(cloudOn() ? [[!!famCode, "Zweites Gerät verbinden (optional)", "mwPTab", "more"]] : [])
+  ];
+  const done = items.filter(i => i[0]).length;
+  return `<div class="mw-steps"><div class="mw-steps-head"><b>Erste Schritte</b><small>${done} von ${items.length}</small><button class="mw-steps-x" data-act="mwStepsHide" aria-label="Erste Schritte ausblenden">Ausblenden</button></div>
+    ${items.map(([ok, t, act, tab]) => `<${act ? `button data-act="${act}"${tab ? ` data-t="${tab}"` : ""}` : "div"} class="mw-step ${ok ? "ok" : ""}"><i aria-hidden="true">${ok ? "✓" : ""}</i><span>${t}</span>${act && !ok ? `<em aria-hidden="true">›</em>` : ""}</${act ? "button" : "div"}>`).join("")}</div>`;
+}
 /* Elternmenü: Friedrich steht seitlich auf dem Geländer der Veranda */
 function renderPMenu(){
   $("#s-pmenu").innerHTML = `<div class="mw-screen">
     <div class="mw-hero-wrap">${mwHero("parents", s => FR.has(s, "side") ? "side" : FR.baseOf(s))}
       <div class="mw-topbar"><button class="mw-pill" data-act="home">${mwBack} Zurück</button><h1 class="mw-ptitle">Für Eltern</h1></div></div>
     <div class="mw-panel mw-rows">
+      ${mwFirstSteps()}
       <button class="mw-row" data-act="mwPTab" data-t="start">${mwIc("wochenbericht_klemmbrett")}<span class="mw-sep"></span><b>Wochenbericht${introduced().length > 0 && (!S.lastBackup || dayDiff(S.lastBackup, today()) >= 7) ? ` <small>fällig · sichert den Spielstand</small>` : ""}</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openOverview" data-back="openParents">${mwIc("lernstand_anzeige")}<span class="mw-sep"></span><b>Lernstand</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openDeck" data-mode="mama">${mwIc("moewenpruefung_sprechblasen")}<span class="mw-sep"></span><b>Möwen-Prüfung</b><span class="mw-go">${mwArrow}</span></button>
@@ -4163,7 +4282,7 @@ function mwPlay(sel, anim, delay){
   setTimeout(() => { const el = $(sel + " .mw-fr .fr"); if (el && FR.has(el.dataset.stage, anim)) frPlay(el, anim); }, delay || 0);
 }
 const MW_ACT = {
-  mwGo: () => { if (S && S.name && S.gull) show("scene"); else { renderOnboard(!S || !S.name); show("onboard"); } },
+  mwGo: () => { if (S && S.name && S.gull){ SCN.picked = false; show("scene"); } else if (S && S.name){ renderOnboard(false); show("onboard"); } else { SU = {step:1, unit:"u1", check:false}; renderSetup(); show("setup"); } },
   mwLogin: () => { renderLogin(); show("login"); },
   mwStart: () => show("start"),
   mwEye: b => { const i = $("#mwPin"); if (!i) return; const on = i.type === "password"; i.type = on ? "text" : "password"; b.setAttribute("aria-label", on ? "PIN verbergen" : "PIN zeigen"); },
@@ -4171,6 +4290,8 @@ const MW_ACT = {
   mwVoice: () => { S.settings.voice = S.settings.voice === "normal" ? "gull" : "normal"; save(); lastCall = 0; speak("Hello! I'm " + G() + "."); renderPMenu(); },
   mwToggle: b => { const k = b.dataset.k; S.settings[k] = !S.settings[k]; save(); if (k === "slow") speak("Hello! This is my speed."); renderPMenu(); },
   mwFr: b => { const el = b.querySelector(".fr"); if (el && !scnRM()) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : "celebrate"); },
+  mwStepsHide: () => { S.setup.hide = true; save(); renderPMenu(); },
+  mwHomeHelp: () => toast("iPhone/iPad: in Safari auf „Teilen“ und dann „Zum Home-Bildschirm“. Android: in Chrome im Menü ⋮ „Zum Startbildschirm hinzufügen“."),
   openParents: () => { if (S.pin && !pinOk()) return askPin(renderPMenu); renderPMenu(); }
 };
 /* Menü-Hintergründe aus menuBackgroundPlan: Bild oben sichtbar, Inhalte stehen darauf */
@@ -4190,14 +4311,14 @@ function mwBackdrop(name){
 }
 function screensOnShow(name){
   requestAnimationFrame(mwBar);
-  document.body.classList.toggle("mw-on", ["start","login","pmenu"].includes(name));
+  document.body.classList.toggle("mw-on", ["start","login","pmenu","setup"].includes(name));
   if (name === "start") renderStart();
   mwBackdrop(name);
 }
 const hzHome = () => !(SCN.loaded && !SCN.world);
 /* Feste Kopfleiste für alle Menü-Bildschirme: Zurück links, Titel in der Mitte, Zusatzknopf rechts.
    Die Leiste steht fest am oberen Rand, nur der Inhalt darunter scrollt. Der Hintergrund steht still. */
-const MW_BAR_SKIP = ["scene","start","login","pmenu","mission","cards","summary","onboard","pin","home"];
+const MW_BAR_SKIP = ["scene","start","login","pmenu","setup","mission","cards","summary","onboard","pin","home"];
 function mwBar(){
   const sec = [...document.querySelectorAll("#app > section")].find(x => !x.hidden); if (!sec) return;
   const name = sec.id.replace(/^s-/, "");
@@ -4217,17 +4338,17 @@ function mwBar(){
   document.body.classList.add("mw-barred");
 }
 function screensBoot(){
-  SCREENS.push("start", "login", "pmenu");
-  $("#s-home").insertAdjacentHTML("beforebegin", `<section id="s-start" hidden></section><section id="s-login" hidden></section><section id="s-pmenu" hidden></section>`);
+  SCREENS.push("start", "login", "pmenu", "setup");
+  $("#s-home").insertAdjacentHTML("beforebegin", `<section id="s-start" hidden></section><section id="s-login" hidden></section><section id="s-pmenu" hidden></section><section id="s-setup" hidden></section>`);
   document.body.classList.add("mw-beta");
-  Object.assign(ACT, MW_ACT, HZ_ACT);
+  Object.assign(ACT, MW_ACT, HZ_ACT, SU_ACT);
   /* Bildschirme, die sich ohne show() neu zeichnen, bekommen die Leiste ebenfalls */
   new MutationObserver(() => { if (document.body.classList.contains("mw-barred") || document.body.classList.contains("mw-themed")) requestAnimationFrame(mwBar); })
     .observe($("#app"), {childList:true, subtree:false, attributes:false});
   document.querySelectorAll("#app > section").forEach(sec => new MutationObserver(() => { if (!sec.hidden) requestAnimationFrame(mwBar); }).observe(sec, {childList:true}));
   /* sobald Hafenbild und Figuren da sind, sichtbaren Bildschirm neu zeichnen */
   scnLoad().then(() => { const v = SCREENS.find(n => { const e = $("#s-" + n); return e && !e.hidden; });
-    if (v === "start") renderStart(); else if (v === "login") renderLogin(); else if (v === "pmenu") renderPMenu(); if (v) mwBackdrop(v); });
+    if (v === "start") renderStart(); else if (v === "login") renderLogin(); else if (v === "pmenu") renderPMenu(); else if (v === "setup"){ suKeep(); renderSetup(); } if (v) mwBackdrop(v); });
 }
 
 /* ============ FRIEDRICH 2.0: Die Hafenstadt ist das Hauptmenü (nur Beta) ============
@@ -4244,6 +4365,7 @@ const HZ_ACT = {
   hzFlyTo: b => hzWorldGo(b.dataset.u),
   hzUnlockGo: b => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); hzWorldGo(b.dataset.u); },
   hzWorlds: () => hzSheet("worlds"),
+  hzPlaceInfo: () => hzSay("Wisch nach links oder rechts, dann fliege ich zu den anderen Orten.", 5000),
   hzWorld: b => { const id = b.dataset.u; hzSheetClose(true);
     if (!U().open.includes(id)) return HZ_ACT.hzRegion(b);
     if (!hzWorldStart(id)) return PMAP[id] ? hzSheet("region", id) : null;
@@ -4262,19 +4384,53 @@ const HZ_ACT = {
   hzSpeak: () => { const L = hzLine(); hzSay(`<span class="hz-say-en">${esc(L.en)}</span>${L.de ? `<small>${esc(L.de)}</small>` : ""}${L.en.length > 3 ? `<button class="speak" data-act="say" data-t="${esc(L.en)}" aria-label="Anhören">${I.speaker}</button>` : ""}`, 9000);
     if (L.en.length > 3 && S.settings.sound) try { speak(L.en); } catch(e){} }
 };
+/* ---------- Funktionen wachsen mit dem Lernstand ----------
+   Neue Familien (S.feat vorhanden) sehen am ersten Tag nur Möwe, Ei und Unterricht. Alles andere erscheint, sobald es gebraucht wird,
+   jeweils mit EINER Sprechblase. Bisherige Profile (ohne S.feat) sehen alles wie gewohnt. Einmal da, bleibt es da. */
+const HZ_FEAT = [
+  ["karten", () => gullStage() >= 1, "Neu unten: Karten! Dort gehst du alle Wörter durch, die du mir schon beigebracht hast.", ".hz-tab[data-act=openDeck]"],
+  ["orte", () => (S.days || []).length >= 2 || introduced().length >= 30, "Wisch mal nach links oder rechts! Hier gibt es noch mehr Orte. Jede leuchtende Tür ist ein Thema.", ".hz-where"],
+  ["saetze", () => introduced().length >= 50, "Jetzt kannst du Sätze bauen! Unten bei „Sätze“.", ".hz-tab[data-act=startSentences]"],
+  ["reise", () => (S.km || 0) >= ((CITIES[1] || {}).km || 1e9), "Post für dich! Unter „Reise“ findest du unseren Flug und die Postkarten.", ".hz-tab[data-act=hzTrip]"],
+  ["schrank", () => accUnlocked().length > 0, "Ich habe etwas zum Anziehen bekommen! Tipp oben auf mein Bild, dann geht's zum Kleiderschrank.", ".hz-me"],
+  ["welten", () => U().open.length > 1, null, null]
+];
+const hzOn = k => { if (!S.feat) return true; if (S.feat[k]) return true; const f = HZ_FEAT.find(x => x[0] === k); return !!(f && f[1]()); };
+/* nächste neu erschienene Funktion (einmal), stille werden nur vermerkt */
+function hzFeatNew(){
+  if (!S.feat) return null;
+  let hit = null;
+  HZ_FEAT.forEach(f => { if (!hit && !S.feat[f[0]] && f[1]()){ S.feat[f[0]] = 1; if (f[2]) hit = f; } });
+  if (hit) save();
+  return hit;
+}
+/* Start-Ort: die Kategorie, aus der die nächsten neuen Wörter kommen. Ist ein Thema geschafft, steht vorne das nächste. */
+function hzNextScene(){
+  const outs = scnOutdoor(), nw = newWords();
+  for (const w of nw){ const id = outs.find(o => scnArea(o) === w.pl); if (id) return id; }
+  return null;
+}
+function hzStartPlace(){
+  const id = hzNextScene(); if (!id) return;
+  const area = scnArea(id), old = S.lastArea;
+  if (old && old !== area && PMAP[old] && hzOn("orte") && !newWords().some(w => w.pl === old))
+    HZ.catMsg = `${esc(PMAP[old].name)} hast du geschafft! Jetzt geht es hier weiter: ${esc(scnName(id))}.`;
+  if (old !== area){ S.lastArea = area; save(); }
+  SCN.cur = id;
+}
 /* Was heute dran ist: immer genau EINE Empfehlung */
 function hzLesson(){
   const stage = gullStage(), due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
   if (isAsleep() || (due === 0 && nw === 0))
     return {done:true, act:"startFix", title:"Für heute geschafft!", say:"Geschafft für heute! Lust auf eine Extra-Runde?", n:0, due, meta:"Morgen geht's weiter. Lust auf eine Extra-Runde?"};
-  const title = stage === 0 ? "Erste Stunde: Ei ausbrüten" : S.lastDay === today() ? "Weiter unterrichten" : "Unterrichtsstunde";
+  const title = stage === 0 ? "Erste Unterrichtsstunde" : S.lastDay === today() ? "Weiter unterrichten" : "Unterrichtsstunde";
   const rep = Math.min(due, 12), min = Math.max(3, Math.round(nw * .6 + rep * .3));
   const bits = []; if (nw) bits.push(`${nw} neue Wörter`); if (rep) bits.push(`${rep} wiederholen`);
   return {done:false, act:"startDaily", title, say:`${title}: ${bits.join(" und ")}. Los geht's!`, n:nw + rep, due, meta:`${bits.join(" · ")} · ca. ${min} Min.`};
 }
 function hzPick(){
   if (wcActive()) return {kind:"check", label:"Weitermachen", title:"Wortcheck", meta:`Noch ${S.wc.queue.length - S.wc.i} Wörter`, act:"openCheck", btn:"Weiter"};
-  const n = wcPool().length;
+  const n = S.setup && !S.setup.check ? 0 : wcPool().length;
   if (n >= WC_MIN) return {kind:"check", label:"Heute zuerst", title:"Zeig, was du schon kannst", meta:`Wortcheck · ca. ${Math.max(4, Math.round(n * .45 * 3 / 60))} Minuten`, act:"openCheck", btn:"Los geht's"};
   const L = hzLesson();
   return L.done ? {kind:"done", label:"Heute", title:L.title, meta:L.meta, act:L.act, btn:"Extra-Runde"}
@@ -4297,7 +4453,7 @@ function hzStageInfo(){
   /* Königsmöwe: der Ring füllt sich bis zum nächsten Stern */
   const stars = gullStars(), a = nx ? st.min : starFrom(), b = nx ? nx.min : nextStar();
   const p = Math.max(4, Math.min(100, Math.round((fish - a) / (b - a) * 100)));
-  return {n, stage, st, nx, fish, p, stars, label:stageLabel(n), toNext: nx ? `noch ${Math.max(0, nx.min - fish)} Fische bis ${nx.n}` : `noch ${Math.max(0, b - fish)} Fische bis zum ${stars ? "nächsten" : "ersten"} Stern`};
+  return {n, stage, st, nx, fish, p, stars, label:stageLabel(n), toNext: n === 0 ? "schlüpft in der ersten Unterrichtsstunde" : nx ? `noch ${Math.max(0, nx.min - fish)} Fische bis ${nx.n}` : `noch ${Math.max(0, b - fish)} Fische bis zum ${stars ? "nächsten" : "ersten"} Stern`};
 }
 function hzTop(id, outs, i){
   const I = hzStageInfo(), shown = HZ.fish == null ? I.fish : Math.min(HZ.fish, I.fish);
@@ -4305,8 +4461,7 @@ function hzTop(id, outs, i){
   return `<div class="hz-top">
       <button class="hz-me" data-act="hzProfile" aria-label="${esc(G())}, ${esc(I.label)}. Profil öffnen">
         <span class="hz-ring" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span>${I.stars ? `<span class="hz-stars" aria-hidden="true">★${I.stars > 1 ? I.stars : ""}</span>` : ""}</span>
-        <span class="hz-who"><b id="hzName"></b><small>${esc(I.label)}</small></span></button>
-      <button class="hz-chip" id="hzFishChip" data-act="growthInfo" aria-label="${I.fish} Fische. Wofür gibt es Fische?">${hzIc("belohnung_fisch", "40px")}<span class="hz-fishn"><b id="hzFish">${shown}</b><small>Fische</small></span></button>
+        <span class="hz-who"><b id="hzName"></b><small>${esc(I.label)} · <span class="hz-fishin" id="hzFishChip">${hzIc("belohnung_fisch", "24px")}<b id="hzFish">${shown}</b></span></small></span></button>
     </div>
 `;
 }
@@ -4320,25 +4475,25 @@ function hzNav(outs, i){
 function hzBottom(){
   const P = hzPick(), post = hzNewPost();
   let test = "";
-  if (testActive()){ const d = dayDiff(today(), S.test.date); test = `<button class="hz-testpill" data-act="startTest" aria-label="Testtraining">${d <= 0 ? "Heute Test" : d === 1 ? "Morgen Test" : `Test in ${d} Tagen`} ›</button>`; }
+  if (testActive() && dayDiff(today(), S.test.date) <= 7){ const d = dayDiff(today(), S.test.date); test = `<button class="hz-testpill" data-act="startTest" aria-label="Testtraining">${d <= 0 ? "Heute Test" : d === 1 ? "Morgen Test" : `Test in ${d} Tagen`} ›</button>`; }
   /* Wird der Wortcheck empfohlen, bleibt die Unterrichtsstunde als kleiner Link erreichbar */
-  const alt = P.kind === "check" && !hzLesson().done ? `<button class="hz-alt" data-act="startDaily">oder gleich Unterricht</button>` : "";
+  const alt = "";   /* "Lieber gleich Unterricht" steht jetzt im Wortcheck selbst */
   const W0 = HZ.where || {}, moved = HZ.place && HZ.place !== W0.id; HZ.place = W0.id;
   const wid = W0.id ? scnWorldOf(W0.id) : "u1", wNew = hzWorldsNew().length;
-  const where = W0.id ? `<button class="hz-where ${moved && !scnRM() ? "hz-new" : ""} ${HZ.pulse ? "hz-pulse" : ""}" data-act="hzWorlds" aria-label="${esc(scnName(W0.id))} in ${esc(hzWorldName(wid))}. Welt wechseln"><span class="hz-world">${HZ_SVG.globe}<em>${esc(hzWorldName(wid))}</em>${wNew ? `<i class="hz-newdot">neu</i>` : ""}<svg class="hz-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>${esc(scnName(W0.id))}</b>${W0.n > 1 ? `<span class="hz-dots" aria-label="Ort ${W0.i + 1} von ${W0.n}">${Array.from({length:W0.n}, (_, k) => `<i class="${k === W0.i ? "on" : ""}"></i>`).join("")}</span>` : ""}</button>` : "";
-  return `<div class="hz-bottom">${where}
+  const multi = U().open.filter(u => hzWorldStart(u)).length > 1;
+  const worldRow = multi ? `<span class="hz-world">${HZ_SVG.globe}<em>${esc(hzWorldName(wid))}</em>${wNew ? `<i class="hz-newdot">neu</i>` : ""}<svg class="hz-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>` : "";
+  const where = W0.id && hzOn("orte") ? `<button class="hz-where ${moved && !scnRM() ? "hz-new" : ""} ${HZ.pulse ? "hz-pulse" : ""}" data-act="${multi ? "hzWorlds" : "hzPlaceInfo"}" aria-label="${esc(scnName(W0.id))}${multi ? ` in ${esc(hzWorldName(wid))}. Welt wechseln` : ""}">${worldRow}<b>${esc(scnName(W0.id))}</b>${W0.n > 1 ? `<span class="hz-dots" aria-label="Ort ${W0.i + 1} von ${W0.n}">${Array.from({length:W0.n}, (_, k) => `<i class="${k === W0.i ? "on" : ""}"></i>`).join("")}</span>` : ""}</button>` : "";
+  const tabs = [["hzHere", HZ_SVG.hafen, "Hafen", 1], ["openDeck", HZ_SVG.karten, "Karten", hzOn("karten")], ["startSentences", HZ_SVG.saetze, "Sätze", hzOn("saetze")], ["hzTrip", HZ_SVG.reise, "Reise", hzOn("reise")]].filter(t => t[3]);
+  const nav = tabs.length < 2 ? "" : `<nav class="hz-tabs" aria-label="Hauptmenü" style="grid-template-columns:repeat(${tabs.length},1fr)">${tabs.map(([act, ic, label]) =>
+    `<button class="hz-tab ${act === "hzHere" ? "on" : ""}" ${act === "hzHere" ? `aria-current="page"` : ""} data-act="${act}"${act === "openDeck" ? ` data-mode="kid"` : ""}>${ic}<b>${label}</b>${act === "hzTrip" && post ? `<i class="hz-dot" aria-label="neue Post"></i>` : ""}</button>`).join("")}</nav>`;
+  return `<div class="hz-bottom ${nav ? "" : "notabs"}">${where}
     <section class="hz-today ${P.kind}" aria-label="${esc(P.label)}">
       <div class="hz-today-head"><small>${esc(P.label)}</small>${test}</div>
       <div class="hz-today-row"><div class="hz-today-txt"><b>${esc(P.title)}</b><span>${esc(P.meta)}</span></div>
         <button class="hz-cta ${P.kind === "done" ? "soft" : ""}" data-act="${P.act}">${esc(P.btn)} ${HZ_SVG.arrow}</button></div>
       ${alt}
     </section>
-    <nav class="hz-tabs" aria-label="Hauptmenü">
-      <button class="hz-tab on" aria-current="page" data-act="hzHere">${HZ_SVG.hafen}<b>Hafen</b></button>
-      <button class="hz-tab" data-act="openDeck" data-mode="kid">${HZ_SVG.karten}<b>Karten</b></button>
-      <button class="hz-tab" data-act="startSentences">${HZ_SVG.saetze}<b>Sätze</b></button>
-      <button class="hz-tab" data-act="hzTrip">${HZ_SVG.reise}<b>Reise</b>${post ? `<i class="hz-dot" aria-label="neue Post"></i>` : ""}</button>
-    </nav></div>`;
+    ${nav}</div>`;
 }
 /* Ruhige Blätter von unten: Profil und Reise */
 function hzSheet(kind, arg){
@@ -4351,13 +4506,14 @@ function hzSheet(kind, arg){
     body = `<div class="hz-prof"><span class="hz-ring big" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span>${I.stars ? `<span class="hz-stars" aria-hidden="true">★${I.stars > 1 ? I.stars : ""}</span>` : ""}</span>
         <div class="hz-prof-txt"><b id="hzSheetName"></b><small>${esc(I.label)} · ${esc(I.toNext)}</small>
         <span class="hz-prog"><i style="width:${I.p}%"></i></span>
+        <button class="hz-fishwhy" data-act="growthInfo">${hzIc("belohnung_fisch", "24px")}<b>${I.fish} Fische</b><span>Wofür gibt es Fische?</span></button>
         <small>${s ? `🔥 ${s} ${s === 1 ? "Tag" : "Tage"} hintereinander geübt` : "Heute üben startet deine Lernserie"}</small></div></div>
       <div class="hz-grid">
-        ${item("openWardrobe", "kleiderschrank", "Kleiderschrank")}
-        ${scnScene(SCN_TREASURE_ID) ? item("scnTreasure", "schatzkammer_truhe", "Schatzkammer", "Medaillen") : ""}
-        ${item("openExtras", "extras_kacheln", "Extras", "Spiele, Diplome, Küstenkarte")}
+        ${hzOn("schrank") ? item("openWardrobe", "kleiderschrank", "Kleiderschrank") : ""}
+        ${scnScene(SCN_TREASURE_ID) && hzOn("karten") ? item("scnTreasure", "schatzkammer_truhe", "Schatzkammer", "Medaillen") : ""}
+        ${hzOn("karten") ? item("openExtras", "extras_kacheln", "Extras", "Spiele, Diplome, Küstenkarte") : ""}
         ${testActive() ? item("startTest", "testtraining_leuchtturm", "Testtraining", "für den nächsten Test") : ""}
-        <button class="hz-item" data-act="hzSheetGo" data-go="openDeck" data-mode="mama">${hzIc("moewenpruefung_sprechblasen", "64px")}<b>Möwen-Prüfung</b><small>mit Mama oder Papa</small></button>
+        ${hzOn("karten") ? "" : "<!--"}<button class="hz-item" data-act="hzSheetGo" data-go="openDeck" data-mode="mama">${hzIc("moewenpruefung_sprechblasen", "64px")}<b>Möwen-Prüfung</b><small>mit Mama oder Papa</small></button>${hzOn("karten") ? "" : "-->"}
       </div>
       <button class="hz-li" data-act="hzSheetGo" data-go="openParents">${hzIc("elternbereich_familie", "64px")}<span><b>Für Eltern</b><small>Wochenbericht, Lernstand, Units, Wortcheck · mit PIN</small></span><em aria-hidden="true">›</em></button>
       <div class="hz-toggles">
@@ -4458,12 +4614,16 @@ addEventListener("resize", () => { if ($("#s-scene") && !$("#s-scene").hidden) h
 /* Erste Schritte: Einführung, dann einmal der Hinweis auf die Fische */
 function hzHints(){
   S.hints = S.hints || {};
-  if (!S.introSeen || $("#s-scene .hz-sheet") || $("#s-scene .hz-unlock")) return;
+  if ($("#s-scene .hz-sheet") || $("#s-scene .hz-unlock") || SCN.rewardOn || SCN.success) return;
+  if (gullStage() === 0){ if (!HZ.greeted){ HZ.greeted = 1; hzSay(hzPick().kind === "check" ? `Hallo ${esc(S.name)}! Ich bin noch im Ei. Zeig mir unten zuerst, welche Wörter du schon kannst.` : `Hallo ${esc(S.name)}! Ich bin noch im Ei. Unten startest du unsere erste Unterrichtsstunde, dann schlüpfe ich.`, 9000); } return; }
+  const f = hzFeatNew();
+  if (f){ hzSay(f[2], 8000); const el = f[3] && $("#s-scene " + f[3]); if (el && !scnRM()){ el.classList.add("hz-fresh"); setTimeout(() => el.classList.remove("hz-fresh"), 6000); } return; }
+  if (HZ.catMsg){ hzSay(HZ.catMsg, 7000); HZ.catMsg = null; return; }
   if (!S.hints.fish){ S.hints.fish = 1; save(); hzSay("Für jedes Wort, das du mir beibringst, bekomme ich einen Fisch! Mit genug Fischen werde ich größer.", 7000); }
 }
 function hzAfter(hint){
   hzFit(); requestAnimationFrame(hzFit);
-  setTimeout(() => { if (!hzUnlockShow() && !S.introSeen && !$("#s-scene .hz-sheet")) hzSheet("intro"); else hzHints(); }, 900);
+  setTimeout(() => { if (!hzUnlockShow()) hzHints(); }, 900);
   const nm = $("#hzName"); if (nm) nm.textContent = G();
   const fish = S.fish || 0, L = hzLesson();
   const rew = $("#s-scene .scn-reward");
@@ -6657,7 +6817,8 @@ function openCheck(){
       <p class="muted" style="margin:0">Dauer: etwa ${min} bis ${min + 3} Minuten, in Runden zu je ${WC_ROUND} Wörtern. Du kannst jederzeit pausieren.</p>` : ""}
     </div>
     ${n ? `<button class="btn btn-main btn-block" data-act="wcGo" data-mode="kid" style="min-height:60px">Allein starten</button>
-    <button class="btn btn-soft btn-block" data-act="wcGo" data-mode="mama">Mit Mama oder Papa (Eltern werten)</button>` : `<button class="btn btn-main btn-block" data-act="home">Zum Hafen</button>`}
+    <button class="btn btn-soft btn-block" data-act="wcGo" data-mode="mama">Mit Mama oder Papa (Eltern werten)</button>
+    ${BETA && !(S.wc && S.wc.i) ? `<button class="hz-alt" style="align-self:center" data-act="startDaily">Lieber gleich Unterricht</button>` : ""}` : `<button class="btn btn-main btn-block" data-act="home">Zum Hafen</button>`}
     ${S.wc && S.wc.done ? `<p class="muted" style="margin:0;text-align:center">Letzter Wortcheck am ${esc(fmtDay(S.wc.day))}: ${wcCount("k") + wcCount("f") + wcCount("a")} Wörter gekonnt, ${wcCount("u")} zum Üben.</p>` : ""}`;
   show("check");
 }
