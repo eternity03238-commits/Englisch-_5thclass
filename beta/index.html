@@ -452,6 +452,35 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .postcard{position:relative}
 .updbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#16406B;color:#fff;font-weight:700;box-shadow:0 -6px 20px rgba(14,42,71,.25)}
 .updbar .btn{min-height:44px;flex:none}
+
+/* Wortcheck und Units */
+.wc-card-home{display:flex;align-items:center;gap:12px;text-align:left;flex-direction:row;border:2px solid #FFB627;cursor:pointer;width:100%}
+.wc-card-home b{display:block;color:var(--navy)}.wc-card-home small{display:block;color:#5E6A80}
+.wc-bolt{width:44px;height:44px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:1.5rem;background:linear-gradient(180deg,#FFE08A,#FFB627)}
+.wc-hero{gap:10px}
+.wc-top{align-items:center;gap:10px}
+.wc-bar{flex:1;height:10px;border-radius:999px;background:rgba(14,42,71,.12);overflow:hidden}.wc-bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#3FBF83,#FFB627);transition:width .3s}
+.wc-left{font-weight:700;color:var(--navy);white-space:nowrap;background:rgba(255,255,255,.85);border-radius:999px;padding:4px 10px}
+.wc-card{position:relative;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:26px 18px;min-height:240px;justify-content:center;border-radius:26px;background:#fff;box-shadow:0 14px 34px rgba(14,42,71,.18);touch-action:pan-y;transition:transform .15s,box-shadow .2s;user-select:none;-webkit-user-select:none}
+.wc-card.yes{box-shadow:0 0 0 4px #3FBF83,0 14px 34px rgba(14,42,71,.18)}.wc-card.no{box-shadow:0 0 0 4px #EF4D67,0 14px 34px rgba(14,42,71,.18)}
+.wc-de{font-family:var(--f-display);font-size:clamp(1.7rem,1.2rem + 3vw,2.4rem);line-height:1.15;color:var(--navy);overflow-wrap:anywhere}
+.wc-en{font-family:var(--f-display);font-size:1.6rem;color:#0B7FB0;display:flex;align-items:center;gap:10px}
+.wc-card form{width:100%}.wc-card .field{text-align:center;font-size:1.3rem}
+.wc-msg{font-weight:700;color:var(--navy);min-height:1.4em}
+.wc-hint{margin:0;text-align:center;font-size:.85rem}
+.wc-res{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
+.wc-res span{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border-radius:16px;background:#F3F8FC}
+.wc-res b{font-family:var(--f-display);font-size:1.7rem;line-height:1}.wc-res small{font-size:.75rem;color:#5E6A80;text-align:center}
+.wc-res .ok b{color:#1F9E6A}.wc-res .auto b{color:#0B95C2}.wc-res .todo b{color:#E2552B}
+.units{display:flex;flex-direction:column;gap:10px}
+.unit{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;align-items:center}
+.unit.cur{box-shadow:0 0 0 3px #3FBF83,var(--lift)}
+.unit-art{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/10;background:#DDEFFA}
+.unit-art svg{display:block;width:100%;height:100%}
+.unit-fog{position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(255,255,255,.95),rgba(235,242,248,.85) 60%,rgba(220,232,242,.9));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.unit-lock{position:absolute;inset:0;display:grid;place-items:center;font-size:1.4rem}
+.unit-txt{display:flex;flex-direction:column;gap:2px;min-width:0}.unit-txt b{color:var(--navy)}.unit-txt small{color:#5E6A80}
+.unit-btns{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}.unit-btns:empty{display:none}
 /* ================= 3D-SPIELWELT ================= */
 :root{
   --line:#C7E3F2; --panel-2:#EEF8FD;
@@ -995,6 +1024,9 @@ body.mw-themed #app .panel,body.mw-themed #app .tile,body.mw-themed #app .pc,bod
 body.mw-themed #s-cards > .row .label,body.mw-themed #s-cards > .row small,body.mw-themed #s-deck > .row > span,body.mw-themed #s-deck > div > span:not([class]){background:rgba(255,251,244,.9);border-radius:8px;padding:2px 6px}
 body.mw-themed #s-cards .mbar{background:rgba(255,251,244,.85);border-radius:16px;padding:6px 8px}
 
+.mw-row b small{display:block;font:700 .8rem/1.2 Nunito,sans-serif;color:var(--mw-muted)}
+.mw-bolt{font-size:1.8rem;border-radius:14px;background:linear-gradient(180deg,#FFE08A,#FFB627)}
+
 /* ============ Hafenstadt als Hauptmenü (nur Beta) ============ */
 .hz-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;flex-direction:column;gap:8px;pointer-events:none;
   padding:calc(10px + env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px))}
@@ -1137,6 +1169,29 @@ body.mw-themed #sky{display:none}
 .pc3d-lines{margin-top:auto;width:100%;height:46px;background:repeating-linear-gradient(180deg,transparent 0 14px,#CDBF9F 14px 15.5px)}
 .pc3d-nav{display:flex;justify-content:space-between;gap:10px}
 @media (prefers-reduced-motion:reduce){.pc3d-in{transition:none}.pc3d-enter{animation:none}}
+
+.hz-pills{display:flex;flex-wrap:wrap;gap:6px}
+.hz-chk{background:rgba(255,182,39,.95);color:#13234A;border-color:rgba(255,255,255,.5)}
+.hz-bolt{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:#fff;font-size:1.05rem}
+
+/* Regionen und Freischalten */
+.hz-regions{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.hz-reg{flex:none;width:112px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px;border-radius:16px;background:rgba(255,253,246,.95);border:1.5px solid rgba(255,255,255,.7);box-shadow:0 6px 14px rgba(10,20,40,.2);cursor:pointer;text-align:left;color:#13234A}
+.hz-reg.cur{box-shadow:0 0 0 3px #3FBF83,0 6px 14px rgba(10,20,40,.2)}
+.hz-reg-art,.hz-unlock-art{position:relative;display:block;width:100%;aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:#DDEFFA;margin-bottom:3px}
+.hz-reg-art svg,.hz-unlock-art svg{display:block;width:100%;height:100%}
+.hz-fog{position:absolute;inset:-10%;background:radial-gradient(40% 50% at 30% 40%,rgba(255,255,255,.98),rgba(255,255,255,.7) 60%,rgba(255,255,255,0)),radial-gradient(45% 45% at 75% 60%,rgba(240,246,250,.97),rgba(240,246,250,.6) 70%,rgba(240,246,250,0)),rgba(225,236,244,.75);filter:blur(2px);animation:hzFogDrift 7s ease-in-out infinite alternate}
+@keyframes hzFogDrift{from{transform:translateX(-4%)}to{transform:translateX(4%)}}
+.hz-lock2{position:absolute;inset:0;display:grid;place-items:center;font-style:normal;font-size:1.2rem}
+.hz-reg b{font:800 .85rem/1.1 var(--fr-font)}.hz-reg small{font:700 .68rem/1.15 var(--fr-font);color:#5E6478}
+.hz-reg.fog b,.hz-reg.fog small{opacity:.7}
+.hz-unlock{position:absolute;inset:0;z-index:20;display:grid;place-items:center;padding:24px;background:rgba(8,18,36,.55);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.hz-unlock-card{width:min(340px,100%);display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px;border-radius:24px;background:#FFFBF4;text-align:center;color:#13234A;box-shadow:0 20px 50px rgba(0,0,0,.4);animation:pcIn .6s cubic-bezier(.2,1.2,.4,1) both}
+.hz-unlock-card b{font:700 1.4rem/1.1 "Baloo 2",var(--fr-font-head,sans-serif)}
+.hz-unlock-card small{font:700 .9rem/1.3 var(--fr-font);color:#5E6478}
+.hz-unlock .hz-fog{animation:hzFogAway 2.2s .5s ease-in forwards}
+@keyframes hzFogAway{to{opacity:0;transform:scale(1.4)}}
+@media (prefers-reduced-motion:reduce){.hz-fog{animation:none}.hz-unlock .hz-fog{display:none}}
 </style>
 
 </head>
@@ -1171,6 +1226,7 @@ Bitte öffne sie über den Link, den du bekommen hast.
     </div>
     <div class="stagebar" data-act="growthInfo" role="button" style="cursor:pointer"><b id="hStage"></b><div class="minibar"><i id="hStageBar"></i></div><small class="muted" id="hStageTxt"></small></div>
     <div id="testCard"></div>
+    <div id="checkCard"></div>
     <button class="play-btn" data-act="startDaily" id="lessonBtn">
       <span class="play-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 001.5.9l12-7.5a1 1 0 000-1.8l-12-7.5A1 1 0 007 4.5z"/></svg></span>
       <div style="min-width:0"><b id="lTitle"></b><small id="lSub"></small></div>
@@ -1282,6 +1338,8 @@ Bitte öffne sie über den Link, den du bekommen hast.
   <section id="s-map" class="stack" hidden></section>
   <section id="s-badges" class="stack" hidden></section>
   <section id="s-parents" class="stack" hidden></section>
+  <section id="s-check" class="stack" hidden></section>
+  <section id="s-units" class="stack" hidden></section>
 </main>
 
 <div class="sheet" id="sheet" role="dialog" aria-live="assertive"><div class="sheet-in" id="sheetIn"></div></div>
@@ -2008,7 +2066,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795347397";
+const BUILD = "1795354851";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3034,7 +3092,7 @@ function scnMap(){
   }).join("");
   st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-mapview ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}${pins}</div>
     <div class="scn-top"><span class="scn-place">${esc(scnName(SCN_MAP_ID))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Karte schließen">Schließen</button></span></div>
-    <div class="scn-bottom">${scnFlightId() ? `<button class="btn btn-main btn-block" data-act="scnFlight">Unsere Reise nach Brighton · ${S.km||0} km</button>` : ""}<button class="btn btn-soft btn-block" data-act="openMap">Küstenkarte: alle Lernorte und Wörter</button><div class="scn-say"><b>${esc(G())}</b><span>Wohin fliegen wir? Tippe auf einen Ort.</span></div></div></div>`);
+    <div class="scn-bottom">${hzRegions()}${scnFlightId() ? `<button class="btn btn-main btn-block" data-act="scnFlight">Unsere Reise nach Brighton · ${S.km||0} km</button>` : ""}<button class="btn btn-soft btn-block" data-act="openMap">Küstenkarte: alle Lernorte und Wörter</button><div class="scn-say"><b>${esc(G())}</b><span>Wohin fliegen wir? Tippe auf einen Ort.</span></div></div></div>`);
   /* Ortsmarken am Rand in den sichtbaren Ausschnitt schieben */
   requestAnimationFrame(() => { const v = st.querySelector(".scn-mapview"); if (!v) return; const b = v.getBoundingClientRect();
     v.querySelectorAll(".scn-pin").forEach(p => { const r = p.getBoundingClientRect(), pad = 8;
@@ -3270,6 +3328,8 @@ function renderPMenu(){
       <button class="mw-row" data-act="mwPTab" data-t="start">${mwIc("wochenbericht_klemmbrett")}<span class="mw-sep"></span><b>Wochenbericht</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openOverview" data-back="openParents">${mwIc("lernstand_anzeige")}<span class="mw-sep"></span><b>Lernstand</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openDeck" data-mode="mama">${mwIc("moewenpruefung_sprechblasen")}<span class="mw-sep"></span><b>Möwen-Prüfung</b><span class="mw-go">${mwArrow}</span></button>
+      <button class="mw-row" data-act="openCheck"><span class="mw-ic mw-bolt" aria-hidden="true">⚡</span><span class="mw-sep"></span><b>Wortcheck <small>${wcPool().length} Wörter noch nie geübt</small></b><span class="mw-go">${mwArrow}</span></button>
+      <button class="mw-row" data-act="openUnits">${mwIc("unterricht_schulbuch")}<span class="mw-sep"></span><b>Units & Lernplan <small>${esc(UMAP[U().cur].n)} läuft gerade</small></b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="mwPTab" data-t="test">${mwIc("testtraining_leuchtturm")}<span class="mw-sep"></span><b>Testtraining</b><span class="mw-go">${mwArrow}</span></button>
       <div class="mw-toggles"><button class="mw-chip" data-act="mwToggle" data-k="sound">${S.settings.sound ? "🔊 Ton an" : "🔈 Ton aus"}</button><button class="mw-chip" data-act="mwToggle" data-k="slow">${S.settings.slow ? "🐢 Sprechtempo langsam" : "🗣️ Sprechtempo normal"}</button></div>
       <button class="mw-link" data-act="mwPTab" data-t="more">Familie, PIN und weitere Einstellungen</button>
@@ -3291,12 +3351,12 @@ const MW_ACT = {
   openParents: () => { if (S.pin && !pinOk()) return askPin(renderPMenu); renderPMenu(); }
 };
 /* Menü-Hintergründe aus menuBackgroundPlan: Bild oben sichtbar, Inhalte stehen darauf */
-const MW_BG_TOP = ["journal","wardrobe","badges","extras","parents","overview","post","sentpick","deck","map"];
+const MW_BG_TOP = ["units","journal","wardrobe","badges","extras","parents","overview","post","sentpick","deck","map"];
 function mwBackdrop(name){
   /* Varianten je Modus: Möwen-Prüfung (Karten mit der Familie), Satzwerkstatt (Unterricht mit Sätzen) */
   const mode = name === "mission" ? (M && M.mode) : (name === "cards" || name === "deck") ? ((C && C.mode) || DK.mode) : null;
   const vr = ((SCN.bgVariants || {})[name] || {})[mode];
-  const plan = SCN.bgPlan || {}, id = (vr && rwBg(vr) ? vr : plan[name]), set = id && !(name === "cards" && SCN.inRoom) ? rwBg(id) : null;
+  const plan = Object.assign({check:"hintergrund_weiterlernen", units:"hintergrund_elterneinstellungen"}, SCN.bgPlan || {}), id = (vr && rwBg(vr) ? vr : plan[name]), set = id && !(name === "cards" && SCN.inRoom) ? rwBg(id) : null;
   let bg = $("#mwBack");
   document.body.classList.toggle("mw-themed", !!set);
   document.body.classList.toggle("mw-roomy", !!set && MW_BG_TOP.includes(name));
@@ -3321,7 +3381,7 @@ function screensBoot(){
   SCREENS.push("start", "login", "pmenu");
   $("#s-home").insertAdjacentHTML("beforebegin", `<section id="s-start" hidden></section><section id="s-login" hidden></section><section id="s-pmenu" hidden></section>`);
   document.body.classList.add("mw-beta");
-  Object.assign(ACT, MW_ACT);
+  Object.assign(ACT, MW_ACT, HZ_ACT);
   /* sobald Hafenbild und Figuren da sind, sichtbaren Bildschirm neu zeichnen */
   scnLoad().then(() => { const v = SCREENS.find(n => { const e = $("#s-" + n); return e && !e.hidden; });
     if (v === "start") renderStart(); else if (v === "login") renderLogin(); else if (v === "pmenu") renderPMenu(); if (v) mwBackdrop(v); });
@@ -3332,6 +3392,12 @@ function screensBoot(){
    Mitte: die Szene mit Tür, Wegen zu den Nachbarorten und Friedrich mit Sprechblase.
    Unten: Reisefaden Leipzig → Brighton und der Steg mit Karteikarten, Sätzen, Lernen, Karte und Post. */
 const HZ = {fish:null, km:null, sayT:null};
+const HZ_ACT = {
+  hzRegion: b => { const id = b.dataset.u, open = U().open.includes(id), x = UMAP[id];
+    if (!open) return toast(`<b>${esc(x.region)}</b> liegt noch im Nebel. Mama oder Papa schalten ${esc(x.n)} frei, wenn ihr damit in der Schule anfangt.`);
+    toast(id === U().cur ? `${esc(x.n)}: ${esc(x.region)}. Hier lernst du gerade.` : `${esc(x.n)}: ${esc(x.region)} wird weiter wiederholt.`); },
+  hzUnlockClose: () => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); }
+};
 /* Was heute dran ist (dieselbe Regel wie der Lernknopf im bisherigen Menü) */
 function hzLesson(){
   const stage = gullStage(), due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
@@ -3351,6 +3417,8 @@ function hzTop(id){
   const p = nx ? Math.max(4, Math.min(100, Math.round((fish - st.min) / (nx.min - st.min) * 100))) : 100;
   const shown = HZ.fish == null ? fish : Math.min(HZ.fish, fish);
   let test = "";
+  const wcn = wcPool().length, chk = wcActive() ? `<button class="hz-test hz-chk" data-act="openCheck"><span class="hz-bolt" aria-hidden="true">⚡</span><span>Wortcheck weiter · noch ${S.wc.queue.length - S.wc.i}</span></button>`
+    : wcn >= WC_MIN ? `<button class="hz-test hz-chk" data-act="openCheck"><span class="hz-bolt" aria-hidden="true">⚡</span><span>Wortcheck · ${wcn} Wörter</span></button>` : "";
   if (typeof testActive === "function" && testActive()){
     const d = dayDiff(today(), S.test.date);
     test = `<button class="hz-test" data-act="startTest" aria-label="Test-Training: ${esc(PMAP[S.test.pl].name)}">${hzIc("testtraining_leuchtturm", "32px")}<span>${d <= 0 ? "Heute ist Test!" : d === 1 ? "Morgen ist Test" : `Test in ${d} Tagen`}</span></button>`;
@@ -3372,7 +3440,7 @@ function hzTop(id){
         <button class="hz-tool" data-act="openExtras" aria-label="Extras: Spiele, Diplome, Küstenkarte und mehr">${hzIc("extras_kacheln", "48px")}</button>
         <button class="hz-tool hz-lock" data-act="openParents" aria-label="Für Eltern">${hzIc("elternbereich_familie", "48px")}<i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i></button>
       </span>
-    </div>${test}</div>`;
+    </div>${test || chk ? `<div class="hz-pills">${test}${chk}</div>` : ""}</div>`;
 }
 function hzNav(outs, i){
   if (outs.length < 2) return "";
@@ -3416,6 +3484,7 @@ function hzClampSay(st){
 }
 /* Nach dem Zeichnen: Name als Text, Fische fliegen in den Zähler, Reisefaden wächst, Lichter nach der Tagesübung */
 function hzAfter(hint){
+  setTimeout(hzUnlockShow, 900);
   const nm = $("#hzName"); if (nm) nm.textContent = G();
   const fish = S.fish || 0, L = hzLesson();
   const rew = $("#s-scene .scn-reward");
@@ -3506,6 +3575,29 @@ function renderPostcardBigBeta(i){
     <button class="btn btn-ice btn-block" data-act="flipPc" style="min-height:58px">Umdrehen</button>
     <div class="pc3d-nav">${prev ? `<button class="btn btn-soft" data-act="openPc" data-i="${prev[1]}">‹ ${esc(prev[0].n)}</button>` : "<span></span>"}${next ? `<button class="btn btn-soft" data-act="openPc" data-i="${next[1]}">${esc(next[0].n)} ›</button>` : "<span></span>"}</div>`;
   show("journal");
+}
+
+/* Regionen der Units auf der Lernwelt-Karte: gesperrte liegen im Nebel */
+function hzRegions(){
+  const u = U();
+  return `<div class="hz-regions" role="list" aria-label="Regionen">${UNITS.map(x => {
+    const open = u.open.includes(x.id), n = unitWords(x.id).length;
+    return `<button class="hz-reg ${open ? "open" : "fog"} ${u.cur === x.id ? "cur" : ""}" role="listitem" data-act="hzRegion" data-u="${x.id}" aria-label="${esc(x.n)}, ${esc(x.region)}${open ? "" : ", noch im Nebel"}">
+      <span class="hz-reg-art"><svg viewBox="0 0 160 100" aria-hidden="true">${cityArt(x.city)}</svg>${open ? "" : `<i class="hz-fog" aria-hidden="true"></i><i class="hz-lock2" aria-hidden="true">🔒</i>`}</span>
+      <b>${esc(x.n)}</b><small>${esc(x.region)}</small></button>`; }).join("")}</div>`;
+}
+/* Neu freigeschaltete Unit: Nebel verzieht sich, Friedrich jubelt */
+function hzUnlockShow(){
+  const u = U(), fresh = u.open.find(id => !u.seen.includes(id)); if (!fresh) return false;
+  u.seen.push(fresh); save();
+  const x = UMAP[fresh], st = $("#s-scene .scn-stage"); if (!st) return false;
+  st.insertAdjacentHTML("beforeend", `<div class="hz-unlock" data-act="hzUnlockClose" role="dialog" aria-label="Neue Region freigeschaltet">
+    <div class="hz-unlock-card"><span class="label">Neue Region freigeschaltet</span>
+      <span class="hz-unlock-art"><svg viewBox="0 0 160 100" aria-hidden="true">${cityArt(x.city)}</svg><i class="hz-fog"></i></span>
+      <b>${esc(x.n)}: ${esc(x.region)}</b><small>${unitWords(fresh).length} neue Wörter warten auf ${esc(G())}.</small>
+      <button class="btn btn-main btn-block" data-act="hzUnlockClose">Los geht's!</button></div></div>`);
+  if (!scnRM()){ confetti(); sfx("level"); }
+  return true;
 }
 
 const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), pose:FR.baseOf(FR.stageOf(Math.max(1,gullStage()))), size:"fit", wear:scnWearList()}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
@@ -3734,10 +3826,11 @@ function dueWords(){
     .sort((a,b)=> (isTestWord(b)-isTestWord(a)) || (st(a.id).b-st(b.id).b) || (st(a.id).due<st(b.id).due?-1:1));
 }
 function newWords(){
-  const order = PLANETS.map(p=>p.id), tp = testActive() ? S.test.pl : null;
-  return W.filter(w=>!st(w.id)).sort((a,b)=>{
-    const pa = inPl(a,tp) ? -1 : order.indexOf(a.pl), pb = inPl(b,tp) ? -1 : order.indexOf(b.pl);
-    return pa-pb;
+  const order = PLANETS.map(p=>p.id), tp = testActive() ? S.test.pl : null, cu = U().cur;
+  /* Reihenfolge: Übungsliste aus dem Wortcheck, Testwörter, Unit aus dem Unterricht, dann die übrigen freigeschalteten */
+  return W.filter(w=>!st(w.id) && wOpen(w)).sort((a,b)=>{
+    const pa = inPl(a,tp) ? -1 : order.indexOf(a.pl) + (unitOf(a.pl)===cu ? 0 : 1000), pb = inPl(b,tp) ? -1 : order.indexOf(b.pl) + (unitOf(b.pl)===cu ? 0 : 1000);
+    return (wcNeedRank(a)-wcNeedRank(b)) || (pa-pb);
   });
 }
 function planNew(dueCount){
@@ -3973,7 +4066,7 @@ function checkBadges(ctx){
 }
 
 /* ============ BILDSCHIRME ============ */
-const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview","exam","family"];
+const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview","exam","family","check","units"];
 function show(name){
   if (BETA && name==="home" && hzHome()){ renderHome(); name = "scene"; }   /* Beta: die Hafenstadt ist das Hauptmenü */
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
@@ -4084,6 +4177,12 @@ function renderTestCard(){
     </div>`:""}
   </div>`;
 }
+function renderCheckCard(){
+  const box = $("#checkCard"); if (!box) return;
+  const n = wcPool().length;
+  box.innerHTML = wcActive() ? `<button class="panel wc-card-home" data-act="openCheck"><span class="wc-bolt" aria-hidden="true">⚡</span><span style="min-width:0;flex:1"><b>Wortcheck weitermachen</b><small>Noch ${S.wc.queue.length - S.wc.i} Wörter prüfen</small></span><span aria-hidden="true">›</span></button>`
+    : n >= WC_MIN ? `<button class="panel wc-card-home" data-act="openCheck"><span class="wc-bolt" aria-hidden="true">⚡</span><span style="min-width:0;flex:1"><b>Wortcheck: ${n} Wörter noch nie geübt</b><small>Finde in ein paar Minuten heraus, welche du schon kannst.</small></span><span aria-hidden="true">›</span></button>` : "";
+}
 function renderHome(){
   const l = level(), stage = gullStage(), col = GC(), sleep = isAsleep();
   $("#hAvatar").innerHTML = BETA ? friedrichEl({stage:Math.max(1,stage), pose:"face", size:"xs"}) : gullSVG(Math.max(1,stage), col);
@@ -4103,7 +4202,7 @@ function renderHome(){
   if (stage===0){ $("#hStageBar").style.width = "0%"; $("#hStageTxt").textContent = "schlüpft in der 1. Stunde"; }
   else if (nextSt){ const from = STAGES[stage].min; $("#hStageBar").style.width = Math.max(3,Math.round((fish-from)/(nextSt.min-from)*100))+"%"; $("#hStageTxt").textContent = `🐟 ${fish}/${nextSt.min} bis ${nextSt.n}`; }
   else { $("#hStageBar").style.width = "100%"; $("#hStageTxt").textContent = `🐟 ${fish} Fische`; }
-  renderTestCard(); renderFlight(); renderBackup();
+  renderTestCard(); renderFlight(); renderBackup(); renderCheckCard();
   const due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
   const btn = $("#lessonBtn");
   if (sleep || (due===0 && nw===0)){
@@ -5281,6 +5380,8 @@ function renderParents(){
     <div class="pact">
       <button class="pbtn" data-act="openDeck" data-mode="mama"><span>⭐</span><b>Jetzt abfragen</b><small>${fe?`${fe} Fehlerwörter warten`:"Möwen-Prüfung"}</small></button>
       <button class="pbtn" data-act="openOverview" data-back="openParents"><span>🟢</span><b>Lernstand</b><small>Alle Wörter auf einen Blick</small></button>
+      <button class="pbtn" data-act="openCheck"><span>⚡</span><b>Wortcheck</b><small>${wcPool().length} Wörter noch nie geübt</small></button>
+      <button class="pbtn" data-act="openUnits"><span>📚</span><b>Units & Lernplan</b><small>${UMAP[U().cur].n} läuft · Units freischalten</small></button>
     </div>
     <div class="panel"><span class="label">Wochenbericht</span>
       <pre style="margin:0;white-space:pre-wrap;font:inherit;font-size:.9rem">${esc(reportText(false))}</pre>
@@ -5361,7 +5462,220 @@ function renderParents(){
 }
 
 /* ============ EVENTS ============ */
+/* ============ UNITS: Klasse 5 = Unit 1 bis 4 und Extra ============
+   Jede Unit bündelt Lernorte (PLANETS). Neue Lernorte bekommen unit:"u2" usw.; ohne Angabe gehören sie zu Unit 1.
+   Eltern schalten Units frei und legen fest, welche gerade in der Schule läuft. Gesperrte Units kommen nicht in den Unterricht. */
+const UNITS = [
+  {id:"u1", n:"Unit 1", t:"At home with friends", region:"Hafenstadt & Brighton", city:"Brighton"},
+  {id:"u2", n:"Unit 2", t:"", region:"London", city:"London"},
+  {id:"u3", n:"Unit 3", t:"", region:"Oxford", city:"Oxford"},
+  {id:"u4", n:"Unit 4", t:"", region:"York & Schottland", city:"York"},
+  {id:"ux", n:"Extra", t:"", region:"Bonus-Insel", city:"Edinburgh"}
+];
+const UMAP = Object.fromEntries(UNITS.map(u => [u.id, u]));
+function U(){ if (!S.units) S.units = {open:["u1"], cur:"u1", seen:["u1"]}; return S.units; }
+const unitOf = pl => (PMAP[pl] && PMAP[pl].unit) || "u1";
+const unitWords = uid => W.filter(w => unitOf(w.pl) === uid);
+const wOpen = w => U().open.includes(unitOf(w.pl));
+
+/* ============ WORTCHECK: schnell herausfinden, welche ungeübten Wörter schon sitzen ============
+   Stichprobe je Abschnitt (etwa jedes dritte Wort). Sitzt die Stichprobe (mind. 90 %), gilt der Rest als "wahrscheinlich gekonnt"
+   und kommt nur zur leichten Kontrolle wieder; unter 70 % kommt der ganze Abschnitt auf die Übungsliste; dazwischen wird alles abgefragt.
+   Allein: jedes 5. "gewusst" wird zur Schreibprobe (nach einem Fehler jedes 3.). Mit Eltern: Eltern werten, keine Schreibprobe. */
+const WC_ROUND = 40, WC_MIN = 25;
+const wcTarget = () => testActive() ? {pl:S.test.pl, name:PMAP[S.test.pl].name} : {unit:U().cur, name:UMAP[U().cur].n + (UMAP[U().cur].t ? ": " + UMAP[U().cur].t : "")};
+function wcPool(){
+  const tg = wcTarget();
+  return W.filter(w => !st(w.id) && wOpen(w) && (tg.pl ? inPl(w, tg.pl) : unitOf(w.pl) === tg.unit));
+}
+const wcGroup = w => w.pl + ":" + (w.sec != null ? w.sec : Math.floor((parseInt(String(w.id).split("-").pop(), 10) || 0) / 10));
+function wcStart(mode){
+  const pool = wcPool(), groups = {};
+  pool.forEach(w => (groups[wcGroup(w)] = groups[wcGroup(w)] || []).push(w.id));
+  const samp = {}, rest = {};
+  Object.entries(groups).forEach(([g, ids]) => {
+    const sh = shuffle(ids), n = ids.length <= 4 ? ids.length : Math.max(3, Math.ceil(ids.length / 3));
+    samp[g] = sh.slice(0, n); rest[g] = sh.slice(n);
+  });
+  /* Stichproben gemischt über alle Abschnitte, damit es abwechslungsreich bleibt */
+  const queue = shuffle(Object.values(samp).flat());
+  S.wc = {v:1, mode, day:today(), name:wcTarget().name, total:pool.length, samp, rest, phase:1, queue, i:0, res:{}, need:(S.wc && S.wc.need) || [], since:0, every:5, done:false};
+  save();
+}
+/* Nach den Stichproben: Abschnitte entscheiden */
+function wcDecide(){
+  const c = S.wc, t = today(); let k = 0;
+  const phase2 = [];
+  Object.entries(c.samp).forEach(([g, ids]) => {
+    const asked = ids.filter(id => c.res[id]), ok = asked.filter(id => c.res[id] === "k" || c.res[id] === "f").length;
+    const q = asked.length ? ok / asked.length : 0, rest = c.rest[g] || [];
+    if (!rest.length) return;
+    if (asked.length >= 3 && q >= .9) rest.forEach(id => { if (!st(id)){ S.words[id] = {b:2, due:addDays(t, 4 + (k++ % 7)), up:t, r:0, w:0, last:t, seen:t, chk:"auto"}; c.res[id] = "a"; } });
+    else if (q < .7) rest.forEach(id => { c.res[id] = "u"; if (!c.need.includes(id)) c.need.push(id); });
+    else phase2.push(...rest);
+  });
+  c.phase = 2; c.queue = c.queue.concat(shuffle(phase2)); save();
+}
+function wcApply(id, r){
+  const c = S.wc, t = today(), w = WMAP[id]; if (!w) return;
+  c.res[id] = r;
+  if (r === "k"){ S.words[id] = {b:3, due:addDays(t, 5), up:t, r:1, w:0, last:t, seen:t, chk:t}; feed(1); }
+  else if (r === "f") S.words[id] = {b:2, due:addDays(t, 3), up:t, r:1, w:0, last:t, seen:t, chk:t};   /* selbst eingeschätzt: kein Fisch, damit Ehrlichkeit sich lohnt */
+  else if (!c.need.includes(id)) c.need.push(id);
+  S.stats.answers++; if (r === "k" || r === "f") S.stats.right++;
+  save();
+}
+const wcCount = r => Object.values((S.wc || {}).res || {}).filter(x => x === r).length;
+const wcActive = () => !!(S.wc && !S.wc.done && S.wc.queue && S.wc.i < S.wc.queue.length);
+
+let WCV = {open:false, typed:false};
+function openCheck(){
+  if (wcActive()) return wcNext(true);
+  const n = wcPool().length, min = Math.max(1, Math.round(n * .45 * 3 / 60));
+  $("#s-check").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <div class="panel wc-hero"><span class="label">Wortcheck · ${esc(wcTarget().name)}</span>
+      <h1 class="display" style="margin:0;font-size:1.7rem;color:var(--navy)">Was kannst du schon?</h1>
+      <p style="margin:0">${n ? `<b>${n} Wörter</b> hast du in der App noch nie geübt. Viele davon kennst du bestimmt schon aus dem Unterricht. In ein paar kurzen Runden findest du heraus, welche du wirklich noch üben musst.` : "Alle Wörter dieses Themas hast du schon einmal geübt. Super!"}</p>
+      ${n ? `<p class="muted" style="margin:0">So geht's: Du siehst das deutsche Wort und sagst es laut auf Englisch. Dann deckst du auf und wischst: nach rechts, wenn du es wusstest, nach links, wenn nicht. Ab und zu sollst du ein Wort aufschreiben.</p>
+      <p class="muted" style="margin:0">Dauer: etwa ${min} bis ${min + 3} Minuten, in Runden zu je ${WC_ROUND} Wörtern. Du kannst jederzeit pausieren.</p>` : ""}
+    </div>
+    ${n ? `<button class="btn btn-main btn-block" data-act="wcGo" data-mode="kid" style="min-height:60px">Allein starten</button>
+    <button class="btn btn-soft btn-block" data-act="wcGo" data-mode="mama">Mit Mama oder Papa (Eltern werten)</button>` : `<button class="btn btn-main btn-block" data-act="home">Zum Hafen</button>`}
+    ${S.wc && S.wc.done ? `<p class="muted" style="margin:0;text-align:center">Letzter Wortcheck am ${esc(fmtDay(S.wc.day))}: ${wcCount("k") + wcCount("f") + wcCount("a")} Wörter gekonnt, ${wcCount("u")} zum Üben.</p>` : ""}`;
+  show("check");
+}
+const fmtDay = d => { const x = new Date(d + "T12:00:00"); return `${WDL[x.getDay()]}, ${String(x.getDate()).padStart(2,"0")}.${String(x.getMonth()+1).padStart(2,"0")}.`; };
+function wcNext(resume){
+  const c = S.wc;
+  if (c.phase === 1 && c.i >= c.queue.length) wcDecide();
+  if (c.i >= c.queue.length) return wcFinish();
+  if (!resume && c.i > 0 && c.i % WC_ROUND === 0 && !WCV.roundShown){ WCV.roundShown = true; return wcRoundEnd(); }
+  WCV.roundShown = false;
+  const id = c.queue[c.i], w = WMAP[id];
+  if (!w || st(id) || c.res[id]){ c.i++; save(); return wcNext(true); }
+  WCV = {open:false, typed: c.mode === "kid" && c.since >= c.every - 1, roundShown:false};
+  const inRound = c.i % WC_ROUND, left = c.queue.length - c.i;
+  $("#s-check").innerHTML = `<div class="row wc-top"><button class="btn btn-soft" data-act="wcPause">Pause</button>
+      <div class="wc-bar" aria-hidden="true"><i style="width:${Math.round(inRound / WC_ROUND * 100)}%"></i></div><small class="wc-left">noch ${left}</small></div>
+    <div class="wc-card" id="wcCard">
+      <span class="label">${WCV.typed ? "Schreibprobe" : c.mode === "mama" ? "Frag auf Englisch ab" : "Sag es laut auf Englisch"}</span>
+      <div class="wc-de">${esc(w.de)}</div>
+      <div class="wc-en" id="wcEn" hidden>${esc(w.en)} ${speakerBtn(w.en)}</div>
+      ${WCV.typed ? `<form id="wcForm" autocomplete="off"><input id="wcIn" class="field" placeholder="auf Englisch …" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Wort auf Englisch"></form><div id="wcMsg" class="wc-msg"></div>` : ""}
+    </div>
+    <div id="wcBtns">${WCV.typed ? `<button class="btn btn-main btn-block" data-act="wcType" style="min-height:58px">Prüfen</button>`
+      : `<button class="btn btn-ice btn-block" data-act="wcShow" style="min-height:64px">Aufdecken</button>`}</div>
+    <p class="muted wc-hint">${WCV.typed ? "Damit die App weiß, ob du es auch schreiben kannst." : "Nach dem Aufdecken: wischen oder tippen."}</p>`;
+  show("check");
+  if (WCV.typed){ $("#wcForm").addEventListener("submit", e => { e.preventDefault(); ACT.wcType(); }); setTimeout(() => { try { $("#wcIn").focus(); } catch(e){} }, 120); }
+  wcSwipe();
+}
+function wcSwipe(){
+  const card = $("#wcCard"); if (!card) return;
+  let x0 = null, dx = 0;
+  card.addEventListener("pointerdown", e => { if (!WCV.open) return; x0 = e.clientX; dx = 0; card.setPointerCapture && card.setPointerCapture(e.pointerId); });
+  card.addEventListener("pointermove", e => { if (x0 == null) return; dx = e.clientX - x0; card.style.transform = `translateX(${dx}px) rotate(${dx / 18}deg)`; card.classList.toggle("yes", dx > 40); card.classList.toggle("no", dx < -40); });
+  const end = () => { if (x0 == null) return; x0 = null; card.style.transform = ""; card.classList.remove("yes", "no");
+    if (Math.abs(dx) > 80) wcRate(dx > 0); };
+  card.addEventListener("pointerup", end); card.addEventListener("pointercancel", end);
+}
+function wcRate(ok){
+  const c = S.wc, id = c.queue[c.i];
+  if (c.mode === "kid" && ok) c.since++;
+  wcApply(id, ok ? (c.mode === "mama" ? "k" : "f") : "u");
+  sfx(ok ? "good" : "bad");
+  c.i++; save(); wcNext();
+}
+function wcRoundEnd(){
+  const c = S.wc, done = Object.keys(c.res).length;
+  feed(5); save();   /* 5 Fische pro geschaffter Runde */
+  $("#s-check").innerHTML = `<div class="panel wc-hero" style="text-align:center;align-items:center">
+      <span class="label">Runde geschafft</span>
+      <div style="width:120px">${myGull()}</div>
+      <b class="display" style="font-size:1.5rem;color:var(--navy)">${wcCount("k") + wcCount("f") + wcCount("a")} Wörter kannst du schon!</b>
+      <p class="muted" style="margin:0">${done} von ${c.total} Wörtern geprüft · ${wcCount("u")} kommen auf deine Übungsliste.</p>
+      <p style="margin:0;font-weight:700;color:#0B7FB0">+5 Fische für die Runde</p></div>
+    <button class="btn btn-main btn-block" data-act="wcCont" style="min-height:60px">Nächste Runde</button>
+    <button class="btn btn-soft btn-block" data-act="wcPause">Später weitermachen</button>`;
+  show("check");
+}
+function wcFinish(){
+  const c = S.wc; c.done = true; save();
+  const k = wcCount("k") + wcCount("f"), a = wcCount("a"), u = wcCount("u");
+  const days = testActive() ? Math.max(1, dayDiff(today(), S.test.date)) : 0;
+  const per = Math.min(u, Math.max(8, Math.min(14, Math.ceil(u / Math.max(1, days))))), need = per ? Math.ceil(u / per) : 0;
+  const plan = !u ? "Du musst keine neuen Wörter mehr lernen, nur noch wiederholen. Stark!"
+    : testActive() ? `Bis zum Test am ${esc(fmtDay(S.test.date))}: jeden Tag <b>${per} neue Wörter</b>${need < days ? `, dann bist du nach ${need} ${need === 1 ? "Tag" : "Tagen"} durch` : ""}. Die tägliche Unterrichtsstunde nimmt genau diese Wörter zuerst.`
+    : `Die tägliche Unterrichtsstunde nimmt diese ${u} Wörter jetzt zuerst dran.`;
+  $("#s-check").innerHTML = `<div class="panel wc-hero" style="align-items:center;text-align:center">
+      <span class="label">Wortcheck fertig · ${esc(c.name)}</span>
+      <div style="width:140px">${myGull()}</div>
+      <b class="display" style="font-size:1.6rem;color:var(--navy)">Du kannst schon ${k + a} von ${c.total} Wörtern!</b>
+      <div class="wc-res">
+        <span class="ok"><b>${k}</b><small>gewusst</small></span>
+        <span class="auto"><b>${a}</b><small>wahrscheinlich gekonnt</small></span>
+        <span class="todo"><b>${u}</b><small>zum Üben</small></span></div>
+      <p style="margin:0">${plan}</p>
+      <p class="muted" style="margin:0;font-size:.85rem">Gewusste Wörter kommen in ein paar Tagen zur Kontrolle wieder. Was dann nicht sitzt, wird ganz normal geübt.</p></div>
+    ${u ? `<button class="btn btn-main btn-block" data-act="startDaily" style="min-height:60px">Jetzt üben</button>` : ""}
+    <button class="btn btn-soft btn-block" data-act="home">Zum Hafen</button>`;
+  show("check"); if (k + a > 20){ confetti(); sfx("win"); }
+}
+/* Unterricht nimmt die Wörter aus dem Wortcheck zuerst */
+const wcNeedRank = w => { const n = S.wc && S.wc.need; return n && n.includes(w.id) ? 0 : 1; };
+
+/* ============ UNITS verwalten (Elternbereich) ============ */
+function renderUnits(){
+  const u = U();
+  $("#s-units").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="openParents">Zurück</button></div>
+    <h1 class="display" style="font-size:1.8rem;color:var(--navy);margin:0">Units & Lernplan</h1>
+    <p class="muted" style="margin:0">Schalten Sie eine Unit frei, sobald die Klasse damit anfängt, am besten ein paar Tage vorher. Die tägliche Stunde übt vor allem die Unit, die gerade in der Schule läuft. Freigeschaltete ältere Units werden weiter wiederholt.</p>
+    <div class="units">${UNITS.map(x => {
+      const n = unitWords(x.id).length, open = u.open.includes(x.id), cur = u.cur === x.id;
+      const learned = unitWords(x.id).filter(w => st(w.id)).length;
+      return `<div class="panel unit ${open ? "open" : "locked"} ${cur ? "cur" : ""}">
+        <div class="unit-art" aria-hidden="true"><svg viewBox="0 0 160 100">${cityArt(x.city)}</svg>${open ? "" : `<span class="unit-fog"></span><span class="unit-lock">🔒</span>`}</div>
+        <div class="unit-txt"><b>${esc(x.n)}${x.t ? `: ${esc(x.t)}` : ""}</b><small>Region: ${esc(x.region)}</small>
+          <small>${n ? `${n} Wörter · ${learned} geübt` : "Vokabeln werden noch eingespielt"}</small></div>
+        <div class="unit-btns">${x.id === "u1" ? "" : n ? `<button class="btn ${open ? "btn-soft" : "btn-main"}" data-act="unitToggle" data-u="${x.id}">${open ? "Sperren" : "Freischalten"}</button>` : ""}
+          ${open && n ? `<button class="btn ${cur ? "btn-good" : "btn-soft"}" data-act="unitCur" data-u="${x.id}" aria-pressed="${cur}">${cur ? "✓ Läuft gerade" : "Läuft gerade"}</button>` : ""}</div>
+      </div>`; }).join("")}</div>
+    <div class="panel"><span class="label">Wortcheck</span><p style="margin:0">Viele Wörter noch nie in der App geübt? Der Wortcheck findet in wenigen Minuten heraus, welche schon sitzen. Allein oder mit Ihnen.</p>
+      <button class="btn btn-main" data-act="openCheck">Wortcheck öffnen (${wcPool().length} Wörter)</button></div>`;
+  show("units");
+}
+const WC_ACT = {
+  openCheck: () => openCheck(),
+  openUnits: () => { if (S.pin && !pinOk()) return askPin(renderUnits); renderUnits(); },
+  wcGo: b => { wcStart(b.dataset.mode); if (!S.wc.queue.length) return wcFinish(); wcNext(true); },
+  wcCont: () => { WCV.roundShown = true; wcNext(true); },
+  wcPause: () => { save(); show("home"); },
+  wcShow: () => { WCV.open = true; const en = $("#wcEn"); if (en) en.hidden = false; $("#wcCard").classList.add("open");
+    if (S.settings.sound) try { speak(WMAP[S.wc.queue[S.wc.i]].en); } catch(e){}
+    const m = S.wc.mode === "mama";
+    $("#wcBtns").innerHTML = `<div class="rate"><button class="btn btn-bad" data-act="wcNo">✗ ${m ? "Falsch" : "Nicht gewusst"}</button><button class="btn btn-good" data-act="wcYes">✓ ${m ? "Richtig" : "Gewusst"}</button></div>`; },
+  wcYes: () => wcRate(true),
+  wcNo: () => wcRate(false),
+  wcType: () => {
+    const c = S.wc, id = c.queue[c.i], w = WMAP[id], inp = $("#wcIn"); if (!inp) return;
+    const v = inp.value.trim(); if (!v) return;
+    const r = checkWord(w, v), ok = !!(r && r.ok);
+    c.since = 0; if (!ok) c.every = 3; else if (c.every < 5) c.every++;
+    wcApply(id, ok ? "k" : "u"); sfx(ok ? "good" : "bad");
+    $("#wcEn").hidden = false; $("#wcCard").classList.add("open", ok ? "yes" : "no");
+    $("#wcMsg").textContent = ok ? (r.typo ? "Fast richtig geschrieben, zählt!" : "Richtig geschrieben!") : "Das üben wir noch.";
+    $("#wcBtns").innerHTML = ""; c.i++; save();
+    setTimeout(() => wcNext(), ok ? 900 : 1700);
+  },
+  unitToggle: b => { const u = U(), id = b.dataset.u; if (id === "u1") return;
+    if (u.open.includes(id)){ u.open = u.open.filter(x => x !== id); if (u.cur === id) u.cur = "u1"; }
+    else { u.open.push(id); u.cur = id; }
+    save(); renderUnits(); },
+  unitCur: b => { U().cur = b.dataset.u; save(); renderUnits(); }
+};
+
 const ACT = {
+  ...WC_ACT,
   pickColor: b => {
     OB.color = +b.dataset.i;
     const ni=$("#nameIn"), nv = ni ? ni.value : "", gv = $("#gullIn").value;
