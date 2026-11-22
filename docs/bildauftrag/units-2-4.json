@@ -1,0 +1,1320 @@
+{
+ "titel": "Bildauftrag Units 2–4 (Möwenflug, Klasse 5)",
+ "stand": "2026-11-22",
+ "zweck": "Liste aller Bilder, die für Units 2–4 neu gestaltet werden müssen, mit Format, Dateipfad, Manifest-Eintrag und Motiv. Ein Bildgenerator kann sie der Reihe nach abarbeiten.",
+ "ablauf": [
+  "Aufgaben nach prioritaet (1 = Unit 2 zuerst) abarbeiten, innerhalb einer Unit: Außenszene, dann Belohnungs-Ansicht derselben Szene, dann Lernraum.",
+  "Dateien auf den Branch beta/friedrich-2-assets legen, Manifest ergänzen, \"version\" erhöhen.",
+  "In dieser Datei bei erledigten Aufgaben status auf \"geliefert\" setzen.",
+  "Katharina gibt die Bilder frei und schickt Claude den commitgenauen Manifest-Link; erst dann baut die App sie ein."
+ ],
+ "stil": {
+  "look": "Warme, sonnige 3D-Illustration im Stil eines Animationsfilms, wie die vorhandenen Hafenstadt-Szenen (beta/assets/world/hafenstadt/). Weiches goldenes Nachmittagslicht, englische Küstenstadt Brighton/Sussex, Kreidefelsen, Meer und Leuchtturm dürfen im Hintergrund auftauchen. Materialien: Backstein, Sandstein, Holzplanken, Kopfsteinpflaster, Rosen und Lavendel. Farben: Creme, Petrol, Koralle, Himmelblau, warmes Holz.",
+  "never": [
+   "keine Menschen und keine Tiere als Hauptfigur (die Möwe Friedrich wird von der App eingesetzt)",
+   "keine Schrift, keine Buchstaben, keine Zahlen außer Zifferblättern ohne Ziffern-Text",
+   "keine Namen, Logos oder echten Markenzeichen",
+   "kein Rahmen, keine Vignette"
+  ],
+  "exterior": "Hochformat 941 × 1672 px (Verhältnis 0,5628). Kamera auf Augenhöhe einer Möwe am Boden. Unteres Drittel: freie, begehbare Bodenfläche (Pflaster, Planken oder Weg) ohne Gegenstände, dort steht später Friedrich (ca. 30–60 % der Breite, Füße bei ca. 79 % der Höhe). In der Bildmitte (ca. 35–60 % der Höhe) ein klar erkennbarer Eingang (Tür, Tor, Theke), den die App zum Leuchten bringt.",
+  "reward": "GENAU derselbe Bildausschnitt, dieselbe Kamera und dieselben Formen wie die Außenszene, pixelgenau deckungsgleich. Nur Licht und kleine festliche Details ändern sich (die App blendet weich über).",
+  "interior": "Innenansicht hinter der Tür, Hochformat 941 × 1672 px. Obere Hälfte zeigt den Raum mit den Gegenständen des Themas, untere Hälfte eine ruhige freie Fläche (Boden, Tisch oder Theke), auf der die App Karteikarten anzeigt. Keine Schrift auf Tafeln oder Plakaten.",
+  "map": "Hochformat 941 × 1672 px, schräge Vogelperspektive wie hafenstadt/lernwelt-uebersicht.webp. Die sechs Lernorte als klar getrennte, wiedererkennbare Gebäude oder Plätze, jeweils mit etwas Freiraum darüber für einen Ortspin der App. Keine Beschriftung.",
+  "outfit": "Für den Kleiderschrank: 512 × 512 px, freigestellt mit echtem Alphakanal, Vorderansicht, mittig, wie rewards/sun.webp oder rewards/captain.webp. Weiche 3D-Optik passend zu Friedrich.",
+  "files": "Je Bild: Original-PNG nach art-source/…, für die App WebP in voller Größe plus kleine Variante (Szenen: -640.webp mit 640 × 1137 px; Kleidungsstücke: -128.webp mit 128 × 128 px). Danach die Einträge im passenden Manifest ergänzen und dessen \"version\" um 1 erhöhen."
+ },
+ "regionen": {
+  "u2": {
+   "name": "Unit 2: A new week at Varndean",
+   "region": "Die Varndean School",
+   "folder": "varndean",
+   "map": "varndean-uebersicht",
+   "mapMotif": "Ein Schulgelände an der Küste: Hauptgebäude mit Uhrturm, Klassenzimmer-Flügel, Kantine mit Terrasse, Aula mit Turnhalle und Bibliothek, Garten mit Jahreszeiten-Beeten, Schultor mit Weg. Meer und Kreidefelsen am Rand."
+  },
+  "u3": {
+   "name": "Unit 3: In our free time",
+   "region": "Clubs, Markt & Backstube",
+   "folder": "freizeit",
+   "map": "freizeit-uebersicht",
+   "mapMotif": "Ein Freizeitviertel: Clubhaus, Sportplatz mit Laufbahn, Brücke über einen Bach, der vorhandene Marktplatz mit Obststand, Backstube mit Schornstein, Picknickwiese. Alles mit Wegen verbunden."
+  },
+  "u4": {
+   "name": "Unit 4: Out and about in Brighton",
+   "region": "Unterwegs in Brighton",
+   "folder": "stadt",
+   "map": "stadt-uebersicht",
+   "mapMotif": "Brighton-Stadt am Meer: Aussichtspunkt mit Bank über dem Pier, Strandpromenade mit Wetterstation, Straße mit Postamt, rotem Briefkasten und Bäckerei, Kino mit Karussell, Atelier, Gasse mit Hundehütte. Erkennbar britisch, aber ohne echte Wahrzeichen-Schrift."
+  }
+ },
+ "lernorte": [
+  {
+   "unit": "u2",
+   "id": "u2_weg",
+   "name": "Schultor & Schulweg",
+   "aussen": "varndean-schultor",
+   "innen": "varndean-schultor-innen",
+   "worter": "get up, walk, early, always, far, near, bring, be in a hurry, Off we go!"
+  },
+  {
+   "unit": "u2",
+   "id": "u2_uhr",
+   "name": "Uhrturm",
+   "aussen": "varndean-uhrturm",
+   "innen": "varndean-uhrturm-innen",
+   "worter": "o'clock, half past, quarter past, quarter to, midday, midnight, minute"
+  },
+  {
+   "unit": "u2",
+   "id": "u2_klasse",
+   "name": "Klassenzimmer",
+   "aussen": "varndean-klassenfluegel",
+   "innen": "schule-am-meer-klassenzimmer",
+   "worter": "maths, science, French, history, geography, art, music, timetable, homework, put your hand up"
+  },
+  {
+   "unit": "u2",
+   "id": "u2_kantine",
+   "name": "Kantine & Schulhof",
+   "aussen": "varndean-kantine",
+   "innen": "varndean-kantine-innen",
+   "worter": "lunch, break, canteen, playground, food, apple, salad, ice cream, cook"
+  },
+  {
+   "unit": "u2",
+   "id": "u2_aula",
+   "name": "Aula, Turnhalle & Bibliothek",
+   "aussen": "varndean-aula",
+   "innen": "varndean-aula-innen",
+   "worter": "assembly hall, gym, PE, library, drama, theatre, concert, dancer, music"
+  },
+  {
+   "unit": "u2",
+   "id": "u2_kalender",
+   "name": "Kalender-Garten",
+   "aussen": "varndean-kalender",
+   "innen": "varndean-kalender-innen",
+   "worter": "January, February, spring, summer, autumn, winter, date, term, holidays, weekend"
+  },
+  {
+   "unit": "u3",
+   "id": "u3_club",
+   "name": "Clubhaus",
+   "aussen": "freizeit-clubhaus",
+   "innen": "freizeit-clubhaus-innen",
+   "worter": "club, join, member, chess, orchestra, choir, instrument, practise, be bored"
+  },
+  {
+   "unit": "u3",
+   "id": "u3_sport",
+   "name": "Sportplatz",
+   "aussen": "freizeit-sportplatz",
+   "innen": "freizeit-sportplatz-innen",
+   "worter": "race, runner, cycle, medal, win, lose, winner, cheer, train, Good luck!"
+  },
+  {
+   "unit": "u3",
+   "id": "u3_gefuehle",
+   "name": "Gefühle-Brücke",
+   "aussen": "freizeit-gefuehle",
+   "innen": "freizeit-gefuehle-innen",
+   "worter": "happy, sad, angry, nervous, excited, bored, unhappy, agree, hate, No way!, Oh dear!"
+  },
+  {
+   "unit": "u3",
+   "id": "u3_markt",
+   "name": "Markt & Obststand",
+   "aussen": "marktplatz",
+   "innen": "marktplatz-obststand",
+   "worter": "shop, money, list, trolley, fruit, vegetables, strawberry, pineapple, carrot, tomato, juice, crisps, enough"
+  },
+  {
+   "unit": "u3",
+   "id": "u3_back",
+   "name": "Backstube",
+   "aussen": "freizeit-backstube",
+   "innen": "freizeit-backstube-innen",
+   "worter": "recipe, ingredient, flour, sugar, butter, egg, chocolate, oven, fridge, bake, cut, scone"
+  },
+  {
+   "unit": "u3",
+   "id": "u3_party",
+   "name": "Geburtstags-Picknick",
+   "aussen": "freizeit-picknick",
+   "innen": "freizeit-picknick-innen",
+   "worter": "birthday, invitation, present, cake, picnic, biscuit, sweet, Would you like…?"
+  },
+  {
+   "unit": "u4",
+   "id": "u4_aussicht",
+   "name": "Aussichtspunkt",
+   "aussen": "stadt-aussicht",
+   "innen": "stadt-aussicht-innen",
+   "worter": "sight, famous, work of art, view, visitor, bench, beautiful, magical"
+  },
+  {
+   "unit": "u4",
+   "id": "u4_wetter",
+   "name": "Wetter-Promenade",
+   "aussen": "stadt-wetter",
+   "innen": "stadt-wetter-innen",
+   "worter": "weather, sunny, cloudy, windy, rainy, stormy, snowy, rain, snow"
+  },
+  {
+   "unit": "u4",
+   "id": "u4_laeden",
+   "name": "Post & Läden",
+   "aussen": "stadt-laeden",
+   "innen": "stadt-laeden-innen",
+   "worter": "post box, post office, bakery, customer, cost, pound, expensive, sell, opposite, pavement"
+  },
+  {
+   "unit": "u4",
+   "id": "u4_kino",
+   "name": "Kino & Fahrgeschäfte",
+   "aussen": "stadt-kino",
+   "innen": "stadt-kino-innen",
+   "worter": "cinema, ride, light, decide, suggest, expensive, exciting"
+  },
+  {
+   "unit": "u4",
+   "id": "u4_bild",
+   "name": "Bild-Werkstatt",
+   "aussen": "stadt-bildwerkstatt",
+   "innen": "stadt-bildwerkstatt-innen",
+   "worter": "description, title, caption, foreground, middle, on the left, on the right, at the top, at the bottom"
+  },
+  {
+   "unit": "u4",
+   "id": "u4_buddy",
+   "name": "Buddys Rettung & Zuhause",
+   "aussen": "stadt-buddy",
+   "innen": "stadt-buddy-innen",
+   "worter": "rescue, police, key, locked, hide, follow, brave, worried, tidy, wash the dishes, dry, tooth"
+  }
+ ],
+ "wiederverwenden": [
+  {
+   "id": "schule-am-meer-klassenzimmer",
+   "wo": "world/hafenstadt/klassenzimmer.webp",
+   "wofuer": "Lernraum von Unit 2 „Klassenzimmer“"
+  },
+  {
+   "id": "marktplatz",
+   "wo": "world/hafenstadt/marktplatz.webp",
+   "wofuer": "Außenszene von Unit 3 „Markt & Obststand“ (bisher keinem Lernort zugeordnet)"
+  },
+  {
+   "id": "marktplatz-obststand",
+   "wo": "world/hafenstadt/obststand.webp",
+   "wofuer": "Lernraum von Unit 3 „Markt & Obststand“"
+  },
+  {
+   "id": "ortsdiplom_urkunde",
+   "wo": "rewards/ortsdiplom_urkunde.webp",
+   "wofuer": "Unit-Diplome 2–4: die App setzt Unit-Nummer und Name als Text darüber"
+  },
+  {
+   "id": "unterricht_schulbuch",
+   "wo": "rewards/unterricht_schulbuch.webp",
+   "wofuer": "Region-Bild Unit 2 (vorläufig, eigenes Bild optional)"
+  },
+  {
+   "id": "stufenaufstieg_podest",
+   "wo": "rewards/stufenaufstieg_podest.webp",
+   "wofuer": "Region-Bild Unit 3 (vorläufig, eigenes Bild optional)"
+  },
+  {
+   "id": "brighton_reisekompass",
+   "wo": "rewards/brighton_reisekompass.webp",
+   "wofuer": "Region-Bild Unit 4 (vorläufig, eigenes Bild optional)"
+  },
+  {
+   "id": "hintergrund_*, menue_*, hafen_hintergrund",
+   "wo": "rewards/",
+   "wofuer": "Alle Menü-Hintergründe gelten unverändert auch für Units 2–4"
+  },
+  {
+   "id": "journalPostcards",
+   "wo": "rewards/postkarte_*.webp",
+   "wofuer": "Reisetagebuch, unabhängig von den Units"
+  },
+  {
+   "id": "Friedrich-Stufen und Posen",
+   "wo": "friedrich/",
+   "wofuer": "unverändert"
+  }
+ ],
+ "aufgaben": [
+  {
+   "id": "varndean-uebersicht",
+   "unit": "u2",
+   "art": "Übersichtskarte",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-uebersicht\"].backgrounds",
+   "dateien": [
+    "art-source/world/varndean/varndean-uebersicht.png",
+    "beta/assets/world/varndean/varndean-uebersicht.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-uebersicht-640.webp (640×1137)"
+   ],
+   "format": "map",
+   "motiv": "Ein Schulgelände an der Küste: Hauptgebäude mit Uhrturm, Klassenzimmer-Flügel, Kantine mit Terrasse, Aula mit Turnhalle und Bibliothek, Garten mit Jahreszeiten-Beeten, Schultor mit Weg. Meer und Kreidefelsen am Rand."
+  },
+  {
+   "id": "freizeit-uebersicht",
+   "unit": "u3",
+   "art": "Übersichtskarte",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-uebersicht\"].backgrounds",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-uebersicht.png",
+    "beta/assets/world/freizeit/freizeit-uebersicht.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-uebersicht-640.webp (640×1137)"
+   ],
+   "format": "map",
+   "motiv": "Ein Freizeitviertel: Clubhaus, Sportplatz mit Laufbahn, Brücke über einen Bach, der vorhandene Marktplatz mit Obststand, Backstube mit Schornstein, Picknickwiese. Alles mit Wegen verbunden."
+  },
+  {
+   "id": "stadt-uebersicht",
+   "unit": "u4",
+   "art": "Übersichtskarte",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-uebersicht\"].backgrounds",
+   "dateien": [
+    "art-source/world/stadt/stadt-uebersicht.png",
+    "beta/assets/world/stadt/stadt-uebersicht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-uebersicht-640.webp (640×1137)"
+   ],
+   "format": "map",
+   "motiv": "Brighton-Stadt am Meer: Aussichtspunkt mit Bank über dem Pier, Strandpromenade mit Wetterstation, Straße mit Postamt, rotem Briefkasten und Bäckerei, Kino mit Karussell, Atelier, Gasse mit Hundehütte. Erkennbar britisch, aber ohne echte Wahrzeichen-Schrift."
+  },
+  {
+   "id": "varndean-schultor",
+   "unit": "u2",
+   "lernort": "u2_weg",
+   "lernortName": "Schultor & Schulweg",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-schultor\"].backgrounds + learningArea \"u2_weg\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-schultor.png",
+    "beta/assets/world/varndean/varndean-schultor.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-schultor-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Schultor der Varndean School: schmiedeeisernes Tor, Fahrradständer, Bushaltestelle mit Schulbus, Weg zur großen Holztür des Hauptgebäudes.",
+   "zeigen": "get up, walk, early, always, far, near, bring, be in a hurry, Off we go!"
+  },
+  {
+   "id": "varndean-schultor-licht",
+   "unit": "u2",
+   "lernort": "u2_weg",
+   "lernortName": "Schultor & Schulweg",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-schultor\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/varndean/varndean-schultor-licht.png",
+    "beta/assets/world/varndean/varndean-schultor-licht.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-schultor-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Morgensonne, Schulglocke über der Tür glänzt, Blüten am Tor.",
+   "basis": "Außenszene varndean-schultor"
+  },
+  {
+   "id": "varndean-schultor-innen",
+   "unit": "u2",
+   "lernort": "u2_weg",
+   "lernortName": "Schultor & Schulweg",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-schultor-innen\"].backgrounds + learningArea \"u2_weg\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-schultor-innen.png",
+    "beta/assets/world/varndean/varndean-schultor-innen.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-schultor-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Garderobe im Eingang: Haken mit Schultaschen und Jacken, Sitzbank, Fenster mit Morgenlicht.",
+   "zeigen": "get up, walk, early, always, far, near, bring, be in a hurry, Off we go!"
+  },
+  {
+   "id": "varndean-uhrturm",
+   "unit": "u2",
+   "lernort": "u2_uhr",
+   "lernortName": "Uhrturm",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-uhrturm\"].backgrounds + learningArea \"u2_uhr\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-uhrturm.png",
+    "beta/assets/world/varndean/varndean-uhrturm.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-uhrturm-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Schulhof mit schlankem Uhrturm (Zifferblatt ohne Ziffern-Text, nur Striche), Turmtür unten als Eingang, Bänke, Bäume.",
+   "zeigen": "o'clock, half past, quarter past, quarter to, midday, midnight, minute"
+  },
+  {
+   "id": "varndean-uhrturm-licht",
+   "unit": "u2",
+   "lernort": "u2_uhr",
+   "lernortName": "Uhrturm",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-uhrturm\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/varndean/varndean-uhrturm-licht.png",
+    "beta/assets/world/varndean/varndean-uhrturm-licht.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-uhrturm-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Turmuhr leuchtet warm, kleine Lichter im Turmfenster, Abendhimmel.",
+   "basis": "Außenszene varndean-uhrturm"
+  },
+  {
+   "id": "varndean-uhrturm-innen",
+   "unit": "u2",
+   "lernort": "u2_uhr",
+   "lernortName": "Uhrturm",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-uhrturm-innen\"].backgrounds + learningArea \"u2_uhr\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-uhrturm-innen.png",
+    "beta/assets/world/varndean/varndean-uhrturm-innen.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-uhrturm-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Uhrwerk-Raum im Turm: große Zahnräder, Pendel, mehrere Uhren an der Wand (nur Zeiger und Striche).",
+   "zeigen": "o'clock, half past, quarter past, quarter to, midday, midnight, minute"
+  },
+  {
+   "id": "varndean-klassenfluegel",
+   "unit": "u2",
+   "lernort": "u2_klasse",
+   "lernortName": "Klassenzimmer",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-klassenfluegel\"].backgrounds + learningArea \"u2_klasse\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-klassenfluegel.png",
+    "beta/assets/world/varndean/varndean-klassenfluegel.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-klassenfluegel-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Klassenzimmer-Flügel: zweistöckiges Backsteingebäude mit großen Fenstern, in denen Globus, Mikroskop, Notenständer und Farbpaletten zu sehen sind (Fächer). Eingangstür mittig.",
+   "zeigen": "maths, science, French, history, geography, art, music, timetable, homework, put your hand up"
+  },
+  {
+   "id": "varndean-klassenfluegel-licht",
+   "unit": "u2",
+   "lernort": "u2_klasse",
+   "lernortName": "Klassenzimmer",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-klassenfluegel\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/varndean/varndean-klassenfluegel-licht.png",
+    "beta/assets/world/varndean/varndean-klassenfluegel-licht.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-klassenfluegel-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Goldene Sterne an den Fenstern, warmes Licht in allen Räumen.",
+   "basis": "Außenszene varndean-klassenfluegel"
+  },
+  {
+   "id": "varndean-kantine",
+   "unit": "u2",
+   "lernort": "u2_kantine",
+   "lernortName": "Kantine & Schulhof",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-kantine\"].backgrounds + learningArea \"u2_kantine\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-kantine.png",
+    "beta/assets/world/varndean/varndean-kantine.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-kantine-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Kantine mit Außenterrasse am Schulhof: Tische mit Tabletts, Äpfeln, Salat, Eiswagen, Spielgeräte auf dem Schulhof, Tür zur Kantine.",
+   "zeigen": "lunch, break, canteen, playground, food, apple, salad, ice cream, cook"
+  },
+  {
+   "id": "varndean-kantine-licht",
+   "unit": "u2",
+   "lernort": "u2_kantine",
+   "lernortName": "Kantine & Schulhof",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-kantine\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/varndean/varndean-kantine-licht.png",
+    "beta/assets/world/varndean/varndean-kantine-licht.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-kantine-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Lichterkette über der Terrasse, Eiswagen leuchtet.",
+   "basis": "Außenszene varndean-kantine"
+  },
+  {
+   "id": "varndean-kantine-innen",
+   "unit": "u2",
+   "lernort": "u2_kantine",
+   "lernortName": "Kantine & Schulhof",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-kantine-innen\"].backgrounds + learningArea \"u2_kantine\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-kantine-innen.png",
+    "beta/assets/world/varndean/varndean-kantine-innen.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-kantine-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Essensausgabe mit Tabletts, Schüsseln mit Salat, Obstkorb, Eistruhe, langer Tisch im Vordergrund.",
+   "zeigen": "lunch, break, canteen, playground, food, apple, salad, ice cream, cook"
+  },
+  {
+   "id": "varndean-aula",
+   "unit": "u2",
+   "lernort": "u2_aula",
+   "lernortName": "Aula, Turnhalle & Bibliothek",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-aula\"].backgrounds + learningArea \"u2_aula\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-aula.png",
+    "beta/assets/world/varndean/varndean-aula.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-aula-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Gebäude mit drei Eingängen nebeneinander erkennbar: Aula (Theatervorhang im Fenster), Turnhalle (Basketballkorb, Sprossenwand im Fenster), Bibliothek (Bücherregale im Fenster). Hauptportal in der Mitte.",
+   "zeigen": "assembly hall, gym, PE, library, drama, theatre, concert, dancer, music"
+  },
+  {
+   "id": "varndean-aula-licht",
+   "unit": "u2",
+   "lernort": "u2_aula",
+   "lernortName": "Aula, Turnhalle & Bibliothek",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-aula\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/varndean/varndean-aula-licht.png",
+    "beta/assets/world/varndean/varndean-aula-licht.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-aula-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Scheinwerfer auf der Bühne, Konfetti-Glanz.",
+   "basis": "Außenszene varndean-aula"
+  },
+  {
+   "id": "varndean-aula-innen",
+   "unit": "u2",
+   "lernort": "u2_aula",
+   "lernortName": "Aula, Turnhalle & Bibliothek",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-aula-innen\"].backgrounds + learningArea \"u2_aula\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-aula-innen.png",
+    "beta/assets/world/varndean/varndean-aula-innen.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-aula-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Bühne der Aula mit rotem Vorhang, Notenständern und Tanzfläche; seitlich Bücherregal und Sportgeräte.",
+   "zeigen": "assembly hall, gym, PE, library, drama, theatre, concert, dancer, music"
+  },
+  {
+   "id": "varndean-kalender",
+   "unit": "u2",
+   "lernort": "u2_kalender",
+   "lernortName": "Kalender-Garten",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-kalender\"].backgrounds + learningArea \"u2_kalender\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-kalender.png",
+    "beta/assets/world/varndean/varndean-kalender.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-kalender-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Schulgarten mit vier Beeten in den vier Jahreszeiten (Frühlingsblüten, Sommersonne, Herbstlaub, Winterschnee), in der Mitte ein Gartenhaus als Eingang.",
+   "zeigen": "January, February, spring, summer, autumn, winter, date, term, holidays, weekend"
+  },
+  {
+   "id": "varndean-kalender-licht",
+   "unit": "u2",
+   "lernort": "u2_kalender",
+   "lernortName": "Kalender-Garten",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-kalender\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/varndean/varndean-kalender-licht.png",
+    "beta/assets/world/varndean/varndean-kalender-licht.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-kalender-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Alle vier Beete leuchten, Laternen im Garten.",
+   "basis": "Außenszene varndean-kalender"
+  },
+  {
+   "id": "varndean-kalender-innen",
+   "unit": "u2",
+   "lernort": "u2_kalender",
+   "lernortName": "Kalender-Garten",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"varndean-kalender-innen\"].backgrounds + learningArea \"u2_kalender\"",
+   "dateien": [
+    "art-source/world/varndean/varndean-kalender-innen.png",
+    "beta/assets/world/varndean/varndean-kalender-innen.webp (941×1672)",
+    "beta/assets/world/varndean/varndean-kalender-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Gartenhaus innen mit großem Wandkalender ohne Schrift (zwölf farbige Felder), Jahreszeiten-Mobile, Geburtstags-Girlande.",
+   "zeigen": "January, February, spring, summer, autumn, winter, date, term, holidays, weekend"
+  },
+  {
+   "id": "freizeit-clubhaus",
+   "unit": "u3",
+   "lernort": "u3_club",
+   "lernortName": "Clubhaus",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-clubhaus\"].backgrounds + learningArea \"u3_club\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-clubhaus.png",
+    "beta/assets/world/freizeit/freizeit-clubhaus.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-clubhaus-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Clubhaus aus Holz mit Veranda, auf der Veranda ein großes Schachbrett, Instrumente am Fenster (Geige, Trommel), Eingangstür mittig.",
+   "zeigen": "club, join, member, chess, orchestra, choir, instrument, practise, be bored"
+  },
+  {
+   "id": "freizeit-clubhaus-licht",
+   "unit": "u3",
+   "lernort": "u3_club",
+   "lernortName": "Clubhaus",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-clubhaus\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-clubhaus-licht.png",
+    "beta/assets/world/freizeit/freizeit-clubhaus-licht.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-clubhaus-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Notenlichter über dem Dach, Fenster warm beleuchtet.",
+   "basis": "Außenszene freizeit-clubhaus"
+  },
+  {
+   "id": "freizeit-clubhaus-innen",
+   "unit": "u3",
+   "lernort": "u3_club",
+   "lernortName": "Clubhaus",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-clubhaus-innen\"].backgrounds + learningArea \"u3_club\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-clubhaus-innen.png",
+    "beta/assets/world/freizeit/freizeit-clubhaus-innen.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-clubhaus-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Musik- und Clubraum: Notenständer, Instrumente, Chor-Podest, Schachtisch, Pinnwand ohne Schrift.",
+   "zeigen": "club, join, member, chess, orchestra, choir, instrument, practise, be bored"
+  },
+  {
+   "id": "freizeit-sportplatz",
+   "unit": "u3",
+   "lernort": "u3_sport",
+   "lernortName": "Sportplatz",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-sportplatz\"].backgrounds + learningArea \"u3_sport\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-sportplatz.png",
+    "beta/assets/world/freizeit/freizeit-sportplatz.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-sportplatz-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Sportplatz mit roter Laufbahn, Ziellinie, Fahrrädern, Wimpeln, kleines Vereinsheim als Eingang.",
+   "zeigen": "race, runner, cycle, medal, win, lose, winner, cheer, train, Good luck!"
+  },
+  {
+   "id": "freizeit-sportplatz-licht",
+   "unit": "u3",
+   "lernort": "u3_sport",
+   "lernortName": "Sportplatz",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-sportplatz\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-sportplatz-licht.png",
+    "beta/assets/world/freizeit/freizeit-sportplatz-licht.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-sportplatz-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Siegerpodest mit Glanz, Fahnen, Konfetti.",
+   "basis": "Außenszene freizeit-sportplatz"
+  },
+  {
+   "id": "freizeit-sportplatz-innen",
+   "unit": "u3",
+   "lernort": "u3_sport",
+   "lernortName": "Sportplatz",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-sportplatz-innen\"].backgrounds + learningArea \"u3_sport\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-sportplatz-innen.png",
+    "beta/assets/world/freizeit/freizeit-sportplatz-innen.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-sportplatz-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Umkleide mit Medaillen-Wand, Trinkflaschen, Laufschuhen, Bank im Vordergrund.",
+   "zeigen": "race, runner, cycle, medal, win, lose, winner, cheer, train, Good luck!"
+  },
+  {
+   "id": "freizeit-gefuehle",
+   "unit": "u3",
+   "lernort": "u3_gefuehle",
+   "lernortName": "Gefühle-Brücke",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-gefuehle\"].backgrounds + learningArea \"u3_gefuehle\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-gefuehle.png",
+    "beta/assets/world/freizeit/freizeit-gefuehle.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-gefuehle-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Holzbrücke über einen Bach, am Geländer runde Schilder mit gemalten Gesichtern (fröhlich, traurig, wütend, nervös, aufgeregt) ohne Schrift, Pavillon am anderen Ende als Eingang.",
+   "zeigen": "happy, sad, angry, nervous, excited, bored, unhappy, agree, hate, No way!, Oh dear!"
+  },
+  {
+   "id": "freizeit-gefuehle-licht",
+   "unit": "u3",
+   "lernort": "u3_gefuehle",
+   "lernortName": "Gefühle-Brücke",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-gefuehle\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-gefuehle-licht.png",
+    "beta/assets/world/freizeit/freizeit-gefuehle-licht.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-gefuehle-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Regenbogen über der Brücke, Glühwürmchen.",
+   "basis": "Außenszene freizeit-gefuehle"
+  },
+  {
+   "id": "freizeit-gefuehle-innen",
+   "unit": "u3",
+   "lernort": "u3_gefuehle",
+   "lernortName": "Gefühle-Brücke",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-gefuehle-innen\"].backgrounds + learningArea \"u3_gefuehle\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-gefuehle-innen.png",
+    "beta/assets/world/freizeit/freizeit-gefuehle-innen.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-gefuehle-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Gemütliche Ruhe-Ecke im Pavillon: Kissen, Decke, Gefühls-Gesichter als Bilder, Fenster zum Bach.",
+   "zeigen": "happy, sad, angry, nervous, excited, bored, unhappy, agree, hate, No way!, Oh dear!"
+  },
+  {
+   "id": "marktplatz-licht",
+   "unit": "u3",
+   "lernort": "u3_markt",
+   "lernortName": "Markt & Obststand",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"marktplatz\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/freizeit/marktplatz-licht.png",
+    "beta/assets/world/freizeit/marktplatz-licht.webp (941×1672)",
+    "beta/assets/world/freizeit/marktplatz-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Neu nötig: Belohnungs-Ansicht des vorhandenen Marktplatzes, Lichterketten über den Ständen, Laternen an.",
+   "basis": "Außenszene marktplatz (vorhanden: world/hafenstadt/marktplatz.webp)"
+  },
+  {
+   "id": "freizeit-backstube",
+   "unit": "u3",
+   "lernort": "u3_back",
+   "lernortName": "Backstube",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-backstube\"].backgrounds + learningArea \"u3_back\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-backstube.png",
+    "beta/assets/world/freizeit/freizeit-backstube.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-backstube-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Kleine Backstube mit Schornstein, Brezel- und Kuchen-Schaufenster ohne Schrift, Mehlsäcke vor der Tür, Eingangstür mittig.",
+   "zeigen": "recipe, ingredient, flour, sugar, butter, egg, chocolate, oven, fridge, bake, cut, scone"
+  },
+  {
+   "id": "freizeit-backstube-licht",
+   "unit": "u3",
+   "lernort": "u3_back",
+   "lernortName": "Backstube",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-backstube\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-backstube-licht.png",
+    "beta/assets/world/freizeit/freizeit-backstube-licht.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-backstube-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Ofen glüht, fertiger Kuchen im Fenster, warmer Dampf.",
+   "basis": "Außenszene freizeit-backstube"
+  },
+  {
+   "id": "freizeit-backstube-innen",
+   "unit": "u3",
+   "lernort": "u3_back",
+   "lernortName": "Backstube",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-backstube-innen\"].backgrounds + learningArea \"u3_back\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-backstube-innen.png",
+    "beta/assets/world/freizeit/freizeit-backstube-innen.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-backstube-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Küche mit Backofen, Kühlschrank, Waage, Schüsseln mit Mehl, Zucker, Eiern, Butter, Schokolade, Teller mit Scones, Arbeitsfläche im Vordergrund.",
+   "zeigen": "recipe, ingredient, flour, sugar, butter, egg, chocolate, oven, fridge, bake, cut, scone"
+  },
+  {
+   "id": "freizeit-picknick",
+   "unit": "u3",
+   "lernort": "u3_party",
+   "lernortName": "Geburtstags-Picknick",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-picknick\"].backgrounds + learningArea \"u3_party\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-picknick.png",
+    "beta/assets/world/freizeit/freizeit-picknick.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-picknick-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Wiese mit Picknickdecke, Geschenken, Torte, Ballons und einer Laube als Eingang.",
+   "zeigen": "birthday, invitation, present, cake, picnic, biscuit, sweet, Would you like…?"
+  },
+  {
+   "id": "freizeit-picknick-licht",
+   "unit": "u3",
+   "lernort": "u3_party",
+   "lernortName": "Geburtstags-Picknick",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-picknick\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-picknick-licht.png",
+    "beta/assets/world/freizeit/freizeit-picknick-licht.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-picknick-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Lampions, Kerzen auf der Torte, Sternenhimmel.",
+   "basis": "Außenszene freizeit-picknick"
+  },
+  {
+   "id": "freizeit-picknick-innen",
+   "unit": "u3",
+   "lernort": "u3_party",
+   "lernortName": "Geburtstags-Picknick",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"freizeit-picknick-innen\"].backgrounds + learningArea \"u3_party\"",
+   "dateien": [
+    "art-source/world/freizeit/freizeit-picknick-innen.png",
+    "beta/assets/world/freizeit/freizeit-picknick-innen.webp (941×1672)",
+    "beta/assets/world/freizeit/freizeit-picknick-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Laube innen: gedeckter Tisch mit Geburtstagstorte, Geschenken, Saft, Keksen, Süßigkeiten.",
+   "zeigen": "birthday, invitation, present, cake, picnic, biscuit, sweet, Would you like…?"
+  },
+  {
+   "id": "stadt-aussicht",
+   "unit": "u4",
+   "lernort": "u4_aussicht",
+   "lernortName": "Aussichtspunkt",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-aussicht\"].backgrounds + learningArea \"u4_aussicht\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-aussicht.png",
+    "beta/assets/world/stadt/stadt-aussicht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-aussicht-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Aussichtsplattform über dem Meer mit Bank und Münzfernrohr, Blick auf Pier und Strand, kleines Museum mit Säulen als Eingang.",
+   "zeigen": "sight, famous, work of art, view, visitor, bench, beautiful, magical"
+  },
+  {
+   "id": "stadt-aussicht-licht",
+   "unit": "u4",
+   "lernort": "u4_aussicht",
+   "lernortName": "Aussichtspunkt",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-aussicht\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/stadt/stadt-aussicht-licht.png",
+    "beta/assets/world/stadt/stadt-aussicht-licht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-aussicht-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Sonnenuntergang über dem Pier, Lichter am Pier.",
+   "basis": "Außenszene stadt-aussicht"
+  },
+  {
+   "id": "stadt-aussicht-innen",
+   "unit": "u4",
+   "lernort": "u4_aussicht",
+   "lernortName": "Aussichtspunkt",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-aussicht-innen\"].backgrounds + learningArea \"u4_aussicht\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-aussicht-innen.png",
+    "beta/assets/world/stadt/stadt-aussicht-innen.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-aussicht-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Mini-Museum: Kunstwerke auf Sockeln, Bilderrahmen ohne Schrift, Bank im Vordergrund.",
+   "zeigen": "sight, famous, work of art, view, visitor, bench, beautiful, magical"
+  },
+  {
+   "id": "stadt-wetter",
+   "unit": "u4",
+   "lernort": "u4_wetter",
+   "lernortName": "Wetter-Promenade",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-wetter\"].backgrounds + learningArea \"u4_wetter\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-wetter.png",
+    "beta/assets/world/stadt/stadt-wetter.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-wetter-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Strandpromenade mit kleiner Wetterstation (Windrad, Thermometer ohne Zahlen, Wetterhahn), halb Sonne, halb Wolken, Pfützen, Eingang zur Wetterstation.",
+   "zeigen": "weather, sunny, cloudy, windy, rainy, stormy, snowy, rain, snow"
+  },
+  {
+   "id": "stadt-wetter-licht",
+   "unit": "u4",
+   "lernort": "u4_wetter",
+   "lernortName": "Wetter-Promenade",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-wetter\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/stadt/stadt-wetter-licht.png",
+    "beta/assets/world/stadt/stadt-wetter-licht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-wetter-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Regenbogen nach dem Schauer, glitzernde Pfützen.",
+   "basis": "Außenszene stadt-wetter"
+  },
+  {
+   "id": "stadt-wetter-innen",
+   "unit": "u4",
+   "lernort": "u4_wetter",
+   "lernortName": "Wetter-Promenade",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-wetter-innen\"].backgrounds + learningArea \"u4_wetter\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-wetter-innen.png",
+    "beta/assets/world/stadt/stadt-wetter-innen.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-wetter-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Wetterraum mit Wetterkarte ohne Schrift (Sonnen-, Wolken-, Regen-, Schneesymbole), Regenschirme, Gummistiefel.",
+   "zeigen": "weather, sunny, cloudy, windy, rainy, stormy, snowy, rain, snow"
+  },
+  {
+   "id": "stadt-laeden",
+   "unit": "u4",
+   "lernort": "u4_laeden",
+   "lernortName": "Post & Läden",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-laeden\"].backgrounds + learningArea \"u4_laeden\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-laeden.png",
+    "beta/assets/world/stadt/stadt-laeden.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-laeden-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Straße mit Postamt (roter britischer Briefkasten davor), Bäckerei und Laden mit Markise, Gehweg vorne, Eingangstür des Postamts mittig.",
+   "zeigen": "post box, post office, bakery, customer, cost, pound, expensive, sell, opposite, pavement"
+  },
+  {
+   "id": "stadt-laeden-licht",
+   "unit": "u4",
+   "lernort": "u4_laeden",
+   "lernortName": "Post & Läden",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-laeden\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/stadt/stadt-laeden-licht.png",
+    "beta/assets/world/stadt/stadt-laeden-licht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-laeden-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Schaufenster beleuchtet, Laternen an.",
+   "basis": "Außenszene stadt-laeden"
+  },
+  {
+   "id": "stadt-laeden-innen",
+   "unit": "u4",
+   "lernort": "u4_laeden",
+   "lernortName": "Post & Läden",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-laeden-innen\"].backgrounds + learningArea \"u4_laeden\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-laeden-innen.png",
+    "beta/assets/world/stadt/stadt-laeden-innen.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-laeden-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Postschalter mit Paketen, Briefmarken und Waage, daneben Bäckertheke mit Brot.",
+   "zeigen": "post box, post office, bakery, customer, cost, pound, expensive, sell, opposite, pavement"
+  },
+  {
+   "id": "stadt-kino",
+   "unit": "u4",
+   "lernort": "u4_kino",
+   "lernortName": "Kino & Fahrgeschäfte",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-kino\"].backgrounds + learningArea \"u4_kino\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-kino.png",
+    "beta/assets/world/stadt/stadt-kino.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-kino-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Altes Kino mit Glühbirnen-Vordach ohne Schrift, daneben ein Karussell am Meer, Eingang zum Kino mittig.",
+   "zeigen": "cinema, ride, light, decide, suggest, expensive, exciting"
+  },
+  {
+   "id": "stadt-kino-licht",
+   "unit": "u4",
+   "lernort": "u4_kino",
+   "lernortName": "Kino & Fahrgeschäfte",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-kino\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/stadt/stadt-kino-licht.png",
+    "beta/assets/world/stadt/stadt-kino-licht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-kino-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Glühbirnen und Karussell-Lichter an, Abendhimmel.",
+   "basis": "Außenszene stadt-kino"
+  },
+  {
+   "id": "stadt-kino-innen",
+   "unit": "u4",
+   "lernort": "u4_kino",
+   "lernortName": "Kino & Fahrgeschäfte",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-kino-innen\"].backgrounds + learningArea \"u4_kino\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-kino-innen.png",
+    "beta/assets/world/stadt/stadt-kino-innen.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-kino-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Kinosaal mit roten Sesseln, leerer Leinwand, Popcorn.",
+   "zeigen": "cinema, ride, light, decide, suggest, expensive, exciting"
+  },
+  {
+   "id": "stadt-bildwerkstatt",
+   "unit": "u4",
+   "lernort": "u4_bild",
+   "lernortName": "Bild-Werkstatt",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-bildwerkstatt\"].backgrounds + learningArea \"u4_bild\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-bildwerkstatt.png",
+    "beta/assets/world/stadt/stadt-bildwerkstatt.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-bildwerkstatt-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Atelier mit großem Fenster, Staffelei mit halbfertigem Bild draußen, Farbtöpfe, Tür mittig.",
+   "zeigen": "description, title, caption, foreground, middle, on the left, on the right, at the top, at the bottom"
+  },
+  {
+   "id": "stadt-bildwerkstatt-licht",
+   "unit": "u4",
+   "lernort": "u4_bild",
+   "lernortName": "Bild-Werkstatt",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-bildwerkstatt\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/stadt/stadt-bildwerkstatt-licht.png",
+    "beta/assets/world/stadt/stadt-bildwerkstatt-licht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-bildwerkstatt-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Galerie-Spots auf den Bildern.",
+   "basis": "Außenszene stadt-bildwerkstatt"
+  },
+  {
+   "id": "stadt-bildwerkstatt-innen",
+   "unit": "u4",
+   "lernort": "u4_bild",
+   "lernortName": "Bild-Werkstatt",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-bildwerkstatt-innen\"].backgrounds + learningArea \"u4_bild\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-bildwerkstatt-innen.png",
+    "beta/assets/world/stadt/stadt-bildwerkstatt-innen.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-bildwerkstatt-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Bilderwand mit Rahmen (Landschaften ohne Schrift), Staffelei, Tisch im Vordergrund. Gut erkennbar: Vordergrund, Mitte, Hintergrund, oben, unten, links, rechts.",
+   "zeigen": "description, title, caption, foreground, middle, on the left, on the right, at the top, at the bottom"
+  },
+  {
+   "id": "stadt-buddy",
+   "unit": "u4",
+   "lernort": "u4_buddy",
+   "lernortName": "Buddys Rettung & Zuhause",
+   "art": "Außenszene",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-buddy\"].backgrounds + learningArea \"u4_buddy\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-buddy.png",
+    "beta/assets/world/stadt/stadt-buddy.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-buddy-640.webp (640×1137)"
+   ],
+   "format": "exterior",
+   "motiv": "Gasse mit Reihenhaus, Hundehütte für Buddy (Hund nur als Hütte, Napf und Leine angedeutet), Schlüssel im Schloss der Haustür, Werkzeugkiste.",
+   "zeigen": "rescue, police, key, locked, hide, follow, brave, worried, tidy, wash the dishes, dry, tooth"
+  },
+  {
+   "id": "stadt-buddy-licht",
+   "unit": "u4",
+   "lernort": "u4_buddy",
+   "lernortName": "Buddys Rettung & Zuhause",
+   "art": "Belohnungs-Ansicht",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-buddy\"].rewardBackgrounds",
+   "dateien": [
+    "art-source/world/stadt/stadt-buddy-licht.png",
+    "beta/assets/world/stadt/stadt-buddy-licht.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-buddy-licht-640.webp (640×1137)"
+   ],
+   "format": "reward",
+   "motiv": "Polizeiwagen mit Blaulicht vor dem Haus, Hütte bekränzt, alles gerettet.",
+   "basis": "Außenszene stadt-buddy"
+  },
+  {
+   "id": "stadt-buddy-innen",
+   "unit": "u4",
+   "lernort": "u4_buddy",
+   "lernortName": "Buddys Rettung & Zuhause",
+   "art": "Lernraum",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/world/manifest.json",
+   "manifestKey": "scenes[\"stadt-buddy-innen\"].backgrounds + learningArea \"u4_buddy\"",
+   "dateien": [
+    "art-source/world/stadt/stadt-buddy-innen.png",
+    "beta/assets/world/stadt/stadt-buddy-innen.webp (941×1672)",
+    "beta/assets/world/stadt/stadt-buddy-innen-640.webp (640×1137)"
+   ],
+   "format": "interior",
+   "motiv": "Küche des Hauses: Spüle mit Geschirr, Geschirrtuch, Zahnbürsten im Becher, Besen, Werkzeug.",
+   "zeigen": "rescue, police, key, locked, hide, follow, brave, worried, tidy, wash the dishes, dry, tooth"
+  },
+  {
+   "id": "tie",
+   "unit": "u2",
+   "art": "Kleidungsstück",
+   "name": "Schulkrawatte",
+   "slot": "neck",
+   "status": "offen",
+   "prioritaet": 1,
+   "manifest": "beta/assets/rewards/manifest.json",
+   "manifestKey": "outfits[\"tie\"] = {\"name\":\"Schulkrawatte\",\"slot\":\"neck\",\"images\":[…]}",
+   "dateien": [
+    "art-source/rewards/tie.png",
+    "beta/assets/rewards/tie.webp (512×512)",
+    "beta/assets/rewards/tie-128.webp (128×128)"
+   ],
+   "format": "outfit",
+   "motiv": "Gestreifte Schulkrawatte in Petrol und Gold, Varndean-Stil, ohne Wappen-Schrift."
+  },
+  {
+   "id": "chef",
+   "unit": "u3",
+   "art": "Kleidungsstück",
+   "name": "Kochmütze",
+   "slot": "hat",
+   "status": "offen",
+   "prioritaet": 2,
+   "manifest": "beta/assets/rewards/manifest.json",
+   "manifestKey": "outfits[\"chef\"] = {\"name\":\"Kochmütze\",\"slot\":\"hat\",\"images\":[…]}",
+   "dateien": [
+    "art-source/rewards/chef.png",
+    "beta/assets/rewards/chef.webp (512×512)",
+    "beta/assets/rewards/chef-128.webp (128×128)"
+   ],
+   "format": "outfit",
+   "motiv": "Weiße Kochmütze mit kleinem Kochlöffel-Anstecker."
+  },
+  {
+   "id": "sou_wester",
+   "unit": "u4",
+   "art": "Kleidungsstück",
+   "name": "Südwester",
+   "slot": "hat",
+   "status": "offen",
+   "prioritaet": 3,
+   "manifest": "beta/assets/rewards/manifest.json",
+   "manifestKey": "outfits[\"sou_wester\"] = {\"name\":\"Südwester\",\"slot\":\"hat\",\"images\":[…]}",
+   "dateien": [
+    "art-source/rewards/sou_wester.png",
+    "beta/assets/rewards/sou_wester.webp (512×512)",
+    "beta/assets/rewards/sou_wester-128.webp (128×128)"
+   ],
+   "format": "outfit",
+   "motiv": "Gelber Südwester-Regenhut mit breiter Krempe hinten."
+  }
+ ]
+}
