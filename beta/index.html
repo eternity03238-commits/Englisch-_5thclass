@@ -1032,7 +1032,7 @@ body.mw-themed #s-cards .mbar{background:rgba(255,251,244,.85);border-radius:16p
    Eine Bildsprache: helle Creme-Flächen mit weichem Schatten, Navy für Text, Petrol für aktiv, Koralle nur für den einen Hauptknopf. */
 .scn-stage{--hz-cream:#FFFBF4;--hz-line:#EADFCB;--hz-navy:#13234A;--hz-muted:#646B80;--hz-teal:#0E5258;--hz-coral:#EE6A4E;--hz-shadow:0 8px 24px rgba(30,25,15,.16)}
 /* Szene etwas anheben, damit Friedrich und die Tür über der Heute-Karte stehen */
-.scn-stage:has(> .hz-tabs) > .scn-art,.scn-stage:has(> .hz-bottom) > .scn-art{top:calc(50% - 12cqh)}
+.scn-stage:has(> .hz-tabs) > .scn-art,.scn-stage:has(> .hz-bottom) > .scn-art{top:calc(50% - 12cqh - var(--hzLift,0px));transition:top .25s ease}
 /* sanfter heller Verlauf oben und unten, damit Bedienung ruhig auf dem Bild liegt */
 .scn-stage:has(> .hz-bottom)::before,.scn-stage:has(> .hz-bottom)::after{content:"";position:absolute;left:0;right:0;z-index:3;pointer-events:none}
 .scn-stage:has(> .hz-bottom)::before{top:0;height:120px;background:linear-gradient(180deg,rgba(255,251,244,.55),rgba(255,251,244,0))}
@@ -1234,6 +1234,33 @@ body.mw-themed #sky{display:none}
 .hz-today-more .hz-today-extra{width:auto;margin:0;padding:6px 10px;border:1px solid var(--hz-line);border-radius:999px;background:#fff;font-size:.74rem;white-space:nowrap}
 .hz-today-more .hz-today-extra img{display:none}
 .hz-reg-art .unit-ill,.hz-unlock-art .unit-ill{display:grid;place-items:center;width:100%;height:100%;background:linear-gradient(180deg,#CDEBFA,#FDF1DC)}.hz-reg-art .unit-ill img,.hz-unlock-art .unit-ill img{width:80%;height:80%;object-fit:contain}
+
+/* Erster-Nutzer-Runde: kompakte Heute-Karte, Ort mit Zähler, Schild auf der Tür, Fische beschriftet */
+.hz-today{gap:8px;padding:12px 14px 12px 16px}
+.hz-today-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:20px}
+.hz-today-head small{font:800 .7rem/1 var(--fr-font);letter-spacing:.08em;text-transform:uppercase;color:var(--hz-teal)}
+.hz-testpill{border:0;background:#FDEBE6;color:#B8452C;border-radius:999px;padding:4px 10px;font:800 .74rem/1.2 var(--fr-font);cursor:pointer}
+.hz-testpill img{display:none}
+.hz-today-row{display:flex;align-items:center;gap:12px}
+.hz-today-row .hz-today-txt{flex:1;min-width:0}
+.hz-today-row .hz-today-txt b{font-size:1.12rem;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.hz-today-row .hz-cta{flex:none;min-height:50px;padding:0 16px}
+.hz-alt{align-self:flex-start;border:0;background:none;padding:0;font:700 .8rem/1.2 var(--fr-font);color:var(--hz-teal);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.hz-alt img{display:none}
+@media (max-width:350px){.hz-today-row{flex-direction:column;align-items:stretch}.hz-today-row .hz-cta{justify-content:center}}
+.hz-fishn{display:flex;flex-direction:column;line-height:1}.hz-fishn small{font:800 .58rem/1 var(--fr-font);color:var(--hz-muted);letter-spacing:.04em;margin-top:2px}
+.hz-where{position:absolute;z-index:5;left:50%;top:calc(70px + env(safe-area-inset-top,0px));transform:translateX(-50%);display:flex;align-items:center;gap:8px;max-width:calc(100% - 120px);padding:5px 12px;border-radius:999px;background:rgba(255,251,244,.88);box-shadow:0 4px 12px rgba(30,25,15,.12);color:var(--hz-navy);pointer-events:none;white-space:nowrap}
+.hz-where b{font:800 .8rem/1.2 var(--fr-font);overflow:hidden;text-overflow:ellipsis}
+.hz-where span{font:700 .72rem/1 var(--fr-font);color:var(--hz-muted);flex:none}
+.hz-where.hz-new{animation:hzWhere 1.4s ease}
+@keyframes hzWhere{0%{transform:translateX(-50%) scale(1.25);background:var(--hz-cream)}30%{transform:translateX(-50%) scale(1.25)}100%{transform:translateX(-50%) scale(1)}}
+body.scn-on:has(.hz-tabs) .beta-badge{top:auto;bottom:calc(76px + env(safe-area-inset-bottom,0px));left:8px;transform:none}
+/* Ortsschild sitzt oben auf der Tür und zeigt hinein; es verdeckt Fridolin nicht mehr */
+.scn-stage:has(> .hz-bottom) .scn-door-label{top:auto;bottom:calc(100% + 8px);min-height:40px;padding:6px 14px 6px 10px}
+.scn-stage:has(> .hz-bottom) .scn-door-label::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;background:inherit;transform:rotate(45deg);border-radius:0 0 3px 0}
+.hz-hand{position:absolute;left:50%;top:55%;z-index:4;font-size:2.4rem;line-height:1;transform:translate(-20%,0);filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));animation:hzTap 1.6s ease-in-out infinite;pointer-events:none}
+@keyframes hzTap{0%,100%{transform:translate(-20%,10px) scale(1)}45%{transform:translate(-20%,-4px) scale(.92)}55%{transform:translate(-20%,-4px) scale(.92)}}
+@media (prefers-reduced-motion:reduce){.hz-hand{animation:none}.hz-where.hz-new{animation:none}}
 </style>
 
 </head>
@@ -2637,7 +2664,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795370808";
+const BUILD = "1795372303";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3542,7 +3569,7 @@ function renderScene(opts = {}){
   if (act.child || act.area){
     const aria = act.area ? `${label}: ${act.child ? "hineingehen und " : ""}üben` : `${label} ansehen`;
     spot = L.spot
-      ? `<button class="scn-door" data-act="scnSpot" style="left:${L.spot.x}%;top:${L.spot.y}%;width:${L.spot.w}%;height:${L.spot.h}%" aria-label="${esc(aria)}"><span class="scn-door-glow" aria-hidden="true"></span><span class="scn-door-label">${esc(label)}${act.area && dueWords().some(w => inPl(w, act.area)) ? `<i class="scn-due" aria-label="Wörter zum Wiederholen">!</i>` : ""}</span></button>`
+      ? `<button class="scn-door" data-act="scnSpot" style="left:${L.spot.x}%;top:${L.spot.y}%;width:${L.spot.w}%;height:${L.spot.h}%" aria-label="${esc(aria)}"><span class="scn-door-glow" aria-hidden="true"></span>${S.hints && S.hints.door ? "" : `<span class="hz-hand" aria-hidden="true">👆</span>`}<span class="scn-door-label">${esc(label)}${act.area && dueWords().some(w => inPl(w, act.area)) ? `<i class="scn-due" aria-label="Wörter zum Wiederholen">!</i>` : ""}</span></button>`
       : "";
   }
   el.innerHTML = `<div class="scn-stage ${opts.fade && !scnRM() ? "scn-fade" : ""}" style="--ratio:${base.ratio.toFixed(5)}">
@@ -3551,7 +3578,7 @@ function renderScene(opts = {}){
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}<div class="hz-say" id="scnSay" role="status" aria-live="polite"></div></div>
         ${spot}
       </div>
-      ${hzTop()}
+      ${hzTop(id, outs, i)}
       ${hzNav(outs, i)}
       ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main hz-spotbtn" data-act="scnSpot">${esc(label)}</button>` : ""}
       ${hzBottom()}
@@ -3791,7 +3818,7 @@ function scnSwipeInit(){
 }
 const SCENE_ACT = {
   openScene: () => show("scene"),
-  scnSpot: () => scnSpot(),
+  scnSpot: () => { S.hints = S.hints || {}; if (!S.hints.door){ S.hints.door = 1; save(); } scnSpot(); },
   scnGo: b => scnGo(b.dataset.id, +b.dataset.dir || 0),
   scnTreasure: () => scnTreasure(),
   scnMedal: b => scnMedal(b.dataset.id),
@@ -3854,7 +3881,7 @@ function renderStart(){
       <h1 class="mw-logo"><span class="mw-spark l" aria-hidden="true"></span>Möwenflug<span class="mw-spark r" aria-hidden="true"></span></h1>
       <p class="mw-sub">Englisch lernen</p>
       <button class="mw-btn mw-main" data-act="mwGo">Los geht's ${mwArrow}</button>
-      <button class="mw-btn mw-outline" data-act="mwLogin">Anmelden</button>
+      <button class="mw-btn mw-outline" data-act="mwLogin">Für Eltern</button>
     </div></div>`;
   mwPlay("#s-start", "wave", 700);
 }
@@ -3863,7 +3890,7 @@ function renderLogin(){
   const known = !!(S && S.name);
   $("#s-login").innerHTML = `<div class="mw-screen">${mwHero("login", s => FR.baseOf(s))}
     <form class="mw-panel mw-login" id="mwLoginForm" autocomplete="off" novalidate>
-      <h1 class="mw-title">Anmelden</h1>
+      <h1 class="mw-title">${known ? "Für Eltern" : "Neues Gerät verbinden"}</h1>
       ${known ? "" : `<label class="mw-field"><span class="mw-fic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 7a4 4 0 1 1-3.5 5.9L4 20H2v-3l1.5-1.5H5V14h1.5l3.1-3.1A4 4 0 0 1 15 7zm1 2.5a1 1 0 1 0 0 .01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
         <span class="mw-sep" aria-hidden="true"></span><input id="mwCode" placeholder="Familiencode" autocapitalize="characters" aria-label="Familiencode, z. B. MOEWE-XXXX-XXXX-XXXX-XXXX"></label>`}
       <label class="mw-field"><span class="mw-fic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="15" r="1.4" fill="currentColor"/></svg></span>
@@ -3871,7 +3898,7 @@ function renderLogin(){
         <button type="button" class="mw-eye" data-act="mwEye" aria-label="PIN zeigen"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></label>
       <p class="mw-msg" id="mwMsg" role="status">${known ? `Für Erwachsene: Mit der Eltern-PIN geht es in den Elternbereich von ${esc(S.name)}.` : "Schon auf einem anderen Handy dabei? Familiencode aus dem Elternbereich eingeben."}</p>
       <span id="famMsg" class="mw-msg"></span>
-      <button class="mw-btn mw-main" type="submit">Anmelden</button>
+      <button class="mw-btn mw-main" type="submit">${known ? "Weiter" : "Verbinden"}</button>
       <button class="mw-link" type="button" data-act="mwStart">${mwBack} Zurück</button>
     </form></div>`;
   $("#mwLoginForm").addEventListener("submit", e => { e.preventDefault(); mwLogin(); });
@@ -3896,7 +3923,7 @@ function renderPMenu(){
     <div class="mw-hero-wrap">${mwHero("parents", s => FR.has(s, "side") ? "side" : FR.baseOf(s))}
       <div class="mw-topbar"><button class="mw-pill" data-act="home">${mwBack} Zurück</button><h1 class="mw-ptitle">Für Eltern</h1></div></div>
     <div class="mw-panel mw-rows">
-      <button class="mw-row" data-act="mwPTab" data-t="start">${mwIc("wochenbericht_klemmbrett")}<span class="mw-sep"></span><b>Wochenbericht</b><span class="mw-go">${mwArrow}</span></button>
+      <button class="mw-row" data-act="mwPTab" data-t="start">${mwIc("wochenbericht_klemmbrett")}<span class="mw-sep"></span><b>Wochenbericht${introduced().length > 0 && (!S.lastBackup || dayDiff(S.lastBackup, today()) >= 7) ? ` <small>fällig · sichert den Spielstand</small>` : ""}</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openOverview" data-back="openParents">${mwIc("lernstand_anzeige")}<span class="mw-sep"></span><b>Lernstand</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openDeck" data-mode="mama">${mwIc("moewenpruefung_sprechblasen")}<span class="mw-sep"></span><b>Möwen-Prüfung</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openCheck"><span class="mw-ic mw-bolt" aria-hidden="true">⚡</span><span class="mw-sep"></span><b>Wortcheck <small>${wcPool().length} Wörter noch nie geübt</small></b><span class="mw-go">${mwArrow}</span></button>
@@ -3976,7 +4003,7 @@ const HZ_ACT = {
   hzSheetClose: () => hzSheetClose(),
   hzSheetGo: b => { const a = b.dataset.go; hzSheetClose(true); setTimeout(() => ACT[a] && ACT[a](b), 10); },
   hzToggle: b => { const k = b.dataset.k; S.settings[k] = !S.settings[k]; save(); if (k === "slow") speak("Hello! This is my speed."); hzSheet("profile"); },
-  hzIntroOk: () => { S.introSeen = true; save(); hzSheetClose(); },
+  hzIntroOk: () => { S.introSeen = true; save(); hzSheetClose(); setTimeout(hzHints, 500); },
   hzSpeak: () => { const L = hzLine(); hzSay(`<span class="hz-say-en">${esc(L.en)}</span>${L.de ? `<small>${esc(L.de)}</small>` : ""}${L.en.length > 3 ? `<button class="speak" data-act="say" data-t="${esc(L.en)}" aria-label="Anhören">${I.speaker}</button>` : ""}`, 9000);
     if (L.en.length > 3 && S.settings.sound) try { speak(L.en); } catch(e){} }
 };
@@ -3991,9 +4018,9 @@ function hzLesson(){
   return {done:false, act:"startDaily", title, say:`${title}: ${bits.join(" und ")}. Los geht's!`, n:nw + rep, due, meta:`${bits.join(" · ")} · ca. ${min} Min.`};
 }
 function hzPick(){
-  if (wcActive()) return {kind:"check", label:"Weitermachen", title:"Wortcheck", meta:`Noch ${S.wc.queue.length - S.wc.i} Wörter prüfen`, act:"openCheck", btn:"Weiter prüfen"};
+  if (wcActive()) return {kind:"check", label:"Weitermachen", title:"Wortcheck", meta:`Noch ${S.wc.queue.length - S.wc.i} Wörter`, act:"openCheck", btn:"Weiter"};
   const n = wcPool().length;
-  if (n >= WC_MIN) return {kind:"check", label:"Heute zuerst", title:"Wortcheck: Was kannst du schon?", meta:`${n} Wörter noch nie geübt · ca. ${Math.max(4, Math.round(n * .45 * 3 / 60))} Min.`, act:"openCheck", btn:"Wortcheck starten"};
+  if (n >= WC_MIN) return {kind:"check", label:"Heute zuerst", title:"Zeig, was du schon kannst", meta:`Wortcheck · ca. ${Math.max(4, Math.round(n * .45 * 3 / 60))} Minuten`, act:"openCheck", btn:"Los geht's"};
   const L = hzLesson();
   return L.done ? {kind:"done", label:"Heute", title:L.title, meta:L.meta, act:L.act, btn:"Extra-Runde"}
                 : {kind:"lesson", label:"Heute dran", title:L.title, meta:L.meta, act:L.act, btn:"Los geht's"};
@@ -4014,14 +4041,16 @@ function hzStageInfo(){
   const p = nx ? Math.max(4, Math.min(100, Math.round((fish - st.min) / (nx.min - st.min) * 100))) : 100;
   return {n, stage, st, nx, fish, p};
 }
-function hzTop(){
-  const I = hzStageInfo(), shown = HZ.fish == null ? I.fish : Math.min(HZ.fish, I.fish);
+function hzTop(id, outs, i){
+  const I = hzStageInfo(), shown = HZ.fish == null ? I.fish : Math.min(HZ.fish, I.fish), n = (outs || []).length;
+  const moved = HZ.place && HZ.place !== id; HZ.place = id;
   return `<div class="hz-top">
       <button class="hz-me" data-act="hzProfile" aria-label="${esc(G())}, ${esc(I.st.n)}. Profil öffnen">
         <span class="hz-ring" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span></span>
         <span class="hz-who"><b id="hzName"></b><small>${esc(I.st.n)}</small></span></button>
-      <button class="hz-chip" id="hzFishChip" data-act="growthInfo" aria-label="${I.fish} Fische. Wofür gibt es Fische?">${hzIc("belohnung_fisch", "40px")}<b id="hzFish">${shown}</b></button>
-    </div>`;
+      <button class="hz-chip" id="hzFishChip" data-act="growthInfo" aria-label="${I.fish} Fische. Wofür gibt es Fische?">${hzIc("belohnung_fisch", "40px")}<span class="hz-fishn"><b id="hzFish">${shown}</b><small>Fische</small></span></button>
+    </div>
+    ${id ? `<div class="hz-where ${moved && !scnRM() ? "hz-new" : ""}" aria-live="polite"><b>${esc(scnName(id))}</b>${n > 1 ? `<span>${i + 1} von ${n}</span>` : ""}</div>` : ""}`;
 }
 /* Wege zu den Nachbarorten: nur dezente Halbpfeile, Wischen ist der Hauptweg */
 function hzNav(outs, i){
@@ -4032,21 +4061,16 @@ function hzNav(outs, i){
 }
 function hzBottom(){
   const P = hzPick(), post = hzNewPost();
-  let extra = "";
-  /* Wird der Wortcheck empfohlen, bleibt die Unterrichtsstunde trotzdem direkt erreichbar */
-  if (P.kind === "check" && !hzLesson().done) extra += `<button class="hz-today-extra" data-act="startDaily">Lieber Unterricht ›</button>`;
-  if (testActive()){
-    const d = dayDiff(today(), S.test.date);
-    extra += `<button class="hz-today-extra" data-act="startTest" aria-label="Testtraining">${d <= 0 ? "Heute ist Test" : d === 1 ? "Morgen ist Test" : `Test in ${d} Tagen`} ›</button>`;
-  }
-  /* Wochenbericht: sichert zugleich den Spielstand (die Beta hat keinen Familien-Abgleich) */
-  if (introduced().length > 0 && (!S.lastBackup || dayDiff(S.lastBackup, today()) >= 7))
-    extra += `<button class="hz-today-extra" data-act="hzReport" aria-label="Wochenbericht an Mama oder Papa schicken, sichert deinen Spielstand">Wochenbericht senden ›</button>`;
+  let test = "";
+  if (testActive()){ const d = dayDiff(today(), S.test.date); test = `<button class="hz-testpill" data-act="startTest" aria-label="Testtraining">${d <= 0 ? "Heute Test" : d === 1 ? "Morgen Test" : `Test in ${d} Tagen`} ›</button>`; }
+  /* Wird der Wortcheck empfohlen, bleibt die Unterrichtsstunde als kleiner Link erreichbar */
+  const alt = P.kind === "check" && !hzLesson().done ? `<button class="hz-alt" data-act="startDaily">oder gleich Unterricht</button>` : "";
   return `<div class="hz-bottom">
     <section class="hz-today ${P.kind}" aria-label="${esc(P.label)}">
-      <div class="hz-today-txt"><small>${esc(P.label)}</small><b>${esc(P.title)}</b><span>${esc(P.meta)}</span></div>
-      <button class="hz-cta ${P.kind === "done" ? "soft" : ""}" data-act="${P.act}">${esc(P.btn)} ${HZ_SVG.arrow}</button>
-      ${extra ? `<div class="hz-today-more">${extra}</div>` : ""}
+      <div class="hz-today-head"><small>${esc(P.label)}</small>${test}</div>
+      <div class="hz-today-row"><div class="hz-today-txt"><b>${esc(P.title)}</b><span>${esc(P.meta)}</span></div>
+        <button class="hz-cta ${P.kind === "done" ? "soft" : ""}" data-act="${P.act}">${esc(P.btn)} ${HZ_SVG.arrow}</button></div>
+      ${alt}
     </section>
     <nav class="hz-tabs" aria-label="Hauptmenü">
       <button class="hz-tab on" aria-current="page" data-act="hzHere">${HZ_SVG.hafen}<b>Hafen</b></button>
@@ -4071,6 +4095,7 @@ function hzSheet(kind){
         ${item("openWardrobe", "kleiderschrank", "Kleiderschrank")}
         ${scnScene(SCN_TREASURE_ID) ? item("scnTreasure", "schatzkammer_truhe", "Schatzkammer", "Medaillen") : ""}
         ${item("openExtras", "extras_kacheln", "Extras", "Spiele, Diplome, Küstenkarte")}
+        ${testActive() ? item("startTest", "testtraining_leuchtturm", "Testtraining", "für den nächsten Test") : ""}
         <button class="hz-item" data-act="hzSheetGo" data-go="openDeck" data-mode="mama">${hzIc("moewenpruefung_sprechblasen", "64px")}<b>Möwen-Prüfung</b><small>mit Mama oder Papa</small></button>
       </div>
       <button class="hz-li" data-act="hzSheetGo" data-go="openParents">${hzIc("elternbereich_familie", "64px")}<span><b>Für Eltern</b><small>Wochenbericht, Lernstand, Units, Wortcheck · mit PIN</small></span><em aria-hidden="true">›</em></button>
@@ -4135,8 +4160,25 @@ function hzLine(){
   if (isAsleep()) return {en:"Zzz …", de:`${G()} schläft. Morgen geht der Unterricht weiter!`};
   return gullLine();
 }
+/* Fridolin immer sichtbar: steht er hinter der Heute-Karte, wird die Szene so weit angehoben, dass seine Füße darüber stehen */
+function hzFit(){
+  const st = $("#s-scene .scn-stage"), fr = $("#scnFr"), art = $("#s-scene .scn-stage > .scn-art"), card = $("#s-scene .hz-today");
+  if (!st || !fr || !art || !card) return;
+  st.style.setProperty("--hzLift", "0px");
+  const a = art.getBoundingClientRect(), c = card.getBoundingClientRect(), fy = parseFloat(fr.style.top) || 80;
+  const feet = a.top + a.height * fy / 100, need = feet - (c.top - 10);
+  if (need > 0) st.style.setProperty("--hzLift", Math.round(Math.min(need, st.clientHeight * .3)) + "px");
+}
+addEventListener("resize", () => { if ($("#s-scene") && !$("#s-scene").hidden) hzFit(); });
+/* Erste Schritte: Einführung, dann einmal der Hinweis auf die Fische */
+function hzHints(){
+  S.hints = S.hints || {};
+  if (!S.introSeen || $("#s-scene .hz-sheet") || $("#s-scene .hz-unlock")) return;
+  if (!S.hints.fish){ S.hints.fish = 1; save(); hzSay("Für jedes Wort, das du mir beibringst, bekomme ich einen Fisch! Mit genug Fischen werde ich größer.", 7000); }
+}
 function hzAfter(hint){
-  setTimeout(() => { if (!hzUnlockShow() && !S.introSeen && !$("#s-scene .hz-sheet")) hzSheet("intro"); }, 900);
+  hzFit(); requestAnimationFrame(hzFit);
+  setTimeout(() => { if (!hzUnlockShow() && !S.introSeen && !$("#s-scene .hz-sheet")) hzSheet("intro"); else hzHints(); }, 900);
   const nm = $("#hzName"); if (nm) nm.textContent = G();
   const fish = S.fish || 0, L = hzLesson();
   const rew = $("#s-scene .scn-reward");
