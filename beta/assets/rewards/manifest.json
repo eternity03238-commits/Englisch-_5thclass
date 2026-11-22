@@ -1,5 +1,5 @@
 {
-  "version": 41,
+  "version": 42,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -643,6 +643,21 @@
         },
         {
           "path": "erster_flug-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "brighton_ankunft_pier": {
+      "name": "Pier für die Ankunft in Brighton",
+      "images": [
+        {
+          "path": "brighton_ankunft_pier.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "brighton_ankunft_pier-128.webp",
           "width": 128,
           "height": 128
         }
