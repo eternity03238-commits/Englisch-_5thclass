@@ -477,6 +477,7 @@ details.pl[open] summary{border-bottom:1.5px solid var(--line)}
 .unit.cur{box-shadow:0 0 0 3px #3FBF83,var(--lift)}
 .unit-art{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/10;background:#DDEFFA}
 .unit-art svg{display:block;width:100%;height:100%}
+.unit-ill{display:grid;place-items:center;width:100%;height:100%;background:linear-gradient(180deg,#CDEBFA,#FDF1DC)}.unit-ill img{width:82%;height:82%;object-fit:contain}
 .unit-fog{position:absolute;inset:0;background:radial-gradient(circle at 30% 40%,rgba(255,255,255,.95),rgba(235,242,248,.85) 60%,rgba(220,232,242,.9));backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
 .unit-lock{position:absolute;inset:0;display:grid;place-items:center;font-size:1.4rem}
 .unit-txt{display:flex;flex-direction:column;gap:2px;min-width:0}.unit-txt b{color:var(--navy)}.unit-txt small{color:#5E6A80}
@@ -1232,6 +1233,7 @@ body.mw-themed #sky{display:none}
 .hz-today-more{display:flex;flex-wrap:wrap;gap:5px;margin-top:-2px}
 .hz-today-more .hz-today-extra{width:auto;margin:0;padding:6px 10px;border:1px solid var(--hz-line);border-radius:999px;background:#fff;font-size:.74rem;white-space:nowrap}
 .hz-today-more .hz-today-extra img{display:none}
+.hz-reg-art .unit-ill,.hz-unlock-art .unit-ill{display:grid;place-items:center;width:100%;height:100%;background:linear-gradient(180deg,#CDEBFA,#FDF1DC)}.hz-reg-art .unit-ill img,.hz-unlock-art .unit-ill img{width:80%;height:80%;object-fit:contain}
 </style>
 
 </head>
@@ -2040,6 +2042,534 @@ const BAD = {
 };
 SENT.forEach(s=>{ if (BAD[s.id]) s.bad = BAD[s.id]; });
 
+/* Units 2–4 aus dem Englischbuch (data/textbook-vocabulary.json, Branch beta/friedrich-2-assets, Commit 0747551).
+   Gesperrt, bis Eltern die Unit freischalten; dann kommen Lernort und Wörter in PLANETS und W. sec = Buchseite. */
+const UNIT_DATA = {
+  u2: {place:{"id": "u2", "name": "Unit 2: A new week at Varndean", "place": "Die Varndean School", "src": "Englischbuch S. 240–247", "hue": "#E0703A", "unit": "u2"}, words:[
+    {"id": "u2-01", "en": "(to) want to do sth.", "de": "etwas tun wollen", "sec": 240},
+    {"id": "u2-02", "en": "at 9 o'clock", "de": "um 9 Uhr/um 21 Uhr", "sec": 240},
+    {"id": "u2-03", "en": "because", "de": "weil", "sec": 240},
+    {"id": "u2-04", "en": "half past eight", "de": "halb neun (08:30/20:30)", "sec": 240},
+    {"id": "u2-05", "en": "playground", "de": "der Schulhof; der Spielplatz", "sec": 240},
+    {"id": "u2-06", "en": "early", "de": "früh", "sec": 240},
+    {"id": "u2-07", "en": "always", "de": "immer", "sec": 240},
+    {"id": "u2-08", "en": "far", "de": "weit (entfernt)", "sec": 240},
+    {"id": "u2-09", "en": "(to) bring", "de": "(mit-, her)bringen", "sec": 240},
+    {"id": "u2-10", "en": "every day/colour/book", "de": "jeder Tag / jede Farbe / jedes Buch", "sec": 241},
+    {"id": "u2-11", "en": "before", "de": "bevor", "sec": 241},
+    {"id": "u2-12", "en": "(to) go to work", "de": "zur Arbeit gehen/fahren", "sec": 241},
+    {"id": "u2-13", "en": "(to) walk", "de": "(zu Fuß) gehen", "sec": 241},
+    {"id": "u2-14", "en": "near", "de": "in der Nähe von, nahe (bei)", "sec": 241},
+    {"id": "u2-15", "en": "What's he like?", "de": "Wie ist er (so)?", "sec": 241},
+    {"id": "u2-16", "en": "(to) love", "de": "lieben, sehr mögen", "sec": 241},
+    {"id": "u2-17", "en": "there", "de": "da, dort; dahin, dorthin", "sec": 241},
+    {"id": "u2-18", "en": "(to) start", "de": "anfangen, beginnen", "sec": 241},
+    {"id": "u2-19", "en": "noise", "de": "das Geräusch; der Lärm", "sec": 241},
+    {"id": "u2-20", "en": "map", "de": "die Landkarte; der Stadtplan", "sec": 241},
+    {"id": "u2-21", "en": "helpful", "de": "hilfreich", "sec": 241},
+    {"id": "u2-22", "en": "grounds (pl)", "de": "das Gelände", "sec": 241},
+    {"id": "u2-23", "en": "(to) mail sth. (to sb.)", "de": "(jm.) etw. per E-Mail senden", "sec": 241},
+    {"id": "u2-24", "en": "(to) take a photo (of sth.)", "de": "(etwas) fotografieren, ein Foto (von etwas) machen", "sec": 241},
+    {"id": "u2-25", "en": "timetable", "de": "der Stundenplan", "sec": 241},
+    {"id": "u2-26", "en": "(to) be in a hurry", "de": "es eilig haben", "sec": 241},
+    {"id": "u2-27", "en": "minute", "de": "die Minute", "sec": 241},
+    {"id": "u2-28", "en": "Off we go!", "de": "Los geht's!", "sec": 241},
+    {"id": "u2-29", "en": "secret", "de": "das Geheimnis", "sec": 241},
+    {"id": "u2-30", "en": "(to) finish", "de": "enden", "sec": 241},
+    {"id": "u2-31", "en": "(to) wait (for)", "de": "warten (auf)", "sec": 241},
+    {"id": "u2-32", "en": "happy", "de": "glücklich, froh", "sec": 241},
+    {"id": "u2-33", "en": "(school) subject", "de": "das (Schul-)Fach", "sec": 241},
+    {"id": "u2-34", "en": "art", "de": "Kunst", "sec": 242},
+    {"id": "u2-35", "en": "design and technology", "de": "Design und Technik", "sec": 242},
+    {"id": "u2-36", "en": "drama", "de": "Schauspiel; darstellende Kunst", "sec": 242},
+    {"id": "u2-37", "en": "French", "de": "Französisch", "sec": 242},
+    {"id": "u2-38", "en": "geography", "de": "Geografie", "sec": 242},
+    {"id": "u2-39", "en": "history", "de": "Geschichte", "sec": 242},
+    {"id": "u2-40", "en": "break", "de": "die Pause", "sec": 242},
+    {"id": "u2-41", "en": "except", "de": "außer, bis auf", "sec": 242},
+    {"id": "u2-42", "en": "theatre", "de": "das Theater", "sec": 242},
+    {"id": "u2-43", "en": "sport", "de": "der Sport; die Sportart", "sec": 242},
+    {"id": "u2-44", "en": "(to) do sport", "de": "Sport treiben", "sec": 242},
+    {"id": "u2-45", "en": "assembly hall", "de": "die Aula", "sec": 242},
+    {"id": "u2-46", "en": "canteen", "de": "die Kantine, die (Schul-)Mensa", "sec": 242},
+    {"id": "u2-47", "en": "block", "de": "der (Häuser-, Wohn-)Block", "sec": 242},
+    {"id": "u2-48", "en": "sound", "de": "das Geräusch; der Klang", "sec": 242},
+    {"id": "u2-49", "en": "(to) sound", "de": "klingen, sich (gut usw.) anhören", "sec": 242},
+    {"id": "u2-50", "en": "(to) rhyme with sth.", "de": "sich mit etwas reimen", "sec": 242},
+    {"id": "u2-51", "en": "group", "de": "die Gruppe", "sec": 242},
+    {"id": "u2-52", "en": "into the room", "de": "ins Zimmer (hinein)", "sec": 242},
+    {"id": "u2-53", "en": "out of ...", "de": "aus... (heraus/hinaus)", "sec": 242},
+    {"id": "u2-54", "en": "(to) sit down", "de": "sich hinsetzen", "sec": 242},
+    {"id": "u2-55", "en": "(to) find sth. out", "de": "etwas herausfinden", "sec": 242},
+    {"id": "u2-56", "en": "clever", "de": "klug, schlau", "sec": 242},
+    {"id": "u2-57", "en": "man", "de": "der Mann", "sec": 242},
+    {"id": "u2-58", "en": "woman", "de": "die Frau", "sec": 242},
+    {"id": "u2-59", "en": "routine", "de": "die Routine", "sec": 242},
+    {"id": "u2-60", "en": "evening", "de": "der Abend", "sec": 242},
+    {"id": "u2-61", "en": "ICT", "de": "Informations- und Kommunikationstechnik", "sec": 242},
+    {"id": "u2-62", "en": "maths", "de": "Mathematik", "sec": 242},
+    {"id": "u2-63", "en": "music", "de": "Musik", "sec": 242},
+    {"id": "u2-64", "en": "PE", "de": "Sportunterricht, Turnen", "sec": 242},
+    {"id": "u2-65", "en": "science", "de": "Naturwissenschaft", "sec": 242},
+    {"id": "u2-66", "en": "lunch", "de": "das Mittagessen", "sec": 242},
+    {"id": "u2-67", "en": "gym", "de": "die Turnhalle", "sec": 242},
+    {"id": "u2-68", "en": "library (pl libraries)", "de": "die Bibliothek, die Bücherei", "sec": 242},
+    {"id": "u2-69", "en": "exact", "de": "genau", "sec": 242},
+    {"id": "u2-70", "en": "midnight", "de": "Mitternacht", "sec": 243},
+    {"id": "u2-71", "en": "midday", "de": "der Mittag, mittags", "sec": 243},
+    {"id": "u2-72", "en": "quarter past ten", "de": "Viertel nach zehn (10:15 / 22:15)", "sec": 243},
+    {"id": "u2-73", "en": "quarter to eleven", "de": "Viertel vor elf (10:45 / 22:45)", "sec": 243},
+    {"id": "u2-74", "en": "typical (of)", "de": "typisch (für)", "sec": 243},
+    {"id": "u2-75", "en": "(to) read sth. out", "de": "etwas vorlesen", "sec": 243},
+    {"id": "u2-76", "en": "Miss", "de": "übliche Anrede für Lehrerinnen", "sec": 243},
+    {"id": "u2-77", "en": "(to) wear", "de": "tragen", "sec": 243},
+    {"id": "u2-78", "en": "special", "de": "besondere(r, s)", "sec": 243},
+    {"id": "u2-79", "en": "most subjects", "de": "die meisten Fächer", "sec": 243},
+    {"id": "u2-80", "en": "often", "de": "oft", "sec": 243},
+    {"id": "u2-81", "en": "(to) eat", "de": "essen; fressen", "sec": 243},
+    {"id": "u2-82", "en": "food", "de": "das Essen; Lebensmittel (pl); das Futter", "sec": 243},
+    {"id": "u2-83", "en": "(to) leave", "de": "verlassen; zurücklassen", "sec": 243},
+    {"id": "u2-84", "en": "(to) end", "de": "enden; beenden", "sec": 243},
+    {"id": "u2-85", "en": "(to) be over", "de": "vorbei sein, zu Ende sein", "sec": 243},
+    {"id": "u2-86", "en": "afternoon", "de": "der Nachmittag", "sec": 243},
+    {"id": "u2-87", "en": "homework", "de": "die Hausaufgabe(n)", "sec": 243},
+    {"id": "u2-88", "en": "between", "de": "zwischen", "sec": 243},
+    {"id": "u2-89", "en": "without", "de": "ohne", "sec": 243},
+    {"id": "u2-90", "en": "(to) try", "de": "(aus)probieren; versuchen", "sec": 243},
+    {"id": "u2-91", "en": "long", "de": "lang", "sec": 243},
+    {"id": "u2-92", "en": "page", "de": "die Seite", "sec": 244},
+    {"id": "u2-93", "en": "context", "de": "der (Text-, Satz-)Zusammenhang, der Kontext", "sec": 244},
+    {"id": "u2-94", "en": "Excuse me.", "de": "Entschuldigung./ Entschuldigen Sie.", "sec": 244},
+    {"id": "u2-95", "en": "next week", "de": "nächste Woche", "sec": 244},
+    {"id": "u2-96", "en": "these ...", "de": "diese ... die ... (hier)", "sec": 244},
+    {"id": "u2-97", "en": "classmate", "de": "Mitschüler/in, Klassenkamerad/in", "sec": 244},
+    {"id": "u2-98", "en": "a kind of ...", "de": "eine Art (von) ...", "sec": 244},
+    {"id": "u2-99", "en": "fact", "de": "die Tatsache, der Fakt", "sec": 244},
+    {"id": "u2-100", "en": "clear", "de": "klar, deutlich", "sec": 244},
+    {"id": "u2-101", "en": "(to) guess", "de": "raten, erraten", "sec": 244},
+    {"id": "u2-102", "en": "different (from)", "de": "verschieden; anders (als)", "sec": 244},
+    {"id": "u2-103", "en": "second", "de": "zweite(r,s)", "sec": 244},
+    {"id": "u2-104", "en": "apple", "de": "der Apfel", "sec": 244},
+    {"id": "u2-105", "en": "café", "de": "das Café", "sec": 244},
+    {"id": "u2-106", "en": "(to) shout", "de": "schreien, rufen", "sec": 244},
+    {"id": "u2-107", "en": "(to) put your hand up", "de": "sich melden", "sec": 244},
+    {"id": "u2-108", "en": "Which sentence?", "de": "Welcher Satz?", "sec": 244},
+    {"id": "u2-109", "en": "he doesn't have a café", "de": "er hat kein Café", "sec": 244},
+    {"id": "u2-110", "en": "(to) get up", "de": "aufstehen", "sec": 244},
+    {"id": "u2-111", "en": "(to) hurt", "de": "verletzen", "sec": 244},
+    {"id": "u2-112", "en": "them", "de": "sie; ihnen", "sec": 244},
+    {"id": "u2-113", "en": "activity", "de": "die Aktivität", "sec": 244},
+    {"id": "u2-114", "en": "percent (%)", "de": "das Prozent", "sec": 244},
+    {"id": "u2-115", "en": "full", "de": "voll", "sec": 244},
+    {"id": "u2-116", "en": "against", "de": "gegen ...", "sec": 245},
+    {"id": "u2-117", "en": "(to) buy", "de": "kaufen", "sec": 245},
+    {"id": "u2-118", "en": "(to) give", "de": "geben", "sec": 245},
+    {"id": "u2-119", "en": "information (about/on)", "de": "die Information(en) (über)", "sec": 245},
+    {"id": "u2-120", "en": "concert", "de": "das Konzert", "sec": 245},
+    {"id": "u2-121", "en": "exam", "de": "die Prüfung", "sec": 245},
+    {"id": "u2-122", "en": "loud", "de": "laut", "sec": 245},
+    {"id": "u2-123", "en": "I'm finished.", "de": "Ich bin fertig.", "sec": 245},
+    {"id": "u2-124", "en": "polite", "de": "höflich", "sec": 245},
+    {"id": "u2-125", "en": "scene", "de": "die Szene", "sec": 245},
+    {"id": "u2-126", "en": "salad", "de": "der Salat (als Gericht oder Beilage)", "sec": 245},
+    {"id": "u2-127", "en": "those ...", "de": "die ... dort; jene ...", "sec": 245},
+    {"id": "u2-128", "en": "over", "de": "über", "sec": 245},
+    {"id": "u2-129", "en": "over there", "de": "da drüben, dort drüben", "sec": 245},
+    {"id": "u2-130", "en": "cook", "de": "der Koch, die Köchin", "sec": 245},
+    {"id": "u2-131", "en": "him", "de": "ihn; ihm", "sec": 245},
+    {"id": "u2-132", "en": "you", "de": "dich/euch/Sie", "sec": 245},
+    {"id": "u2-133", "en": "it", "de": "es", "sec": 245},
+    {"id": "u2-134", "en": "exciting", "de": "aufregend, spannend", "sec": 246},
+    {"id": "u2-135", "en": "(to) beam", "de": "projizieren", "sec": 246},
+    {"id": "u2-136", "en": "when?", "de": "wann?", "sec": 246},
+    {"id": "u2-137", "en": "creepy", "de": "gruselig", "sec": 246},
+    {"id": "u2-138", "en": "weekend", "de": "das Wochenende", "sec": 246},
+    {"id": "u2-139", "en": "ice cream", "de": "das (Speise-)Eis", "sec": 246},
+    {"id": "u2-140", "en": "baby", "de": "das Baby", "sec": 246},
+    {"id": "u2-141", "en": "calendar", "de": "der Kalender", "sec": 246},
+    {"id": "u2-142", "en": "month", "de": "der Monat", "sec": 246},
+    {"id": "u2-143", "en": "autumn", "de": "der Herbst", "sec": 246},
+    {"id": "u2-144", "en": "term", "de": "das Trimester", "sec": 246},
+    {"id": "u2-145", "en": "date", "de": "das Datum", "sec": 246},
+    {"id": "u2-146", "en": "event", "de": "das Ereignis", "sec": 246},
+    {"id": "u2-147", "en": "holidays (pl)", "de": "Ferien (pl)", "sec": 246},
+    {"id": "u2-148", "en": "end", "de": "das Ende, der Schluss", "sec": 246},
+    {"id": "u2-149", "en": "fourth", "de": "vierte(r, s)", "sec": 246},
+    {"id": "u2-150", "en": "fifth", "de": "fünfte(r, s)", "sec": 246},
+    {"id": "u2-151", "en": "spring", "de": "der Frühling", "sec": 246},
+    {"id": "u2-152", "en": "summer", "de": "der Sommer", "sec": 246},
+    {"id": "u2-153", "en": "winter", "de": "der Winter", "sec": 246},
+    {"id": "u2-154", "en": "January", "de": "Januar", "sec": 246},
+    {"id": "u2-155", "en": "February", "de": "Februar", "sec": 246},
+    {"id": "u2-156", "en": "March", "de": "März", "sec": 246},
+    {"id": "u2-157", "en": "April", "de": "April", "sec": 246},
+    {"id": "u2-158", "en": "May", "de": "Mai", "sec": 246},
+    {"id": "u2-159", "en": "June", "de": "Juni", "sec": 246},
+    {"id": "u2-160", "en": "July", "de": "Juli", "sec": 246},
+    {"id": "u2-161", "en": "August", "de": "August", "sec": 246},
+    {"id": "u2-162", "en": "September", "de": "September", "sec": 246},
+    {"id": "u2-163", "en": "October", "de": "Oktober", "sec": 246},
+    {"id": "u2-164", "en": "November", "de": "November", "sec": 246},
+    {"id": "u2-165", "en": "December", "de": "Dezember", "sec": 246},
+    {"id": "u2-166", "en": "schoolbook", "de": "das Schulbuch", "sec": 247},
+    {"id": "u2-167", "en": "Come on!", "de": "Na los! / Komm!", "sec": 247},
+    {"id": "u2-168", "en": "crib sheet", "de": "der Spickzettel, der Merkzettel", "sec": 247},
+    {"id": "u2-169", "en": "note", "de": "die Notiz, die Mitteilung", "sec": 247},
+    {"id": "u2-170", "en": "(to) relax", "de": "sich entspannen, sich ausruhen", "sec": 247},
+    {"id": "u2-171", "en": "(to) smile", "de": "lächeln", "sec": 247},
+    {"id": "u2-172", "en": "slow", "de": "langsam", "sec": 247},
+    {"id": "u2-173", "en": "fast", "de": "schnell", "sec": 247},
+    {"id": "u2-174", "en": "(to) worry (about)", "de": "sich Sorgen machen (wegen, um)", "sec": 247},
+    {"id": "u2-175", "en": "technique", "de": "die Technik, die Methode", "sec": 247},
+    {"id": "u2-176", "en": "while", "de": "während", "sec": 247},
+    {"id": "u2-177", "en": "(to) repeat", "de": "wiederholen", "sec": 247},
+    {"id": "u2-178", "en": "(to) stop", "de": "aufhören; anhalten", "sec": 247},
+    {"id": "u2-179", "en": "dancer", "de": "Tänzer/in", "sec": 247},
+    {"id": "u2-180", "en": "Just then", "de": "genau in dem Moment; gerade dann", "sec": 247},
+    {"id": "u2-181", "en": "(to) beep", "de": "piepen", "sec": 247},
+    {"id": "u2-182", "en": "shy", "de": "schüchtern, scheu", "sec": 247},
+    {"id": "u2-183", "en": "real", "de": "echt, wirklich", "sec": 247},
+    {"id": "u2-184", "en": "(to) happen", "de": "geschehen, passieren", "sec": 247},
+    {"id": "u2-185", "en": "interesting", "de": "interessant", "sec": 247},
+    {"id": "u2-186", "en": "(to) breathe in", "de": "einatmen", "sec": 247},
+  ]},
+  u3: {place:{"id": "u3", "name": "Unit 3: In our free time", "place": "Clubs, Markt & Backstube", "src": "Englischbuch S. 248–255", "hue": "#C2479A", "unit": "u3"}, words:[
+    {"id": "u3-01", "en": "broken", "de": "zerbrochen, kaputt; gebrochen", "sec": 248},
+    {"id": "u3-02", "en": "better", "de": "besser", "sec": 248},
+    {"id": "u3-03", "en": "dirty", "de": "schmutzig", "sec": 248},
+    {"id": "u3-04", "en": "(to) wash", "de": "waschen", "sec": 248},
+    {"id": "u3-05", "en": "(to) fix", "de": "reparieren", "sec": 248},
+    {"id": "u3-06", "en": "(to) look after sb./sth.", "de": "auf jn./etwas aufpassen; sich um jn./etwas kümmern", "sec": 248},
+    {"id": "u3-07", "en": "eye", "de": "das Auge", "sec": 248},
+    {"id": "u3-08", "en": "at that moment", "de": "in diesem Moment", "sec": 248},
+    {"id": "u3-09", "en": "(to) change", "de": "(ver)ändern", "sec": 248},
+    {"id": "u3-10", "en": "suddenly", "de": "plötzlich, auf einmal", "sec": 248},
+    {"id": "u3-11", "en": "unhappy", "de": "unglücklich", "sec": 248},
+    {"id": "u3-12", "en": "thought bubble", "de": "die Gedankenblase", "sec": 248},
+    {"id": "u3-13", "en": "thought", "de": "der Gedanke", "sec": 248},
+    {"id": "u3-14", "en": "(to) practise", "de": "üben, trainieren, proben", "sec": 248},
+    {"id": "u3-15", "en": "practice", "de": "die Übung, das Training", "sec": 248},
+    {"id": "u3-16", "en": "orchestra", "de": "das Orchester", "sec": 248},
+    {"id": "u3-17", "en": "goat", "de": "die Ziege", "sec": 248},
+    {"id": "u3-18", "en": "(to) join (a club)", "de": "(in einen Klub) eintreten: (sich einem Klub) anschließen", "sec": 248},
+    {"id": "u3-19", "en": "(to) be/feel bored", "de": "gelangweilt sein, sich langweilen", "sec": 248},
+    {"id": "u3-20", "en": "(to) whisper", "de": "flüstern", "sec": 248},
+    {"id": "u3-21", "en": "never", "de": "nie, niemals", "sec": 248},
+    {"id": "u3-22", "en": "usually", "de": "meistens, normalerweise, gewöhnlich", "sec": 248},
+    {"id": "u3-23", "en": "chess", "de": "das Schach", "sec": 249},
+    {"id": "u3-24", "en": "(to) cook", "de": "kochen, zubereiten", "sec": 249},
+    {"id": "u3-25", "en": "No way!", "de": "Auf keinen Fall! / Kommt nicht in Frage!", "sec": 249},
+    {"id": "u3-26", "en": "I can't stand...", "de": "Ich kann ... nicht ausstehen/ ertragen.", "sec": 249},
+    {"id": "u3-27", "en": "scone", "de": "kleines rundes Gebäck, leicht süß, oft mit Rosinen", "sec": 249},
+    {"id": "u3-28", "en": "(to) agree", "de": "gleicher Meinung sein", "sec": 249},
+    {"id": "u3-29", "en": "(to) agree with sb.", "de": "jm. zustimmen", "sec": 249},
+    {"id": "u3-30", "en": "(to) agree on sth.", "de": "sich auf etwas einigen", "sec": 249},
+    {"id": "u3-31", "en": "(to) hate", "de": "hassen", "sec": 249},
+    {"id": "u3-32", "en": "rude", "de": "unhöflich; unverschämt", "sec": 249},
+    {"id": "u3-33", "en": "Oh dear!", "de": "Oje!", "sec": 249},
+    {"id": "u3-34", "en": "(to) be interested (in)", "de": "sich interessieren (für), interessiert sein (an)", "sec": 249},
+    {"id": "u3-35", "en": "finger", "de": "der Finger", "sec": 249},
+    {"id": "u3-36", "en": "plant", "de": "die Pflanze", "sec": 249},
+    {"id": "u3-37", "en": "choir", "de": "der Chor", "sec": 249},
+    {"id": "u3-38", "en": "instrument", "de": "das Instrument", "sec": 249},
+    {"id": "u3-39", "en": "member", "de": "das Mitglied", "sec": 249},
+    {"id": "u3-40", "en": "(to) build", "de": "bauen", "sec": 249},
+    {"id": "u3-41", "en": "race", "de": "das Rennen, der (Wett-)Lauf", "sec": 249},
+    {"id": "u3-42", "en": "(to) cycle", "de": "Rad fahren", "sec": 249},
+    {"id": "u3-43", "en": "their own clubs", "de": "ihre eigenen Klubs", "sec": 249},
+    {"id": "u3-44", "en": "similar (to sth./sb.)", "de": "(etwas/jm.) ähnlich", "sec": 249},
+    {"id": "u3-45", "en": "only", "de": "nur", "sec": 249},
+    {"id": "u3-46", "en": "(to) move", "de": "bewegen; sich bewegen", "sec": 250},
+    {"id": "u3-47", "en": "role", "de": "die Rolle (in einem Theaterstück, Film)", "sec": 250},
+    {"id": "u3-48", "en": "honour", "de": "die Ehre", "sec": 250},
+    {"id": "u3-49", "en": "clean", "de": "sauber", "sec": 250},
+    {"id": "u3-50", "en": "rough", "de": "grob, brutal, stürmisch", "sec": 250},
+    {"id": "u3-51", "en": "direct", "de": "direkt", "sec": 250},
+    {"id": "u3-52", "en": "winner", "de": "Gewinner/in, Sieger/in", "sec": 250},
+    {"id": "u3-53", "en": "(to) win", "de": "gewinnen, siegen", "sec": 250},
+    {"id": "u3-54", "en": "(to) show off", "de": "angeben", "sec": 250},
+    {"id": "u3-55", "en": "(to) explain sth. to sb.", "de": "jm. etwas erklären, erläutern", "sec": 250},
+    {"id": "u3-56", "en": "hard", "de": "schwer, schwierig; hart", "sec": 250},
+    {"id": "u3-57", "en": "outside", "de": "draußen; nach draußen", "sec": 250},
+    {"id": "u3-58", "en": "inside", "de": "drinnen; nach drinnen", "sec": 250},
+    {"id": "u3-59", "en": "alone", "de": "allein", "sec": 250},
+    {"id": "u3-60", "en": "quite", "de": "ziemlich; völlig, ganz", "sec": 250},
+    {"id": "u3-61", "en": "time", "de": "das Mal", "sec": 250},
+    {"id": "u3-62", "en": "(to) hold", "de": "halten", "sec": 250},
+    {"id": "u3-63", "en": "medal", "de": "die Medaille", "sec": 250},
+    {"id": "u3-64", "en": "runner", "de": "Läufer/in", "sec": 250},
+    {"id": "u3-65", "en": "cross-country running", "de": "Geländelauf", "sec": 250},
+    {"id": "u3-66", "en": "Good luck!", "de": "Viel Glück!", "sec": 251},
+    {"id": "u3-67", "en": "(to) cheer", "de": "jubeln", "sec": 251},
+    {"id": "u3-68", "en": "(to) believe", "de": "glauben", "sec": 251},
+    {"id": "u3-69", "en": "(to) swing", "de": "schwingen", "sec": 251},
+    {"id": "u3-70", "en": "arm", "de": "der Arm", "sec": 251},
+    {"id": "u3-71", "en": "almost", "de": "fast, beinahe", "sec": 251},
+    {"id": "u3-72", "en": "across the line", "de": "(quer) über die Linie", "sec": 251},
+    {"id": "u3-73", "en": "(to) cross", "de": "überqueren", "sec": 251},
+    {"id": "u3-74", "en": "Well done.", "de": "Gut gemacht.", "sec": 251},
+    {"id": "u3-75", "en": "(to) feel", "de": "fühlen; sich fühlen", "sec": 251},
+    {"id": "u3-76", "en": "water", "de": "das Wasser", "sec": 251},
+    {"id": "u3-77", "en": "(to) train", "de": "trainieren", "sec": 251},
+    {"id": "u3-78", "en": "(to) be thirsty", "de": "durstig sein, Durst haben", "sec": 251},
+    {"id": "u3-79", "en": "away", "de": "weg; fort", "sec": 251},
+    {"id": "u3-80", "en": "empty", "de": "leer", "sec": 251},
+    {"id": "u3-81", "en": "sad", "de": "traurig", "sec": 251},
+    {"id": "u3-82", "en": "tomorrow", "de": "morgen", "sec": 251},
+    {"id": "u3-83", "en": "birthday", "de": "der Geburtstag", "sec": 251},
+    {"id": "u3-84", "en": "picnic", "de": "das Picknick", "sec": 251},
+    {"id": "u3-85", "en": "pocket", "de": "die Tasche (Manteltasche, Hosentasche usw.)", "sec": 251},
+    {"id": "u3-86", "en": "(to) pass sth./sb.", "de": "an etwas/jm. vorbeigehen/ vorbeifahren", "sec": 251},
+    {"id": "u3-87", "en": "shop", "de": "der Laden", "sec": 251},
+    {"id": "u3-88", "en": "invitation (to)", "de": "die Einladung (zu, nach)", "sec": 251},
+    {"id": "u3-89", "en": "(to) be a good sport", "de": "sich fair verhalten", "sec": 251},
+    {"id": "u3-90", "en": "angry", "de": "wütend", "sec": 251},
+    {"id": "u3-91", "en": "(to) lose", "de": "verlieren", "sec": 251},
+    {"id": "u3-92", "en": "(to) take part in sth.", "de": "an etwas teilnehmen", "sec": 251},
+    {"id": "u3-93", "en": "(to) interview sb.", "de": "jn. interviewen, jn. befragen", "sec": 251},
+    {"id": "u3-94", "en": "nervous", "de": "nervös, aufgeregt", "sec": 251},
+    {"id": "u3-95", "en": "(to) greet sb.", "de": "jn. begrüßen", "sec": 252},
+    {"id": "u3-96", "en": "(to) comment (on sth.)", "de": "sich äußern (über/zu etwas); einen Kommentar abgeben (zu etwas)", "sec": 252},
+    {"id": "u3-97", "en": "version", "de": "die Version, die Fassung", "sec": 252},
+    {"id": "u3-98", "en": "same", "de": "gleich", "sec": 252},
+    {"id": "u3-99", "en": "cake", "de": "der Kuchen", "sec": 252},
+    {"id": "u3-100", "en": "(to) get", "de": "gelangen, (hin)kommen", "sec": 252},
+    {"id": "u3-101", "en": "Would you like...?", "de": "Möchtest du ...?", "sec": 252},
+    {"id": "u3-102", "en": "I'd like ...", "de": "Ich möchte ...", "sec": 252},
+    {"id": "u3-103", "en": "I have to buy ...", "de": "ich muss ... kaufen", "sec": 252},
+    {"id": "u3-104", "en": "biscuit", "de": "der Keks, das Plätzchen", "sec": 252},
+    {"id": "u3-105", "en": "sweet", "de": "die Süßigkeit", "sec": 252},
+    {"id": "u3-106", "en": "excited", "de": "aufgeregt, gespannt", "sec": 252},
+    {"id": "u3-107", "en": "fruit", "de": "das Obst, Früchte (pl); die Frucht", "sec": 252},
+    {"id": "u3-108", "en": "grape", "de": "die (Wein-)Traube", "sec": 252},
+    {"id": "u3-109", "en": "a few", "de": "ein paar, einige", "sec": 252},
+    {"id": "u3-110", "en": "fizzy", "de": "sprudelnd", "sec": 252},
+    {"id": "u3-111", "en": "much", "de": "viel", "sec": 252},
+    {"id": "u3-112", "en": "juice", "de": "der Saft", "sec": 252},
+    {"id": "u3-113", "en": "orange", "de": "die Orange, die Apfelsine", "sec": 252},
+    {"id": "u3-114", "en": "enough", "de": "genug", "sec": 252},
+    {"id": "u3-115", "en": "money", "de": "das Geld", "sec": 252},
+    {"id": "u3-116", "en": "(to) forget", "de": "vergessen", "sec": 252},
+    {"id": "u3-117", "en": "trolley", "de": "der Einkaufswagen", "sec": 252},
+    {"id": "u3-118", "en": "list", "de": "die Liste", "sec": 252},
+    {"id": "u3-119", "en": "of course", "de": "natürlich, selbstverständlich", "sec": 252},
+    {"id": "u3-120", "en": "not... yet", "de": "noch nicht", "sec": 253},
+    {"id": "u3-121", "en": "crisps (pl)", "de": "Kartoffelchips (pl)", "sec": 253},
+    {"id": "u3-122", "en": "monkey", "de": "der Affe", "sec": 253},
+    {"id": "u3-123", "en": "(to) pick sth. up", "de": "etwas aufheben (vom Boden), etwas hochheben", "sec": 253},
+    {"id": "u3-124", "en": "(to) choose", "de": "aussuchen, (aus)wählen; sich aussuchen", "sec": 253},
+    {"id": "u3-125", "en": "tear", "de": "die Träne", "sec": 253},
+    {"id": "u3-126", "en": "(to) arrive", "de": "ankommen, eintreffen", "sec": 253},
+    {"id": "u3-127", "en": "(to) point to sth.", "de": "auf etwas zeigen, deuten", "sec": 253},
+    {"id": "u3-128", "en": "heavy", "de": "schwer (von Gewicht)", "sec": 253},
+    {"id": "u3-129", "en": "(to) call", "de": "rufen; anrufen; nennen", "sec": 253},
+    {"id": "u3-130", "en": "plate", "de": "der Teller", "sec": 253},
+    {"id": "u3-131", "en": "round", "de": "rund", "sec": 253},
+    {"id": "u3-132", "en": "(to) bake", "de": "backen", "sec": 253},
+    {"id": "u3-133", "en": "(to) begin", "de": "beginnen, anfangen", "sec": 253},
+    {"id": "u3-134", "en": "rainbow", "de": "der Regenbogen", "sec": 253},
+    {"id": "u3-135", "en": "recipe", "de": "das (Koch-)Rezept", "sec": 253},
+    {"id": "u3-136", "en": "ingredient", "de": "die Zutat", "sec": 253},
+    {"id": "u3-137", "en": "instruction", "de": "die Anweisung", "sec": 253},
+    {"id": "u3-138", "en": "g (gram)", "de": "das Gramm", "sec": 253},
+    {"id": "u3-139", "en": "butter", "de": "die Butter", "sec": 253},
+    {"id": "u3-140", "en": "sugar", "de": "der Zucker", "sec": 253},
+    {"id": "u3-141", "en": "egg", "de": "das Ei", "sec": 253},
+    {"id": "u3-142", "en": "flour", "de": "das Mehl", "sec": 253},
+    {"id": "u3-143", "en": "chocolate", "de": "die Schokolade; schokoladen-", "sec": 253},
+    {"id": "u3-144", "en": "bean", "de": "die Bohne", "sec": 253},
+    {"id": "u3-145", "en": "bread", "de": "das Brot", "sec": 253},
+    {"id": "u3-146", "en": "salt", "de": "das Salz", "sec": 253},
+    {"id": "u3-147", "en": "pepper", "de": "der Pfeffer", "sec": 253},
+    {"id": "u3-148", "en": "jar", "de": "das Einmachglas", "sec": 253},
+    {"id": "u3-149", "en": "pear", "de": "die Birne", "sec": 254},
+    {"id": "u3-150", "en": "kiwi", "de": "die Kiwi", "sec": 254},
+    {"id": "u3-151", "en": "pineapple", "de": "die Ananas", "sec": 254},
+    {"id": "u3-152", "en": "strawberry (pl strawberries)", "de": "die Erdbeere", "sec": 254},
+    {"id": "u3-153", "en": "vegetables (pl)", "de": "das Gemüse", "sec": 254},
+    {"id": "u3-154", "en": "tomato (pl tomatoes)", "de": "die Tomate", "sec": 254},
+    {"id": "u3-155", "en": "carrot", "de": "die Mohrrübe, die Karotte", "sec": 254},
+    {"id": "u3-156", "en": "cheese", "de": "der Käse", "sec": 254},
+    {"id": "u3-157", "en": "(to) add (sth. to sth.)", "de": "(etwas) hinzufügen, ergänzen, addieren (zu etwas)", "sec": 254},
+    {"id": "u3-158", "en": "(to) beat", "de": "schlagen", "sec": 254},
+    {"id": "u3-159", "en": "until", "de": "bis", "sec": 254},
+    {"id": "u3-160", "en": "fridge", "de": "der Kühlschrank", "sec": 254},
+    {"id": "u3-161", "en": "oven", "de": "der Ofen, der Backofen", "sec": 254},
+    {"id": "u3-162", "en": "(to) cut", "de": "schneiden", "sec": 254},
+    {"id": "u3-163", "en": "a piece of ...", "de": "ein Stück ...", "sec": 254},
+    {"id": "u3-164", "en": "row", "de": "die Reihe", "sec": 254},
+    {"id": "u3-165", "en": "(to) structure", "de": "strukturieren, gliedern", "sec": 254},
+    {"id": "u3-166", "en": "method", "de": "die Methode", "sec": 254},
+    {"id": "u3-167", "en": "in other ways", "de": "auf andere Art und Weise", "sec": 254},
+    {"id": "u3-168", "en": "(to) collect", "de": "sammeln", "sec": 254},
+    {"id": "u3-169", "en": "(to) mark", "de": "markieren", "sec": 254},
+    {"id": "u3-170", "en": "meal", "de": "die Mahlzeit, das Essen", "sec": 254},
+    {"id": "u3-171", "en": "quantity (pl quantities)", "de": "die Quantität, die Menge", "sec": 254},
+    {"id": "u3-172", "en": "(to) remember sth.", "de": "an etwas denken", "sec": 254},
+    {"id": "u3-173", "en": "plan", "de": "der Plan", "sec": 254},
+    {"id": "u3-174", "en": "meaning", "de": "die Bedeutung", "sec": 254},
+    {"id": "u3-175", "en": "(to) mean", "de": "bedeuten", "sec": 254},
+    {"id": "u3-176", "en": "(to) compare", "de": "vergleichen", "sec": 254},
+    {"id": "u3-177", "en": "mediation", "de": "die Sprachmittlung, die Mediation", "sec": 254},
+    {"id": "u3-178", "en": "lettuce", "de": "der Kopfsalat", "sec": 254},
+    {"id": "u3-179", "en": "(to) pass sth. on", "de": "etwas weitergeben", "sec": 255},
+    {"id": "u3-180", "en": "(to) translate", "de": "übersetzen", "sec": 255},
+    {"id": "u3-181", "en": "shower", "de": "die Dusche", "sec": 255},
+    {"id": "u3-182", "en": "present", "de": "das Geschenk", "sec": 255},
+    {"id": "u3-183", "en": "(to) be hungry", "de": "hungrig sein, Hunger haben", "sec": 255},
+    {"id": "u3-184", "en": "sausage", "de": "die Wurst, das Würstchen", "sec": 255},
+    {"id": "u3-185", "en": "after", "de": "nachdem", "sec": 255},
+    {"id": "u3-186", "en": "(to) look happy/angry/..", "de": "glücklich/wütend/... aussehen", "sec": 255},
+    {"id": "u3-187", "en": "(to) hope", "de": "hoffen", "sec": 255},
+    {"id": "u3-188", "en": "(to) stand", "de": "stehen; sich (hin)stellen", "sec": 255},
+    {"id": "u3-189", "en": "bus", "de": "der Bus", "sec": 255},
+    {"id": "u3-190", "en": "warm", "de": "warm", "sec": 255},
+    {"id": "u3-191", "en": "sun", "de": "die Sonne", "sec": 255},
+    {"id": "u3-192", "en": "(to) text (sb.)", "de": "(jm.) eine SMS schicken", "sec": 255},
+    {"id": "u3-193", "en": "way", "de": "die Richtung", "sec": 255},
+    {"id": "u3-194", "en": "step", "de": "die Stufe", "sec": 255},
+    {"id": "u3-195", "en": "down", "de": "hinunter, herunter; nach unten", "sec": 255},
+    {"id": "u3-196", "en": "up", "de": "hinauf, herauf; (nach) oben", "sec": 255},
+    {"id": "u3-197", "en": "(to) bark", "de": "bellen", "sec": 255},
+    {"id": "u3-198", "en": "(to) hurry", "de": "eilen; sich beeilen", "sec": 255},
+    {"id": "u3-199", "en": "towards Buddy", "de": "auf Buddy zu, in Richtung Buddy", "sec": 255},
+    {"id": "u3-200", "en": "lunchtime", "de": "die Mittagszeit", "sec": 255},
+  ]},
+  u4: {place:{"id": "u4", "name": "Unit 4: Out and about in Brighton", "place": "Unterwegs in Brighton", "src": "Englischbuch S. 256–261", "hue": "#3A63C9", "unit": "u4"}, words:[
+    {"id": "u4-01", "en": "(to) pull", "de": "ziehen", "sec": 256},
+    {"id": "u4-02", "en": "(to) push", "de": "drücken", "sec": 256},
+    {"id": "u4-03", "en": "I don't think so.", "de": "Ich glaube nicht.", "sec": 256},
+    {"id": "u4-04", "en": "out and about", "de": "unterwegs", "sec": 256},
+    {"id": "u4-05", "en": "famous (for)", "de": "berühmt (für, wegen)", "sec": 256},
+    {"id": "u4-06", "en": "sight", "de": "die Sehenswürdigkeit", "sec": 256},
+    {"id": "u4-07", "en": "work of art", "de": "das Kunstwerk", "sec": 256},
+    {"id": "u4-08", "en": "chips (pl)", "de": "Pommes frites (pl)", "sec": 256},
+    {"id": "u4-09", "en": "neighbourhood", "de": "das Viertel, die Gegend, die Umgebung; die Nachbarschaft", "sec": 256},
+    {"id": "u4-10", "en": "strange", "de": "seltsam, komisch", "sec": 256},
+    {"id": "u4-11", "en": "sunny", "de": "sonnig", "sec": 256},
+    {"id": "u4-12", "en": "cloudy", "de": "bewölkt", "sec": 256},
+    {"id": "u4-13", "en": "(to) look up", "de": "hochsehen, aufschauen", "sec": 256},
+    {"id": "u4-14", "en": "weather", "de": "das Wetter", "sec": 256},
+    {"id": "u4-15", "en": "(to) cry", "de": "weinen", "sec": 256},
+    {"id": "u4-16", "en": "horrible", "de": "grauenhaft, entsetzlich", "sec": 256},
+    {"id": "u4-17", "en": "dream", "de": "der Traum", "sec": 256},
+    {"id": "u4-18", "en": "(to) sleep", "de": "schlafen", "sec": 256},
+    {"id": "u4-19", "en": "somebody", "de": "jemand", "sec": 256},
+    {"id": "u4-20", "en": "yesterday", "de": "gestern", "sec": 256},
+    {"id": "u4-21", "en": "(to) get angry/cold/...", "de": "wütend/kalt/... werden", "sec": 256},
+    {"id": "u4-22", "en": "(to) run after sb./sth.", "de": "jm./etwas hinterherrennen", "sec": 256},
+    {"id": "u4-23", "en": "(to) slow down", "de": "langsamer werden; (sich) verlangsamen", "sec": 256},
+    {"id": "u4-24", "en": "(to) growl", "de": "knurren", "sec": 256},
+    {"id": "u4-25", "en": "I can't believe my eyes.", "de": "Ich traue meinen Augen nicht.", "sec": 256},
+    {"id": "u4-26", "en": "metre", "de": "der Meter", "sec": 256},
+    {"id": "u4-27", "en": "pavement", "de": "der Gehweg, der Bürgersteig", "sec": 257},
+    {"id": "u4-28", "en": "(to) follow", "de": "folgen", "sec": 257},
+    {"id": "u4-29", "en": "post box", "de": "der Briefkasten", "sec": 257},
+    {"id": "u4-30", "en": "post office", "de": "das Postamt", "sec": 257},
+    {"id": "u4-31", "en": "(to) turn around", "de": "sich umdrehen", "sec": 257},
+    {"id": "u4-32", "en": "(to) hide", "de": "verstecken, sich verstecken", "sec": 257},
+    {"id": "u4-33", "en": "key", "de": "der Schlüssel", "sec": 257},
+    {"id": "u4-34", "en": "machine", "de": "die Maschine, das Gerät", "sec": 257},
+    {"id": "u4-35", "en": "windy", "de": "windig", "sec": 257},
+    {"id": "u4-36", "en": "stormy", "de": "stürmisch", "sec": 257},
+    {"id": "u4-37", "en": "rainy", "de": "regnerisch", "sec": 257},
+    {"id": "u4-38", "en": "(to) rain", "de": "regnen", "sec": 257},
+    {"id": "u4-39", "en": "snowy", "de": "schneebedeckt, verschneit", "sec": 257},
+    {"id": "u4-40", "en": "(to) snow", "de": "schneien", "sec": 257},
+    {"id": "u4-41", "en": "font", "de": "die Schrift(art)", "sec": 257},
+    {"id": "u4-42", "en": "size", "de": "die Größe", "sec": 257},
+    {"id": "u4-43", "en": "title", "de": "der Titel, die Überschrift", "sec": 257},
+    {"id": "u4-44", "en": "at the top (of)", "de": "oben, am oberen Ende, an der Spitze (von)", "sec": 257},
+    {"id": "u4-45", "en": "at the bottom (of)", "de": "unten, am unteren Ende (von)", "sec": 257},
+    {"id": "u4-46", "en": "caption", "de": "die Bildunterschrift", "sec": 257},
+    {"id": "u4-47", "en": "beautiful", "de": "schön", "sec": 257},
+    {"id": "u4-48", "en": "ground", "de": "der (Erd-)Boden", "sec": 257},
+    {"id": "u4-49", "en": "(to) save", "de": "speichern, sichern (Daten)", "sec": 257},
+    {"id": "u4-50", "en": "on the right", "de": "rechts/auf der rechten Seite", "sec": 257},
+    {"id": "u4-51", "en": "on the left", "de": "links/auf der linken Seite", "sec": 257},
+    {"id": "u4-52", "en": "middle", "de": "die Mitte", "sec": 257},
+    {"id": "u4-53", "en": "foreground", "de": "der Vordergrund", "sec": 257},
+    {"id": "u4-54", "en": "(to) throw", "de": "werfen", "sec": 257},
+    {"id": "u4-55", "en": "magical", "de": "zauberhaft, wundervoll; magisch", "sec": 257},
+    {"id": "u4-56", "en": "description", "de": "die Beschreibung", "sec": 258},
+    {"id": "u4-57", "en": "(to) cost", "de": "kosten", "sec": 258},
+    {"id": "u4-58", "en": "everything", "de": "alles", "sec": 258},
+    {"id": "u4-59", "en": "(to) turn sth. on", "de": "etwas einschalten", "sec": 258},
+    {"id": "u4-60", "en": "(to) turn sth. off", "de": "etwas ausschalten", "sec": 258},
+    {"id": "u4-61", "en": "cage", "de": "der Käfig", "sec": 258},
+    {"id": "u4-62", "en": "tool", "de": "das Werkzeug", "sec": 258},
+    {"id": "u4-63", "en": "silent", "de": "still, leise", "sec": 258},
+    {"id": "u4-64", "en": "still", "de": "(immer) noch", "sec": 258},
+    {"id": "u4-65", "en": "What's the matter?", "de": "Was ist denn? / Was ist los?", "sec": 258},
+    {"id": "u4-66", "en": "(to) appear", "de": "erscheinen, auftauchen", "sec": 258},
+    {"id": "u4-67", "en": "whose?", "de": "wessen?", "sec": 258},
+    {"id": "u4-68", "en": "brave", "de": "mutig, tapfer", "sec": 258},
+    {"id": "u4-69", "en": "if", "de": "ob", "sec": 258},
+    {"id": "u4-70", "en": "project", "de": "das Projekt", "sec": 258},
+    {"id": "u4-71", "en": "(to) match sth.", "de": "zu etwas passen", "sec": 258},
+    {"id": "u4-72", "en": "feeling", "de": "das Gefühl", "sec": 258},
+    {"id": "u4-73", "en": "customer", "de": "Kunde/Kundin", "sec": 258},
+    {"id": "u4-74", "en": "ride", "de": "die Fahrt; das Fahrgeschäft (auf dem Volksfest, im Vergnügungspark)", "sec": 258},
+    {"id": "u4-75", "en": "(to) decide", "de": "beschließen, sich entscheiden", "sec": 258},
+    {"id": "u4-76", "en": "expensive", "de": "teuer", "sec": 258},
+    {"id": "u4-77", "en": "cinema", "de": "das Kino", "sec": 258},
+    {"id": "u4-78", "en": "(to) suggest sth. (to sb.)", "de": "(jm.) etwas vorschlagen", "sec": 258},
+    {"id": "u4-79", "en": "light", "de": "das Licht", "sec": 258},
+    {"id": "u4-80", "en": "pound (£)", "de": "das Pfund (britische Währung)", "sec": 258},
+    {"id": "u4-81", "en": "glass", "de": "das Glas", "sec": 259},
+    {"id": "u4-82", "en": "(to) bet", "de": "wetten", "sec": 259},
+    {"id": "u4-83", "en": "more than", "de": "mehr als", "sec": 259},
+    {"id": "u4-84", "en": "serious", "de": "ernst; ernsthaft", "sec": 259},
+    {"id": "u4-85", "en": "(to) be in trouble", "de": "in Schwierigkeiten sein; Ärger bekommen", "sec": 259},
+    {"id": "u4-86", "en": "Give me a break!", "de": "Verschone mich!", "sec": 259},
+    {"id": "u4-87", "en": "worried", "de": "besorgt, beunruhigt", "sec": 259},
+    {"id": "u4-88", "en": "truth", "de": "die Wahrheit", "sec": 259},
+    {"id": "u4-89", "en": "opposite sth.", "de": "gegenüber von etwas", "sec": 259},
+    {"id": "u4-90", "en": "(to) sell", "de": "verkaufen", "sec": 259},
+    {"id": "u4-91", "en": "rescue", "de": "die Rettung", "sec": 259},
+    {"id": "u4-92", "en": "(to) rescue", "de": "retten", "sec": 259},
+    {"id": "u4-93", "en": "visitor", "de": "Besucher/in, der Gast", "sec": 259},
+    {"id": "u4-94", "en": "next", "de": "als Nächstes", "sec": 259},
+    {"id": "u4-95", "en": "suggestion", "de": "der Vorschlag", "sec": 259},
+    {"id": "u4-96", "en": "habit", "de": "die (An-)Gewohnheit", "sec": 259},
+    {"id": "u4-97", "en": "order", "de": "der Befehl", "sec": 259},
+    {"id": "u4-98", "en": "(to) go black", "de": "schwarz werden", "sec": 259},
+    {"id": "u4-99", "en": "(to) ring (bell, alarm)", "de": "klingeln, läuten", "sec": 259},
+    {"id": "u4-100", "en": "jewel", "de": "das Juwel", "sec": 259},
+    {"id": "u4-101", "en": "bakery", "de": "die Bäckerei", "sec": 259},
+    {"id": "u4-102", "en": "outside the shop", "de": "vor dem Laden, außerhalb des Ladens", "sec": 260},
+    {"id": "u4-103", "en": "crazy", "de": "verrückt", "sec": 260},
+    {"id": "u4-104", "en": "tall", "de": "groß (Person); hoch (Gebäude, Baum)", "sec": 260},
+    {"id": "u4-105", "en": "(to) cry", "de": "schreien, rufen", "sec": 260},
+    {"id": "u4-106", "en": "(to) tear sth. off sth.", "de": "etwas von etwas (ab)reißen", "sec": 260},
+    {"id": "u4-107", "en": "paper", "de": "das Papier", "sec": 260},
+    {"id": "u4-108", "en": "(to) tiptoe", "de": "auf Zehenspitzen gehen", "sec": 260},
+    {"id": "u4-109", "en": "(to) tidy sth.", "de": "etwas aufräumen", "sec": 260},
+    {"id": "u4-110", "en": "(to) wash the dishes", "de": "das Geschirr abwaschen, spülen", "sec": 260},
+    {"id": "u4-111", "en": "(to) dry", "de": "trocknen", "sec": 260},
+    {"id": "u4-112", "en": "hair", "de": "das Haar, die Haare", "sec": 260},
+    {"id": "u4-113", "en": "tooth", "de": "der Zahn", "sec": 260},
+    {"id": "u4-114", "en": "(to) clean", "de": "putzen, säubern, reinigen", "sec": 260},
+    {"id": "u4-115", "en": "the best machine ever", "de": "die beste Maschine aller Zeiten", "sec": 260},
+    {"id": "u4-116", "en": "(to) lift", "de": "(an)heben, hochheben", "sec": 260},
+    {"id": "u4-117", "en": "locked", "de": "verschlossen", "sec": 260},
+    {"id": "u4-118", "en": "honestly", "de": "ehrlich", "sec": 261},
+    {"id": "u4-119", "en": "(to) waste sth. (on sth.)", "de": "etwas (für etwas) verschwenden", "sec": 261},
+    {"id": "u4-120", "en": "quick", "de": "schnell", "sec": 261},
+    {"id": "u4-121", "en": "police (pl)", "de": "die Polizei", "sec": 261},
+    {"id": "u4-122", "en": "(to) connect", "de": "verbinden, verknüpfen", "sec": 261},
+    {"id": "u4-123", "en": "(to) make sb. do sth.", "de": "jn. dazu bringen, etwas zu tun; jn. zwingen, etwas zu tun", "sec": 261},
+    {"id": "u4-124", "en": "(to) ask sb. to do sth.", "de": "jn. bitten, etwas zu tun", "sec": 261},
+    {"id": "u4-125", "en": "view (of)", "de": "die Aussicht, der Blick (auf)", "sec": 261},
+    {"id": "u4-126", "en": "bench", "de": "die (Sitz-)Bank", "sec": 261},
+    {"id": "u4-127", "en": "Buddy wags his tail.", "de": "Buddy wedelt mit dem Schwanz.", "sec": 261},
+    {"id": "u4-128", "en": "bright", "de": "hell", "sec": 261},
+    {"id": "u4-129", "en": "poor", "de": "arm", "sec": 261},
+    {"id": "u4-130", "en": "(to) sigh", "de": "seufzen", "sec": 261},
+    {"id": "u4-131", "en": "(to) break", "de": "zerbrechen, kaputt machen", "sec": 261},
+  ]},
+};
+
 const W = [];
 PLANETS.forEach(p=>{
   if (p.id==="u1"){ U1.forEach(w=>{ w.pl="u1"; W.push(w); }); return; }
@@ -2094,6 +2624,7 @@ function load(){
   return null;
 }
 let S = load();
+unitsApply();
 /* Fische: Jede Stufe, die ein Wort aufsteigt, ist ein Fisch für die Möwe. Der Zähler sinkt nie. */
 if (S && S.fish==null){ S.fish = Object.values(S.words||{}).reduce((a,x)=>a+(x.b||0),0); }
 const feed = n => { if (n>0){ S.fish = (S.fish||0) + n; } };
@@ -2106,7 +2637,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795369641";
+const BUILD = "1795370808";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2796,7 +3327,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "bd2f2ba1ea24f2a8cd5d716a6140e8dd7dc56b89"
+const SCN_COMMIT = "074755176d24f39a435afdd7681629bd89577378"
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2853,7 +3384,7 @@ function scnLoad(){
   }).catch(() => { FR.files = FR.files || {}; });
   const wd = scnFetch("world/manifest.json").then(m => { SCN.world = m; }).catch(() => { SCN.world = null; });
   const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; SCN.outfits = (m && m.outfits) || {};
-    SCN.screenBg = (m && m.screenBackgrounds) || {}; SCN.bgPlan = (m && m.menuBackgroundPlan) || {}; SCN.bgVariants = (m && m.menuBackgroundVariants) || {}; scnOutfitRefresh(); uiIconsInit(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
+    SCN.screenBg = (m && m.screenBackgrounds) || {}; SCN.bgPlan = (m && m.menuBackgroundPlan) || {}; SCN.bgVariants = (m && m.menuBackgroundVariants) || {}; SCN.postcards = (m && m.journalPostcards) || {}; scnOutfitRefresh(); uiIconsInit(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
   SCN.ready = Promise.all([fr, wd, rw]).then(() => { SCN.loaded = true; });
   return SCN.ready;
 }
@@ -3643,8 +4174,14 @@ const PC_ART = {
   Brighton: {ill:"brighton_ankunft_pier", sky:"#9AD6F6,#F9DDB0"}
 };
 const pcSlug = n => n.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"_");
+/* Postkarten-Motive aus journalPostcards (Zuordnung über den exakten Stadtnamen) */
+function rwPost(name){
+  const e = Object.values(SCN.postcards || {}).find(x => x && x.name === name); if (!e || !e.images || !e.images.length) return null;
+  const l = e.images.slice().sort((a, b) => a.width - b.width);
+  return {src: scnRaw("rewards/" + l[l.length - 1].path), srcset: l.map(x => `${scnRaw("rewards/" + x.path)} ${x.width}w`).join(", ")};
+}
 function pcMotif(c, big){
-  const own = rwIllus("postkarte_" + pcSlug(c.n)) || rwBg("postkarte_" + pcSlug(c.n)), sz = big ? "(max-width:560px) 92vw, 520px" : "120px";
+  const own = rwPost(c.n) || rwIllus("postkarte_" + pcSlug(c.n)) || rwBg("postkarte_" + pcSlug(c.n)), sz = big ? "(max-width:560px) 92vw, 520px" : "120px";
   if (own) return `<span class="pc-motif photo"><img src="${own.src}" srcset="${own.srcset}" sizes="${sz}" alt="" decoding="async"></span>`;
   const a = PC_ART[c.n], ill = a && a.ill && rwIllus(a.ill);
   if (ill){ const [t, b] = a.sky.split(","); return `<span class="pc-motif ill" style="--t:${t};--b:${b}"><img src="${ill.src}" srcset="${ill.srcset}" sizes="${big ? "60vw" : "90px"}" alt="" decoding="async"></span>`; }
@@ -3700,7 +4237,7 @@ function hzRegions(){
   return `<div class="hz-regions" role="list" aria-label="Regionen">${UNITS.map(x => {
     const open = u.open.includes(x.id), n = unitWords(x.id).length;
     return `<button class="hz-reg ${open ? "open" : "fog"} ${u.cur === x.id ? "cur" : ""}" role="listitem" data-act="hzRegion" data-u="${x.id}" aria-label="${esc(x.n)}, ${esc(x.region)}${open ? "" : ", noch im Nebel"}">
-      <span class="hz-reg-art"><svg viewBox="0 0 160 100" aria-hidden="true">${cityArt(x.city)}</svg>${open ? "" : `<i class="hz-fog" aria-hidden="true"></i><i class="hz-lock2" aria-hidden="true">🔒</i>`}</span>
+      <span class="hz-reg-art">${unitArt(x)}${open ? "" : `<i class="hz-fog" aria-hidden="true"></i><i class="hz-lock2" aria-hidden="true">🔒</i>`}</span>
       <b>${esc(x.n)}</b><small>${esc(x.region)}</small></button>`; }).join("")}</div>`;
 }
 /* Neu freigeschaltete Unit: Nebel verzieht sich, Friedrich jubelt */
@@ -3710,7 +4247,7 @@ function hzUnlockShow(){
   const x = UMAP[fresh], st = $("#s-scene .scn-stage"); if (!st) return false;
   st.insertAdjacentHTML("beforeend", `<div class="hz-unlock" data-act="hzUnlockClose" role="dialog" aria-label="Neue Region freigeschaltet">
     <div class="hz-unlock-card"><span class="label">Neue Region freigeschaltet</span>
-      <span class="hz-unlock-art"><svg viewBox="0 0 160 100" aria-hidden="true">${cityArt(x.city)}</svg><i class="hz-fog"></i></span>
+      <span class="hz-unlock-art">${unitArt(x)}<i class="hz-fog"></i></span>
       <b>${esc(x.n)}: ${esc(x.region)}</b><small>${unitWords(fresh).length} neue Wörter warten auf ${esc(G())}.</small>
       <button class="btn btn-main btn-block" data-act="hzUnlockClose">Los geht's!</button></div></div>`);
   if (!scnRM()){ confetti(); sfx("level"); }
@@ -4301,6 +4838,7 @@ function renderCheckCard(){
     : n >= WC_MIN ? `<button class="panel wc-card-home" data-act="openCheck"><span class="wc-bolt" aria-hidden="true">⚡</span><span style="min-width:0;flex:1"><b>Wortcheck: ${n} Wörter noch nie geübt</b><small>Finde in ein paar Minuten heraus, welche du schon kannst.</small></span><span aria-hidden="true">›</span></button>` : "";
 }
 function renderHome(){
+  unitsApply();
   const l = level(), stage = gullStage(), col = GC(), sleep = isAsleep();
   $("#hAvatar").innerHTML = BETA ? friedrichEl({stage:Math.max(1,stage), pose:"face", size:"xs"}) : gullSVG(Math.max(1,stage), col);
   $("#hName").textContent = S.name;
@@ -5583,16 +6121,31 @@ function renderParents(){
    Jede Unit bündelt Lernorte (PLANETS). Neue Lernorte bekommen unit:"u2" usw.; ohne Angabe gehören sie zu Unit 1.
    Eltern schalten Units frei und legen fest, welche gerade in der Schule läuft. Gesperrte Units kommen nicht in den Unterricht. */
 const UNITS = [
-  {id:"u1", n:"Unit 1", t:"At home with friends", region:"Hafenstadt & Brighton", city:"Brighton"},
-  {id:"u2", n:"Unit 2", t:"", region:"London", city:"London"},
-  {id:"u3", n:"Unit 3", t:"", region:"Oxford", city:"Oxford"},
-  {id:"u4", n:"Unit 4", t:"", region:"York & Schottland", city:"York"},
-  {id:"ux", n:"Extra", t:"", region:"Bonus-Insel", city:"Edinburgh"}
+  {id:"u1", n:"Unit 1", t:"At home with friends", region:"Die Hafenstadt", city:"Brighton", ill:"start_moewennest"},
+  {id:"u2", n:"Unit 2", t:"A new week at Varndean", region:"Die Varndean School", city:"Brighton", ill:"unterricht_schulbuch"},
+  {id:"u3", n:"Unit 3", t:"In our free time", region:"Clubs, Markt & Backstube", city:"Brighton", ill:"stufenaufstieg_podest"},
+  {id:"u4", n:"Unit 4", t:"Out and about in Brighton", region:"Unterwegs in Brighton", city:"Brighton", ill:"brighton_reisekompass"},
+  {id:"ux", n:"Extra", t:"", region:"Bonus-Insel", city:"Edinburgh", ill:"schatzkammer_truhe"}
 ];
 const UMAP = Object.fromEntries(UNITS.map(u => [u.id, u]));
 function U(){ if (!S.units) S.units = {open:["u1"], cur:"u1", seen:["u1"]}; return S.units; }
 const unitOf = pl => (PMAP[pl] && PMAP[pl].unit) || "u1";
-const unitWords = uid => W.filter(w => unitOf(w.pl) === uid);
+const unitWords = uid => { const inW = W.filter(w => unitOf(w.pl) === uid); return inW.length || !UNIT_DATA[uid] ? inW : UNIT_DATA[uid].words; };
+/* Freigeschaltete Units 2–4: Lernort und Wörter aufnehmen, gesperrte wieder herausnehmen (Fortschritt in S.words bleibt erhalten) */
+function unitsApply(){
+  const open = U().open;
+  Object.entries(UNIT_DATA).forEach(([uid, d]) => {
+    const has = !!PMAP[uid], want = open.includes(uid) && d.words.length;
+    if (want && !has){
+      PLANETS.push(d.place); PMAP[uid] = d.place;
+      d.words.forEach(w => { w.pl = uid; w.ex = w.ex || ""; w.exDe = w.exDe || ""; w.tip = w.tip || ""; w.alt = w.alt || []; W.push(w); WMAP[w.id] = w; });
+    } else if (!want && has){
+      const i = PLANETS.findIndex(p => p.id === uid); if (i >= 0) PLANETS.splice(i, 1); delete PMAP[uid];
+      for (let k = W.length - 1; k >= 0; k--) if (W[k].pl === uid){ delete WMAP[W[k].id]; W.splice(k, 1); }
+      if (S.test && S.test.pl === uid) S.test = null;
+    }
+  });
+}
 const wOpen = w => U().open.includes(unitOf(w.pl));
 
 /* ============ WORTCHECK: schnell herausfinden, welche ungeübten Wörter schon sitzen ============
@@ -5742,6 +6295,9 @@ function wcFinish(){
 const wcNeedRank = w => { const n = S.wc && S.wc.need; return n && n.includes(w.id) ? 0 : 1; };
 
 /* ============ UNITS verwalten (Elternbereich) ============ */
+/* Bild der Unit: in der Beta die freigegebene Illustration, sonst die gezeichnete Stadt */
+const unitArt = x => { const il = typeof rwIllus === "function" && x.ill && rwIllus(x.ill);
+  return il ? `<span class="unit-ill"><img src="${il.src}" srcset="${il.srcset}" sizes="96px" alt="" decoding="async"></span>` : `<svg viewBox="0 0 160 100">${cityArt(x.city)}</svg>`; };
 function renderUnits(){
   const u = U();
   $("#s-units").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="openParents">Zurück</button></div>
@@ -5751,7 +6307,7 @@ function renderUnits(){
       const n = unitWords(x.id).length, open = u.open.includes(x.id), cur = u.cur === x.id;
       const learned = unitWords(x.id).filter(w => st(w.id)).length;
       return `<div class="panel unit ${open ? "open" : "locked"} ${cur ? "cur" : ""}">
-        <div class="unit-art" aria-hidden="true"><svg viewBox="0 0 160 100">${cityArt(x.city)}</svg>${open ? "" : `<span class="unit-fog"></span><span class="unit-lock">🔒</span>`}</div>
+        <div class="unit-art" aria-hidden="true">${unitArt(x)}${open ? "" : `<span class="unit-fog"></span><span class="unit-lock">🔒</span>`}</div>
         <div class="unit-txt"><b>${esc(x.n)}${x.t ? `: ${esc(x.t)}` : ""}</b><small>Region: ${esc(x.region)}</small>
           <small>${n ? `${n} Wörter · ${learned} geübt` : "Vokabeln werden noch eingespielt"}</small></div>
         <div class="unit-btns">${x.id === "u1" ? "" : n ? `<button class="btn ${open ? "btn-soft" : "btn-main"}" data-act="unitToggle" data-u="${x.id}">${open ? "Sperren" : "Freischalten"}</button>` : ""}
@@ -5787,7 +6343,7 @@ const WC_ACT = {
   unitToggle: b => { const u = U(), id = b.dataset.u; if (id === "u1") return;
     if (u.open.includes(id)){ u.open = u.open.filter(x => x !== id); if (u.cur === id) u.cur = "u1"; }
     else { u.open.push(id); u.cur = id; }
-    save(); renderUnits(); },
+    unitsApply(); save(); renderUnits(); },
   unitCur: b => { U().cur = b.dataset.u; save(); renderUnits(); }
 };
 
