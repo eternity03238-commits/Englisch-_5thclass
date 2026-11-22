@@ -1261,6 +1261,41 @@ body.scn-on:has(.hz-tabs) .beta-badge{top:auto;bottom:calc(76px + env(safe-area-
 .hz-hand{position:absolute;left:50%;top:55%;z-index:4;font-size:2.4rem;line-height:1;transform:translate(-20%,0);filter:drop-shadow(0 3px 4px rgba(0,0,0,.35));animation:hzTap 1.6s ease-in-out infinite;pointer-events:none}
 @keyframes hzTap{0%,100%{transform:translate(-20%,10px) scale(1)}45%{transform:translate(-20%,-4px) scale(.92)}55%{transform:translate(-20%,-4px) scale(.92)}}
 @media (prefers-reduced-motion:reduce){.hz-hand{animation:none}.hz-where.hz-new{animation:none}}
+
+/* Kleiderschrank */
+#s-wardrobe .wd{display:flex;flex-direction:column;gap:0;margin-top:-6px;width:100%;align-self:stretch;min-width:0}
+.wd-mirror{position:relative;height:clamp(230px,36svh,360px);display:flex;align-items:flex-end;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wd-mirror > .fr{width:min(230px,58%) !important;margin-bottom:6px}
+.wd-mirror .fr{filter:drop-shadow(0 12px 10px rgba(40,25,10,.35))}
+.wd-egg{margin:0 0 20px;padding:10px 14px;border-radius:16px;background:rgba(255,251,244,.92);font-weight:700;text-align:center;color:#13234A}
+.wd-count{position:absolute;left:0;top:8px;padding:5px 12px;border-radius:999px;background:rgba(255,251,244,.92);font:800 .78rem/1 var(--fr-font);color:#13234A;box-shadow:0 4px 12px rgba(40,25,10,.15)}
+.wd-off{position:absolute;right:0;top:4px;min-height:36px;padding:0 12px;border-radius:999px;border:0;background:rgba(255,251,244,.92);font:800 .78rem/1 var(--fr-font);color:#0E5258;box-shadow:0 4px 12px rgba(40,25,10,.15);cursor:pointer}
+.wd-panel{position:relative;z-index:1;margin-top:-18px;padding:14px 12px 16px;border-radius:26px;background:rgba(255,251,244,.97);box-shadow:0 -6px 24px rgba(40,25,10,.18);display:flex;flex-direction:column;gap:12px}
+.wd-title{margin:0;text-align:center;font:700 1.5rem/1 "Baloo 2",var(--fr-font-head,sans-serif);color:#13234A}
+.wd-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.wd-tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:70px;padding:6px 2px;border-radius:16px;border:1.5px solid #EADFCB;background:#fff;color:#646B80;cursor:pointer}
+.wd-tab.on{border-color:#0E5258;background:#E8F2F2;color:#0E5258;box-shadow:0 0 0 2px rgba(14,82,88,.15)}
+.wd-tab-art{width:36px;height:36px;display:grid;place-items:center}
+.wd-tab-art img{width:100%;height:100%;object-fit:contain}
+.wd-tab-art i{font-style:normal;font:700 1.3rem/1 var(--fr-font);color:#C9BBA0;width:30px;height:30px;border-radius:50%;border:2px dashed #D9CDB6;display:grid;place-items:center}
+.wd-tab b{font:800 .74rem/1 var(--fr-font)}
+.wd-new{position:absolute;top:-6px;right:-4px;padding:3px 7px;border-radius:999px;background:#EE6A4E;color:#fff;font:800 .62rem/1 var(--fr-font);font-style:normal;box-shadow:0 0 0 2px #fff}
+.wd-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.wd-item{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;padding:12px 8px 10px;border-radius:20px;border:1.5px solid #EADFCB;background:#fff;color:#13234A;cursor:pointer;text-align:center;-webkit-tap-highlight-color:transparent;transition:transform .12s}
+.wd-item:active{transform:scale(.97)}
+.wd-item.on{border-color:#2E9E6A;background:#EEF8F2;box-shadow:0 0 0 2px rgba(46,158,106,.18)}
+.wd-art{width:72px;height:72px;display:grid;place-items:center}
+.wd-art img,.wd-art svg{width:100%;height:100%;object-fit:contain}
+.wd-item b{font:800 .92rem/1.15 var(--fr-font)}
+.wd-item small{font:700 .72rem/1.25 var(--fr-font);color:#646B80}
+.wd-item.locked{background:#F6F1E7;cursor:default}
+.wd-item.locked .wd-art{filter:grayscale(1) opacity(.45)}
+.wd-item.locked b{color:#7A7F90}
+.wd-item.blocked{opacity:.7}
+.wd-on{position:absolute;top:8px;left:8px;padding:3px 8px;border-radius:999px;background:#2E9E6A;color:#fff;font:800 .66rem/1 var(--fr-font);font-style:normal}
+.wd-item .wd-new{top:8px;right:8px}
+.wd-lock{position:absolute;top:8px;right:8px;font-style:normal;font-size:.9rem;opacity:.7}
+.wd-prog{display:block;width:80%;height:6px;border-radius:999px;background:#E4DACA;overflow:hidden}.wd-prog i{display:block;height:100%;border-radius:999px;background:#0E5258}
 </style>
 
 </head>
@@ -2664,7 +2699,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795372517";
+const BUILD = "1795372815";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3972,7 +4007,7 @@ const MW_ACT = {
   openParents: () => { if (S.pin && !pinOk()) return askPin(renderPMenu); renderPMenu(); }
 };
 /* Menü-Hintergründe aus menuBackgroundPlan: Bild oben sichtbar, Inhalte stehen darauf */
-const MW_BG_TOP = ["units","journal","wardrobe","badges","extras","parents","overview","post","sentpick","deck","map"];
+const MW_BG_TOP = ["units","journal","badges","extras","parents","overview","post","sentpick","deck","map"];
 function mwBackdrop(name){
   /* Varianten je Modus: Möwen-Prüfung (Karten mit der Familie), Satzwerkstatt (Unterricht mit Sätzen) */
   const mode = name === "mission" ? (M && M.mode) : (name === "cards" || name === "deck") ? ((C && C.mode) || DK.mode) : null;
@@ -4321,6 +4356,71 @@ function hzUnlockShow(){
   return true;
 }
 
+/* ============ Kleiderschrank (Beta): Spiegel mit Fridolin, Fächer als Reiter, Sachen als Kacheln ============
+   Ein Bildschirm ohne Scrollen: oben Fridolin in der Kajüte, darunter vier Fächer, darunter die Sachen des Fachs.
+   Antippen zieht an (Fridolin freut sich), nochmal antippen zieht aus. Gesperrte Sachen zeigen, wie weit es noch ist. */
+const WARD = {tab:null, last:null};
+const ACC_PROG = {
+  sun:     () => [Math.min(S.streak || 0, 3), 3, "Tage am Stück"],
+  bow:     () => [Math.min(S.stats.mama || 0, 3), 3, "Möwen-Prüfungen"],
+  pack:    () => [Math.min(S.km || 0, 300), 300, "km"],
+  sailor:  () => [Math.min(S.stats.fixRight || 0, 10), 10, "Fehler gefunden"],
+  phones:  () => [Math.min(S.stats.sentRight || 0, 20), 20, "Sätze gebaut"],
+  star:    () => { const b = Math.max(0, ...PLANETS.map(p => { const x = placeStats(p.id); return x.total ? x.safe / x.total : 0; })); return [Math.round(b * 100), 100, "% beim besten Ort"]; },
+  captain: () => [Math.min(level(), 5), 5, "Level"],
+  crown:   () => [Object.values(S.boss || {}).some(Boolean) ? 1 : 0, 1, "Krabben-Duell"]
+};
+function renderWardrobeBeta(){
+  S.wear = S.wear || {}; S.accSeen = S.accSeen || [];
+  Object.values(S.wear).forEach(id => { if (id && !S.accSeen.includes(id)) S.accSeen.push(id); });   /* was er trägt, kennt er schon */
+  const unl = accUnlocked().map(a => a.id), n = gullStage(), stage = FR.stageOf(Math.max(1, n));
+  const ownHat = !(FR.fit[stage] || {}).head && FR.stageOf(n) !== "egg";
+  if (!WARD.tab) WARD.tab = (SLOTS.find(([sl]) => ACC.some(a => a.slot === sl && unl.includes(a.id) && !S.accSeen.includes(a.id))) || SLOTS.find(([sl]) => ACC.some(a => a.slot === sl && unl.includes(a.id))) || SLOTS[0])[0];
+  const fresh = id => unl.includes(id) && !S.accSeen.includes(id);
+  const tabs = SLOTS.map(([sl, label]) => { const w = ACC.find(a => a.id === S.wear[sl]), nw = ACC.some(a => a.slot === sl && fresh(a.id));
+    return `<button class="wd-tab ${WARD.tab === sl ? "on" : ""}" data-act="wdTab" data-s="${sl}" aria-pressed="${WARD.tab === sl}">
+      <span class="wd-tab-art">${w ? (rwOutfit(w.id) || "") : `<i aria-hidden="true">+</i>`}</span><b>${esc(label)}</b>${nw ? `<em class="wd-new" aria-label="neu">neu</em>` : ""}</button>`; }).join("");
+  const items = ACC.filter(a => a.slot === WARD.tab).map(a => {
+    const ok = unl.includes(a.id), on = S.wear[a.slot] === a.id, blocked = a.slot === "hat" && ownHat;
+    let foot;
+    if (!ok){ const [v, max, unit] = (ACC_PROG[a.id] || (() => [0, 1, ""]))(); foot = `<span class="wd-prog"><i style="width:${Math.round(v / max * 100)}%"></i></span><small>${esc(a.how)}${max > 1 ? ` · ${v}/${max}` : ""}</small>`; }
+    else if (blocked) foot = `<small>${esc(STAGES[n].n)} trägt schon ${stage === "king" ? "eine Krone" : "eine Mütze"}</small>`;
+    else foot = `<small>${on ? "Hat sie an · antippen zum Ausziehen" : "Antippen zum Anziehen"}</small>`;
+    return `<button class="wd-item ${on ? "on" : ""} ${ok ? "" : "locked"} ${blocked && ok ? "blocked" : ""}" data-act="wear" data-id="${a.id}" ${ok ? "" : 'aria-disabled="true"'}>
+      ${fresh(a.id) ? `<em class="wd-new">neu</em>` : ""}${on ? `<em class="wd-on">✓ An</em>` : ""}${!ok ? `<em class="wd-lock" aria-hidden="true">🔒</em>` : ""}
+      <span class="wd-art">${rwOutfit(a.id) || gullSVG(Math.max(1, n), GC(), {wear:{[a.slot]:a.id}})}</span><b>${esc(a.n)}</b>${foot}</button>`; }).join("");
+  const worn = SLOTS.filter(([sl]) => S.wear[sl]).length;
+  $("#s-wardrobe").innerHTML = `<div class="row mw-head"><button class="btn btn-soft" data-act="home">Zurück</button></div>
+    <div class="wd">
+      <div class="wd-mirror" data-act="wdSpin" role="button" aria-label="${esc(G())} dreht sich">${n === 0 ? `<p class="wd-egg">Erst muss das Ei schlüpfen. Mach deine erste Unterrichtsstunde!</p>` : myGull()}
+        <span class="wd-count">${unl.length} von ${ACC.length} Sachen</span>
+        ${worn ? `<button class="wd-off" data-act="wdOff">Alles ausziehen</button>` : ""}</div>
+      <div class="wd-panel">
+        <h1 class="wd-title">Kleiderschrank</h1>
+        <div class="wd-tabs" role="tablist">${tabs}</div>
+        <div class="wd-grid">${items}</div>
+      </div>
+    </div>`;
+  /* gesehene neue Sachen merken, sobald ihr Fach offen war */
+  ACC.filter(a => a.slot === WARD.tab && fresh(a.id)).forEach(a => S.accSeen.push(a.id)); save();
+  show("wardrobe");
+  if (WARD.last && !scnRM()){ const el = $("#s-wardrobe .wd-mirror .fr"); if (el) setTimeout(() => frPlay(el, FR.has(el.dataset.stage, "celebrate") ? "celebrate" : "wave"), 60); }
+  WARD.last = null;
+}
+Object.assign(HZ_ACT, {
+  wdTab: b => { WARD.tab = b.dataset.s; renderWardrobeBeta(); },
+  wdOff: () => { S.wear = {}; save(); sfx("flip"); renderWardrobeBeta(); },
+  wdSpin: () => { const el = $("#s-wardrobe .wd-mirror .fr"); if (el && !scnRM()) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : "celebrate"); },
+  wear: b => {
+    const a = ACC.find(x => x.id === b.dataset.id); if (!a) return;
+    if (!accUnlocked().some(x => x.id === a.id)){ const [v, max] = (ACC_PROG[a.id] || (() => [0, 1]))(); toast(`Noch gesperrt: ${esc(a.how)}${max > 1 ? ` (${v} von ${max})` : ""}`); return; }
+    const st = FR.stageOf(Math.max(1, gullStage()));
+    if (a.slot === "hat" && !(FR.fit[st] || {}).head){ toast(`${esc(G())} trägt als ${esc(STAGES[gullStage()].n)} schon ${st === "king" ? "eine Krone" : "eine Mütze"}.`); return; }
+    S.wear = S.wear || {}; const put = S.wear[a.slot] !== a.id; S.wear[a.slot] = put ? a.id : null; save(); sfx(put ? "gull" : "flip");
+    WARD.last = put ? a.id : null; renderWardrobeBeta();
+  }
+});
+
 const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), pose:FR.baseOf(FR.stageOf(Math.max(1,gullStage()))), size:"fit", wear:scnWearList()}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
 function gullLine(){
   const learned = SENT.filter(s=>ss(s.id) && ss(s.id).r>0).map(s=>fillN(s.en));
@@ -4466,6 +4566,7 @@ function renderHarbor(){
 
 /* ============ KLEIDERSCHRANK ============ */
 function renderWardrobe(){
+  if (BETA) return renderWardrobeBeta();
   S.wear = S.wear || {};
   const unl = accUnlocked().map(a=>a.id);
   $("#s-wardrobe").innerHTML = `<div class="row"><button class="btn btn-soft" data-act="home">Zurück</button></div>
