@@ -1,5 +1,5 @@
 {
-  "version": 49,
+  "version": 50,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -1232,22 +1232,154 @@
           "height": 768
         }
       ]
+    },
+    "hintergrund_weiterlernen": {
+      "name": "Weiterlernen",
+      "images": [
+        {
+          "path": "hintergrund_weiterlernen.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_weiterlernen-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "hintergrund_satzwerkstatt": {
+      "name": "Satzwerkstatt",
+      "images": [
+        {
+          "path": "hintergrund_satzwerkstatt.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_satzwerkstatt-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "hintergrund_kuestenkarte": {
+      "name": "Küstenkarte",
+      "images": [
+        {
+          "path": "hintergrund_kuestenkarte.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_kuestenkarte-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "hintergrund_karteikarten": {
+      "name": "Karteikarten",
+      "images": [
+        {
+          "path": "hintergrund_karteikarten.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_karteikarten-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "hintergrund_elterneinstellungen": {
+      "name": "Elterneinstellungen",
+      "images": [
+        {
+          "path": "hintergrund_elterneinstellungen.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_elterneinstellungen-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "hintergrund_extras": {
+      "name": "Extras",
+      "images": [
+        {
+          "path": "hintergrund_extras.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_extras-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "hintergrund_moewenpruefung": {
+      "name": "Möwen-Prüfung",
+      "images": [
+        {
+          "path": "hintergrund_moewenpruefung.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_moewenpruefung-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "hintergrund_kleiderschrank": {
+      "name": "Kleiderschrank",
+      "images": [
+        {
+          "path": "hintergrund_kleiderschrank.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "hintergrund_kleiderschrank-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
     }
   },
   "menuBackgroundPlan": {
     "journal": "reisetagebuch_kartentisch",
-    "sentpick": "menue_lernen",
-    "deck": "menue_lernen",
-    "cards": "menue_lernen",
+    "sentpick": "hintergrund_satzwerkstatt",
+    "deck": "hintergrund_karteikarten",
+    "cards": "hintergrund_karteikarten",
     "exam": "menue_lernen",
-    "wardrobe": "menue_sammlung",
+    "wardrobe": "hintergrund_kleiderschrank",
     "badges": "menue_sammlung",
-    "parents": "menue_eltern",
+    "parents": "hintergrund_elterneinstellungen",
     "overview": "menue_eltern",
-    "extras": "menue_extras",
-    "map": "Vorhandene Küstenkarte",
+    "extras": "hintergrund_extras",
+    "map": "hintergrund_kuestenkarte",
     "place": "Vorhandene Ortsmotive",
-    "post": "hafen_hintergrund"
+    "post": "hafen_hintergrund",
+    "mission": "hintergrund_weiterlernen"
   },
-  "journalDesignGuidance": "Reisetagebuch-Entwurf als Layoutvorlage nutzen. Postkarten aus dem vorhandenen Reisedatensatz dynamisch anzeigen, Leipzig, Ärmelkanal und Brighton sind Beispiele. Auf kleinen Bildschirmen die Karten stapeln, auf breiten in einem flexiblen Raster. Texte und Bedienelemente separat umsetzen."
+  "journalDesignGuidance": "Reisetagebuch-Entwurf als Layoutvorlage nutzen. Postkarten aus dem vorhandenen Reisedatensatz dynamisch anzeigen, Leipzig, Ärmelkanal und Brighton sind Beispiele. Auf kleinen Bildschirmen die Karten stapeln, auf breiten in einem flexiblen Raster. Texte und Bedienelemente separat umsetzen.",
+  "menuBackgroundVariants": {
+    "cards": {
+      "mama": "hintergrund_moewenpruefung"
+    },
+    "deck": {
+      "mama": "hintergrund_moewenpruefung"
+    },
+    "mission": {
+      "sent": "hintergrund_satzwerkstatt"
+    }
+  }
 }
