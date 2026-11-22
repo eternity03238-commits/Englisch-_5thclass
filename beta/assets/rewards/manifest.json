@@ -1,5 +1,5 @@
 {
-  "version": 42,
+  "version": 43,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -658,6 +658,81 @@
         },
         {
           "path": "brighton_ankunft_pier-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "reise_abflug_leipzig": {
+      "name": "Abflug aus Leipzig",
+      "images": [
+        {
+          "path": "reise_abflug_leipzig.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "reise_abflug_leipzig-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "reise_aermelkanal": {
+      "name": "Über dem Ärmelkanal",
+      "images": [
+        {
+          "path": "reise_aermelkanal.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "reise_aermelkanal-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "reise_brighton_strand": {
+      "name": "Am Strand von Brighton",
+      "images": [
+        {
+          "path": "reise_brighton_strand.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "reise_brighton_strand-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "reise_brighton_strandhuette": {
+      "name": "Brightoner Strandhütte",
+      "images": [
+        {
+          "path": "reise_brighton_strandhuette.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "reise_brighton_strandhuette-128.webp",
+          "width": 128,
+          "height": 128
+        }
+      ]
+    },
+    "reise_brighton_souvenir": {
+      "name": "Andenken aus Brighton",
+      "images": [
+        {
+          "path": "reise_brighton_souvenir.webp",
+          "width": 512,
+          "height": 512
+        },
+        {
+          "path": "reise_brighton_souvenir-128.webp",
           "width": 128,
           "height": 128
         }
