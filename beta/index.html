@@ -1347,6 +1347,34 @@ body.scn-on:has(.hz-tabs) .beta-badge{top:auto;bottom:calc(76px + env(safe-area-
 .hz-gate em{font-style:normal;font:800 1.2rem/1 var(--fr-font);color:#FFD36E}
 @keyframes hzGate{0%,100%{box-shadow:0 6px 16px rgba(10,20,40,.35),0 0 0 0 rgba(255,211,110,.6)}50%{box-shadow:0 6px 16px rgba(10,20,40,.35),0 0 0 6px rgba(255,211,110,0)}}
 @media (prefers-reduced-motion:reduce){.hz-gate{animation:none}}
+/* ---------- Weltenwechsler: Ortsname unten zeigt die Welt und öffnet "Wohin fliegt Fridolin?" ---------- */
+.hz-where{pointer-events:auto;border:0;cursor:pointer;font:inherit;-webkit-tap-highlight-color:transparent;gap:4px;padding:6px 14px 7px}
+.hz-where:active{transform:scale(.97)}
+.hz-world{display:flex;align-items:center;gap:4px;font:800 .64rem/1 var(--fr-font);letter-spacing:.06em;text-transform:uppercase;color:var(--hz-teal,#0E5258)}
+.hz-world em{font-style:normal;max-width:52vw;overflow:hidden;text-overflow:ellipsis}
+.hz-world .hz-globe{width:13px;height:13px;flex:none}
+.hz-world .hz-caret{width:12px;height:12px;flex:none}
+.hz-newdot{font-style:normal;padding:2px 6px;border-radius:999px;background:#EF6A4C;color:#fff;font:800 .58rem/1.2 var(--fr-font);letter-spacing:.04em}
+.hz-where.hz-pulse{animation:hzPulse 1.2s ease-in-out 4}
+@keyframes hzPulse{0%,100%{box-shadow:0 4px 12px rgba(30,25,15,.12),0 0 0 0 rgba(239,106,76,.55)}50%{box-shadow:0 4px 12px rgba(30,25,15,.12),0 0 0 9px rgba(239,106,76,0)}}
+.hz-worlds{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:4px 0 12px}
+.hz-wtile{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 8px 10px;border:2px solid transparent;border-radius:18px;background:#fff;box-shadow:0 3px 10px rgba(30,25,15,.1);text-align:left;color:var(--hz-navy,#13234A);font:inherit;cursor:pointer;min-width:0}
+.hz-wtile.here{border-color:var(--hz-teal,#0E5258)}
+.hz-wtile:active{transform:scale(.98)}
+.hz-wtile[disabled]{opacity:.55}
+.hz-wart{position:relative;display:block;width:100%;aspect-ratio:4/3;border-radius:12px;overflow:hidden;background:#DDEFFA;margin-bottom:5px}
+.hz-wart>img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
+.hz-wart .unit-ill{display:grid;place-items:center;width:100%;height:100%;background:linear-gradient(180deg,#CDEBFA,#FDF1DC)}.hz-wart .unit-ill img{width:70%;height:70%;object-fit:contain}
+.hz-wtile.fog .hz-wart>img{filter:grayscale(.5) blur(1.5px)}
+.hz-wtile small{font:700 .7rem/1.2 var(--fr-font);color:var(--hz-muted,#5E6478)}
+.hz-wtile b{font:800 .95rem/1.15 var(--fr-font);overflow-wrap:anywhere}
+.hz-wchip{position:absolute;left:6px;top:6px;padding:3px 8px;border-radius:999px;font:800 .66rem/1.2 var(--fr-font);font-style:normal;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.hz-wchip.here{background:var(--hz-teal,#0E5258);color:#fff}
+.hz-wchip.neu{background:#EF6A4C;color:#fff}
+.hz-wchip.fog{background:rgba(255,255,255,.92);color:#5E6478}
+.hz-unlock-art>img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
+.hz-unlock .hz-alt{align-self:center;margin-top:2px}
+@media (prefers-reduced-motion:reduce){.hz-where.hz-pulse{animation:none;outline:3px solid #EF6A4C}}
 </style>
 
 </head>
@@ -2763,7 +2791,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795377701";
+const BUILD = "1795378320";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3709,6 +3737,11 @@ const scnOutdoor = () => {
   outs.forEach(id => { const a = scnArea(id), i = a ? PLANETS.findIndex(p => p.id === a) : -1; rank[id] = i >= 0 ? i : last + 0.5; if (i >= 0) last = i; else last += 0.01; });
   return outs.slice().sort((a,b) => rank[a] - rank[b]);
 };
+/* Welten: jede Unit ist eine eigene Welt (Hafenstadt = Unit 1). Wischen bleibt innerhalb der Welt, gewechselt wird über den Ortsnamen unten. */
+const SCN_WORLD_FOLDER = {"varndean/":"u2", "freizeit/":"u3", "stadt/":"u4"};
+const scnWorldOf = id => { const a = scnArea(id); if (a && PMAP[a].unit) return PMAP[a].unit;
+  const p = (((scnScene(id) || {}).backgrounds || [])[0] || {}).path || ""; const f = Object.keys(SCN_WORLD_FOLDER).find(k => p.startsWith(k)); return f ? SCN_WORLD_FOLDER[f] : "u1"; };
+const scnRing = id => { const w = scnWorldOf(id); return scnOutdoor().filter(o => scnWorldOf(o) === w); };
 const scnLocked = id => { const sc = scnScene(id) || {}, p = ((sc.backgrounds || [])[0] || {}).path || "";
   return SCN_REGION_FOLDERS.some(f => p.startsWith(f)) && !PMAP[sc.learningArea]; };
 const scnChild = id => scnIds().find(c => c.startsWith(id + "-")) || null;
@@ -3740,7 +3773,8 @@ function renderScene(opts = {}){
   const hatch = SCN.success && SCN.stage0 === 0 && gullStage() >= 1 && FR.has("egg","crack") && FR.has("egg","hatch") && !scnRM();
   const stage = hatch ? "egg" : FR.stageOf(gullStage()), pose = FR.baseOf(stage);
   const label = L.label || (act.area ? PMAP[act.area].name : (act.child ? scnName(act.child) : ""));
-  const i = outs.indexOf(id), prev = outs[(i - 1 + outs.length) % outs.length], next = outs[(i + 1) % outs.length];
+  const ring = scnRing(id), i = ring.indexOf(id), prev = ring[(i - 1 + ring.length) % ring.length], next = ring[(i + 1) % ring.length];
+  hzBeen(scnWorldOf(id));
   let spot = "";
   if (act.child || act.area){
     const aria = act.area ? `${label}: ${act.child ? "hineingehen und " : ""}üben` : `${label} ansehen`;
@@ -3754,8 +3788,8 @@ function renderScene(opts = {}){
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}<div class="hz-say" id="scnSay" role="status" aria-live="polite"></div></div>
         ${spot}${hzGates(id, L)}
       </div>
-      ${hzTop(id, outs, i)}
-      ${hzNav(outs, i)}
+      ${hzTop(id, ring, i)}
+      ${hzNav(ring, i)}
       ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main hz-spotbtn" data-act="scnSpot">${esc(label)}</button>` : ""}
       ${hzBottom()}
     </div>`;
@@ -3999,7 +4033,7 @@ function scnSwipeInit(){
     if (!scnSwipe || host.querySelector(".scn-view")) return;
     const dx = e.clientX - scnSwipe.x, dy = e.clientY - scnSwipe.y; scnSwipe = null;
     if (Math.abs(dx) > 60 && Math.abs(dy) < 50){
-      const outs = scnOutdoor(), i = outs.indexOf(SCN.cur); if (outs.length < 2) return;
+      const outs = scnRing(SCN.cur), i = outs.indexOf(SCN.cur); if (outs.length < 2) return;
       scnNoClick = true; setTimeout(() => scnNoClick = false, 350);
       scnGo(outs[(i + (dx < 0 ? 1 : -1) + outs.length) % outs.length], dx < 0 ? 1 : -1);
     }
@@ -4207,10 +4241,16 @@ const HZ_ACT = {
     if (!open) return toast(`<b>${esc(x.region)}</b> liegt noch im Nebel. Mama oder Papa schalten ${esc(x.n)} frei, wenn ihr damit in der Schule anfangt.`);
     toast(id === U().cur ? `${esc(x.n)}: ${esc(x.region)}. Hier lernst du gerade.` : `${esc(x.n)}: ${esc(x.region)} wird weiter wiederholt.`); },
   hzUnlockClose: () => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); },
-  hzFlyTo: b => { const id = hzFirstScene(b.dataset.u); if (id) scnGo(id, 1); },
-  hzUnlockGo: b => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); if (PMAP[b.dataset.u]) hzSheet("region", b.dataset.u); },
+  hzFlyTo: b => hzWorldGo(b.dataset.u),
+  hzUnlockGo: b => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); hzWorldGo(b.dataset.u); },
+  hzWorlds: () => hzSheet("worlds"),
+  hzWorld: b => { const id = b.dataset.u; hzSheetClose(true);
+    if (!U().open.includes(id)) return HZ_ACT.hzRegion(b);
+    if (!hzWorldStart(id)) return PMAP[id] ? hzSheet("region", id) : null;
+    if (scnWorldOf(SCN.cur) === id) return;
+    setTimeout(() => hzWorldGo(id), 10); },
   hzProfile: () => hzSheet("profile"),
-  hzHere: () => ACT.scnFr(),
+  hzHere: () => scnWorldOf(SCN.cur) !== "u1" ? hzWorldGo("u1") : ACT.scnFr(),
   hzReport: () => shareText("Möwen-Bericht", reportText(true), msg => { S.lastBackup = today(); save(); toast(msg); renderScene(); }),
   hzTrip: () => hzSheet("trip"),
   hzIntro: () => hzSheet("intro"),
@@ -4247,6 +4287,7 @@ const HZ_SVG = {
   hafen:`<svg viewBox="0 0 24 24"><path d="M12 3v15M8.5 6.5h7M4 13c.6 4 3.8 7 8 7s7.4-3 8-7M4 13l-1.5 1.8M4 13l2 .8M20 13l1.5 1.8M20 13l-2 .8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="4.5" r="1.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
   karten:`<svg viewBox="0 0 24 24"><rect x="6.5" y="4" width="13" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 7.5v10A2.5 2.5 0 0 0 6.5 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10 10h6M10 13.5h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
   saetze:`<svg viewBox="0 0 24 24"><rect x="3" y="13" width="8" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="5" width="8" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+  globe:`<svg class="hz-globe" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.6 2.7 3.8 5.7 3.8 9s-1.2 6.3-3.8 9c-2.6-2.7-3.8-5.7-3.8-9S9.4 5.7 12 3z" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
   reise:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
   lock:`<svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>`,
   arrow:`<svg viewBox="0 0 24 24"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`
@@ -4283,7 +4324,8 @@ function hzBottom(){
   /* Wird der Wortcheck empfohlen, bleibt die Unterrichtsstunde als kleiner Link erreichbar */
   const alt = P.kind === "check" && !hzLesson().done ? `<button class="hz-alt" data-act="startDaily">oder gleich Unterricht</button>` : "";
   const W0 = HZ.where || {}, moved = HZ.place && HZ.place !== W0.id; HZ.place = W0.id;
-  const where = W0.id ? `<div class="hz-where ${moved && !scnRM() ? "hz-new" : ""}" aria-live="polite"><b>${esc(scnName(W0.id))}</b>${W0.n > 1 ? `<span class="hz-dots" aria-label="Ort ${W0.i + 1} von ${W0.n}">${Array.from({length:W0.n}, (_, k) => `<i class="${k === W0.i ? "on" : ""}"></i>`).join("")}</span>` : ""}</div>` : "";
+  const wid = W0.id ? scnWorldOf(W0.id) : "u1", wNew = hzWorldsNew().length;
+  const where = W0.id ? `<button class="hz-where ${moved && !scnRM() ? "hz-new" : ""} ${HZ.pulse ? "hz-pulse" : ""}" data-act="hzWorlds" aria-label="${esc(scnName(W0.id))} in ${esc(hzWorldName(wid))}. Welt wechseln"><span class="hz-world">${HZ_SVG.globe}<em>${esc(hzWorldName(wid))}</em>${wNew ? `<i class="hz-newdot">neu</i>` : ""}<svg class="hz-caret" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span><b>${esc(scnName(W0.id))}</b>${W0.n > 1 ? `<span class="hz-dots" aria-label="Ort ${W0.i + 1} von ${W0.n}">${Array.from({length:W0.n}, (_, k) => `<i class="${k === W0.i ? "on" : ""}"></i>`).join("")}</span>` : ""}</button>` : "";
   return `<div class="hz-bottom">${where}
     <section class="hz-today ${P.kind}" aria-label="${esc(P.label)}">
       <div class="hz-today-head"><small>${esc(P.label)}</small>${test}</div>
@@ -4336,12 +4378,15 @@ function hzSheet(kind, arg){
         <button class="hz-li" data-act="hzSheetGo" data-go="placeCards" data-pid="${arg}">${hzIc("lernwelt_hafenkarte", "64px")}<span><b>Alle Wörter üben</b><small>Karteikarten aus der ganzen Unit</small></span><em aria-hidden="true">›</em></button>
       </div>
       ${hzFirstScene(arg) ? "" : `<p class="hz-trip-txt">Die Bilder für diese Region kommen noch. Bis dahin lernst du ${esc(x.n)} hier.</p>`}`;
+  } else if (kind === "worlds"){
+    body = hzWorldsBody();
   } else if (kind === "intro"){
     body = `<h2 class="hz-h2">So funktioniert Möwenflug</h2>
       <ol class="hz-steps">
         <li><b>Unten steht, was heute dran ist.</b><span>Ein Knopf, ein Ziel. Meist ist es die Unterrichtsstunde: etwa 10 Minuten, neue Wörter und Wiederholung.</span></li>
         <li><b>${esc(G())} wächst mit.</b><span>Jedes Wort, das du beibringst oder an einem anderen Tag wieder weißt, ist ein Fisch. Mit genug Fischen wird ${esc(G())} größer.</span></li>
-        <li><b>Die Hafenstadt ist eure Welt.</b><span>Wisch nach links oder rechts zu den anderen Orten. Jede leuchtende Tür ist ein Thema. Ein rotes ! heißt: Hier warten Wörter zum Wiederholen.</span></li>
+        <li><b>Wisch durch die Orte.</b><span>Jede leuchtende Tür ist ein Thema. Ein rotes ! heißt: Hier warten Wörter zum Wiederholen.</span></li>
+        <li><b>Unten am Ortsnamen wechselst du die Welt.</b><span>Die Hafenstadt ist Unit 1. Neue Units sind neue Welten, zum Beispiel die Varndean School. Der Hafen-Knopf bringt dich immer nach Hause.</span></li>
         <li><b>Tipp auf ${esc(G())}.</b><span>Dann sagt sie einen englischen Satz, den du schon gelernt hast.</span></li>
         <li><b>Dein Bild oben links</b><span>öffnet Kleiderschrank, Schatzkammer, Extras und die Möwen-Prüfung mit der Familie.</span></li>
       </ol>
@@ -4358,7 +4403,7 @@ function hzSheet(kind, arg){
       </div>`;
   }
   st.insertAdjacentHTML("beforeend", `<div class="hz-sheet-bg" data-act="hzSheetClose"></div>
-    <div class="hz-sheet" role="dialog" aria-label="${kind === "profile" ? "Profil" : kind === "intro" ? "So funktioniert Möwenflug" : kind === "region" ? esc(UMAP[arg].region) : "Reise"}"><span class="hz-grab" aria-hidden="true"></span>
+    <div class="hz-sheet" role="dialog" aria-label="${kind === "profile" ? "Profil" : kind === "intro" ? "So funktioniert Möwenflug" : kind === "region" ? esc(UMAP[arg].region) : kind === "worlds" ? "Welt wechseln" : "Reise"}"><span class="hz-grab" aria-hidden="true"></span>
       <button class="hz-x" data-act="hzSheetClose" aria-label="Schließen">✕</button>${body}</div>`);
   const nm = $("#hzSheetName"); if (nm) nm.textContent = G();
   requestAnimationFrame(() => st.classList.add("hz-sheet-on"));
@@ -4522,6 +4567,38 @@ function hzRegions(){
       <span class="hz-reg-art">${unitArt(x)}${open ? "" : `<i class="hz-fog" aria-hidden="true"></i><i class="hz-lock2" aria-hidden="true">🔒</i>`}</span>
       <b>${esc(x.n)}</b><small>${esc(x.region)}</small></button>`; }).join("")}</div>`;
 }
+/* ---------- Welten wechseln ----------
+   Jede freigeschaltete Unit ist eine eigene Welt. Unten auf dem Ortsnamen steht, in welcher Welt Fridolin gerade ist;
+   Antippen öffnet "Wohin fliegt Fridolin?". Wischen bleibt innerhalb der Welt, der Hafen-Knopf bringt immer heim. */
+const hzWorldName = u => u === "u1" ? "Hafenstadt" : (UMAP[u] ? UMAP[u].region.replace(/^Die /, "") : "");
+const hzWorldStart = u => u === "u1" ? (scnOutdoor().includes(SCN_START) ? SCN_START : scnOutdoor().find(id => scnWorldOf(id) === "u1")) || null : hzFirstScene(u);
+const hzWorldsNew = () => U().open.filter(u => u !== "u1" && !(S.worldsBeen || ["u1"]).includes(u) && hzWorldStart(u));
+function hzBeen(u){ S.worldsBeen = S.worldsBeen || ["u1"]; if (!S.worldsBeen.includes(u)){ S.worldsBeen.push(u); save(); } }
+function hzWorldArt(u){
+  const sc = scnScene(u === "u1" ? SCN_MAP_ID : SCN_REGION_MAP[u]) || scnScene(hzWorldStart(u) || ""), set = sc && scnSet(sc.backgrounds);
+  return set ? `<img src="${set.src}" srcset="${set.srcset}" sizes="(max-width:600px) 46vw, 260px" alt="" decoding="async" loading="lazy">` : unitArt(UMAP[u]);
+}
+function hzWorldGo(u){
+  const id = hzWorldStart(u); if (!id){ if (PMAP[u]) hzSheet("region", u); return; }
+  hzSheetClose(true);
+  const first = u !== "u1" && !(S.hints && S.hints.worlds);
+  if (first){ S.hints = S.hints || {}; S.hints.worlds = 1; save(); HZ.pulse = true; setTimeout(() => { HZ.pulse = false; const w = $("#s-scene .hz-where"); if (w) w.classList.remove("hz-pulse"); }, 6000); }
+  if (SCN.cur !== id) scnGo(id, 0);
+  const n = scnRing(id).length, name = hzWorldName(u);
+  setTimeout(() => hzSay(u === "u1" ? `Zurück in der Hafenstadt!` : `Willkommen! Das ist ${esc(name)}. Wisch zu den ${n} Orten.${first ? " Nach Hause geht's mit dem Hafen-Knopf." : ""}`, first ? 9000 : 5000), 700);
+}
+function hzWorldsBody(){
+  const u = U(), here = scnWorldOf(SCN.cur), neu = hzWorldsNew();
+  const tile = x => { const open = u.open.includes(x.id), has = open && (x.id === "u1" || hzWorldStart(x.id) || PMAP[x.id]);
+    if (!open && !unitWords(x.id).length && x.id !== "u1") return "";
+    const chip = x.id === here ? `<i class="hz-wchip here">Du bist hier</i>` : neu.includes(x.id) ? `<i class="hz-wchip neu">Neu</i>` : !open ? `<i class="hz-wchip fog">im Nebel</i>` : "";
+    return `<button class="hz-wtile ${open ? "" : "fog"} ${x.id === here ? "here" : ""}" data-act="hzWorld" data-u="${x.id}" aria-label="${esc(hzWorldName(x.id))}, ${esc(x.n)}${open ? "" : ", noch im Nebel"}"${has || !open ? "" : " disabled"}>
+      <span class="hz-wart">${hzWorldArt(x.id)}${open ? "" : `<i class="hz-fog" aria-hidden="true"></i><i class="hz-lock2" aria-hidden="true">🔒</i>`}${chip}</span>
+      <small>${esc(x.n)}${u.cur === x.id && x.id !== "u1" ? " · lernst du gerade" : ""}</small><b>${esc(hzWorldName(x.id))}</b></button>`; };
+  return `<h2 class="hz-h2">Wohin fliegt ${esc(G())}?</h2>
+    <div class="hz-worlds">${UNITS.map(tile).join("")}</div>
+    <p class="hz-trip-txt">Neue Welten schalten Mama oder Papa frei, wenn ihr in der Schule damit anfangt. Deine Unterrichtsstunde nimmt immer zuerst die Wörter der Unit, die du gerade lernst, egal wo ${esc(G())} ist.</p>`;
+}
 /* Neu freigeschaltete Unit: Nebel verzieht sich, Friedrich jubelt */
 function hzUnlockShow(){
   const u = U(), fresh = u.open.find(id => !u.seen.includes(id)); if (!fresh) return false;
@@ -4529,9 +4606,10 @@ function hzUnlockShow(){
   const x = UMAP[fresh], st = $("#s-scene .scn-stage"); if (!st) return false;
   st.insertAdjacentHTML("beforeend", `<div class="hz-unlock" data-act="hzUnlockClose" role="dialog" aria-label="Neue Region freigeschaltet">
     <div class="hz-unlock-card"><span class="label">Neue Region freigeschaltet</span>
-      <span class="hz-unlock-art">${unitArt(x)}<i class="hz-fog"></i></span>
-      <b>${esc(x.n)}: ${esc(x.region)}</b><small>${unitWords(fresh).length} neue Wörter warten auf ${esc(G())}.</small>
-      <button class="btn btn-main btn-block" data-act="hzUnlockGo" data-u="${fresh}">Los geht's!</button></div></div>`);
+      <span class="hz-unlock-art">${hzWorldArt(fresh)}<i class="hz-fog"></i></span>
+      <b>${esc(x.n)}: ${esc(x.region)}</b><small>${unitWords(fresh).length} neue Wörter warten auf ${esc(G())}. Unten am Ortsnamen kannst du jederzeit zwischen den Welten wechseln.</small>
+      <button class="btn btn-main btn-block" data-act="hzUnlockGo" data-u="${fresh}">${hzWorldStart(fresh) ? "Hinfliegen" : "Ansehen"}</button>
+      <button class="hz-alt" data-act="hzUnlockClose">Später</button></div></div>`);
   if (!scnRM()){ confetti(); sfx("level"); }
   return true;
 }
