@@ -1063,6 +1063,9 @@ body:has(#s-start:not([hidden])) .beta-badge{display:flex}
 .hz-me{display:flex;align-items:center;gap:10px;min-width:0;max-width:66%;padding:4px 16px 4px 4px;border-radius:999px;cursor:pointer;text-align:left}
 .hz-ring{--p:0;flex:none;width:52px;height:52px;border-radius:50%;padding:3px;background:conic-gradient(var(--hz-teal,#0E5258) calc(var(--p) * 1%),#E7DFD0 0)}
 .hz-ring.big{width:96px;height:96px;padding:5px}
+.hz-ring{position:relative}
+.hz-stars{position:absolute;top:-7px;left:50%;transform:translateX(-50%);padding:0 6px;border-radius:999px;background:#F2B632;color:#5A3B00;font:800 .72rem/1.35 Nunito,system-ui,sans-serif;box-shadow:0 1px 0 #C98F12,0 2px 6px rgba(0,0,0,.18);white-space:nowrap;pointer-events:none}
+.hz-ring.big .hz-stars{top:-9px;font-size:.86rem;padding:1px 8px}
 .hz-av{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 30%,#EEF8FF 0,#B9DFF4 75%,#9CCFEC 100%);box-shadow:inset 0 0 0 2.5px #fff}
 .hz-av > .fr{width:96% !important;max-width:none;margin-top:12%}
 .hz-who{display:flex;flex-direction:column;min-width:0;line-height:1.15}
@@ -1522,7 +1525,9 @@ const PLANETS = [
 const PMAP = Object.fromEntries(PLANETS.map(p=>[p.id,p]));
 const STOPS = [["Leipzig",0],["Hannover",260],["Köln",500],["Brüssel",710],["Calais",920],["Dover",960],["London",1080],["Brighton",1170],["Oxford",1290],["York",1580],["Edinburgh",1900]];
 const STAGES = [{n:"Ei",min:0},{n:"Küken",min:0},{n:"Jungmöwe",min:60},{n:"Möwe",min:180},{n:"Kapitänsmöwe",min:450}];
-if (BETA) STAGES.push({n:"Königsmöwe",min:900});
+/* Möwenflug 2.0: zwei Stufen über der Kapitänsmöwe, verteilt auf das Schuljahr (4 Units). Nach der Königsmöwe gibt es Sterne. */
+if (BETA) STAGES.push({n:"Admiralsmöwe",min:1100}, {n:"Königsmöwe",min:2000});
+const STAR_MIN = 2000, STAR_STEP = 250;
 const GULL_COLORS = ["#EF4D67","#0B95C2","#1FB97E","#F2B632","#8E6AD8","#FF8A3D"];
 
 /* ============ WÖRTER ============ */
@@ -2744,6 +2749,8 @@ function load(){
   return null;
 }
 let S = load();
+/* Umstellung der Stufen (Königsmöwe war bei 900 Fischen auf Platz 5): wer sie schon hatte, behält sie */
+if (BETA && S && S.stageV !== 2){ if ((S.seenStage||0) >= 5){ S.stageFloor = STAGES.length-1; S.seenStage = STAGES.length-1; } S.stageV = 2; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} }
 unitsApply();
 /* Fische: Jede Stufe, die ein Wort aufsteigt, ist ein Fisch für die Möwe. Der Zähler sinkt nie. */
 if (S && S.fish==null){ S.fish = Object.values(S.words||{}).reduce((a,x)=>a+(x.b||0),0); }
@@ -2757,7 +2764,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795375976";
+const BUILD = "1795377701";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2807,7 +2814,7 @@ function mergeStates(L, R){
   out.words = mergeMap(L.words, R.words, newerEntry);
   out.sent = mergeMap(L.sent, R.sent, newerEntry);
   out.ws = mergeMap(L.ws, R.ws, (a,b)=> !a ? b : !b ? a : ((a.n||0) >= (b.n||0) ? a : b));
-  ["xp","km","fish","seenStage"].forEach(k=>{ if (L[k]!=null || R[k]!=null) out[k] = Math.max(L[k]||0, R[k]||0); });
+  ["xp","km","fish","seenStage","stageFloor","starsSeen"].forEach(k=>{ if (L[k]!=null || R[k]!=null) out[k] = Math.max(L[k]||0, R[k]||0); });
   out.stats = mergeMap(L.stats, R.stats, (a,b)=> typeof a==="number" || typeof b==="number" ? Math.max(a||0, b||0) : (b ?? a));
   out.days = union(L.days, R.days).sort().slice(-150);
   out.lastDay = [L.lastDay, R.lastDay].filter(Boolean).sort().pop() || null;
@@ -3267,17 +3274,31 @@ function gullStage(){
   if (!W.some(w=>st(w.id))) return 0;
   const f = S.fish||0;
   let n = 1; for (let i=2;i<STAGES.length;i++) if (f>=STAGES[i].min) n = i;
+  /* Niemand wird zurückgestuft: einmal erreichte Stufe bleibt (auch nach geänderten Fisch-Grenzen) */
+  if (S.stageFloor) n = Math.max(n, Math.min(STAGES.length-1, S.stageFloor));
   return n;
 }
+/* Sterne nach der Königsmöwe: alle 250 Fische über 2000 einer. nextStar = Fischzahl für den nächsten Stern, starFrom = Start des laufenden Abschnitts */
+const gullStars = () => BETA && S && gullStage() === STAGES.length-1 ? Math.max(0, Math.floor(((S.fish||0) - STAR_MIN) / STAR_STEP)) : 0;
+const nextStar = () => STAR_MIN + (gullStars()+1)*STAR_STEP;
+const starFrom = () => gullStars() ? STAR_MIN + gullStars()*STAR_STEP : ((S.fish||0) >= STAR_MIN ? STAR_MIN : 0);
+/* Neuer Stern seit dem letzten Blick: kleine Feier (Hafen und Startseite rufen das auf) */
+function starCheck(){
+  if (!BETA || !S || gullStage() !== STAGES.length-1) return;
+  const stars = gullStars();
+  if (S.starsSeen==null || stars < S.starsSeen){ S.starsSeen = stars; save(); return; }
+  if (stars > S.starsSeen){ S.starsSeen = stars; save(); setTimeout(()=>{ toast(`Ein neuer Stern für die Krone! ${esc(G())} hat jetzt <b>${stars>5?`★ ${stars}`:"★".repeat(stars)}</b>`); confetti(); sfx("gull"); }, 900); }
+}
+const stageLabel = n => STAGES[n].n + (n === STAGES.length-1 && gullStars() ? ` ★${gullStars()}` : "");
 window.FR_NO_AUTOLOAD = true;
 /* ============ FRIEDRICH 2.0: Charakterkomponente ============
-   Zeigt Friedrich in 6 Stufen und beliebigen Posen aus gerenderten Bildern (WebP).
+   Zeigt Friedrich in 7 Stufen und beliebigen Posen aus gerenderten Bildern (WebP).
    Welche Bilder es gibt, steht in assets/friedrich/manifest.json.
    Fehlt ein Bild, erscheint ein klar beschrifteter Platzhalter, nie eine Ersatzfigur.
    Animation = Bildwechsel zwischen Frames + sanfte 2D-Bewegung (atmen, wippen, max. 4° neigen). */
 const FR = {
-  stages: ["egg","chick","young","adult","captain","king"],
-  stageName: {egg:"Ei", chick:"Küken", young:"Jungmöwe", adult:"Möwe", captain:"Kapitänsmöwe", king:"Königsmöwe"},
+  stages: ["egg","chick","young","adult","captain","admiral","king"],
+  stageName: {egg:"Ei", chick:"Küken", young:"Jungmöwe", adult:"Möwe", captain:"Kapitänsmöwe", admiral:"Admiralsmöwe", king:"Königsmöwe"},
   views: ["front","3quarter","side","back","face"],
   frames: ["blink","look_left","look_right","wave","celebrate","think","encourage"],
   /* Zusätzliche Frames nur für einzelne Stufen: das Ei bekommt einen Riss und schlüpft */
@@ -3287,7 +3308,7 @@ const FR = {
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
   anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500], crack:["crack",900], hatch:["hatch",1600], fly:["fly",1100]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
-  frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"},
+  frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", admiral:"3quarter", king:"3quarter"},
   base: "assets/friedrich/",
   files: null, ver: 1
 };
@@ -3309,7 +3330,9 @@ function frImgErr(img){
   document.dispatchEvent(new CustomEvent("fr-broken", {detail:{src:img.currentSrc||img.src}}));
 }
 window.frImgErr = frImgErr;
-FR.stageOf = st => typeof st === "number" ? FR.stages[Math.max(0, Math.min(FR.stages.length-1, st))] : (FR.stages.includes(st) ? st : "adult");
+FR.stageOf = st => typeof st === "number" ? FR.appStage(FR.stages[Math.max(0, Math.min(FR.stages.length-1, st))]) : (FR.stages.includes(st) ? st : "adult");
+/* In der App: solange die Admiralsmöwe noch keine Grafik hat, zeigt sie die Kapitänsmöwe (der Prüfstand zeigt den Platzhalter) */
+FR.appStage = k => k === "admiral" && !FR.has("admiral", "3quarter") ? "captain" : k;
 function frLoadManifest(){
   return fetch(FR.base + "manifest.json", {cache:"no-cache"})
     .then(r => r.ok ? r.json() : null)
@@ -3348,12 +3371,13 @@ FR.wearOf = s => Object.keys(FR.files || {}).filter(k => k.startsWith(s + "/wear
    Werte in Prozent der Friedrich-Box, gemessen an <stufe>/3quarter (Schnabel zeigt nach rechts).
    head = Scheitel (Mütze sitzt darauf), ears = Kopfmitte (Kopfhörer), eyes = Mitte zwischen den Augen mit Neigung,
    neck = unter dem Schnabel, back = Rücken links, wird hinter den Körper gelegt.
-   Kapitäns- und Königsmöwe tragen Mütze bzw. Krone fest im Bild: dort keine Kopfteile. */
+   Kapitäns-, Admirals- und Königsmöwe tragen Mütze, Zweispitz bzw. Krone fest im Bild: dort keine Kopfteile. */
 FR.fit = {
   chick:   {head:{x:49, y:14, w:38, r:-6}, ears:{n:[36,40], f:[63,36.5], top:10.5}, eyes:{n:[52.2,35.4], f:[69.1,31.6]}, neck:{x:59, y:46, w:18}, back:{x:30, y:54, w:32}},
   young:   {head:{x:51, y:12, w:36, r:-6}, ears:{n:[36,35], f:[61,32], top:10.5},   eyes:{n:[49.4,28.8], f:[66.6,26.9]}, neck:{x:61, y:42, w:17}, back:{x:29, y:53, w:32}},
   adult:   {head:{x:52, y:14, w:38, r:-6}, ears:{n:[38,34], f:[64,31], top:11},     eyes:{n:[51,24.4],   f:[67.3,23.1]}, neck:{x:59, y:37, w:18}, back:{x:26, y:52, w:34}},
   captain: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},
+  admiral: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},   /* vorläufig wie Kapitän, nach Lieferung im Prüfstand feinjustieren */
   king:    {head:null,                     ears:null,                               eyes:{n:[52.2,36.2], f:[66,35]},     neck:{x:62, y:46, w:15}, back:{x:32, y:59, w:29}}
 };
 /* Brillen und Kopfhörer in der Dreiviertelansicht: Punkte im Inventarbild (in %).
@@ -3742,6 +3766,7 @@ function renderScene(opts = {}){
   setTimeout(() => { scnPreload(scnSet(scnScene(next).backgrounds)); scnPreload(scnSet(scnScene(prev).backgrounds)); }, 800);
   const up = SCN.success && SCN.stage0 >= 1 && gullStage() > SCN.stage0;
   if (SCN.success) setTimeout(async () => { if (up){ SCN.rewardOn = true; await scnPodium(SCN.stage0); SCN.rewardOn = false; } scnReward(hatch); }, 350);
+  if (!up) starCheck();
 }
 /* Beschriftungen am Bildrand in den sichtbaren Bereich schieben */
 function scnClamp(){
@@ -4229,16 +4254,18 @@ const HZ_SVG = {
 };
 function hzStageInfo(){
   const n = gullStage(), stage = FR.stageOf(Math.max(1, n)), st = STAGES[n] || STAGES[0], nx = STAGES[n + 1], fish = S.fish || 0;
-  const p = nx ? Math.max(4, Math.min(100, Math.round((fish - st.min) / (nx.min - st.min) * 100))) : 100;
-  return {n, stage, st, nx, fish, p};
+  /* Königsmöwe: der Ring füllt sich bis zum nächsten Stern */
+  const stars = gullStars(), a = nx ? st.min : starFrom(), b = nx ? nx.min : nextStar();
+  const p = Math.max(4, Math.min(100, Math.round((fish - a) / (b - a) * 100)));
+  return {n, stage, st, nx, fish, p, stars, label:stageLabel(n), toNext: nx ? `noch ${Math.max(0, nx.min - fish)} Fische bis ${nx.n}` : `noch ${Math.max(0, b - fish)} Fische bis zum ${stars ? "nächsten" : "ersten"} Stern`};
 }
 function hzTop(id, outs, i){
   const I = hzStageInfo(), shown = HZ.fish == null ? I.fish : Math.min(HZ.fish, I.fish);
   HZ.where = {id, n:(outs || []).length, i};
   return `<div class="hz-top">
-      <button class="hz-me" data-act="hzProfile" aria-label="${esc(G())}, ${esc(I.st.n)}. Profil öffnen">
-        <span class="hz-ring" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span></span>
-        <span class="hz-who"><b id="hzName"></b><small>${esc(I.st.n)}</small></span></button>
+      <button class="hz-me" data-act="hzProfile" aria-label="${esc(G())}, ${esc(I.label)}. Profil öffnen">
+        <span class="hz-ring" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span>${I.stars ? `<span class="hz-stars" aria-hidden="true">★${I.stars > 1 ? I.stars : ""}</span>` : ""}</span>
+        <span class="hz-who"><b id="hzName"></b><small>${esc(I.label)}</small></span></button>
       <button class="hz-chip" id="hzFishChip" data-act="growthInfo" aria-label="${I.fish} Fische. Wofür gibt es Fische?">${hzIc("belohnung_fisch", "40px")}<span class="hz-fishn"><b id="hzFish">${shown}</b><small>Fische</small></span></button>
     </div>
 `;
@@ -4280,8 +4307,8 @@ function hzSheet(kind, arg){
   if (kind === "profile"){
     const I = hzStageInfo(), s = hzStreak();
     const item = (act, ill, label, sub, cls) => `<button class="hz-item ${cls || ""}" data-act="hzSheetGo" data-go="${act}">${hzIc(ill, "64px")}<b>${label}</b>${sub ? `<small>${sub}</small>` : ""}</button>`;
-    body = `<div class="hz-prof"><span class="hz-ring big" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span></span>
-        <div class="hz-prof-txt"><b id="hzSheetName"></b><small>${esc(I.st.n)}${I.nx ? ` · noch ${Math.max(0, I.nx.min - I.fish)} Fische bis ${esc(I.nx.n)}` : " · höchste Stufe"}</small>
+    body = `<div class="hz-prof"><span class="hz-ring big" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span>${I.stars ? `<span class="hz-stars" aria-hidden="true">★${I.stars > 1 ? I.stars : ""}</span>` : ""}</span>
+        <div class="hz-prof-txt"><b id="hzSheetName"></b><small>${esc(I.label)} · ${esc(I.toNext)}</small>
         <span class="hz-prog"><i style="width:${I.p}%"></i></span>
         <small>${s ? `🔥 ${s} ${s === 1 ? "Tag" : "Tage"} hintereinander geübt` : "Heute üben startet deine Lernserie"}</small></div></div>
       <div class="hz-grid">
@@ -4541,7 +4568,7 @@ function renderWardrobeBeta(){
     const ok = unl.includes(a.id), on = S.wear[a.slot] === a.id, blocked = a.slot === "hat" && ownHat;
     let foot;
     if (!ok){ const [v, max, unit] = (ACC_PROG[a.id] || (() => [0, 1, ""]))(); foot = `<span class="wd-prog"><i style="width:${Math.round(v / max * 100)}%"></i></span><small>${esc(a.how)}${max > 1 ? ` · ${v}/${max}` : ""}</small>`; }
-    else if (blocked) foot = `<small>${esc(STAGES[n].n)} trägt schon ${stage === "king" ? "eine Krone" : "eine Mütze"}</small>`;
+    else if (blocked) foot = `<small>${esc(STAGES[n].n)} trägt schon ${stage === "king" ? "eine Krone" : stage === "admiral" ? "einen Admiralshut" : "eine Mütze"}</small>`;
     else foot = `<small>${on ? "Hat sie an · antippen zum Ausziehen" : "Antippen zum Anziehen"}</small>`;
     return `<button class="wd-item ${on ? "on" : ""} ${ok ? "" : "locked"} ${blocked && ok ? "blocked" : ""}" data-act="wear" data-id="${a.id}" ${ok ? "" : 'aria-disabled="true"'}>
       ${fresh(a.id) ? `<em class="wd-new">neu</em>` : ""}${on ? `<em class="wd-on">✓ An</em>` : ""}${!ok ? `<em class="wd-lock" aria-hidden="true">🔒</em>` : ""}
@@ -4572,7 +4599,7 @@ Object.assign(HZ_ACT, {
     const a = ACC.find(x => x.id === b.dataset.id); if (!a) return;
     if (!accUnlocked().some(x => x.id === a.id)){ const [v, max] = (ACC_PROG[a.id] || (() => [0, 1]))(); toast(`Noch gesperrt: ${esc(a.how)}${max > 1 ? ` (${v} von ${max})` : ""}`); return; }
     const st = FR.stageOf(Math.max(1, gullStage()));
-    if (a.slot === "hat" && !(FR.fit[st] || {}).head){ toast(`${esc(G())} trägt als ${esc(STAGES[gullStage()].n)} schon ${st === "king" ? "eine Krone" : "eine Mütze"}.`); return; }
+    if (a.slot === "hat" && !(FR.fit[st] || {}).head){ toast(`${esc(G())} trägt als ${esc(STAGES[gullStage()].n)} schon ${st === "king" ? "eine Krone" : st === "admiral" ? "einen Admiralshut" : "eine Mütze"}.`); return; }
     S.wear = S.wear || {}; const put = S.wear[a.slot] !== a.id; S.wear[a.slot] = put ? a.id : null; save(); sfx(put ? "gull" : "flip");
     WARD.last = put ? a.id : null; renderWardrobeBeta();
   }
@@ -5188,10 +5215,12 @@ function renderHome(){
   if (S.seenStage==null) S.seenStage = Math.min(stage,1);
   if (stage > S.seenStage && stage>=2){ S.seenStage = stage; save(); setTimeout(()=>{ toast(`${esc(G())} ist gewachsen! Jetzt eine <b>${STAGES[stage].n}</b>!`); confetti(); sfx("gull"); }, 700); }
   else if (stage > S.seenStage){ S.seenStage = stage; save(); }
+  starCheck();
   const fish = S.fish||0, nextSt = STAGES[stage+1];
-  $("#hStage").textContent = STAGES[stage].n;
+  $("#hStage").textContent = stageLabel(stage);
   if (stage===0){ $("#hStageBar").style.width = "0%"; $("#hStageTxt").textContent = "schlüpft in der 1. Stunde"; }
   else if (nextSt){ const from = STAGES[stage].min; $("#hStageBar").style.width = Math.max(3,Math.round((fish-from)/(nextSt.min-from)*100))+"%"; $("#hStageTxt").textContent = `🐟 ${fish}/${nextSt.min} bis ${nextSt.n}`; }
+  else if (BETA){ const a = starFrom(), b = nextStar(); $("#hStageBar").style.width = Math.max(3,Math.round((fish-a)/(b-a)*100))+"%"; $("#hStageTxt").textContent = `🐟 ${fish}/${b} bis zum nächsten Stern`; }
   else { $("#hStageBar").style.width = "100%"; $("#hStageTxt").textContent = `🐟 ${fish} Fische`; }
   renderTestCard(); renderFlight(); renderBackup(); renderCheckCard();
   const due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
@@ -5747,7 +5776,7 @@ function growthPanel(f0, st0){
   const f = S.fish||0, gained = f - f0, stg = gullStage(), next = STAGES[stg+1];
   if (stg>st0 && st0>=1) return `<div class="panel" style="border-color:var(--good);text-align:center"><span class="label" style="color:#0E7C51">${esc(G())} ist gewachsen!</span><div style="width:140px;margin:0 auto">${myGull()}</div><b style="font-size:1.2rem;color:var(--navy)">Jetzt eine ${STAGES[stg].n}!</b></div>`;
   if (gained<=0) return "";
-  return `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.8rem" aria-hidden="true">🐟</span><div><b>${esc(G())} hat ${gained} ${gained===1?"Fisch":"Fische"} bekommen</b><div class="muted" style="font-size:.88rem">${next?`Noch ${next.min-f} Fische bis zur ${next.n}.`:"Größer geht es nicht mehr!"}</div></div></div>`;
+  return `<div class="panel" style="flex-direction:row;align-items:center"><span style="font-size:1.8rem" aria-hidden="true">🐟</span><div><b>${esc(G())} hat ${gained} ${gained===1?"Fisch":"Fische"} bekommen</b><div class="muted" style="font-size:.88rem">${next?`Noch ${Math.max(0,next.min-f)} Fische bis zur ${next.n}.`:BETA?`Noch ${nextStar()-f} Fische bis zum nächsten Stern auf der Krone.`:"Größer geht es nicht mehr!"}</div></div></div>`;
 }
 /* ============ BELOHNUNGEN ============ */
 function lvPanel(xp0){
@@ -6430,7 +6459,7 @@ function renderParents(){
       <p style="margin:0">Es zählt nur, was ${esc(S.name)} selbst schreibt oder sagt. Ein Wort steigt höchstens einmal pro Tag eine Stufe auf und kommt nach 1, 3, 7, 14 und 30 Tagen wieder. Falsch heißt: zurück auf Stufe 1.</p>
       <p style="margin:0">Im Fehler-Detektiv macht die Möwe genau die Fehler aus seinen Diktaten, zum Beispiel „I'm don't“ oder „They names“. Wer Fehler korrigiert, lernt die Regel besonders gründlich.</p>
       <p style="margin:0">Die Möwen-Prüfung durch einen Erwachsenen zählt am meisten. Was dort beim ersten Mal sofort sitzt, springt auf Stufe 3. Nur geprüfte oder sichere Wörter schalten die Testampel auf Grün.</p>
-      <p style="margin:0">Die Möwe wächst mit Fischen: 1 Fisch für jedes neue Wort und 1 Fisch für jede Stufe, die ein Wort aufsteigt. Fische gehen nie verloren. Jungmöwe ab 60, Möwe ab 180, Kapitänsmöwe ab 450 Fischen.</p>
+      <p style="margin:0">Die Möwe wächst mit Fischen: 1 Fisch für jedes neue Wort und 1 Fisch für jede Stufe, die ein Wort aufsteigt. Fische gehen nie verloren. Jungmöwe ab 60, Möwe ab 180, Kapitänsmöwe ab 450${BETA?", Admiralsmöwe ab 1100, Königsmöwe ab 2000 Fischen. Danach bekommt die Krone alle 250 Fische einen Stern. Eine erreichte Stufe bleibt immer erhalten.":" Fischen."}</p>
       <p style="margin:0">Ist das Tagesziel erreicht, schläft die Möwe. Extra-Übungen gehen weiter, aber es gibt keinen Druck, endlos weiterzuspielen.</p>
     </div>
     <button class="btn btn-soft btn-block" data-act="openAll">Alle ${W.length} Wörter ansehen</button>

@@ -3,8 +3,8 @@
 Aufruf:  python3 import_friedrich.py <ordner-mit-pngs> [--repo /pfad/zum/repo]
 
 Erwartete Dateinamen: friedrich_<stufe>_<pose>.png oder friedrich_<stufe>_wear-<teil>.png (Kleidungs-Ebene)
-  stufe: egg, chick, young, adult, captain, king
-  pose:  front, 3quarter, side, back, face, blink, look_left, look_right, wave, celebrate, think, encourage
+  stufe: egg, chick, young, adult, captain, admiral, king
+  pose:  front, 3quarter, side, back, face, blink, look_left, look_right, wave, celebrate, think, encourage (dazu crack, hatch, fly)
 
 Was passiert:
   1. Prüfung: echter Alphakanal, quadratisch, mindestens 1024 px, Figur nutzt etwa 80 % der Höhe.
@@ -16,7 +16,7 @@ Was passiert:
 import sys, os, re, json, shutil
 from PIL import Image
 
-STAGES = ["egg", "chick", "young", "adult", "captain", "king"]
+STAGES = ["egg", "chick", "young", "adult", "captain", "admiral", "king"]
 POSES = ["front", "3quarter", "side", "back", "face", "blink", "look_left", "look_right", "wave", "celebrate", "think", "encourage"]
 POSES += ["crack", "hatch", "fly"]
 # Kleidungs-Ebenen: friedrich_<stufe>_wear-<teil>.png bzw. friedrich_<stufe>_wear-<teil>-<frame>.png

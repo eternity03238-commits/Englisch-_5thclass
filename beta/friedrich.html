@@ -159,13 +159,13 @@ window.FR_NO_AUTOLOAD = true;
 (() => {
 const gullStage = () => 5;
 /* ============ FRIEDRICH 2.0: Charakterkomponente ============
-   Zeigt Friedrich in 6 Stufen und beliebigen Posen aus gerenderten Bildern (WebP).
+   Zeigt Friedrich in 7 Stufen und beliebigen Posen aus gerenderten Bildern (WebP).
    Welche Bilder es gibt, steht in assets/friedrich/manifest.json.
    Fehlt ein Bild, erscheint ein klar beschrifteter Platzhalter, nie eine Ersatzfigur.
    Animation = Bildwechsel zwischen Frames + sanfte 2D-Bewegung (atmen, wippen, max. 4° neigen). */
 const FR = {
-  stages: ["egg","chick","young","adult","captain","king"],
-  stageName: {egg:"Ei", chick:"Küken", young:"Jungmöwe", adult:"Möwe", captain:"Kapitänsmöwe", king:"Königsmöwe"},
+  stages: ["egg","chick","young","adult","captain","admiral","king"],
+  stageName: {egg:"Ei", chick:"Küken", young:"Jungmöwe", adult:"Möwe", captain:"Kapitänsmöwe", admiral:"Admiralsmöwe", king:"Königsmöwe"},
   views: ["front","3quarter","side","back","face"],
   frames: ["blink","look_left","look_right","wave","celebrate","think","encourage"],
   /* Zusätzliche Frames nur für einzelne Stufen: das Ei bekommt einen Riss und schlüpft */
@@ -175,7 +175,7 @@ const FR = {
   /* Welcher Frame gehört zu welchem Animationszustand, wie lange läuft er (ms) */
   anims: {celebrate:["celebrate",900], levelup:["celebrate",1700], think:["think",1400], encourage:["encourage",1200], wave:["wave",1200], look_left:["look_left",1500], look_right:["look_right",1500], crack:["crack",900], hatch:["hatch",1600], fly:["fly",1100]},
   /* Auf welches Grundbild die Animations-Frames einer Stufe ausgerichtet sind */
-  frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"},
+  frameBase: {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", admiral:"3quarter", king:"3quarter"},
   base: "assets/friedrich/",
   files: null, ver: 1
 };
@@ -197,7 +197,9 @@ function frImgErr(img){
   document.dispatchEvent(new CustomEvent("fr-broken", {detail:{src:img.currentSrc||img.src}}));
 }
 window.frImgErr = frImgErr;
-FR.stageOf = st => typeof st === "number" ? FR.stages[Math.max(0, Math.min(FR.stages.length-1, st))] : (FR.stages.includes(st) ? st : "adult");
+FR.stageOf = st => typeof st === "number" ? FR.appStage(FR.stages[Math.max(0, Math.min(FR.stages.length-1, st))]) : (FR.stages.includes(st) ? st : "adult");
+/* In der App: solange die Admiralsmöwe noch keine Grafik hat, zeigt sie die Kapitänsmöwe (der Prüfstand zeigt den Platzhalter) */
+FR.appStage = k => k === "admiral" && !FR.has("admiral", "3quarter") ? "captain" : k;
 function frLoadManifest(){
   return fetch(FR.base + "manifest.json", {cache:"no-cache"})
     .then(r => r.ok ? r.json() : null)
@@ -236,12 +238,13 @@ FR.wearOf = s => Object.keys(FR.files || {}).filter(k => k.startsWith(s + "/wear
    Werte in Prozent der Friedrich-Box, gemessen an <stufe>/3quarter (Schnabel zeigt nach rechts).
    head = Scheitel (Mütze sitzt darauf), ears = Kopfmitte (Kopfhörer), eyes = Mitte zwischen den Augen mit Neigung,
    neck = unter dem Schnabel, back = Rücken links, wird hinter den Körper gelegt.
-   Kapitäns- und Königsmöwe tragen Mütze bzw. Krone fest im Bild: dort keine Kopfteile. */
+   Kapitäns-, Admirals- und Königsmöwe tragen Mütze, Zweispitz bzw. Krone fest im Bild: dort keine Kopfteile. */
 FR.fit = {
   chick:   {head:{x:49, y:14, w:38, r:-6}, ears:{n:[36,40], f:[63,36.5], top:10.5}, eyes:{n:[52.2,35.4], f:[69.1,31.6]}, neck:{x:59, y:46, w:18}, back:{x:30, y:54, w:32}},
   young:   {head:{x:51, y:12, w:36, r:-6}, ears:{n:[36,35], f:[61,32], top:10.5},   eyes:{n:[49.4,28.8], f:[66.6,26.9]}, neck:{x:61, y:42, w:17}, back:{x:29, y:53, w:32}},
   adult:   {head:{x:52, y:14, w:38, r:-6}, ears:{n:[38,34], f:[64,31], top:11},     eyes:{n:[51,24.4],   f:[67.3,23.1]}, neck:{x:59, y:37, w:18}, back:{x:26, y:52, w:34}},
   captain: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},
+  admiral: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},   /* vorläufig wie Kapitän, nach Lieferung im Prüfstand feinjustieren */
   king:    {head:null,                     ears:null,                               eyes:{n:[52.2,36.2], f:[66,35]},     neck:{x:62, y:46, w:15}, back:{x:32, y:59, w:29}}
 };
 /* Brillen und Kopfhörer in der Dreiviertelansicht: Punkte im Inventarbild (in %).
@@ -358,9 +361,9 @@ setInterval(() => {
 }, 400);
 if (!window.FR_NO_AUTOLOAD) frLoadManifest();
 
-const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/074755176d24f39a435afdd7681629bd89577378/beta/assets/friedrich/manifest.json";
+const PINNED_MANIFEST = "https://github.com/eternity03238-commits/Englisch-_5thclass/blob/25e560e59f0af473d187e7b174786228fda5b714/beta/assets/friedrich/manifest.json";
 /* Standardansicht je Stufe im Prüfstand */
-const DEFAULT_POSE = {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", king:"3quarter"};
+const DEFAULT_POSE = {chick:"3quarter", young:"3quarter", adult:"3quarter", captain:"3quarter", admiral:"3quarter", king:"3quarter"};
 const defPose = s => DEFAULT_POSE[s] || "front";
 let stage = "king", pose = defPose("king"), bg = "bg-light";
 const $ = s => document.querySelector(s);
