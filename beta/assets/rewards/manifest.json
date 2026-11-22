@@ -1,5 +1,5 @@
 {
-  "version": 48,
+  "version": 49,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -1109,6 +1109,21 @@
           "height": 768
         }
       ]
+    },
+    "reisetagebuch_entwurf": {
+      "name": "Reisetagebuch – Bildschirm-Entwurf",
+      "images": [
+        {
+          "path": "reisetagebuch_entwurf.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "reisetagebuch_entwurf-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
     }
   },
   "activeScreenDesigns": [
@@ -1142,6 +1157,97 @@
           "height": 768
         }
       ]
+    },
+    "reisetagebuch_kartentisch": {
+      "name": "Reisetagebuch – Kartentisch",
+      "images": [
+        {
+          "path": "reisetagebuch_kartentisch.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "reisetagebuch_kartentisch-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "menue_lernen": {
+      "name": "Lernmenüs – Hafenwerkstatt",
+      "images": [
+        {
+          "path": "menue_lernen.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "menue_lernen-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "menue_sammlung": {
+      "name": "Sammlung – Kapitänskajüte",
+      "images": [
+        {
+          "path": "menue_sammlung.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "menue_sammlung-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "menue_eltern": {
+      "name": "Eltern und Lernstand – Hafenblick",
+      "images": [
+        {
+          "path": "menue_eltern.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "menue_eltern-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "menue_extras": {
+      "name": "Extras – Hafenschuppen",
+      "images": [
+        {
+          "path": "menue_extras.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "menue_extras-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
     }
-  }
+  },
+  "menuBackgroundPlan": {
+    "journal": "reisetagebuch_kartentisch",
+    "sentpick": "menue_lernen",
+    "deck": "menue_lernen",
+    "cards": "menue_lernen",
+    "exam": "menue_lernen",
+    "wardrobe": "menue_sammlung",
+    "badges": "menue_sammlung",
+    "parents": "menue_eltern",
+    "overview": "menue_eltern",
+    "extras": "menue_extras",
+    "map": "Vorhandene Küstenkarte",
+    "place": "Vorhandene Ortsmotive",
+    "post": "hafen_hintergrund"
+  },
+  "journalDesignGuidance": "Reisetagebuch-Entwurf als Layoutvorlage nutzen. Postkarten aus dem vorhandenen Reisedatensatz dynamisch anzeigen, Leipzig, Ärmelkanal und Brighton sind Beispiele. Auf kleinen Bildschirmen die Karten stapeln, auf breiten in einem flexiblen Raster. Texte und Bedienelemente separat umsetzen."
 }
