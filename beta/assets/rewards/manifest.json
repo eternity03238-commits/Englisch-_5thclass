@@ -1,5 +1,5 @@
 {
-  "version": 44,
+  "version": 45,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -929,6 +929,80 @@
           "height": 768
         }
       ]
+    },
+    "design_v2_startseite": {
+      "name": "Startseite",
+      "images": [
+        {
+          "path": "design_v2_startseite.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v2_startseite-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_v2_login": {
+      "name": "Login",
+      "images": [
+        {
+          "path": "design_v2_login.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v2_login-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_v2_hauptbildschirm": {
+      "name": "Hauptbildschirm",
+      "images": [
+        {
+          "path": "design_v2_hauptbildschirm.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v2_hauptbildschirm-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
+    },
+    "design_v2_elternmenue": {
+      "name": "Elternmenü",
+      "images": [
+        {
+          "path": "design_v2_elternmenue.webp",
+          "width": 1024,
+          "height": 1536
+        },
+        {
+          "path": "design_v2_elternmenue-512.webp",
+          "width": 512,
+          "height": 768
+        }
+      ]
     }
+  },
+  "activeScreenDesigns": [
+    "design_v2_startseite",
+    "design_v2_login",
+    "design_v2_hauptbildschirm",
+    "design_v2_elternmenue"
+  ],
+  "screenDesignGuidance": {
+    "nameSource": "S.gull",
+    "fallback": "Deine Möwe",
+    "nameRendering": "Als dynamischen HTML-Text mit textContent einsetzen. Keine Namen in Bilddateien.",
+    "nameCss": "font-size: clamp(1.5rem, 1rem + 2vw, 3rem); overflow-wrap: anywhere; min-inline-size: 0; white-space: normal;",
+    "layout": "Mobile-first. Bei schmalen Ansichten einspaltig, bei breiten Ansichten flexibel aufteilen. Karten und Namensbereich wachsen mit dem Inhalt. Bilder responsiv und getrennt von Formularen, Texten und Bedienelementen einbinden.",
+    "login": "E-Mail und Passwort sind ein Entwurf. Bestehenden Einstieg und Eltern-PIN bei der Umsetzung berücksichtigen."
   }
 }
