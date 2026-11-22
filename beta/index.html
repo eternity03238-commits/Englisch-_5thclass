@@ -1328,6 +1328,22 @@ body.scn-on:has(.hz-tabs) .beta-badge{top:auto;bottom:calc(76px + env(safe-area-
 .scn-mapview > .scn-top + *{margin-top:0}
 .scn-mapview > .scn-bottom{position:relative;left:auto;right:auto;bottom:auto;padding:14px max(12px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));background:#FFFBF4}
 .scn-mapview .hz-regions{padding-bottom:4px}
+
+/* Region-Blatt und Wegweiser zu neuen Units */
+.hz-reg-head{display:flex;align-items:center;gap:14px;padding-right:44px}
+.hz-reg-big{flex:none;width:92px;aspect-ratio:16/10;border-radius:14px;overflow:hidden;display:block}
+.hz-reg-head small{font:800 .72rem/1 var(--fr-font);letter-spacing:.06em;text-transform:uppercase;color:var(--hz-teal)}
+.hz-reg-head span{font:700 .85rem/1.2 var(--fr-font);color:var(--hz-muted)}
+.hz-reg-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hz-reg-stats span{display:flex;flex-direction:column;align-items:center;padding:8px 4px;border-radius:14px;background:#fff;border:1px solid var(--hz-line)}
+.hz-reg-stats b{font:700 1.4rem/1 "Baloo 2",var(--fr-font-head,sans-serif);color:var(--hz-navy)}.hz-reg-stats small{font:700 .72rem/1.2 var(--fr-font);color:var(--hz-muted)}
+.hz-gate{position:absolute;z-index:3;transform:translateX(-50%);display:flex;align-items:center;gap:8px;padding:5px 12px 5px 5px;border:0;border-radius:999px;background:#13234A;color:#fff;box-shadow:0 6px 16px rgba(10,20,40,.35);cursor:pointer;white-space:nowrap;text-align:left;animation:hzGate 2.8s ease-in-out infinite}
+.hz-gate-ic{width:40px;height:28px;border-radius:8px;overflow:hidden;display:block;flex:none}
+.hz-gate small{display:block;font:800 .6rem/1 var(--fr-font);letter-spacing:.08em;text-transform:uppercase;color:#FFD36E}
+.hz-gate b{font:800 .86rem/1.1 var(--fr-font)}
+.hz-gate em{font-style:normal;font:800 1.2rem/1 var(--fr-font);color:#FFD36E}
+@keyframes hzGate{0%,100%{box-shadow:0 6px 16px rgba(10,20,40,.35),0 0 0 0 rgba(255,211,110,.6)}50%{box-shadow:0 6px 16px rgba(10,20,40,.35),0 0 0 6px rgba(255,211,110,0)}}
+@media (prefers-reduced-motion:reduce){.hz-gate{animation:none}}
 </style>
 
 </head>
@@ -2731,7 +2747,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795374833";
+const BUILD = "1795375256";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -3665,7 +3681,7 @@ function renderScene(opts = {}){
       <div class="scn-art">
         ${scnImg(base, "scn-base")}${rew ? scnImg(rew, "scn-reward") : ""}
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}<div class="hz-say" id="scnSay" role="status" aria-live="polite"></div></div>
-        ${spot}
+        ${spot}${hzGates(id, L)}
       </div>
       ${hzTop(id, outs, i)}
       ${hzNav(outs, i)}
@@ -4102,9 +4118,11 @@ function screensBoot(){
 const HZ = {fish:null, km:null, sayT:null};
 const HZ_ACT = {
   hzRegion: b => { const id = b.dataset.u, open = U().open.includes(id), x = UMAP[id];
+    if (open && id !== "u1" && PMAP[id]) return hzSheet("region", id);
     if (!open) return toast(`<b>${esc(x.region)}</b> liegt noch im Nebel. Mama oder Papa schalten ${esc(x.n)} frei, wenn ihr damit in der Schule anfangt.`);
     toast(id === U().cur ? `${esc(x.n)}: ${esc(x.region)}. Hier lernst du gerade.` : `${esc(x.n)}: ${esc(x.region)} wird weiter wiederholt.`); },
   hzUnlockClose: () => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); },
+  hzUnlockGo: b => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); if (PMAP[b.dataset.u]) hzSheet("region", b.dataset.u); },
   hzProfile: () => hzSheet("profile"),
   hzHere: () => ACT.scnFr(),
   hzReport: () => shareText("Möwen-Bericht", reportText(true), msg => { S.lastBackup = today(); save(); toast(msg); renderScene(); }),
@@ -4193,7 +4211,7 @@ function hzBottom(){
     </nav></div>`;
 }
 /* Ruhige Blätter von unten: Profil und Reise */
-function hzSheet(kind){
+function hzSheet(kind, arg){
   const st = $("#s-scene .scn-stage"); if (!st) return;
   hzSheetClose(true);
   let body = "";
@@ -4218,6 +4236,16 @@ function hzSheet(kind){
         <button class="hz-tog" data-act="hzVoice" aria-pressed="${S.settings.voice !== "normal"}"><b>Stimme</b><span>${S.settings.voice !== "normal" ? "Möwe" : "normal"}</span></button>
         <button class="hz-tog" data-act="hzSheetGo" data-go="hzIntro"><b>So geht's</b><span>Hilfe</span></button>
       </div>`;
+  } else if (kind === "region"){
+    const x = UMAP[arg], ps = placeStats(arg), cur = U().cur === arg, nw = ps.total - ps.seen;
+    body = `<div class="hz-reg-head"><span class="hz-reg-big">${unitArt(x)}</span><div><small>${esc(x.n)}${cur ? " · läuft gerade" : ""}</small><h2 class="hz-h2">${esc(x.region)}</h2><span>${esc(x.t)}</span></div></div>
+      <div class="hz-reg-stats"><span><b>${ps.total}</b><small>Wörter</small></span><span><b>${ps.seen}</b><small>schon gesehen</small></span><span><b>${ps.safe}</b><small>sicher</small></span></div>
+      <div class="hz-list">
+        ${cur ? `<button class="hz-li" data-act="hzSheetGo" data-go="startDaily">${hzIc("unterricht_schulbuch", "64px")}<span><b>Unterrichtsstunde</b><small>Neue Wörter aus ${esc(x.n)} zuerst</small></span><em aria-hidden="true">›</em></button>` : ""}
+        ${nw ? `<button class="hz-li" data-act="hzSheetGo" data-go="placeCards" data-pid="new:${arg}">${hzIc("karteikarten_stapel", "64px")}<span><b>Neue Wörter anschauen</b><small>${nw} Wörter als Karteikarten</small></span><em aria-hidden="true">›</em></button>` : ""}
+        <button class="hz-li" data-act="hzSheetGo" data-go="placeCards" data-pid="${arg}">${hzIc("lernwelt_hafenkarte", "64px")}<span><b>Alle Wörter üben</b><small>Karteikarten aus der ganzen Unit</small></span><em aria-hidden="true">›</em></button>
+      </div>
+      <p class="hz-trip-txt">Die Bilder für diese Region kommen noch. Bis dahin lernst du ${esc(x.n)} hier.</p>`;
   } else if (kind === "intro"){
     body = `<h2 class="hz-h2">So funktioniert Möwenflug</h2>
       <ol class="hz-steps">
@@ -4240,7 +4268,7 @@ function hzSheet(kind){
       </div>`;
   }
   st.insertAdjacentHTML("beforeend", `<div class="hz-sheet-bg" data-act="hzSheetClose"></div>
-    <div class="hz-sheet" role="dialog" aria-label="${kind === "profile" ? "Profil" : kind === "intro" ? "So funktioniert Möwenflug" : "Reise"}"><span class="hz-grab" aria-hidden="true"></span>
+    <div class="hz-sheet" role="dialog" aria-label="${kind === "profile" ? "Profil" : kind === "intro" ? "So funktioniert Möwenflug" : kind === "region" ? esc(UMAP[arg].region) : "Reise"}"><span class="hz-grab" aria-hidden="true"></span>
       <button class="hz-x" data-act="hzSheetClose" aria-label="Schließen">✕</button>${body}</div>`);
   const nm = $("#hzSheetName"); if (nm) nm.textContent = G();
   requestAnimationFrame(() => st.classList.add("hz-sheet-on"));
@@ -4413,7 +4441,7 @@ function hzUnlockShow(){
     <div class="hz-unlock-card"><span class="label">Neue Region freigeschaltet</span>
       <span class="hz-unlock-art">${unitArt(x)}<i class="hz-fog"></i></span>
       <b>${esc(x.n)}: ${esc(x.region)}</b><small>${unitWords(fresh).length} neue Wörter warten auf ${esc(G())}.</small>
-      <button class="btn btn-main btn-block" data-act="hzUnlockClose">Los geht's!</button></div></div>`);
+      <button class="btn btn-main btn-block" data-act="hzUnlockGo" data-u="${fresh}">Los geht's!</button></div></div>`);
   if (!scnRM()){ confetti(); sfx("level"); }
   return true;
 }
@@ -4482,6 +4510,15 @@ Object.assign(HZ_ACT, {
     WARD.last = put ? a.id : null; renderWardrobeBeta();
   }
 });
+
+/* Übergang, solange eine freigeschaltete Unit noch keine eigenen Szenen hat: ein Wegweiser an einem passenden Hafen-Ort */
+const HZ_GATE = {u2:"schule-am-meer", u3:"marktplatz", u4:"strand-und-seebruecke", ux:"abenteuer-pier"};
+function hzGates(id, L){
+  if (!L || !L.spot) return "";
+  return Object.entries(HZ_GATE).filter(([uid, host]) => host === id && U().open.includes(uid) && PMAP[uid] && !scnIds().some(x => scnArea(x) === uid))
+    .map(([uid]) => { const x = UMAP[uid], cx = L.spot.x + L.spot.w / 2, y = L.spot.y + L.spot.h + 3;
+      return `<button class="hz-gate" data-act="hzRegion" data-u="${uid}" style="left:${cx}%;top:${y}%" aria-label="Weg nach ${esc(x.region)} (${esc(x.n)})"><span class="hz-gate-ic">${unitArt(x)}</span><span><small>${esc(x.n)}</small><b>${esc(x.region)}</b></span><em aria-hidden="true">›</em></button>`; }).join("");
+}
 
 const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), pose:FR.baseOf(FR.stageOf(Math.max(1,gullStage()))), size:"fit", wear:scnWearList()}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
 function gullLine(){
