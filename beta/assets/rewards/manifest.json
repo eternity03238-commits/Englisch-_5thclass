@@ -1,5 +1,5 @@
 {
-  "version": 50,
+  "version": 51,
   "badges": {
     "first": {
       "name": "Geschlüpft",
@@ -1381,5 +1381,173 @@
     "mission": {
       "sent": "hintergrund_satzwerkstatt"
     }
-  }
+  },
+  "journalPostcards": {
+    "postkarte_leipzig": {
+      "name": "Leipzig",
+      "images": [
+        {
+          "path": "postkarte_leipzig.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_leipzig-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_hannover": {
+      "name": "Hannover",
+      "images": [
+        {
+          "path": "postkarte_hannover.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_hannover-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_koeln": {
+      "name": "Köln",
+      "images": [
+        {
+          "path": "postkarte_koeln.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_koeln-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_bruessel": {
+      "name": "Brüssel",
+      "images": [
+        {
+          "path": "postkarte_bruessel.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_bruessel-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_calais": {
+      "name": "Calais",
+      "images": [
+        {
+          "path": "postkarte_calais.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_calais-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_dover": {
+      "name": "Dover",
+      "images": [
+        {
+          "path": "postkarte_dover.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_dover-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_brighton": {
+      "name": "Brighton",
+      "images": [
+        {
+          "path": "postkarte_brighton.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_brighton-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_london": {
+      "name": "London",
+      "images": [
+        {
+          "path": "postkarte_london.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_london-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_oxford": {
+      "name": "Oxford",
+      "images": [
+        {
+          "path": "postkarte_oxford.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_oxford-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_york": {
+      "name": "York",
+      "images": [
+        {
+          "path": "postkarte_york.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_york-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    },
+    "postkarte_edinburgh": {
+      "name": "Edinburgh",
+      "images": [
+        {
+          "path": "postkarte_edinburgh.webp",
+          "width": 1536,
+          "height": 1024
+        },
+        {
+          "path": "postkarte_edinburgh-768.webp",
+          "width": 768,
+          "height": 512
+        }
+      ]
+    }
+  },
+  "journalPostcardGuidance": "Die Einträge über den exakten Stadtnamen aus CITIES zuordnen. Das Motiv kann im Reisetagebuch und in der geöffneten Postkarte verwendet werden. Ortsname, Entfernung und Freischaltung aus dem Spielzustand beziehen."
 }
