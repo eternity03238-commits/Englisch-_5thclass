@@ -876,10 +876,7 @@ img.ill-pre{display:inline-block;width:1.45em;height:1.45em;margin:-.2em .35em -
 
 /* ============ Bildschirme nach Entwurf v4 (nur Beta) ============ */
 :root{--mw-cream:#FBF5EA;--mw-card:#FFFBF4;--mw-line:#EADFCB;--mw-navy:#13234A;--mw-teal:#0E5258;--mw-teal2:#0A3F44;--mw-coral:#EE6A4E;--mw-muted:#5E6478}
-#s-start,#s-login,#s-pmenu,body.mw-beta #s-home{position:fixed;inset:0;z-index:5;overflow-y:auto;overscroll-behavior:contain;background:var(--mw-cream);-webkit-overflow-scrolling:touch}
-body.mw-beta #s-home{padding:0;gap:0;display:block}
-.mw-main-screen{width:100%}
-body.mw-beta #s-home > :not(.mw-main-screen){display:none!important}
+#s-start,#s-login,#s-pmenu{position:fixed;inset:0;z-index:5;overflow-y:auto;overscroll-behavior:contain;background:var(--mw-cream);-webkit-overflow-scrolling:touch}
 body.mw-on{overflow:hidden}
 .mw-screen{position:relative;max-width:560px;min-height:100%;margin:0 auto;background:var(--mw-cream);display:flex;flex-direction:column;color:var(--mw-navy);font-family:Nunito,system-ui,sans-serif}
 /* Kopfbild: Hafen als gemeinsamer Hintergrund, Ausschnitt per Container-Einheiten */
@@ -976,7 +973,124 @@ body.mw-on{overflow:hidden}
 .mw-go{width:46px;height:40px;flex:none;border-radius:999px;background:var(--mw-teal);color:#fff;display:grid;place-items:center}
 .mw-go svg{width:24px;height:24px}
 .mw-rows .mw-link{font-size:1rem;color:var(--mw-teal);text-decoration:underline;text-underline-offset:4px}
-@media (min-width:561px){.mw-screen{box-shadow:0 0 0 1px var(--mw-line),0 10px 40px rgba(0,0,0,.08)}#s-start,#s-login,#s-pmenu,body.mw-beta #s-home{background:#E9E0CF}}
+@media (min-width:561px){.mw-screen{box-shadow:0 0 0 1px var(--mw-line),0 10px 40px rgba(0,0,0,.08)}#s-start,#s-login,#s-pmenu{background:#E9E0CF}}
+
+.mw-toggles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+/* Menü-Hintergründe (menuBackgroundPlan): Bild füllt den Bildschirm, oben bleibt das Motiv frei */
+#mwBack{position:fixed;inset:0;z-index:0;background:#E7D3B4;overflow:hidden}
+#mwBack img{position:absolute;left:50%;top:0;width:100%;max-width:560px;height:100%;object-fit:cover;object-position:50% 0;transform:translateX(-50%)}
+@media (min-width:561px){#mwBack img{max-width:none;width:auto;min-width:100%}}
+#mwBack::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(251,245,234,0) 0,rgba(251,245,234,0) 24%,rgba(251,245,234,.18) 48%,rgba(251,245,234,.38) 100%)}
+body.mw-themed{background:#E7D3B4}
+body.mw-roomy #app > section:not([hidden]){padding-top:clamp(120px,24svh,240px)}
+body.mw-themed #app > section:not([hidden]) > h1,body.mw-themed #app > section:not([hidden]) > h2,body.mw-themed #app > section:not([hidden]) > p,body.mw-themed #app > section:not([hidden]) > .label{
+  align-self:flex-start;background:rgba(255,251,244,.92);border-radius:14px;padding:4px 12px;box-shadow:0 4px 14px rgba(60,40,20,.12)}
+body.mw-themed #app > section:not([hidden]) > p{align-self:stretch}
+body.mw-themed #app .panel,body.mw-themed #app .tile,body.mw-themed #app .pc,body.mw-themed #app .fc-face{box-shadow:0 8px 22px rgba(60,40,20,.18)}
+
+/* ============ Hafenstadt als Hauptmenü (nur Beta) ============ */
+.hz-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;flex-direction:column;gap:8px;pointer-events:none;
+  padding:calc(10px + env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px))}
+.hz-top > *{pointer-events:auto}
+.hz-row{display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}
+.hz-row > *{pointer-events:auto}
+.hz-glass,.hz-me,.hz-chip,.hz-tool,.hz-way,.hz-trip,.hz-test{background:rgba(11,25,48,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#F7F4EC;border:1px solid rgba(255,255,255,.22);box-shadow:0 6px 16px rgba(10,20,40,.22)}
+.hz-me{display:flex;align-items:center;gap:8px;min-width:0;max-width:62%;padding:4px 14px 4px 4px;border-radius:999px;cursor:pointer;text-align:left}
+.hz-ring{--p:0;flex:none;width:48px;height:48px;border-radius:50%;padding:3px;background:conic-gradient(#FFD36E calc(var(--p) * 1%),rgba(255,255,255,.22) 0)}
+.hz-av{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 35%,#DDF1FF,#9FCBE8)}
+.hz-av .fr{width:150%;margin:-8% 0 0 -25%}
+.hz-who{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.hz-who b{font:800 1.05rem/1.1 var(--fr-font-head,var(--fr-font));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hz-who small{font:700 .74rem/1.2 var(--fr-font);color:#C9D8EC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hz-chips{display:flex;gap:6px;flex:none}
+.hz-chip{display:inline-flex;align-items:center;gap:2px;height:44px;padding:0 12px 0 4px;border-radius:999px;font:800 1.05rem/1 var(--fr-font);transition:transform .2s}
+.hz-chip .hz-ill{width:36px;height:36px;object-fit:contain}
+.hz-chip.off .hz-ill{filter:grayscale(1) opacity(.6)}
+.hz-chip.pop{transform:scale(1.18)}
+.hz-tools{display:flex;gap:6px}
+.hz-tool{position:relative;width:48px;height:48px;border-radius:16px;display:grid;place-items:center;padding:0;cursor:pointer}
+.hz-tool .hz-ill{width:40px;height:40px;object-fit:contain}
+.hz-lock i{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;background:#0E5258;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 2px rgba(255,255,255,.8)}
+.hz-lock i svg{width:12px;height:12px}
+.hz-test{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:2px 14px 2px 4px;border-radius:999px;font:800 .88rem/1.1 var(--fr-font);background:rgba(238,106,78,.88)}
+.hz-test .hz-ill{width:32px;height:32px}
+.hz-top .scn-place{min-height:40px;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;line-height:20px}
+/* Wege zu den Nachbarorten am Bildrand */
+.hz-way{position:absolute;z-index:4;top:46%;display:flex;flex-direction:column;align-items:center;gap:2px;width:64px;padding:8px 3px;border-radius:18px;cursor:pointer;font:800 .64rem/1.1 var(--fr-font);text-align:center}
+.hz-way.l{left:max(6px,env(safe-area-inset-left,0px))}.hz-way.r{right:max(6px,env(safe-area-inset-right,0px))}
+.hz-way span{font-size:1.7rem;line-height:.8}
+.hz-way small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hz-way:active{transform:scale(.96)}
+.hz-spotbtn{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(176px + env(safe-area-inset-bottom,0px));min-height:48px;padding:0 22px}
+/* Unten: Reisefaden und Steg */
+.hz-bottom{position:absolute;z-index:5;left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));bottom:calc(34px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
+.hz-trip{display:flex;align-items:center;gap:8px;min-height:40px;padding:4px 12px;border-radius:999px;cursor:pointer;font:800 .72rem/1 var(--fr-font);margin:0 10px}
+.hz-trip small{flex:none;color:#DCE7F5}
+.hz-track{position:relative;flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.2)}
+.hz-track i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#72C8FF,#FFD36E);transition:width 1.4s cubic-bezier(.3,.8,.3,1)}
+.hz-track em{position:absolute;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#0B1930;box-shadow:0 0 0 1.5px rgba(255,255,255,.55)}
+.hz-track em.on{background:#FFD36E}
+.hz-plane{position:absolute;top:50%;width:34px;height:34px;transform:translate(-50%,-55%);transition:left 1.4s cubic-bezier(.3,.8,.3,1)}
+.hz-plane .hz-ill{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.hz-dock{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;gap:2px;padding:10px 6px 8px;border-radius:26px;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,0) 0 62px,rgba(40,20,5,.22) 62px 64px),linear-gradient(180deg,#B57A45 0,#93592C 55%,#7A4720 100%);
+  box-shadow:inset 0 2px 0 rgba(255,225,180,.45),inset 0 -3px 0 rgba(40,20,5,.35),0 10px 24px rgba(30,15,5,.4)}
+.hz-st{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;padding:2px 0;background:none;border:0;cursor:pointer;color:#FFF7EA;-webkit-tap-highlight-color:transparent}
+.hz-st .hz-ill{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(30,15,5,.45));transition:transform .15s}
+.hz-st b{font:800 .78rem/1.1 var(--fr-font);text-shadow:0 1px 2px rgba(30,15,5,.6);white-space:nowrap}
+.hz-st:active .hz-ill{transform:translateY(2px) scale(.95)}
+.hz-badge{position:absolute;top:-4px;right:calc(50% - 34px);min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#EE6A4E;color:#fff;font:800 .74rem/22px var(--fr-font);text-align:center;box-shadow:0 0 0 2px #FFF7EA}
+.hz-go{margin-top:-40px}
+.hz-go .hz-ill{width:78px;height:78px;padding:8px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#2C8C92,#0E5258);box-shadow:0 0 0 4px #FFF3DE,0 0 0 7px rgba(238,106,78,.9),0 10px 20px rgba(20,30,40,.45);animation:hzPulse 2.6s ease-in-out infinite}
+.hz-go b{font-size:.9rem;margin-top:8px}
+.hz-go .hz-badge{top:-6px;right:calc(50% - 46px)}
+.hz-go.done .hz-check{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font:900 2.4rem/1 var(--fr-font);color:#fff;background:radial-gradient(circle at 50% 35%,#3FBF83,#1F8A59);box-shadow:0 0 0 4px #FFF3DE,0 10px 20px rgba(20,30,40,.45)}
+@keyframes hzPulse{0%,100%{box-shadow:0 0 0 4px #FFF3DE,0 0 0 7px rgba(238,106,78,.9),0 10px 20px rgba(20,30,40,.45)}50%{box-shadow:0 0 0 4px #FFF3DE,0 0 0 12px rgba(238,106,78,.35),0 10px 20px rgba(20,30,40,.45)}}
+.hz-wiggle .hz-ill{animation:hzWiggle 2.4s ease-in-out infinite;transform-origin:50% 80%}
+@keyframes hzWiggle{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(-12deg)}82%{transform:rotate(10deg)}89%{transform:rotate(-6deg)}95%{transform:rotate(3deg)}}
+/* Sprechblase über Friedrich */
+.hz-say{position:absolute;left:50%;bottom:86%;z-index:6;width:max-content;max-width:min(240px,62vw);display:flex;flex-direction:column;gap:2px;padding:9px 13px;border-radius:16px;
+  background:rgba(255,253,246,.97);color:#16406B;font:700 .9rem/1.3 var(--fr-font);box-shadow:0 8px 22px rgba(30,20,10,.3);
+  transform:translateX(calc(-50% + var(--dx,0px))) scale(.6);transform-origin:50% 100%;opacity:0;pointer-events:none;transition:opacity .25s,transform .3s cubic-bezier(.3,1.5,.5,1)}
+.hz-say.on{opacity:1;transform:translateX(calc(-50% + var(--dx,0px))) scale(1);pointer-events:auto}
+.hz-say[data-act]{cursor:pointer}
+.hz-say[data-act]::after{content:"▶ Los";align-self:flex-end;margin-top:2px;font:800 .78rem/1 var(--fr-font);color:#fff;background:#0E5258;border-radius:999px;padding:5px 10px}
+.hz-say::before{content:"";position:absolute;left:calc(50% - var(--dx,0px));bottom:-8px;width:16px;height:16px;margin-left:-8px;background:inherit;transform:rotate(45deg);border-radius:0 0 4px 0}
+.hz-say b{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:#3F8F73}
+/* Fische fliegen in den Zähler */
+.hz-flyfish{position:fixed;z-index:50;width:34px;height:34px;object-fit:contain;pointer-events:none;animation:hzFly .9s cubic-bezier(.5,0,.6,1) both;filter:drop-shadow(0 3px 4px rgba(0,0,0,.35))}
+@keyframes hzFly{0%{transform:translate(-50%,-50%) scale(.4);opacity:0}15%{transform:translate(-50%,calc(-50% - 40px)) scale(1.1);opacity:1}100%{transform:translate(calc(-50% + var(--tx)),calc(-50% + var(--ty))) scale(.6);opacity:.9}}
+@media (prefers-reduced-motion:reduce){.hz-go .hz-ill,.hz-wiggle .hz-ill{animation:none}.hz-track i,.hz-plane{transition:none}.hz-say{transition:none}}
+@media (max-width:360px){.hz-st b{font-size:.7rem}.hz-st .hz-ill{width:44px;height:44px}.hz-who small{display:none}}
+.scn-fr:has(.hz-say.on){z-index:6}
+body.mw-themed #sky{display:none}
+/* Reisetagebuch */
+#s-journal .tj-panel{background:rgba(251,245,234,.97);border-radius:26px;padding:14px 12px 16px;box-shadow:0 14px 36px rgba(60,35,15,.3);display:flex;flex-direction:column;gap:10px;color:#13234A}
+.tj-head{display:flex;align-items:center;gap:8px}
+.tj-back{flex:none;display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 14px 0 10px;border-radius:999px;background:#fff;border:1.5px solid #EADFCB;color:#13234A;font:800 .9rem/1 var(--fr-font);cursor:pointer}
+.tj-back span{color:#EE6A4E;font-size:1.4rem;line-height:.7}
+.tj-title{flex:1;margin:0;text-align:center;font:700 clamp(1.5rem,1.1rem + 2vw,2rem)/1.1 "Baloo 2",var(--fr-font-head,sans-serif);color:#13234A;white-space:nowrap}
+.tj-title span{color:#5AA9C9;font-size:.8em}
+.tj-sub{margin:0;text-align:center;font:700 .85rem/1.35 var(--fr-font);color:#5E6478}
+.tj-list{display:flex;flex-direction:column;gap:10px}
+@media (min-width:520px){.tj-list{display:grid;grid-template-columns:1fr 1fr}}
+.tj-row{position:relative;display:flex;align-items:center;gap:12px;min-width:0;padding:8px 10px 8px 8px;border-radius:18px;background:#FFFBF4;border:1.5px solid #EADFCB;box-shadow:0 4px 10px rgba(80,60,30,.08);color:#13234A;text-align:left;cursor:pointer}
+.tj-pic{flex:none;width:92px;aspect-ratio:16/10;padding:4px;background:#fff;border-radius:6px;box-shadow:0 3px 8px rgba(40,25,10,.25);transform:rotate(-2deg)}
+.tj-row:nth-child(even) .tj-pic{transform:rotate(1.5deg)}
+.tj-pic svg{display:block;width:100%;height:100%;border-radius:3px}
+.tj-name{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tj-name b{font:700 1.15rem/1.1 "Baloo 2",var(--fr-font-head,sans-serif);hyphens:auto}
+.tj-name small{font:700 .78rem/1 var(--fr-font);color:#7A8094}
+.tj-name em{align-self:flex-start;font:800 .72rem/1 var(--fr-font);font-style:normal;color:#fff;background:#EE6A4E;border-radius:999px;padding:4px 8px}
+.tj-stamp{flex:none;width:38px;height:26px;color:#5B7FA6;opacity:.55;transform:rotate(-8deg)}
+.tj-go{flex:none;width:34px;height:34px;border-radius:50%;background:#EE6A4E;color:#fff;display:grid;place-items:center;font:900 1.5rem/1 var(--fr-font);box-shadow:0 3px 0 #C24E35}
+.tj-row.new{border-color:#EE6A4E;box-shadow:0 0 0 3px rgba(238,106,78,.2),0 4px 10px rgba(80,60,30,.08)}
+.tj-row.locked{cursor:default;opacity:.72}
+.tj-row.locked .tj-pic{filter:grayscale(1) blur(1.5px) brightness(1.08)}
+.tj-lock{flex:none;font-size:1.1rem;opacity:.6;padding-right:6px}
+.tj-row:not(.locked):active{transform:translateY(1px)}
+.tj-route{border-top:1.5px dashed #E0D3BC;padding-top:8px}
+.tj-route summary{cursor:pointer;font:800 .9rem/1.2 var(--fr-font);color:#0E5258;padding:6px 2px;min-height:40px;display:flex;align-items:center}
 </style>
 
 </head>
@@ -1848,7 +1962,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795345242";
+const BUILD = "1795346106";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2538,7 +2652,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "b1e9a4bc4f74321f77923ce07604ab31afaa5406";
+const SCN_COMMIT = "00d3ca4a8a5f0d1dc76c58b99e5b8b0d061b6a18";
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2594,7 +2708,8 @@ function scnLoad(){
     document.querySelectorAll(".fr[data-stage]").forEach(frRefresh);
   }).catch(() => { FR.files = FR.files || {}; });
   const wd = scnFetch("world/manifest.json").then(m => { SCN.world = m; }).catch(() => { SCN.world = null; });
-  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; SCN.outfits = (m && m.outfits) || {}; scnOutfitRefresh(); uiIconsInit(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
+  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; SCN.outfits = (m && m.outfits) || {};
+    SCN.screenBg = (m && m.screenBackgrounds) || {}; SCN.bgPlan = (m && m.menuBackgroundPlan) || {}; scnOutfitRefresh(); uiIconsInit(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
   SCN.ready = Promise.all([fr, wd, rw]).then(() => { SCN.loaded = true; });
   return SCN.ready;
 }
@@ -2698,6 +2813,12 @@ function uiIconsInit(){
   uiObs = new MutationObserver(() => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; uiIconsApply(); }); });
   uiObs.observe(document.body, {childList:true, subtree:true});
 }
+/* Bildschirm-Hintergrund aus dem Belohnungs-Manifest (screenBackgrounds) */
+function rwBg(id){
+  const b = SCN.screenBg && SCN.screenBg[id]; if (!b || !b.images || !b.images.length) return null;
+  const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width), big = l[l.length-1];
+  return {src: scnRaw("rewards/" + big.path), srcset: l.map(x => `${scnRaw("rewards/"+x.path)} ${x.width}w`).join(", "), ratio: big.width / big.height};
+}
 function rwIllus(id){
   const b = SCN.illus && SCN.illus[id]; if (!b || !b.images || !b.images.length) return null;
   const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
@@ -2752,19 +2873,15 @@ function renderScene(opts = {}){
   el.innerHTML = `<div class="scn-stage ${opts.fade && !scnRM() ? "scn-fade" : ""}" style="--ratio:${base.ratio.toFixed(5)}">
       <div class="scn-art">
         ${scnImg(base, "scn-base")}${rew ? scnImg(rew, "scn-reward") : ""}
-        <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}</div>
+        <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}<div class="hz-say" id="scnSay" role="status" aria-live="polite"></div></div>
         ${spot}
       </div>
-      <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr">${scnScene(SCN_MAP_ID) ? `<button class="scn-menu" data-act="scnMap" aria-label="Übersichtskarte öffnen"><span class="scn-btxt">Karte</span></button>` : ""}${scnScene(SCN_TREASURE_ID) ? `<button class="scn-menu" data-act="scnTreasure" aria-label="Schatzkammer öffnen"><span class="scn-btxt">Schätze</span></button>` : ""}<button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></span></div>
-      <div class="scn-bottom">
-        ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main btn-block" data-act="scnSpot">${esc(label)}</button>` : ""}
-        ${outs.length > 1 ? `<div class="scn-nav"><button data-act="scnGo" data-id="${prev}" data-dir="-1" aria-label="Zurück nach ${esc(scnName(prev))}"><span aria-hidden="true">‹</span><small>${esc(scnName(prev))}</small></button>
-          ${outs.length <= 7 ? `<span class="scn-dots" aria-hidden="true">${outs.map(o => `<i class="${o===id?"on":""}"></i>`).join("")}</span>` : `<span class="scn-count" aria-label="Ort ${i+1} von ${outs.length}">${i+1} / ${outs.length}</span>`}
-          <button data-act="scnGo" data-id="${next}" data-dir="1" aria-label="Weiter nach ${esc(scnName(next))}"><small>${esc(scnName(next))}</small><span aria-hidden="true">›</span></button></div>` : ""}
-        <div class="scn-say" id="scnSay"><b>${esc(G())}</b><span>${esc(L.hint || (label ? `Tippe auf „${label}“!` : "Schön hier, oder?"))}</span></div>
-      </div>
+      ${hzTop(id)}
+      ${hzNav(outs, i)}
+      ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main hz-spotbtn" data-act="scnSpot">${esc(label)}</button>` : ""}
+      ${hzBottom()}
     </div>`;
-  scnClamp();
+  scnClamp(); hzAfter(L.hint || (label ? `Tippe auf „${label}“!` : ""));
   /* vorab laden: Innenszene, Belohnung, Nachbarorte */
   if (act.child) scnPreload(scnSet(scnScene(act.child).backgrounds));
   setTimeout(() => { scnPreload(scnSet(scnScene(next).backgrounds)); scnPreload(scnSet(scnScene(prev).backgrounds)); }, 800);
@@ -2796,10 +2913,10 @@ async function scnReward(hatch){
   const rew = $("#s-scene .scn-reward"), say = $("#scnSay");
   let frEl = $("#scnFr .fr");
   if (rew){ try { if (!rew.complete) await new Promise(r => { rew.onload = r; rew.onerror = r; }); await rew.decode(); } catch(e) {} }
-  const sayIt = t => { if (say) say.innerHTML = `<b>${esc(G())}</b><span>${t}</span>`; };
+  const sayIt = t => hzSay(t, 5000);
   sayIt(rew ? "Well done! Das Fenster leuchtet für dich." : "Well done! Super geübt.");
   SCN.rewardOn = true;
-  const done = ms => setTimeout(() => { if (rew) rew.classList.remove("on"); SCN.rewardOn = false; }, ms);
+  const done = ms => setTimeout(() => { if (rew && !rew.dataset.keep) rew.classList.remove("on"); SCN.rewardOn = false; }, ms);
   if (scnRM()){                                   /* reduzierte Bewegung: nur der beleuchtete Zustand */
     if (rew) rew.classList.add("on", "instant");
     return done(3500);
@@ -2809,7 +2926,8 @@ async function scnReward(hatch){
     sayIt(`${esc(G())} schlüpft!`);
     await frPlay(frEl, "crack"); await frPlay(frEl, "hatch");
     const stage = FR.stageOf(gullStage()), box = $("#scnFr");
-    if (box){ box.innerHTML = friedrichEl({stage, pose:FR.baseOf(stage), size:"fit", wear:scnWearList()}); frEl = box.querySelector(".fr"); }
+    const old = box && box.querySelector(".fr");
+    if (old){ old.outerHTML = friedrichEl({stage, pose:FR.baseOf(stage), size:"fit", wear:scnWearList()}); frEl = box.querySelector(".fr"); }
     sayIt(`Hallo! Ich bin ${esc(G())}. Danke, dass du mit mir übst!`);
   }
   if (frEl && FR.has(frEl.dataset.stage, "celebrate")) setTimeout(() => frPlay(frEl, "celebrate"), hatch ? 150 : 450);
@@ -2870,7 +2988,7 @@ function scnMap(){
   }).join("");
   st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-mapview ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}${pins}</div>
     <div class="scn-top"><span class="scn-place">${esc(scnName(SCN_MAP_ID))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Karte schließen">Schließen</button></span></div>
-    <div class="scn-bottom">${scnFlightId() ? `<button class="btn btn-main btn-block" data-act="scnFlight">Unsere Reise nach Brighton · ${S.km||0} km</button>` : ""}<div class="scn-say"><b>${esc(G())}</b><span>Wohin fliegen wir? Tippe auf einen Ort.</span></div></div></div>`);
+    <div class="scn-bottom">${scnFlightId() ? `<button class="btn btn-main btn-block" data-act="scnFlight">Unsere Reise nach Brighton · ${S.km||0} km</button>` : ""}<button class="btn btn-soft btn-block" data-act="openMap">Küstenkarte: alle Lernorte und Wörter</button><div class="scn-say"><b>${esc(G())}</b><span>Wohin fliegen wir? Tippe auf einen Ort.</span></div></div></div>`);
   /* Ortsmarken am Rand in den sichtbaren Ausschnitt schieben */
   requestAnimationFrame(() => { const v = st.querySelector(".scn-mapview"); if (!v) return; const b = v.getBoundingClientRect();
     v.querySelectorAll(".scn-pin").forEach(p => { const r = p.getBoundingClientRect(), pad = 8;
@@ -3010,7 +3128,7 @@ const SCENE_ACT = {
   scnMap: () => scnMap(),
   scnPin: b => { const v = $("#s-scene .scn-view"); if (v) v.remove(); if (b.dataset.id !== SCN.cur) scnGo(b.dataset.id); },
   scnBack: () => { SCN.inRoom = false; if (SCN.origin) SCN.cur = SCN.origin; show("scene"); },
-  scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : FR.has(el.dataset.stage, "crack") ? "crack" : "celebrate"); }
+  scnFr: () => { const el = $("#scnFr .fr"); if (el && !SCN.rewardOn){ frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : FR.has(el.dataset.stage, "crack") ? "crack" : "celebrate"); const L = hzLesson(); hzSay(esc(L.done ? ((SCN_LAYOUT[SCN.cur] || {}).hint || "Schön hier, oder?") : L.say), 6000, L.done ? null : L.act); } }
 };
 function sceneBoot(){
   SCREENS.push("scene");
@@ -3031,24 +3149,24 @@ function sceneBoot(){
    mit Friedrich in seiner echten Stufe und Pose, darunter Bedienung und Texte als HTML. Der Name kommt als Text (textContent). */
 /* Bildausschnitt je Bildschirm: Punkt fx/fy (Anteil im Hafenbild) erscheint bei hx/hy (Anteil der Kopfzeile), z = Vergrößerung */
 const MW_HERO = {
-  start:   {fx:.68, fy:.80, z:1.6,  hx:.50, hy:.88, fr:{ix:.62, iy:.838, w:58}},
-  login:   {fx:.842, fy:.78, z:3,   hx:.62, hy:.70, fr:{ix:.765, iy:.812, w:64}, front:1},
-  main:    {fx:.60, fy:.35, z:1.25, hx:.50, hy:.50, fr:{x:50, y:86, w:64}},
-  parents: {fx:.842, fy:.746, z:2.2, hx:.66, hy:.80, fr:{ix:.842, iy:.746, w:50}}
+  start:   {bg:"hafen_hintergrund", fx:.50, fy:.45, z:1.05, hx:.50, hy:.58, fr:{ix:.50, iy:.62, w:58}},
+  login:   {bg:"hafen_hintergrund", fx:.07, fy:.38, z:2.8,  hx:.19, hy:.62, fr:{ix:.175, iy:.425, w:62},
+            front:"polygon(1% 29.4%, 4% 28.9%, 10% 28.9%, 13% 29.5%, 13% 33.2%, 15% 34%, 15.3% 37%, 13% 38.2%, 13% 41%, 17% 43%, 18.2% 46%, 17% 48.8%, 0% 49.6%, 0% 33%)"},
+  parents: {bg:"menue_eltern", fx:.60, fy:.50, z:1.15, hx:.55, hy:.62, fr:{ix:.62, iy:.524, w:44}}
 };
-/* Poller mit Tau im Hafenbild (Anteile in %), liegt beim Anmelden vor Friedrich: er schaut dahinter hervor */
-const MW_BOLLARD = "polygon(79.7% 75.2%, 80.6% 73.9%, 84.2% 73.5%, 88% 74.1%, 88.8% 75.4%, 88% 76.8%, 88% 78.6%, 89.6% 78.6%, 90.7% 80%, 90% 81.8%, 81.1% 81.9%, 77.9% 80.4%, 77.5% 78.8%, 79.3% 77.2%, 80.3% 76%)";
+/* Hafen-Hintergrund des Bildschirms; ohne Manifest die Szene "Haus am Hafen" */
+const mwSet = kind => rwBg(MW_HERO[kind].bg) || scnSet((scnScene("haus-am-hafen") || {}).backgrounds);
 const mwName = () => (S && S.gull && S.gull.name) || "Deine Möwe";
 function mwHero(kind, pose){
-  const h = MW_HERO[kind], set = scnSet((scnScene("haus-am-hafen") || {}).backgrounds);
+  const h = MW_HERO[kind], set = mwSet(kind);
   const stage = FR.stageOf(Math.max(S && S.name ? 1 : 0, S ? gullStage() : 0));
-  const p = pose(stage), vars = `--fx:${h.fx};--fy:${h.fy};--z:${h.z};--hx:${h.hx};--hy:${h.hy};--ar:${set ? set.ratio.toFixed(5) : 0.5628}`;
-  const img = cls => set ? `<img class="${cls}" src="${set.src}" srcset="${set.srcset}" sizes="(max-width:560px) ${Math.round(h.z*100)}vw, ${Math.round(h.z*560)}px" alt="" decoding="async" draggable="false"${cls === "mw-bg mw-front" ? ` style="clip-path:${MW_BOLLARD}"` : ""}>` : "";
-  /* Friedrich steht an einem Punkt im Hafenbild (ix/iy), sonst an einer Stelle der Kopfzeile (x/y) */
-  const f = h.fr, pos = f.ix != null && set ? `left:calc(var(--hx) * 100cqw + ${(f.ix - h.fx).toFixed(4)} * var(--z) * 100cqw);top:calc(var(--hy) * 100cqh + ${(f.iy - h.fy).toFixed(4)} * var(--z) * 100cqw / var(--ar))`
-    : `left:${f.x != null ? f.x : 50}%;top:${f.y != null ? f.y : 90}%`;
-  return `<div class="mw-hero mw-hero-${kind}" style="${vars}">${img("mw-bg")}
-    <div class="mw-fr mw-fr-${kind}" data-act="mwFr" style="${pos};width:${f.w}%">${friedrichEl({stage, pose:p, size:"fit", wear:p === FR.baseOf(stage) ? scnWearList() : []})}</div>${h.front ? img("mw-bg mw-front") : ""}</div>`;
+  const p = pose(stage), vars = `--fx:${h.fx};--fy:${h.fy};--z:${h.z};--hx:${h.hx};--hy:${h.hy};--ar:${set ? set.ratio.toFixed(5) : 0.6667}`;
+  const img = front => set ? `<img class="mw-bg${front ? " mw-front" : ""}" src="${set.src}" srcset="${set.srcset}" sizes="(max-width:560px) ${Math.round(h.z*100)}vw, ${Math.round(h.z*560)}px" alt="" decoding="async" draggable="false"${front ? ` style="clip-path:${h.front}"` : ""}>` : "";
+  /* Friedrich steht an einem Punkt im Hintergrundbild (ix/iy) */
+  const f = h.fr, pos = set ? `left:calc(var(--hx) * 100cqw + ${(f.ix - h.fx).toFixed(4)} * var(--z) * 100cqw);top:calc(var(--hy) * 100cqh + ${(f.iy - h.fy).toFixed(4)} * var(--z) * 100cqw / var(--ar))`
+    : `left:50%;top:90%`;
+  return `<div class="mw-hero mw-hero-${kind}" style="${vars}">${img(false)}
+    <div class="mw-fr mw-fr-${kind}" data-act="mwFr" style="${pos};width:${f.w}%">${friedrichEl({stage, pose:p, size:"fit", wear:p === FR.baseOf(stage) ? scnWearList() : []})}</div>${h.front ? img(true) : ""}</div>`;
 }
 const mwIc = id => `<span class="mw-ic" aria-hidden="true">${illImg(id, "", "56px")}</span>`;
 const mwArrow = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -3097,31 +3215,7 @@ function mwLogin(){
   if (!cloudOn()){ msg.textContent = "In der Beta ist das Verbinden ausgeschaltet, damit kein echter Lernstand verändert wird. Starte hier mit „Los geht's“."; return; }
   famJoin(code);
 }
-/* Hauptbildschirm: Friedrich fliegt, Name als Text, vier Kacheln, Für Eltern */
-function renderMain(){
-  const host = $("#s-home"); let box = host.querySelector(".mw-main-screen");
-  if (!box){ host.insertAdjacentHTML("afterbegin", `<div class="mw-screen mw-main-screen"></div>`); box = host.querySelector(".mw-main-screen"); }
-  const tc0 = $("#testCard"); if (tc0 && box.contains(tc0)) host.appendChild(tc0);   /* Testkarte vor dem Neuzeichnen retten */
-  const flyPose = s => FR.has(s, "fly") ? "fly" : FR.has(s, "celebrate") ? "celebrate" : FR.baseOf(s);
-  box.innerHTML = `${mwHero("main", flyPose)}
-    <div class="mw-panel mw-round">
-      <h1 class="mw-title mw-sparks"><span class="mw-spark l" aria-hidden="true"></span>Deine Möwe<span class="mw-spark r" aria-hidden="true"></span></h1>
-      <div class="mw-namebox"><span class="mw-name" id="mwName"></span></div>
-      <div class="mw-tests" id="mwTest"></div>
-      <div class="mw-tiles">
-        <button class="mw-tile" data-act="startDaily">${mwIc("unterricht_schulbuch")}<span class="mw-sep"></span><b>Weiterlernen</b></button>
-        <button class="mw-tile" data-act="startSentences">${mwIc("satzwerkstatt_bausteine")}<span class="mw-sep"></span><b>Satzwerkstatt</b></button>
-        <button class="mw-tile" data-act="openDeck" data-mode="kid">${mwIc("karteikarten_stapel")}<span class="mw-sep"></span><b>Karteikarten</b></button>
-        <button class="mw-tile" data-act="openMap">${mwIc("lernwelt_hafenkarte")}<span class="mw-sep"></span><b>Küstenkarte</b></button>
-      </div>
-      <button class="mw-btn mw-main mw-parents" data-act="openParents">${mwIc("elternbereich_familie")}<span class="mw-sep"></span>Für Eltern</button>
-      <div class="mw-more"><button class="mw-chip" data-act="openScene">${illImg("lernorte_kartenpin", "", "32px")}Hafenstadt</button><button class="mw-chip" data-act="openExtras">${illImg("extras_kacheln", "", "32px")}Extras</button><button class="mw-chip" data-act="openWardrobe">${illImg("kleiderschrank", "", "32px")}Kleiderschrank</button></div>
-    </div>`;
-  $("#mwName").textContent = mwName();   /* dynamischer Name, nie im Bild */
-  const tc = $("#testCard"); if (tc && tc.innerHTML.trim()) $("#mwTest").appendChild(tc);   /* Test-Hinweis bleibt sichtbar */
-  const fe = box.querySelector(".mw-fr"); if (fe) fe.classList.add("mw-hover");
-}
-/* Elternmenü: Friedrich sitzt seitlich auf dem Poller */
+/* Elternmenü: Friedrich steht seitlich auf dem Geländer der Veranda */
 function renderPMenu(){
   $("#s-pmenu").innerHTML = `<div class="mw-screen">
     <div class="mw-hero-wrap">${mwHero("parents", s => FR.has(s, "side") ? "side" : FR.baseOf(s))}
@@ -3131,6 +3225,7 @@ function renderPMenu(){
       <button class="mw-row" data-act="openOverview" data-back="openParents">${mwIc("lernstand_anzeige")}<span class="mw-sep"></span><b>Lernstand</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="openDeck" data-mode="mama">${mwIc("moewenpruefung_sprechblasen")}<span class="mw-sep"></span><b>Möwen-Prüfung</b><span class="mw-go">${mwArrow}</span></button>
       <button class="mw-row" data-act="mwPTab" data-t="test">${mwIc("testtraining_leuchtturm")}<span class="mw-sep"></span><b>Testtraining</b><span class="mw-go">${mwArrow}</span></button>
+      <div class="mw-toggles"><button class="mw-chip" data-act="mwToggle" data-k="sound">${S.settings.sound ? "🔊 Ton an" : "🔈 Ton aus"}</button><button class="mw-chip" data-act="mwToggle" data-k="slow">${S.settings.slow ? "🐢 Sprechtempo langsam" : "🗣️ Sprechtempo normal"}</button></div>
       <button class="mw-link" data-act="mwPTab" data-t="more">Familie, PIN und weitere Einstellungen</button>
     </div></div>`;
   show("pmenu");
@@ -3145,14 +3240,28 @@ const MW_ACT = {
   mwStart: () => show("start"),
   mwEye: b => { const i = $("#mwPin"); if (!i) return; const on = i.type === "password"; i.type = on ? "text" : "password"; b.setAttribute("aria-label", on ? "PIN verbergen" : "PIN zeigen"); },
   mwPTab: b => { PTAB = b.dataset.t; renderParents(); },
+  mwToggle: b => { const k = b.dataset.k; S.settings[k] = !S.settings[k]; save(); if (k === "slow") speak("Hello! This is my speed."); renderPMenu(); },
   mwFr: b => { const el = b.querySelector(".fr"); if (el && !scnRM()) frPlay(el, FR.has(el.dataset.stage, "wave") ? "wave" : "celebrate"); },
   openParents: () => { if (S.pin && !pinOk()) return askPin(renderPMenu); renderPMenu(); }
 };
-function screensOnShow(name){
-  document.body.classList.toggle("mw-on", ["start","login","pmenu","home"].includes(name));
-  if (name === "start") renderStart();
-  if (name === "home") renderMain();
+/* Menü-Hintergründe aus menuBackgroundPlan: Bild oben sichtbar, Inhalte stehen darauf */
+const MW_BG_TOP = ["journal","wardrobe","badges","extras","parents","overview","post","sentpick","deck"];
+function mwBackdrop(name){
+  const plan = SCN.bgPlan || {}, id = plan[name], set = id && !(name === "cards" && SCN.inRoom) ? rwBg(id) : null;
+  let bg = $("#mwBack");
+  document.body.classList.toggle("mw-themed", !!set);
+  document.body.classList.toggle("mw-roomy", !!set && MW_BG_TOP.includes(name));
+  if (!set){ if (bg) bg.hidden = true; return; }
+  if (!bg){ document.body.insertAdjacentHTML("afterbegin", `<div id="mwBack" aria-hidden="true"></div>`); bg = $("#mwBack"); }
+  if (bg.dataset.id !== id){ bg.dataset.id = id; bg.innerHTML = `<img src="${set.src}" srcset="${set.srcset}" sizes="(max-width:560px) 100vw, 560px" alt="" decoding="async">`; }
+  bg.dataset.screen = name; bg.hidden = false;
 }
+function screensOnShow(name){
+  document.body.classList.toggle("mw-on", ["start","login","pmenu"].includes(name));
+  if (name === "start") renderStart();
+  mwBackdrop(name);
+}
+const hzHome = () => !(SCN.loaded && !SCN.world);
 function screensBoot(){
   SCREENS.push("start", "login", "pmenu");
   $("#s-home").insertAdjacentHTML("beforebegin", `<section id="s-start" hidden></section><section id="s-login" hidden></section><section id="s-pmenu" hidden></section>`);
@@ -3160,7 +3269,148 @@ function screensBoot(){
   Object.assign(ACT, MW_ACT);
   /* sobald Hafenbild und Figuren da sind, sichtbaren Bildschirm neu zeichnen */
   scnLoad().then(() => { const v = SCREENS.find(n => { const e = $("#s-" + n); return e && !e.hidden; });
-    if (v === "start") renderStart(); else if (v === "home") renderMain(); else if (v === "login") renderLogin(); else if (v === "pmenu") renderPMenu(); });
+    if (v === "start") renderStart(); else if (v === "login") renderLogin(); else if (v === "pmenu") renderPMenu(); if (v) mwBackdrop(v); });
+}
+
+/* ============ FRIEDRICH 2.0: Die Hafenstadt ist das Hauptmenü (nur Beta) ============
+   Oben: Namensschild (Kleiderschrank), Fische, Lernserie; Ort, Schatzkammer, Extras, Eltern.
+   Mitte: die Szene mit Tür, Wegen zu den Nachbarorten und Friedrich mit Sprechblase.
+   Unten: Reisefaden Leipzig → Brighton und der Steg mit Karteikarten, Sätzen, Lernen, Karte und Post. */
+const HZ = {fish:null, km:null, sayT:null};
+/* Was heute dran ist (dieselbe Regel wie der Lernknopf im bisherigen Menü) */
+function hzLesson(){
+  const stage = gullStage(), due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
+  if (isAsleep() || (due === 0 && nw === 0))
+    return {done:true, act:"startFix", title:"Für heute geschafft!", say:`Geschafft für heute! Lust auf eine Extra-Runde Fehler-Detektiv?`, n:0, due};
+  const title = stage === 0 ? "Erste Stunde: Ei ausbrüten" : S.lastDay === today() ? "Weiter unterrichten" : "Unterrichtsstunde";
+  const bits = []; if (nw) bits.push(`${nw} neue Wörter`); if (due) bits.push(`${Math.min(due, 12)} zum Wiederholen`);
+  return {done:false, act:"startDaily", title, say:`${title}: ${bits.join(" und ")}. Los geht's!`, n:nw + Math.min(due, 12), due};
+}
+const hzStreak = () => S.streak && (S.lastDay === today() || S.lastDay === addDays(today(), -1)) ? S.streak : 0;
+const hzNewPost = () => { const seen = S.pcSeen || ["Leipzig"]; return CITIES.filter(c => S.km >= c.km && !seen.includes(c.n)).length; };
+const hzIc = (id, size) => illImg(id, "hz-ill", size || "64px");
+const hzBadge = n => n ? `<span class="hz-badge" aria-hidden="true">${n > 99 ? "99+" : n}</span>` : "";
+
+function hzTop(id){
+  const n = gullStage(), stage = FR.stageOf(Math.max(1, n)), st = STAGES[n] || STAGES[0], nx = STAGES[n + 1], fish = S.fish || 0;
+  const p = nx ? Math.max(4, Math.min(100, Math.round((fish - st.min) / (nx.min - st.min) * 100))) : 100;
+  const shown = HZ.fish == null ? fish : Math.min(HZ.fish, fish);
+  let test = "";
+  if (typeof testActive === "function" && testActive()){
+    const d = dayDiff(today(), S.test.date);
+    test = `<button class="hz-test" data-act="startTest" aria-label="Test-Training: ${esc(PMAP[S.test.pl].name)}">${hzIc("testtraining_leuchtturm", "32px")}<span>${d <= 0 ? "Heute ist Test!" : d === 1 ? "Morgen ist Test" : `Test in ${d} Tagen`}</span></button>`;
+  }
+  return `<div class="hz-top">
+    <div class="hz-row">
+      <button class="hz-me" data-act="openWardrobe" aria-label="${esc(G())}, ${esc(st.n)}. Kleiderschrank öffnen">
+        <span class="hz-ring" style="--p:${p}"><span class="hz-av">${friedrichEl({stage, pose:"face", size:"fit"})}</span></span>
+        <span class="hz-who"><b id="hzName"></b><small>${esc(st.n)}${nx ? ` · noch ${Math.max(0, nx.min - fish)} 🐟` : ""}</small></span></button>
+      <span class="hz-chips">
+        <span class="hz-chip" id="hzFishChip" aria-label="${fish} Fische">${hzIc("belohnung_fisch", "40px")}<b id="hzFish">${shown}</b></span>
+        <span class="hz-chip ${hzStreak() ? "" : "off"}" aria-label="${hzStreak()} Tage hintereinander geübt">${hzIc("lernserie_flamme", "40px")}<b>${hzStreak()}</b></span>
+      </span>
+    </div>
+    <div class="hz-row">
+      <span class="scn-place">${esc(scnName(id))}</span>
+      <span class="hz-tools">
+        ${scnScene(SCN_TREASURE_ID) ? `<button class="hz-tool" data-act="scnTreasure" aria-label="Schatzkammer">${hzIc("schatzkammer_truhe", "48px")}</button>` : ""}
+        <button class="hz-tool" data-act="openExtras" aria-label="Extras: Spiele, Diplome, Küstenkarte und mehr">${hzIc("extras_kacheln", "48px")}</button>
+        <button class="hz-tool hz-lock" data-act="openParents" aria-label="Für Eltern">${hzIc("elternbereich_familie", "48px")}<i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i></button>
+      </span>
+    </div>${test}</div>`;
+}
+function hzNav(outs, i){
+  if (outs.length < 2) return "";
+  const prev = outs[(i - 1 + outs.length) % outs.length], next = outs[(i + 1) % outs.length];
+  const nm = x => { const a = scnArea(x); return SCN_SHORT[x] || (a && SHORT[a]) || scnName(x).replace(/^(Das|Der|Die) /, ""); };
+  return `<button class="hz-way l" data-act="scnGo" data-id="${prev}" data-dir="-1" aria-label="Weg nach ${esc(scnName(prev))}"><span aria-hidden="true">‹</span><small>${esc(nm(prev))}</small></button>
+    <button class="hz-way r" data-act="scnGo" data-id="${next}" data-dir="1" aria-label="Weg nach ${esc(scnName(next))}"><small>${esc(nm(next))}</small><span aria-hidden="true">›</span></button>`;
+}
+function hzBottom(){
+  const L = hzLesson(), km = S.km || 0, goal = 1170, pct = Math.min(100, km / goal * 100), post = hzNewPost();
+  const kmFrom = HZ.km == null ? pct : Math.min(100, Math.min(HZ.km, km) / goal * 100);
+  const stops = STOPS.filter(x => x[1] <= goal);
+  return `<div class="hz-bottom">
+    <button class="hz-trip" data-act="scnFlight" aria-label="Reise nach Brighton: ${km} von ${goal} Kilometern">
+      <small>Leipzig</small><span class="hz-track"><i style="width:${kmFrom.toFixed(1)}%" data-to="${pct.toFixed(1)}"></i>${stops.map(x => `<em class="${km >= x[1] ? "on" : ""}" style="left:${(x[1] / goal * 100).toFixed(1)}%"></em>`).join("")}<b class="hz-plane" style="left:${kmFrom.toFixed(1)}%" data-to="${pct.toFixed(1)}">${hzIc("erster_flug", "40px")}</b></span><small>${km >= goal ? "Brighton ✓" : "Brighton"}</small></button>
+    <nav class="hz-dock" aria-label="Stationen">
+      <button class="hz-st" data-act="openDeck" data-mode="kid">${hzIc("karteikarten_stapel")}<b>Karten</b>${hzBadge(Math.min(L.due, 99))}</button>
+      <button class="hz-st" data-act="startSentences">${hzIc("satzwerkstatt_bausteine")}<b>Sätze</b></button>
+      <button class="hz-st hz-go ${L.done ? "done" : ""}" data-act="${L.act}" aria-label="${esc(L.title)}">${L.done ? `<span class="hz-check" aria-hidden="true">✓</span>` : hzIc("unterricht_schulbuch", "96px")}<b>${L.done ? "Extra" : "Lernen"}</b>${hzBadge(L.n)}</button>
+      <button class="hz-st" data-act="scnMap">${hzIc("lernwelt_hafenkarte")}<b>Karte</b></button>
+      <button class="hz-st ${post ? "hz-wiggle" : ""}" data-act="openJournal">${hzIc("reisetagebuch_postkarte")}<b>Post</b>${hzBadge(post)}</button>
+    </nav></div>`;
+}
+/* Sprechblase über Friedrich: erscheint beim Ankommen, verschwindet nach ein paar Sekunden, Antippen zeigt sie wieder */
+function hzSay(text, ms, act){
+  const b = $("#scnSay"); if (!b) return;
+  clearTimeout(HZ.sayT);
+  b.innerHTML = `<b>${esc(G())}</b><span>${text}</span>`;
+  if (act) b.dataset.act = act; else delete b.dataset.act;
+  b.classList.add("on");
+  requestAnimationFrame(() => { const st = $("#s-scene .scn-stage"); if (st) hzClampSay(st); });
+  if (ms) HZ.sayT = setTimeout(() => b.classList.remove("on"), ms);
+}
+function hzClampSay(st){
+  const b = $("#scnSay"); if (!b) return;
+  b.style.setProperty("--dx", "0px");
+  /* echte Breite (ohne Aufpopp-Skalierung) um die Mitte der Blase */
+  const r = b.getBoundingClientRect(), s = st.getBoundingClientRect(), pad = st.querySelector(".hz-way") ? 70 : 10, w = b.offsetWidth, c = r.left + r.width / 2, l = c - w / 2, rr = c + w / 2;
+  const dx = l < s.left + pad ? s.left + pad - l : rr > s.right - pad ? s.right - pad - rr : 0;
+  b.style.setProperty("--dx", Math.round(dx) + "px");
+}
+/* Nach dem Zeichnen: Name als Text, Fische fliegen in den Zähler, Reisefaden wächst, Lichter nach der Tagesübung */
+function hzAfter(hint){
+  const nm = $("#hzName"); if (nm) nm.textContent = G();
+  const fish = S.fish || 0, L = hzLesson();
+  const rew = $("#s-scene .scn-reward");
+  if (rew && L.done){ rew.classList.add("on", "instant"); rew.dataset.keep = "1"; }
+  if (!SCN.success) setTimeout(() => hzSay(L.done ? esc(hint || "Schön hier, oder?") : esc(L.say), 6500, L.done ? null : L.act), 600);
+  const grow = () => document.querySelectorAll("#s-scene [data-to]").forEach(e => {
+    if (e.classList.contains("hz-plane")) e.style.left = e.dataset.to + "%"; else e.style.width = e.dataset.to + "%"; });
+  const gained = HZ.fish != null && fish > HZ.fish;
+  if (gained && !scnRM()) setTimeout(() => hzFishFly(HZ.fish, fish).then(() => setTimeout(grow, 150)), SCN.success ? 1400 : 500);
+  else requestAnimationFrame(() => requestAnimationFrame(grow));
+  HZ.fish = fish; HZ.km = S.km || 0;
+}
+function hzFishFly(from, to){
+  const chip = $("#hzFishChip"), fr = $("#scnFr"), out = $("#hzFish"), f = rwIllus("belohnung_fisch");
+  if (!chip || !fr || !out || !f) { if (out) out.textContent = to; return Promise.resolve(); }
+  const a = fr.getBoundingClientRect(), b = chip.getBoundingClientRect(), n = Math.min(7, Math.max(3, Math.round((to - from) / 4)));
+  for (let k = 0; k < n; k++){
+    const im = document.createElement("img");
+    im.src = f.src; im.className = "hz-flyfish"; im.alt = "";
+    const x0 = a.left + a.width * (.35 + Math.random() * .3), y0 = a.top + a.height * .45;
+    im.style.left = x0 + "px"; im.style.top = y0 + "px";
+    im.style.setProperty("--tx", (b.left + 18 - x0) + "px"); im.style.setProperty("--ty", (b.top + b.height / 2 - y0) + "px");
+    im.style.animationDelay = (k * 110) + "ms";
+    document.body.appendChild(im); setTimeout(() => im.remove(), 1300 + k * 110);
+  }
+  return new Promise(res => setTimeout(() => {
+    const t0 = performance.now(), dur = 700;
+    const step = t => { const q = Math.min(1, (t - t0) / dur); out.textContent = Math.round(from + (to - from) * q); if (q < 1) requestAnimationFrame(step); else { chip.classList.add("pop"); setTimeout(() => chip.classList.remove("pop"), 500); res(); } };
+    requestAnimationFrame(step);
+  }, 800 + n * 110));
+}
+/* Reisetagebuch nach Entwurf: Kartentisch als Hintergrund, Postkarten als Zeilen mit Bild, Stadt, Poststempel und Pfeil */
+const TJ_STAMP = `<svg class="tj-stamp" viewBox="0 0 64 40" aria-hidden="true"><circle cx="40" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="40" cy="20" r="10" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 2"/><path d="M2 12c5-4 9 4 14 0s9 4 14 0M2 20c5-4 9 4 14 0s9 4 14 0M2 28c5-4 9 4 14 0s9 4 14 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+function renderJournalBeta(){
+  S.pcSeen = S.pcSeen || ["Leipzig"];
+  const next = CITIES.find(c => S.km < c.km), got = CITIES.filter(c => S.km >= c.km).length;
+  const rows = CITIES.map((c, i) => {
+    const ok = S.km >= c.km, isNew = ok && !S.pcSeen.includes(c.n);
+    const art = `<span class="tj-pic"><svg viewBox="0 0 160 100" aria-hidden="true">${cityArt(c.n)}</svg></span>`;
+    return ok
+      ? `<button class="tj-row ${isNew ? "new" : ""}" data-act="openPc" data-i="${i}">${art}<span class="tj-name"><b>${esc(c.n)}</b>${isNew ? `<em>neu</em>` : `<small>${c.km} km</small>`}</span>${TJ_STAMP}<span class="tj-go" aria-hidden="true">›</span></button>`
+      : `<div class="tj-row locked">${art}<span class="tj-name"><b>${esc(c.n)}</b><small>noch ${c.km - S.km} km</small></span><span class="tj-lock" aria-hidden="true">🔒</span></div>`;
+  }).join("");
+  $("#s-journal").innerHTML = `<div class="tj-panel">
+      <div class="tj-head"><button class="tj-back" data-act="home"><span aria-hidden="true">‹</span> Zurück</button><h1 class="tj-title"><span aria-hidden="true">〜</span> Reisetagebuch <span aria-hidden="true">〜</span></h1></div>
+      <p class="tj-sub">${got} von ${CITIES.length} Postkarten · ${S.km} km geflogen${next ? ` · nächste: ${esc(next.n)} in ${next.km - S.km} km` : ""}</p>
+      <div class="tj-list">${rows}</div>
+      <details class="tj-route"><summary>Unsere Route auf der Karte</summary>${journalMap()}</details>
+    </div>`;
+  show("journal");
 }
 
 const myGull = (opts) => BETA ? friedrichEl({stage:Math.max(1,gullStage()), pose:FR.baseOf(FR.stageOf(Math.max(1,gullStage()))), size:"fit", wear:scnWearList()}) : gullSVG(Math.max(1,gullStage()), GC(), opts);
@@ -3630,6 +3880,7 @@ function checkBadges(ctx){
 /* ============ BILDSCHIRME ============ */
 const SCREENS = ["onboard","home","mission","deck","cards","pin","post","summary","map","badges","parents","extras","wardrobe","place","journal","sentpick","overview","exam","family"];
 function show(name){
+  if (BETA && name==="home" && hzHome()){ renderHome(); name = "scene"; }   /* Beta: die Hafenstadt ist das Hauptmenü */
   SCREENS.forEach(s=>{ $("#s-"+s).hidden = s!==name; });
   hideSheet(); window.scrollTo(0,0);
   if (name==="home") renderHome();
@@ -4804,6 +5055,7 @@ function journalMap(){
   </svg>`;
 }
 function renderJournal(){
+  if (BETA) return renderJournalBeta();
   S.pcSeen = S.pcSeen || ["Leipzig"];
   const got = CITIES.filter(c=>S.km>=c.km);
   const next = CITIES.find(c=>S.km<c.km);
