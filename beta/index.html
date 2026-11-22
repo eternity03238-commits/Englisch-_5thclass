@@ -1027,68 +1027,91 @@ body.mw-themed #s-cards .mbar{background:rgba(255,251,244,.85);border-radius:16p
 .mw-row b small{display:block;font:700 .8rem/1.2 Nunito,sans-serif;color:var(--mw-muted)}
 .mw-bolt{font-size:1.8rem;border-radius:14px;background:linear-gradient(180deg,#FFE08A,#FFB627)}
 
-/* ============ Hafenstadt als Hauptmenü (nur Beta) ============ */
-.hz-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;flex-direction:column;gap:8px;pointer-events:none;
-  padding:calc(10px + env(safe-area-inset-top,0px)) max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px))}
+/* ============ Hafenstadt als Hauptmenü (nur Beta): ruhig, klar, eine Handlung ============
+   Eine Bildsprache: helle Creme-Flächen mit weichem Schatten, Navy für Text, Petrol für aktiv, Koralle nur für den einen Hauptknopf. */
+.scn-stage{--hz-cream:#FFFBF4;--hz-line:#EADFCB;--hz-navy:#13234A;--hz-muted:#646B80;--hz-teal:#0E5258;--hz-coral:#EE6A4E;--hz-shadow:0 8px 24px rgba(30,25,15,.16)}
+/* Szene etwas anheben, damit Friedrich und die Tür über der Heute-Karte stehen */
+.scn-stage:has(> .hz-tabs) > .scn-art,.scn-stage:has(> .hz-bottom) > .scn-art{top:calc(50% - 12cqh)}
+/* sanfter heller Verlauf oben und unten, damit Bedienung ruhig auf dem Bild liegt */
+.scn-stage:has(> .hz-bottom)::before,.scn-stage:has(> .hz-bottom)::after{content:"";position:absolute;left:0;right:0;z-index:3;pointer-events:none}
+.scn-stage:has(> .hz-bottom)::before{top:0;height:120px;background:linear-gradient(180deg,rgba(255,251,244,.55),rgba(255,251,244,0))}
+.scn-stage:has(> .hz-bottom)::after{bottom:0;height:30%;background:linear-gradient(180deg,rgba(255,251,244,0),rgba(255,251,244,.55) 45%,rgba(255,251,244,.95))}
+.hz-top{position:absolute;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;pointer-events:none;
+  padding:calc(12px + env(safe-area-inset-top,0px)) max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px))}
 .hz-top > *{pointer-events:auto}
-.hz-row{display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}
-.hz-row > *{pointer-events:auto}
-.hz-glass,.hz-me,.hz-chip,.hz-tool,.hz-way,.hz-trip,.hz-test{background:rgba(11,25,48,.6);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:#F7F4EC;border:1px solid rgba(255,255,255,.22);box-shadow:0 6px 16px rgba(10,20,40,.22)}
-.hz-me{display:flex;align-items:center;gap:8px;min-width:0;max-width:62%;padding:4px 14px 4px 4px;border-radius:999px;cursor:pointer;text-align:left}
-.hz-ring{--p:0;flex:none;width:54px;height:54px;border-radius:50%;padding:4px;background:conic-gradient(#FFD36E calc(var(--p) * 1%),rgba(255,255,255,.22) 0)}
-/* Bullauge: Messingring, Himmel dahinter, Friedrichs Gesicht mittig */
-.hz-av{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 30%,#E9F7FF 0,#A8D8F2 70%,#7FC0E6 100%);
-  box-shadow:inset 0 0 0 2.5px #C99A3D,inset 0 0 0 4px #F3D58A,inset 0 3px 6px rgba(0,0,0,.25)}
+.hz-me,.hz-chip{background:var(--hz-cream);color:var(--hz-navy);border:0;box-shadow:var(--hz-shadow)}
+.hz-me{display:flex;align-items:center;gap:10px;min-width:0;max-width:66%;padding:4px 16px 4px 4px;border-radius:999px;cursor:pointer;text-align:left}
+.hz-ring{--p:0;flex:none;width:52px;height:52px;border-radius:50%;padding:3px;background:conic-gradient(var(--hz-teal,#0E5258) calc(var(--p) * 1%),#E7DFD0 0)}
+.hz-ring.big{width:96px;height:96px;padding:5px}
+.hz-av{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 30%,#EEF8FF 0,#B9DFF4 75%,#9CCFEC 100%);box-shadow:inset 0 0 0 2.5px #fff}
 .hz-av > .fr{width:96% !important;max-width:none;margin-top:12%}
 .hz-who{display:flex;flex-direction:column;min-width:0;line-height:1.15}
-.hz-who b{font:800 1.05rem/1.1 var(--fr-font-head,var(--fr-font));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hz-who small{font:700 .74rem/1.2 var(--fr-font);color:#C9D8EC;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hz-chips{display:flex;gap:6px;flex:none}
-.hz-chip{display:inline-flex;align-items:center;gap:2px;height:44px;padding:0 12px 0 4px;border-radius:999px;font:800 1.05rem/1 var(--fr-font);transition:transform .2s}
-.hz-chip .hz-ill{width:36px;height:36px;object-fit:contain}
-.hz-chip.off .hz-ill{filter:grayscale(1) opacity(.6)}
-.hz-chip.pop{transform:scale(1.18)}
-.hz-tools{display:flex;gap:6px}
-.hz-tool{position:relative;width:48px;height:48px;border-radius:16px;display:grid;place-items:center;padding:0;cursor:pointer}
-.hz-tool .hz-ill{width:40px;height:40px;object-fit:contain}
-.hz-lock i{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;background:#0E5258;color:#fff;display:grid;place-items:center;box-shadow:0 0 0 2px rgba(255,255,255,.8)}
-.hz-lock i svg{width:12px;height:12px}
-.hz-test{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:2px 14px 2px 4px;border-radius:999px;font:800 .88rem/1.1 var(--fr-font);background:rgba(238,106,78,.88)}
-.hz-test .hz-ill{width:32px;height:32px}
-.hz-top .scn-place{min-height:40px;max-width:52%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;line-height:20px}
-/* Wege zu den Nachbarorten am Bildrand */
-.hz-way{position:absolute;z-index:4;top:46%;display:flex;flex-direction:column;align-items:center;gap:2px;width:64px;padding:8px 3px;border-radius:18px;cursor:pointer;font:800 .64rem/1.1 var(--fr-font);text-align:center}
-.hz-way.l{left:max(6px,env(safe-area-inset-left,0px))}.hz-way.r{right:max(6px,env(safe-area-inset-right,0px))}
-.hz-way span{font-size:1.7rem;line-height:.8}
-.hz-way small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hz-way:active{transform:scale(.96)}
-.hz-spotbtn{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(176px + env(safe-area-inset-bottom,0px));min-height:48px;padding:0 22px}
-/* Unten: Reisefaden und Steg */
-.hz-bottom{position:absolute;z-index:5;left:max(8px,env(safe-area-inset-left,0px));right:max(8px,env(safe-area-inset-right,0px));bottom:calc(34px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:8px}
-.hz-trip{display:flex;align-items:center;gap:8px;min-height:40px;padding:4px 12px;border-radius:999px;cursor:pointer;font:800 .72rem/1 var(--fr-font);margin:0 10px}
-.hz-trip small{flex:none;color:#DCE7F5}
-.hz-track{position:relative;flex:1;height:8px;border-radius:999px;background:rgba(255,255,255,.2)}
-.hz-track i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:linear-gradient(90deg,#72C8FF,#FFD36E);transition:width 1.4s cubic-bezier(.3,.8,.3,1)}
-.hz-track em{position:absolute;top:50%;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#0B1930;box-shadow:0 0 0 1.5px rgba(255,255,255,.55)}
-.hz-track em.on{background:#FFD36E}
-.hz-plane{position:absolute;top:50%;width:34px;height:34px;transform:translate(-50%,-55%);transition:left 1.4s cubic-bezier(.3,.8,.3,1)}
-.hz-plane .hz-ill{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
-.hz-dock{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;gap:2px;padding:10px 6px 8px;border-radius:26px;
-  background:repeating-linear-gradient(90deg,rgba(0,0,0,0) 0 62px,rgba(40,20,5,.22) 62px 64px),linear-gradient(180deg,#B57A45 0,#93592C 55%,#7A4720 100%);
-  box-shadow:inset 0 2px 0 rgba(255,225,180,.45),inset 0 -3px 0 rgba(40,20,5,.35),0 10px 24px rgba(30,15,5,.4)}
-.hz-st{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;padding:2px 0;background:none;border:0;cursor:pointer;color:#FFF7EA;-webkit-tap-highlight-color:transparent}
-.hz-st .hz-ill{width:52px;height:52px;object-fit:contain;filter:drop-shadow(0 4px 4px rgba(30,15,5,.45));transition:transform .15s}
-.hz-st b{font:800 .78rem/1.1 var(--fr-font);text-shadow:0 1px 2px rgba(30,15,5,.6);white-space:nowrap}
-.hz-st:active .hz-ill{transform:translateY(2px) scale(.95)}
-.hz-badge{position:absolute;top:-4px;right:calc(50% - 34px);min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#EE6A4E;color:#fff;font:800 .74rem/22px var(--fr-font);text-align:center;box-shadow:0 0 0 2px #FFF7EA}
-.hz-go{margin-top:-40px}
-.hz-go .hz-ill{width:78px;height:78px;padding:8px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#2C8C92,#0E5258);box-shadow:0 0 0 4px #FFF3DE,0 0 0 7px rgba(238,106,78,.9),0 10px 20px rgba(20,30,40,.45);animation:hzPulse 2.6s ease-in-out infinite}
-.hz-go b{font-size:.9rem;margin-top:8px}
-.hz-go .hz-badge{top:-6px;right:calc(50% - 46px)}
-.hz-go.done .hz-check{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;font:900 2.4rem/1 var(--fr-font);color:#fff;background:radial-gradient(circle at 50% 35%,#3FBF83,#1F8A59);box-shadow:0 0 0 4px #FFF3DE,0 10px 20px rgba(20,30,40,.45)}
-@keyframes hzPulse{0%,100%{box-shadow:0 0 0 4px #FFF3DE,0 0 0 7px rgba(238,106,78,.9),0 10px 20px rgba(20,30,40,.45)}50%{box-shadow:0 0 0 4px #FFF3DE,0 0 0 12px rgba(238,106,78,.35),0 10px 20px rgba(20,30,40,.45)}}
-.hz-wiggle .hz-ill{animation:hzWiggle 2.4s ease-in-out infinite;transform-origin:50% 80%}
-@keyframes hzWiggle{0%,70%,100%{transform:rotate(0)}75%{transform:rotate(-12deg)}82%{transform:rotate(10deg)}89%{transform:rotate(-6deg)}95%{transform:rotate(3deg)}}
+.hz-who b{font:800 1.05rem/1.15 var(--fr-font-head,var(--fr-font));overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hz-who small{font:700 .75rem/1.2 var(--fr-font);color:var(--hz-muted);white-space:nowrap}
+.hz-chip{display:inline-flex;align-items:center;gap:2px;height:46px;padding:0 14px 0 6px;border-radius:999px;font:800 1.1rem/1 var(--fr-font);transition:transform .2s}
+.hz-chip .hz-ill{width:34px;height:34px;object-fit:contain}
+.hz-chip.pop{transform:scale(1.15)}
+/* Wege: dezente Halbpfeile am Rand */
+.hz-way{position:absolute;z-index:4;top:42%;width:34px;height:56px;display:grid;place-items:center;padding:0;border:0;cursor:pointer;color:var(--hz-navy);background:rgba(255,251,244,.72);box-shadow:0 4px 12px rgba(30,25,15,.12);font:700 1.6rem/1 var(--fr-font)}
+.hz-way.l{left:0;border-radius:0 18px 18px 0;padding-left:env(safe-area-inset-left,0px)}.hz-way.r{right:0;border-radius:18px 0 0 18px;padding-right:env(safe-area-inset-right,0px)}
+.hz-way:active{background:var(--hz-cream)}
+.hz-spotbtn{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(250px + env(safe-area-inset-bottom,0px));min-height:46px;padding:0 20px}
+/* Unten: Heute-Karte und Leiste */
+.hz-bottom{position:absolute;z-index:5;left:0;right:0;bottom:0;display:flex;flex-direction:column;gap:10px;padding:0 max(12px,env(safe-area-inset-right,0px)) 0 max(12px,env(safe-area-inset-left,0px))}
+.hz-today{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;padding:14px 16px;border-radius:24px;background:var(--hz-cream);box-shadow:0 12px 32px rgba(30,25,15,.2);color:var(--hz-navy)}
+.hz-today-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.hz-today-txt small{font:800 .7rem/1 var(--fr-font);letter-spacing:.08em;text-transform:uppercase;color:var(--hz-teal)}
+.hz-today-txt b{font:700 1.3rem/1.1 "Baloo 2",var(--fr-font-head,sans-serif)}
+.hz-today-txt span{font:600 .84rem/1.3 var(--fr-font);color:var(--hz-muted)}
+.hz-cta{display:flex;justify-content:center;align-items:center;gap:8px;min-height:54px;padding:0 18px;border:0;border-radius:999px;background:var(--hz-coral);color:#fff;font:800 1.02rem/1 var(--fr-font);cursor:pointer;box-shadow:0 6px 14px rgba(238,106,78,.35);white-space:nowrap}
+.hz-cta svg{width:20px;height:20px}
+.hz-cta.soft{background:#fff;color:var(--hz-teal);box-shadow:inset 0 0 0 2px var(--hz-teal)}
+.hz-cta:active{transform:translateY(1px)}
+.hz-today.done .hz-today-txt b::before{content:"✓ ";color:#2E9E6A}
+.hz-today-extra{border:0;background:none;padding:2px 0 0;margin-top:-2px;border-top:1px solid var(--hz-line);width:100%;text-align:left;font:700 .84rem/1.2 var(--fr-font);color:var(--hz-teal);cursor:pointer}
+.hz-tabs{display:grid;grid-template-columns:repeat(4,1fr);margin:0 calc(-1 * max(12px,env(safe-area-inset-left,0px)));padding:6px max(8px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));background:var(--hz-cream);border-top:1px solid var(--hz-line)}
+.hz-tab{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:54px;padding:6px 0 2px;border:0;background:none;color:var(--hz-muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hz-tab svg{width:26px;height:26px}
+.hz-tab b{font:800 .74rem/1 var(--fr-font)}
+.hz-tab.on{color:var(--hz-teal)}
+.hz-tab.on svg{background:rgba(14,82,88,.1);border-radius:999px;padding:2px 14px;width:54px;box-sizing:content-box;margin:-2px 0}
+.hz-dot{position:absolute;top:6px;left:calc(50% + 10px);width:10px;height:10px;border-radius:50%;background:var(--hz-coral);box-shadow:0 0 0 2px var(--hz-cream)}
+/* Beta-Hinweis in der Hafenstadt klein oben in der Mitte */
+body.scn-on:has(.hz-tabs) .beta-badge{bottom:auto;top:calc(70px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);font-size:0;gap:0;padding:4px 8px;opacity:.6}
+body.scn-on:has(.hz-tabs) .beta-badge::before{content:"BETA";font-size:.58rem;letter-spacing:.1em}
+body.scn-on:has(.hz-tabs) .beta-badge a{display:none}
+/* Blätter von unten (Profil, Reise) */
+.hz-sheet-bg{position:absolute;inset:0;z-index:18;background:rgba(10,18,30,0);transition:background .25s}
+.hz-sheet{position:absolute;left:0;right:0;bottom:0;z-index:19;max-height:86%;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:var(--hz-cream);border-radius:28px 28px 0 0;box-shadow:0 -12px 40px rgba(10,18,30,.25);color:var(--hz-navy);transform:translateY(105%);transition:transform .28s cubic-bezier(.2,.9,.3,1)}
+.hz-sheet-on .hz-sheet{transform:none}.hz-sheet-on .hz-sheet-bg{background:rgba(10,18,30,.35)}
+.hz-grab{align-self:center;width:44px;height:5px;border-radius:999px;background:#D9CDB6}
+.hz-x{position:absolute;right:12px;top:10px;width:40px;height:40px;border-radius:50%;border:0;background:#F2EADB;color:var(--hz-navy);font:800 1rem/1 var(--fr-font);cursor:pointer}
+.hz-prof{display:flex;align-items:center;gap:16px;padding-right:40px}
+.hz-prof-txt{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+.hz-prof-txt b{font:700 1.5rem/1.1 "Baloo 2",var(--fr-font-head,sans-serif);overflow-wrap:anywhere}
+.hz-prof-txt small{font:700 .8rem/1.3 var(--fr-font);color:var(--hz-muted)}
+.hz-prog{display:block;height:8px;border-radius:999px;background:#EAE1D0;overflow:hidden}.hz-prog i{display:block;height:100%;border-radius:999px;background:var(--hz-teal)}
+.hz-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hz-item{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;border-radius:20px;border:1px solid var(--hz-line);background:#fff;color:var(--hz-navy);cursor:pointer;text-align:center}
+.hz-item .hz-ill{width:56px;height:56px;object-fit:contain}
+.hz-item b{font:800 .95rem/1.1 var(--fr-font)}.hz-item small{font:700 .72rem/1.2 var(--fr-font);color:var(--hz-muted)}
+.hz-item.lock::after{content:"";position:absolute;right:10px;top:10px;width:18px;height:18px;background:var(--hz-teal);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='10' width='14' height='10' rx='2.5'/%3E%3Cpath d='M8 10V7.5a4 4 0 0 1 8 0V10' fill='none' stroke='black' stroke-width='2.4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='5' y='10' width='14' height='10' rx='2.5'/%3E%3Cpath d='M8 10V7.5a4 4 0 0 1 8 0V10' fill='none' stroke='black' stroke-width='2.4'/%3E%3C/svg%3E") center/contain no-repeat}
+.hz-trip2{display:flex;flex-direction:column;gap:6px;padding:4px 40px 0 0}
+.hz-trip2-row{display:flex;align-items:center;gap:10px}
+.hz-trip2-row small{font:800 .75rem/1 var(--fr-font);color:var(--hz-muted)}
+.hz-trip2 p{margin:0;font:700 .85rem/1.3 var(--fr-font);color:var(--hz-muted)}
+.hz-track{position:relative;flex:1;height:8px;border-radius:999px;background:#EAE1D0}
+.hz-track i{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--hz-teal)}
+.hz-plane{position:absolute;top:50%;width:34px;height:34px;transform:translate(-50%,-55%)}
+.hz-plane .hz-ill{width:100%;height:100%;object-fit:contain}
+.hz-list{display:flex;flex-direction:column;gap:8px}
+.hz-li{position:relative;display:flex;align-items:center;gap:12px;min-height:72px;padding:8px 14px 8px 8px;border-radius:20px;border:1px solid var(--hz-line);background:#fff;color:var(--hz-navy);cursor:pointer;text-align:left}
+.hz-li .hz-ill{width:52px;height:52px;object-fit:contain;flex:none}
+.hz-li span{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.hz-li b{font:800 1rem/1.1 var(--fr-font)}.hz-li small{font:700 .78rem/1.2 var(--fr-font);color:var(--hz-muted)}
+.hz-li em{font-style:normal;font:800 1.4rem/1 var(--fr-font);color:var(--hz-teal)}
+.hz-li .hz-dot{position:static;flex:none}
+@media (prefers-reduced-motion:reduce){.hz-sheet,.hz-sheet-bg{transition:none}}
 /* Sprechblase über Friedrich */
 .hz-say{position:absolute;left:50%;bottom:86%;z-index:6;width:max-content;max-width:min(240px,62vw);display:flex;flex-direction:column;gap:2px;padding:9px 13px;border-radius:16px;
   background:rgba(255,253,246,.97);color:#16406B;font:700 .9rem/1.3 var(--fr-font);box-shadow:0 8px 22px rgba(30,20,10,.3);
@@ -2066,7 +2089,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795354851";
+const BUILD = "1795367955";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2980,7 +3003,7 @@ function renderScene(opts = {}){
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}<div class="hz-say" id="scnSay" role="status" aria-live="polite"></div></div>
         ${spot}
       </div>
-      ${hzTop(id)}
+      ${hzTop()}
       ${hzNav(outs, i)}
       ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main hz-spotbtn" data-act="scnSpot">${esc(label)}</button>` : ""}
       ${hzBottom()}
@@ -3388,81 +3411,130 @@ function screensBoot(){
 }
 
 /* ============ FRIEDRICH 2.0: Die Hafenstadt ist das Hauptmenü (nur Beta) ============
-   Oben: Namensschild (Kleiderschrank), Fische, Lernserie; Ort, Schatzkammer, Extras, Eltern.
-   Mitte: die Szene mit Tür, Wegen zu den Nachbarorten und Friedrich mit Sprechblase.
-   Unten: Reisefaden Leipzig → Brighton und der Steg mit Karteikarten, Sätzen, Lernen, Karte und Post. */
+   Ruhig und klar: oben eine Zeile (Bullauge mit Name → Profil, Fische), in der Mitte nur die Szene mit Friedrich und Tür,
+   unten EINE Karte "Heute dran" mit genau einem farbigen Knopf und eine Leiste mit vier Zielen (Hafen, Karten, Sätze, Reise).
+   Seltenes (Kleiderschrank, Schatzkammer, Extras, Eltern) liegt im Profil, Karte, Postkarten und Flug unter "Reise". */
 const HZ = {fish:null, km:null, sayT:null};
 const HZ_ACT = {
   hzRegion: b => { const id = b.dataset.u, open = U().open.includes(id), x = UMAP[id];
     if (!open) return toast(`<b>${esc(x.region)}</b> liegt noch im Nebel. Mama oder Papa schalten ${esc(x.n)} frei, wenn ihr damit in der Schule anfangt.`);
     toast(id === U().cur ? `${esc(x.n)}: ${esc(x.region)}. Hier lernst du gerade.` : `${esc(x.n)}: ${esc(x.region)} wird weiter wiederholt.`); },
-  hzUnlockClose: () => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); }
+  hzUnlockClose: () => { const o = $("#s-scene .hz-unlock"); if (o) o.remove(); },
+  hzProfile: () => hzSheet("profile"),
+  hzHere: () => ACT.scnFr(),
+  hzTrip: () => hzSheet("trip"),
+  hzSheetClose: () => hzSheetClose(),
+  hzSheetGo: b => { const a = b.dataset.go; hzSheetClose(true); setTimeout(() => ACT[a] && ACT[a](b), 10); }
 };
-/* Was heute dran ist (dieselbe Regel wie der Lernknopf im bisherigen Menü) */
+/* Was heute dran ist: immer genau EINE Empfehlung */
 function hzLesson(){
   const stage = gullStage(), due = dueWords().length, nw = Math.min(planNew(due), newWords().length);
   if (isAsleep() || (due === 0 && nw === 0))
-    return {done:true, act:"startFix", title:"Für heute geschafft!", say:`Geschafft für heute! Lust auf eine Extra-Runde Fehler-Detektiv?`, n:0, due};
+    return {done:true, act:"startFix", title:"Für heute geschafft!", say:"Geschafft für heute! Lust auf eine Extra-Runde?", n:0, due, meta:"Morgen geht's weiter. Lust auf eine Extra-Runde?"};
   const title = stage === 0 ? "Erste Stunde: Ei ausbrüten" : S.lastDay === today() ? "Weiter unterrichten" : "Unterrichtsstunde";
-  const bits = []; if (nw) bits.push(`${nw} neue Wörter`); if (due) bits.push(`${Math.min(due, 12)} zum Wiederholen`);
-  return {done:false, act:"startDaily", title, say:`${title}: ${bits.join(" und ")}. Los geht's!`, n:nw + Math.min(due, 12), due};
+  const rep = Math.min(due, 12), min = Math.max(3, Math.round(nw * .6 + rep * .3));
+  const bits = []; if (nw) bits.push(`${nw} neue Wörter`); if (rep) bits.push(`${rep} wiederholen`);
+  return {done:false, act:"startDaily", title, say:`${title}: ${bits.join(" und ")}. Los geht's!`, n:nw + rep, due, meta:`${bits.join(" · ")} · ca. ${min} Min.`};
+}
+function hzPick(){
+  if (wcActive()) return {kind:"check", label:"Weitermachen", title:"Wortcheck", meta:`Noch ${S.wc.queue.length - S.wc.i} Wörter prüfen`, act:"openCheck", btn:"Weiter prüfen"};
+  const n = wcPool().length;
+  if (n >= WC_MIN) return {kind:"check", label:"Heute zuerst", title:"Wortcheck: Was kannst du schon?", meta:`${n} Wörter noch nie geübt · ca. ${Math.max(4, Math.round(n * .45 * 3 / 60))} Min.`, act:"openCheck", btn:"Wortcheck starten"};
+  const L = hzLesson();
+  return L.done ? {kind:"done", label:"Heute", title:L.title, meta:L.meta, act:L.act, btn:"Extra-Runde"}
+                : {kind:"lesson", label:"Heute dran", title:L.title, meta:L.meta, act:L.act, btn:"Los geht's"};
 }
 const hzStreak = () => S.streak && (S.lastDay === today() || S.lastDay === addDays(today(), -1)) ? S.streak : 0;
 const hzNewPost = () => { const seen = S.pcSeen || ["Leipzig"]; return CITIES.filter(c => S.km >= c.km && !seen.includes(c.n)).length; };
 const hzIc = (id, size) => illImg(id, "hz-ill", size || "64px");
-const hzBadge = n => n ? `<span class="hz-badge" aria-hidden="true">${n > 99 ? "99+" : n}</span>` : "";
-
-function hzTop(id){
+const HZ_SVG = {
+  hafen:`<svg viewBox="0 0 24 24"><path d="M12 3v15M8.5 6.5h7M4 13c.6 4 3.8 7 8 7s7.4-3 8-7M4 13l-1.5 1.8M4 13l2 .8M20 13l1.5 1.8M20 13l-2 .8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="4.5" r="1.6" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+  karten:`<svg viewBox="0 0 24 24"><rect x="6.5" y="4" width="13" height="16" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 7.5v10A2.5 2.5 0 0 0 6.5 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M10 10h6M10 13.5h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  saetze:`<svg viewBox="0 0 24 24"><rect x="3" y="13" width="8" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="8" y="5" width="8" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>`,
+  reise:`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m15.5 8.5-2 5-5 2 2-5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>`,
+  lock:`<svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>`,
+  arrow:`<svg viewBox="0 0 24 24"><path d="M5 12h13m-5-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+};
+function hzStageInfo(){
   const n = gullStage(), stage = FR.stageOf(Math.max(1, n)), st = STAGES[n] || STAGES[0], nx = STAGES[n + 1], fish = S.fish || 0;
   const p = nx ? Math.max(4, Math.min(100, Math.round((fish - st.min) / (nx.min - st.min) * 100))) : 100;
-  const shown = HZ.fish == null ? fish : Math.min(HZ.fish, fish);
-  let test = "";
-  const wcn = wcPool().length, chk = wcActive() ? `<button class="hz-test hz-chk" data-act="openCheck"><span class="hz-bolt" aria-hidden="true">⚡</span><span>Wortcheck weiter · noch ${S.wc.queue.length - S.wc.i}</span></button>`
-    : wcn >= WC_MIN ? `<button class="hz-test hz-chk" data-act="openCheck"><span class="hz-bolt" aria-hidden="true">⚡</span><span>Wortcheck · ${wcn} Wörter</span></button>` : "";
-  if (typeof testActive === "function" && testActive()){
-    const d = dayDiff(today(), S.test.date);
-    test = `<button class="hz-test" data-act="startTest" aria-label="Test-Training: ${esc(PMAP[S.test.pl].name)}">${hzIc("testtraining_leuchtturm", "32px")}<span>${d <= 0 ? "Heute ist Test!" : d === 1 ? "Morgen ist Test" : `Test in ${d} Tagen`}</span></button>`;
-  }
-  return `<div class="hz-top">
-    <div class="hz-row">
-      <button class="hz-me" data-act="openWardrobe" aria-label="${esc(G())}, ${esc(st.n)}. Kleiderschrank öffnen">
-        <span class="hz-ring" style="--p:${p}"><span class="hz-av">${friedrichEl({stage, pose:"face", size:"fit"})}</span></span>
-        <span class="hz-who"><b id="hzName"></b><small>${esc(st.n)}${nx ? ` · noch ${Math.max(0, nx.min - fish)} 🐟` : ""}</small></span></button>
-      <span class="hz-chips">
-        <span class="hz-chip" id="hzFishChip" aria-label="${fish} Fische">${hzIc("belohnung_fisch", "40px")}<b id="hzFish">${shown}</b></span>
-        <span class="hz-chip ${hzStreak() ? "" : "off"}" aria-label="${hzStreak()} Tage hintereinander geübt">${hzIc("lernserie_flamme", "40px")}<b>${hzStreak()}</b></span>
-      </span>
-    </div>
-    <div class="hz-row">
-      <span class="scn-place">${esc(scnName(id))}</span>
-      <span class="hz-tools">
-        ${scnScene(SCN_TREASURE_ID) ? `<button class="hz-tool" data-act="scnTreasure" aria-label="Schatzkammer">${hzIc("schatzkammer_truhe", "48px")}</button>` : ""}
-        <button class="hz-tool" data-act="openExtras" aria-label="Extras: Spiele, Diplome, Küstenkarte und mehr">${hzIc("extras_kacheln", "48px")}</button>
-        <button class="hz-tool hz-lock" data-act="openParents" aria-label="Für Eltern">${hzIc("elternbereich_familie", "48px")}<i aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2.5" fill="currentColor"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10" fill="none" stroke="currentColor" stroke-width="2.4"/></svg></i></button>
-      </span>
-    </div>${test || chk ? `<div class="hz-pills">${test}${chk}</div>` : ""}</div>`;
+  return {n, stage, st, nx, fish, p};
 }
+function hzTop(){
+  const I = hzStageInfo(), shown = HZ.fish == null ? I.fish : Math.min(HZ.fish, I.fish);
+  return `<div class="hz-top">
+      <button class="hz-me" data-act="hzProfile" aria-label="${esc(G())}, ${esc(I.st.n)}. Profil öffnen">
+        <span class="hz-ring" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span></span>
+        <span class="hz-who"><b id="hzName"></b><small>${esc(I.st.n)}</small></span></button>
+      <span class="hz-chip" id="hzFishChip" aria-label="${I.fish} Fische">${hzIc("belohnung_fisch", "40px")}<b id="hzFish">${shown}</b></span>
+    </div>`;
+}
+/* Wege zu den Nachbarorten: nur dezente Halbpfeile, Wischen ist der Hauptweg */
 function hzNav(outs, i){
   if (outs.length < 2) return "";
   const prev = outs[(i - 1 + outs.length) % outs.length], next = outs[(i + 1) % outs.length];
-  const nm = x => { const a = scnArea(x); return SCN_SHORT[x] || (a && SHORT[a]) || scnName(x).replace(/^(Das|Der|Die) /, ""); };
-  return `<button class="hz-way l" data-act="scnGo" data-id="${prev}" data-dir="-1" aria-label="Weg nach ${esc(scnName(prev))}"><span aria-hidden="true">‹</span><small>${esc(nm(prev))}</small></button>
-    <button class="hz-way r" data-act="scnGo" data-id="${next}" data-dir="1" aria-label="Weg nach ${esc(scnName(next))}"><small>${esc(nm(next))}</small><span aria-hidden="true">›</span></button>`;
+  return `<button class="hz-way l" data-act="scnGo" data-id="${prev}" data-dir="-1" aria-label="Weg nach ${esc(scnName(prev))}"><span aria-hidden="true">‹</span></button>
+    <button class="hz-way r" data-act="scnGo" data-id="${next}" data-dir="1" aria-label="Weg nach ${esc(scnName(next))}"><span aria-hidden="true">›</span></button>`;
 }
 function hzBottom(){
-  const L = hzLesson(), km = S.km || 0, goal = 1170, pct = Math.min(100, km / goal * 100), post = hzNewPost();
-  const kmFrom = HZ.km == null ? pct : Math.min(100, Math.min(HZ.km, km) / goal * 100);
-  const stops = STOPS.filter(x => x[1] <= goal);
+  const P = hzPick(), post = hzNewPost();
+  let extra = "";
+  if (testActive()){
+    const d = dayDiff(today(), S.test.date);
+    extra = `<button class="hz-today-extra" data-act="startTest">${d <= 0 ? "Heute ist Test" : d === 1 ? "Morgen ist Test" : `Test in ${d} Tagen`} · Testtraining ›</button>`;
+  }
   return `<div class="hz-bottom">
-    <button class="hz-trip" data-act="scnFlight" aria-label="Reise nach Brighton: ${km} von ${goal} Kilometern">
-      <small>Leipzig</small><span class="hz-track"><i style="width:${kmFrom.toFixed(1)}%" data-to="${pct.toFixed(1)}"></i>${stops.map(x => `<em class="${km >= x[1] ? "on" : ""}" style="left:${(x[1] / goal * 100).toFixed(1)}%"></em>`).join("")}<b class="hz-plane" style="left:${kmFrom.toFixed(1)}%" data-to="${pct.toFixed(1)}">${hzIc("erster_flug", "40px")}</b></span><small>${km >= goal ? "Brighton ✓" : "Brighton"}</small></button>
-    <nav class="hz-dock" aria-label="Stationen">
-      <button class="hz-st" data-act="openDeck" data-mode="kid">${hzIc("karteikarten_stapel")}<b>Karten</b>${hzBadge(Math.min(L.due, 99))}</button>
-      <button class="hz-st" data-act="startSentences">${hzIc("satzwerkstatt_bausteine")}<b>Sätze</b></button>
-      <button class="hz-st hz-go ${L.done ? "done" : ""}" data-act="${L.act}" aria-label="${esc(L.title)}">${L.done ? `<span class="hz-check" aria-hidden="true">✓</span>` : hzIc("unterricht_schulbuch", "96px")}<b>${L.done ? "Extra" : "Lernen"}</b>${hzBadge(L.n)}</button>
-      <button class="hz-st" data-act="scnMap">${hzIc("lernwelt_hafenkarte")}<b>Karte</b></button>
-      <button class="hz-st ${post ? "hz-wiggle" : ""}" data-act="openJournal">${hzIc("reisetagebuch_postkarte")}<b>Post</b>${hzBadge(post)}</button>
+    <section class="hz-today ${P.kind}" aria-label="${esc(P.label)}">
+      <div class="hz-today-txt"><small>${esc(P.label)}</small><b>${esc(P.title)}</b><span>${esc(P.meta)}</span></div>
+      <button class="hz-cta ${P.kind === "done" ? "soft" : ""}" data-act="${P.act}">${esc(P.btn)} ${HZ_SVG.arrow}</button>
+      ${extra}
+    </section>
+    <nav class="hz-tabs" aria-label="Hauptmenü">
+      <button class="hz-tab on" aria-current="page" data-act="hzHere">${HZ_SVG.hafen}<b>Hafen</b></button>
+      <button class="hz-tab" data-act="openDeck" data-mode="kid">${HZ_SVG.karten}<b>Karten</b></button>
+      <button class="hz-tab" data-act="startSentences">${HZ_SVG.saetze}<b>Sätze</b></button>
+      <button class="hz-tab" data-act="hzTrip">${HZ_SVG.reise}<b>Reise</b>${post ? `<i class="hz-dot" aria-label="neue Post"></i>` : ""}</button>
     </nav></div>`;
+}
+/* Ruhige Blätter von unten: Profil und Reise */
+function hzSheet(kind){
+  const st = $("#s-scene .scn-stage"); if (!st) return;
+  hzSheetClose(true);
+  let body = "";
+  if (kind === "profile"){
+    const I = hzStageInfo(), s = hzStreak();
+    const item = (act, ill, label, sub, cls) => `<button class="hz-item ${cls || ""}" data-act="hzSheetGo" data-go="${act}">${hzIc(ill, "64px")}<b>${label}</b>${sub ? `<small>${sub}</small>` : ""}</button>`;
+    body = `<div class="hz-prof"><span class="hz-ring big" style="--p:${I.p}"><span class="hz-av">${friedrichEl({stage:I.stage, pose:"face", size:"fit"})}</span></span>
+        <div class="hz-prof-txt"><b id="hzSheetName"></b><small>${esc(I.st.n)}${I.nx ? ` · noch ${Math.max(0, I.nx.min - I.fish)} Fische bis ${esc(I.nx.n)}` : " · höchste Stufe"}</small>
+        <span class="hz-prog"><i style="width:${I.p}%"></i></span>
+        <small>${s ? `🔥 ${s} ${s === 1 ? "Tag" : "Tage"} hintereinander geübt` : "Heute üben startet deine Lernserie"}</small></div></div>
+      <div class="hz-grid">
+        ${item("openWardrobe", "kleiderschrank", "Kleiderschrank")}
+        ${scnScene(SCN_TREASURE_ID) ? item("scnTreasure", "schatzkammer_truhe", "Schatzkammer", "Medaillen") : ""}
+        ${item("openExtras", "extras_kacheln", "Extras", "Spiele & mehr")}
+        ${item("openParents", "elternbereich_familie", "Für Eltern", "mit PIN", "lock")}
+      </div>`;
+  } else {
+    const km = S.km || 0, goal = 1170, pct = Math.min(100, km / goal * 100), post = hzNewPost(), next = CITIES.find(c => km < c.km);
+    body = `<div class="hz-trip2"><div class="hz-trip2-row"><small>Leipzig</small><span class="hz-track"><i style="width:${pct.toFixed(1)}%"></i><b class="hz-plane" style="left:${pct.toFixed(1)}%">${hzIc("erster_flug", "40px")}</b></span><small>Brighton</small></div>
+        <p>${km} km geflogen${next ? ` · nächste Postkarte: ${esc(next.n)} in ${next.km - km} km` : ""}</p></div>
+      <div class="hz-list">
+        <button class="hz-li" data-act="hzSheetGo" data-go="openJournal">${hzIc("reisetagebuch_postkarte", "64px")}<span><b>Postkarten</b><small>${post ? `${post} neue Postkarte${post > 1 ? "n" : ""}` : "Dein Reisetagebuch"}</small></span>${post ? `<i class="hz-dot"></i>` : ""}<em aria-hidden="true">›</em></button>
+        <button class="hz-li" data-act="hzSheetGo" data-go="scnMap">${hzIc("lernwelt_hafenkarte", "64px")}<span><b>Lernwelt-Karte</b><small>Alle Orte und Regionen</small></span><em aria-hidden="true">›</em></button>
+        <button class="hz-li" data-act="hzSheetGo" data-go="scnFlight">${hzIc("erster_flug", "64px")}<span><b>Unser Flug</b><small>Wo ist ${esc(G())} gerade?</small></span><em aria-hidden="true">›</em></button>
+      </div>`;
+  }
+  st.insertAdjacentHTML("beforeend", `<div class="hz-sheet-bg" data-act="hzSheetClose"></div>
+    <div class="hz-sheet" role="dialog" aria-label="${kind === "profile" ? "Profil" : "Reise"}"><span class="hz-grab" aria-hidden="true"></span>
+      <button class="hz-x" data-act="hzSheetClose" aria-label="Schließen">✕</button>${body}</div>`);
+  const nm = $("#hzSheetName"); if (nm) nm.textContent = G();
+  requestAnimationFrame(() => st.classList.add("hz-sheet-on"));
+}
+function hzSheetClose(now){
+  const st = $("#s-scene .scn-stage"); if (!st) return;
+  st.classList.remove("hz-sheet-on");
+  const rm = () => st.querySelectorAll(".hz-sheet, .hz-sheet-bg").forEach(e => e.remove());
+  if (now || scnRM()) rm(); else setTimeout(rm, 260);
 }
 /* Sprechblase über Friedrich: erscheint beim Ankommen, verschwindet nach ein paar Sekunden, Antippen zeigt sie wieder */
 function hzSay(text, ms, act){
@@ -3478,7 +3550,7 @@ function hzClampSay(st){
   const b = $("#scnSay"); if (!b) return;
   b.style.setProperty("--dx", "0px");
   /* echte Breite (ohne Aufpopp-Skalierung) um die Mitte der Blase */
-  const r = b.getBoundingClientRect(), s = st.getBoundingClientRect(), pad = st.querySelector(".hz-way") ? 70 : 10, w = b.offsetWidth, c = r.left + r.width / 2, l = c - w / 2, rr = c + w / 2;
+  const r = b.getBoundingClientRect(), s = st.getBoundingClientRect(), pad = st.querySelector(".hz-way") ? 52 : 10, w = b.offsetWidth, c = r.left + r.width / 2, l = c - w / 2, rr = c + w / 2;
   const dx = l < s.left + pad ? s.left + pad - l : rr > s.right - pad ? s.right - pad - rr : 0;
   b.style.setProperty("--dx", Math.round(dx) + "px");
 }
@@ -3489,12 +3561,8 @@ function hzAfter(hint){
   const fish = S.fish || 0, L = hzLesson();
   const rew = $("#s-scene .scn-reward");
   if (rew && L.done){ rew.classList.add("on", "instant"); rew.dataset.keep = "1"; }
-  if (!SCN.success) setTimeout(() => hzSay(L.done ? esc(hint || "Schön hier, oder?") : esc(L.say), 6500, L.done ? null : L.act), 600);
-  const grow = () => document.querySelectorAll("#s-scene [data-to]").forEach(e => {
-    if (e.classList.contains("hz-plane")) e.style.left = e.dataset.to + "%"; else e.style.width = e.dataset.to + "%"; });
   const gained = HZ.fish != null && fish > HZ.fish;
-  if (gained && !scnRM()) setTimeout(() => hzFishFly(HZ.fish, fish).then(() => setTimeout(grow, 150)), SCN.success ? 1400 : 500);
-  else requestAnimationFrame(() => requestAnimationFrame(grow));
+  if (gained && !scnRM()) setTimeout(() => hzFishFly(HZ.fish, fish), SCN.success ? 1400 : 500);
   HZ.fish = fish; HZ.km = S.km || 0;
 }
 function hzFishFly(from, to){
