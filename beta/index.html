@@ -833,6 +833,34 @@ img.out-img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:con
 .ward-slot-art{width:44px;height:44px;display:block}
 .ward-slot small{font:800 .65rem/1 var(--fr-font);letter-spacing:.06em;text-transform:uppercase;color:#5E7591}
 .ward-slot b{font:800 .74rem/1.15 var(--fr-font);color:#16406B;-webkit-hyphens:auto;hyphens:auto;overflow-wrap:break-word;max-width:100%}
+/* Bedien-Grafiken */
+img.ill-img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.has-ill{background:none!important;box-shadow:none!important;overflow:visible}
+.tile .ti.has-ill{width:52px;height:52px}
+.orb-ic.has-ill{width:58px;height:58px}
+.chip3d i.has-ill{width:26px;height:26px}
+.pdock .pd-ic.has-ill{width:48px;height:48px}
+#lessonBtn .play-ic.has-ill{width:64px;height:64px;animation:none;background:radial-gradient(circle at 50% 45%,#fff 0,#FFE9D6 70%)!important;border-radius:50%;box-shadow:0 4px 0 #D9622B!important;padding:6px}
+#flightCard .jtop > span.has-ill{width:30px;height:30px;display:inline-block;flex:none}
+.deck .dot.has-ill{width:34px;height:34px;flex:none}
+#s-onboard .center > div.has-ill{height:150px}
+#s-summary .trophy > div.has-ill{height:150px}
+img.ill-pre{display:inline-block;width:1.45em;height:1.45em;margin:-.2em .35em -.2em 0;vertical-align:middle;flex:none}
+.scn-menu img.ill-pre{width:22px;height:22px;margin:-4px 6px -4px -4px}
+.scn-pin > i.has-ill{width:20px;height:24px;border-radius:0;box-shadow:none}
+.scn-dipl-row > i.has-ill{width:28px;height:28px;border-radius:0}
+.trophy{position:relative}
+.ill-badge{position:absolute;top:4px;right:4px;width:64px;height:64px;transform:rotate(8deg);filter:drop-shadow(0 4px 6px rgba(20,30,50,.25))}
+.speak img.ill-spk{width:70%;height:70%;margin:auto}
+.scn-trip-row .scn-trip-ic{width:40px;height:40px;flex:none;margin:-6px 0}
+.scn-trip-row .scn-trip-ic:empty{display:none}
+/* Schmale Handys: Karte und Schätze nur als Bild (wenn das Bild da ist), damit der Ortsname Platz hat */
+@media (max-width:440px){
+  .scn-menu:has(img.ill-pre){width:44px;min-width:44px;padding:0;justify-content:center}
+  .scn-menu:has(img.ill-pre) img.ill-pre{width:28px;height:28px;margin:0}
+  .scn-menu:has(img.ill-pre) .scn-btxt{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+}
+.scn-place{min-width:0}
 </style>
 
 </head>
@@ -1704,7 +1732,7 @@ const save = () => { if (S) S.upd = Date.now(); saveLocal(); schedSync(); };
    Ohne Code bleibt alles wie bisher nur auf dem Gerät. */
 const CLOUD = {project:"moevenflug-9c9b9", key:"AIzaSyDs8C1w3_iP744sDeAD4_intbLNy0JBQ_4"};
 const FAM_KEY = "moewenflug-family";
-const BUILD = "1795297127";
+const BUILD = "1795337607";
 /* Neue Version auf GitHub? Safari hält die Seite bis zu 10 Minuten im Zwischenspeicher. */
 function checkUpdate(){
   if (!/^https?:$/.test(location.protocol) || !/github\.io$/.test(location.hostname)) return;
@@ -2328,7 +2356,7 @@ if (!window.FR_NO_AUTOLOAD) frLoadManifest();
    Außenszenen = Szenen im Manifest, deren ID nicht mit "<andere Szene>-" beginnt; Reihenfolge wie im Manifest.
    Innenszenen ("haus-am-hafen-wohnzimmer") öffnen sich über die Schaltfläche der Außenszene.
    Übung = bestehende Karteikarten für learningArea; danach zurück nach draußen mit Belohnung. */
-const SCN_COMMIT = "65e319e2bb687412da6d24d23471b3f58a965e17";
+const SCN_COMMIT = "08c6340381fde31f397d0ad93ebc9e07957f04ab";
 const SCN_REPO = "eternity03238-commits/Englisch-_5thclass";
 const SCN_START = "haus-am-hafen";
 const scnRaw = p => `https://raw.githubusercontent.com/${SCN_REPO}/${SCN_COMMIT}/beta/assets/${p}`;
@@ -2384,7 +2412,7 @@ function scnLoad(){
     document.querySelectorAll(".fr[data-stage]").forEach(frRefresh);
   }).catch(() => { FR.files = FR.files || {}; });
   const wd = scnFetch("world/manifest.json").then(m => { SCN.world = m; }).catch(() => { SCN.world = null; });
-  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; SCN.outfits = (m && m.outfits) || {}; scnOutfitRefresh(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
+  const rw = scnFetch("rewards/manifest.json").then(m => { SCN.rewards = (m && m.badges) || {}; SCN.illus = (m && m.illustrations) || {}; SCN.outfits = (m && m.outfits) || {}; scnOutfitRefresh(); uiIconsInit(); }).catch(() => { SCN.rewards = {}; SCN.illus = {}; SCN.outfits = {}; });
   SCN.ready = Promise.all([fr, wd, rw]).then(() => { SCN.loaded = true; });
   return SCN.ready;
 }
@@ -2418,6 +2446,68 @@ function wardSlots(){
 }
 /* Kleiderschrank neu zeichnen, wenn die Inventarbilder geladen sind */
 function scnOutfitRefresh(){ try { if (!$("#s-wardrobe").hidden) renderWardrobe(); } catch(e) {} }
+/* ---------- Bedien-Grafiken: feste Plätze in der ganzen Beta ----------
+   [Selektor, Grafik-ID, Art]: "fill" ersetzt den Inhalt (Symbolfeld), "pre" setzt die Grafik vor den Text,
+   "badge" legt sie zusätzlich in die Ecke. Ein Beobachter wendet die Regeln auch auf später gezeichnete Bildschirme an. */
+const UI_ICONS = [
+  ['.tile[data-act="openJournal"] .ti', "reisetagebuch_postkarte", "fill"],
+  ['.tile[data-act="openWardrobe"] .ti', "kleiderschrank", "fill"],
+  ['.tile[data-act="openOverview"] .ti', "lernstand_anzeige", "fill"],
+  ['.tile[data-act="openDeck"][data-mode="kid"] .ti', "karteikarten_stapel", "fill"],
+  ['.tile[data-act="openDeck"][data-mode="mama"] .ti, .orb[data-act="openDeck"][data-mode="mama"] .orb-ic', "moewenpruefung_sprechblasen", "fill"],
+  ['.tile[data-act="openExam"] .ti', "probe_klassenarbeit", "fill"],
+  ['.tile[data-act="startFix"] .ti', "fehler_detektiv_lupe", "fill"],
+  ['.tile[data-act="startSentences"] .ti, .orb[data-act="startSentences"] .orb-ic', "satzwerkstatt_bausteine", "fill"],
+  ['.tile[data-act="openPost"] .ti', "moewenpost_briefkasten", "fill"],
+  ['.tile[data-act="startBoss"] .ti', "krabbe_kneifer", "fill"],
+  ['.tile[data-act="openMap"] .ti', "lernwelt_hafenkarte", "fill"],
+  ['.tile[data-act="openBadges"] .ti', "stickeralbum", "fill"],
+  ['.orb[data-act="openExtras"] .orb-ic', "extras_kacheln", "fill"],
+  ['.chip3d.c-flame > i', "lernserie_flamme", "fill"],
+  ['.chip3d.c-fish > i', "belohnung_fisch", "fill"],
+  ['.pdock .pd-ic', "elternbereich_familie", "fill"],
+  ['#lessonBtn .play-ic', "unterricht_schulbuch", "fill"],
+  ['#flightCard .jtop > span[aria-hidden]', "brighton_reisekompass", "fill"],
+  ['.deck[data-pid="gram"] .dot', "grammatik_mix_wuerfel", "fill"],
+  ['#s-onboard .center > div[style*="width:150px"]', "start_moewennest", "fill"],
+  ['#s-summary .trophy[data-hatch] > div:first-child', "schluepfen", "fill"],
+  ['[data-act="startTest"]', "testtraining_leuchtturm", "pre"],
+  ['.scn-menu[data-act="scnMap"]', "lernwelt_hafenkarte", "pre"],
+  ['.scn-menu[data-act="scnTreasure"]', "schatzkammer_truhe", "pre"],
+  ['[data-act="scnFlight"]', "brighton_reisekompass", "pre"],
+  ['.scn-pin > i', "lernorte_kartenpin", "fill"],
+  ['.scn-dipl-row.ok > i', "ortsdiplom_urkunde", "fill"],
+  ['#s-summary .trophy[data-mode="boss"]', "krabbe_kneifer", "badge"],
+  ['#s-summary .trophy[data-mode="sent"]', "satzwerkstatt_bausteine", "badge"],
+  ['#s-summary .trophy[data-mode="fix"]', "fehler_detektiv_lupe", "badge"],
+  ['#s-summary .trophy[data-mode="test"]', "testtraining_leuchtturm", "badge"],
+  ['#s-summary .trophy[data-mode="exam"]', "probe_klassenarbeit", "badge"]
+];
+function illImg(id, cls, sizes){
+  const b = rwIllus(id); if (!b) return "";
+  return `<img class="ill-img ${cls||""}" src="${b.src}" srcset="${b.srcset}" sizes="${sizes || "64px"}" alt="" decoding="async" draggable="false">`;
+}
+function uiIconsApply(root){
+  if (!SCN.illus) return;
+  UI_ICONS.forEach(([sel, id, how]) => (root || document).querySelectorAll(sel).forEach(el => {
+    if (el.dataset.ill === id) return;
+    const img = illImg(id, "ill-" + how, how === "fill" && el.matches("#s-onboard *, #s-summary *") ? "150px" : "64px"); if (!img) return;
+    el.dataset.ill = id;
+    if (how === "fill"){ el.innerHTML = img; el.classList.add("has-ill"); }
+    else if (how === "pre") el.insertAdjacentHTML("afterbegin", img);
+    else el.insertAdjacentHTML("afterbegin", `<span class="ill-badge" aria-hidden="true">${img}</span>`);
+  }));
+}
+let uiObs = null;
+function uiIconsInit(){
+  if (!SCN.illus || !Object.keys(SCN.illus).length) return;
+  const sp = illImg("aussprache_lautsprecher", "ill-spk"); if (sp) I.speaker = sp;   /* alle Anhören-Knöpfe */
+  uiIconsApply();
+  if (uiObs) return;
+  let queued = false;
+  uiObs = new MutationObserver(() => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; uiIconsApply(); }); });
+  uiObs.observe(document.body, {childList:true, subtree:true});
+}
 function rwIllus(id){
   const b = SCN.illus && SCN.illus[id]; if (!b || !b.images || !b.images.length) return null;
   const l = b.images.filter(x => x && x.path && x.width).slice().sort((a,c) => a.width - c.width);
@@ -2475,7 +2565,7 @@ function renderScene(opts = {}){
         <div class="scn-fr" id="scnFr" data-act="scnFr" role="button" aria-label="${esc(G())} antippen" style="left:${f.x}%;top:${f.y}%;width:${f.w}%">${friedrichEl({stage, pose, size:"fit", wear:scnWearList()})}</div>
         ${spot}
       </div>
-      <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr">${scnScene(SCN_MAP_ID) ? `<button class="scn-menu" data-act="scnMap" aria-label="Übersichtskarte öffnen">Karte</button>` : ""}${scnScene(SCN_TREASURE_ID) ? `<button class="scn-menu" data-act="scnTreasure" aria-label="Schatzkammer öffnen">Schätze</button>` : ""}<button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></span></div>
+      <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr">${scnScene(SCN_MAP_ID) ? `<button class="scn-menu" data-act="scnMap" aria-label="Übersichtskarte öffnen"><span class="scn-btxt">Karte</span></button>` : ""}${scnScene(SCN_TREASURE_ID) ? `<button class="scn-menu" data-act="scnTreasure" aria-label="Schatzkammer öffnen"><span class="scn-btxt">Schätze</span></button>` : ""}<button class="scn-menu" data-act="home" aria-label="Zum Menü">Menü</button></span></div>
       <div class="scn-bottom">
         ${!L.spot && (act.child || act.area) ? `<button class="btn btn-main btn-block" data-act="scnSpot">${esc(label)}</button>` : ""}
         ${outs.length > 1 ? `<div class="scn-nav"><button data-act="scnGo" data-id="${prev}" data-dir="-1" aria-label="Zurück nach ${esc(scnName(prev))}"><span aria-hidden="true">‹</span><small>${esc(scnName(prev))}</small></button>
@@ -2609,7 +2699,7 @@ function scnFlight(){
   st.insertAdjacentHTML("beforeend", `<div class="scn-view scn-flight ${scnRM() ? "" : "scn-fade"}" style="--ratio:${set.ratio.toFixed(5)}"><div class="scn-art">${scnImg(set, "scn-base")}
       <div class="scn-fr scn-flyer" style="left:50%;top:52%;width:46%">${friedrichEl({stage, pose, size:"fit"})}</div></div>
     <div class="scn-top"><span class="scn-place">${esc(scnName(id))}</span><span class="scn-topr"><button class="scn-menu" data-act="scnViewBack" aria-label="Reise schließen">Schließen</button></span></div>
-    <div class="scn-bottom"><div class="scn-trip"><div class="scn-trip-row"><b>${km} km</b><small>${km >= goal ? "Ziel erreicht" : `${Math.round(pct)} % bis Brighton`}</small></div>
+    <div class="scn-bottom"><div class="scn-trip"><div class="scn-trip-row"><span class="scn-trip-ic">${illImg(km < (STOPS[1] ? STOPS[1][1] : 260) ? "erster_flug" : "brighton_reisekompass", "", "56px")}</span><b style="flex:1">${km} km${km < (STOPS[1] ? STOPS[1][1] : 260) ? " · Dein erster Flug" : ""}</b><small>${km >= goal ? "Ziel erreicht" : `${Math.round(pct)} % bis Brighton`}</small></div>
       <div class="scn-trip-bar"><i style="width:${pct.toFixed(1)}%"></i>${stops.map(x => `<span class="${km >= x[1] ? "on" : ""} ${x[0]==="Brighton" ? "goal" : ""}" style="left:${(x[1]/goal*100).toFixed(1)}%" title="${x[0]}"></span>`).join("")}</div>
       <div class="scn-trip-row"><small>Leipzig</small><small>Brighton</small></div></div>
       <div class="scn-say"><b>${esc(G())}</b><span>${esc(line)} Jede Übung bringt uns weiter!</span></div></div></div>`);
@@ -3930,7 +4020,7 @@ function finish(){
     : M.mode==="test" ? ["Test-Training geschafft!", "Der Leuchtturm wird stabiler."]
     : [M.hatch ? `${G()} ist geschlüpft!` : "Unterricht beendet!", M.newCount ? `Du hast ${G()} ${M.newCount} neue Wörter beigebracht.` : "Alle Wiederholungen geschafft."];
   const slept = S.dailyDone===today() && M.mode==="daily";
-  $("#s-summary").innerHTML = `<div class="trophy">
+  $("#s-summary").innerHTML = `<div class="trophy" data-mode="${M.mode}"${M.hatch?' data-hatch="1"':""}>
       <div style="width:150px;margin:0 auto">${myGull()}</div>
       <h1 class="display" style="font-size:clamp(1.6rem,7vw,2.1rem);color:var(--navy);margin-top:4px">${esc(titles[0])}</h1>
       <p class="muted" style="margin:6px 0 0">${esc(titles[1])}</p>
