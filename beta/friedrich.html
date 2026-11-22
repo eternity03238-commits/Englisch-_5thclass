@@ -238,12 +238,21 @@ FR.wearOf = s => Object.keys(FR.files || {}).filter(k => k.startsWith(s + "/wear
    neck = unter dem Schnabel, back = Rücken links, wird hinter den Körper gelegt.
    Kapitäns- und Königsmöwe tragen Mütze bzw. Krone fest im Bild: dort keine Kopfteile. */
 FR.fit = {
-  chick:   {head:{x:49, y:14, w:38, r:-6}, ears:{x:50, y:29, w:54, sy:.8},  eyes:{x:57.5, y:32.5, w:34, r:-8},  neck:{x:59, y:46, w:18}, back:{x:30, y:54, w:32}},
-  young:   {head:{x:51, y:12, w:36, r:-6}, ears:{x:51, y:25, w:48, sy:.78}, eyes:{x:61,   y:29.5, w:32, r:-12}, neck:{x:61, y:42, w:17}, back:{x:29, y:53, w:32}},
-  adult:   {head:{x:52, y:14, w:38, r:-6}, ears:{x:52, y:24, w:47, sy:.76}, eyes:{x:58,   y:23.5, w:34, r:-9},  neck:{x:59, y:37, w:18}, back:{x:26, y:52, w:34}},
-  captain: {head:null,                     ears:null,                       eyes:{x:57,   y:31,   w:31, r:-12}, neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},
-  king:    {head:null,                     ears:null,                       eyes:{x:61,   y:33,   w:29, r:-12}, neck:{x:62, y:46, w:15}, back:{x:32, y:59, w:29}}
+  chick:   {head:{x:49, y:14, w:38, r:-6}, ears:{n:[36,40], f:[63,36.5], top:10.5}, eyes:{n:[52.2,35.4], f:[69.1,31.6]}, neck:{x:59, y:46, w:18}, back:{x:30, y:54, w:32}},
+  young:   {head:{x:51, y:12, w:36, r:-6}, ears:{n:[36,35], f:[61,32], top:10.5},   eyes:{n:[49.4,28.8], f:[66.6,26.9]}, neck:{x:61, y:42, w:17}, back:{x:29, y:53, w:32}},
+  adult:   {head:{x:52, y:14, w:38, r:-6}, ears:{n:[38,34], f:[64,31], top:11},     eyes:{n:[51,24.4],   f:[67.3,23.1]}, neck:{x:59, y:37, w:18}, back:{x:26, y:52, w:34}},
+  captain: {head:null,                     ears:null,                               eyes:{n:[50,30],     f:[66,28.4]},   neck:{x:58, y:43, w:17}, back:{x:26, y:55, w:32}},
+  king:    {head:null,                     ears:null,                               eyes:{n:[52.2,36.2], f:[66,35]},     neck:{x:62, y:46, w:15}, back:{x:32, y:59, w:29}}
 };
+/* Brillen und Kopfhörer in der Dreiviertelansicht: Punkte im Inventarbild (in %).
+   Brille: a = Glas vorne (nahes Auge), b = Glas hinten (fernes Auge), m = Steg, end = rechter Rand des hinteren Glases (Bügel dahinter verschwindet).
+   Kopfhörer: a = vordere Muschel, b = hintere Muschel, top = Innenkante des Bügels oben. */
+FR.fitPts = {
+  sun:    {a:[27,56], b:[66,57], m:[46.5,50], end:81},
+  star:   {a:[32,52], b:[70,52], m:[51,49],   end:86},
+  phones: {a:[28,72], b:[72,72], top:18, split:47}
+};
+FR.fitFar = .7;   /* hinteres Glas wirkt durch die Drehung kleiner */
 /* Größe je Teil relativ zum Ankerpunkt (die Krone ist schmaler als eine Mütze) */
 FR.fitScale = {crown:.72, captain:.95, sailor:.95};
 FR.fitDy = {crown:-3};   /* Feinkorrektur der Höhe in % */
@@ -253,12 +262,32 @@ FR.fitBox = {sun:[5.9,35.2,93.6,72.3], star:[15.6,34.8,84,65.4], bow:[12.5,32.2,
   sailor:[4.3,22.3,94.5,80.9], captain:[5.7,20.1,93.9,83], crown:[4.3,12.7,94.9,86.9], phones:[7.2,7.2,91.6,94.7]};
 FR.fitArt = null;   /* wird von der App gesetzt: item → {src, srcset} */
 FR.canFit = (s, w) => { const a = FR.fit[s], slot = FR.fitSlot[w]; return !!(a && slot && a[slot] && FR.fitBox[w] && FR.fitArt && FR.fitArt(w)); };
+function frFitTag(w, art, slot, style, extra){
+  return `<img class="fr-img fr-wear fr-tryon fr-tryon-${slot} fr-w-${w}${extra ? " " + extra : ""}" src="${art.src}" srcset="${art.srcset}" sizes="40vw" alt="" decoding="async" draggable="false" style="inset:auto;height:auto;${style}">`;
+}
+/* Bild so legen, dass sein Punkt [px,py] (in % des Bildes) auf [x,y] (in % der Box) liegt */
+const frPlace = (px, py, x, y, width, rot, sy, clip) =>
+  `left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;width:${width.toFixed(2)}%;transform-origin:${px}% ${py}%;transform:translate(-${px}%,-${py}%) rotate(${rot.toFixed(1)}deg)${sy ? ` scale(1,${sy.toFixed(3)})` : ""};${clip ? `clip-path:${clip};` : ""}`;
 function frFitImg(s, w){
-  const a = FR.fit[s][FR.fitSlot[w]], b = FR.fitBox[w], art = FR.fitArt(w), bw = b[2] - b[0];
+  const slot = FR.fitSlot[w], a = FR.fit[s][slot], art = FR.fitArt(w), P = FR.fitPts[w];
+  if (slot === "eyes" && P && a.n){
+    /* zwei Hälften: vorderes Glas am nahen Auge, hinteres kleiner am fernen Auge, Stoß am Steg */
+    const dx = a.f[0] - a.n[0], dy = a.f[1] - a.n[1], D = Math.hypot(dx, dy), rot = Math.atan2(dy, dx) * 180 / Math.PI, k = FR.fitFar;
+    const s1 = D * 100 / ((P.m[0] - P.a[0]) + (P.b[0] - P.m[0]) * k), s2 = s1 * k;
+    return frFitTag(w, art, slot, frPlace(P.a[0], P.a[1], a.n[0], a.n[1], s1, rot, 0, `inset(0 ${100 - P.m[0]}% 0 0)`), "fr-tryon-near") +
+           frFitTag(w, art, slot, frPlace(P.b[0], P.b[1], a.f[0], a.f[1], s2, rot, 0, `inset(0 ${100 - P.end}% 0 ${P.m[0]}%)`), "fr-tryon-far");
+  }
+  if (slot === "ears" && P && a.n){
+    /* vordere Muschel am nahen Ohr, hintere hinter dem Kopf, Bügel liegt oben auf */
+    const dx = a.f[0] - a.n[0], dy = a.f[1] - a.n[1], D = Math.hypot(dx, dy), rot = Math.atan2(dy, dx) * 180 / Math.PI;
+    const width = D * 100 / (P.b[0] - P.a[0]), cy = (a.n[1] + a.f[1]) / 2, sy = (cy - a.top) / ((P.a[1] - P.top) / 100 * width);
+    const st = frPlace(P.a[0], P.a[1], a.n[0], a.n[1], width, rot, sy);
+    return {behind: frFitTag(w, art, slot, st, "fr-tryon-back"), front: frFitTag(w, art, slot, st + `clip-path:inset(0 ${100 - P.split}% 0 0);`)};
+  }
+  const b = FR.fitBox[w], bw = b[2] - b[0];
   const size = a.w * (FR.fitScale[w] || 1) / bw * 100;         /* sichtbare Breite = a.w */
-  const ax = (b[0] + b[2]) / 2, ay = FR.fitSlot[w] === "head" ? b[3] - (b[3] - b[1]) * 0.18 : (b[1] + b[3]) / 2;   /* Mützen sitzen etwas über dem Rand auf */
-  return `<img class="fr-img fr-wear fr-tryon fr-tryon-${FR.fitSlot[w]} fr-w-${w}" src="${art.src}" srcset="${art.srcset}" sizes="40vw" alt="" decoding="async" draggable="false"
-    style="inset:auto;left:${a.x}%;top:${a.y + (FR.fitDy[w] || 0)}%;width:${size.toFixed(2)}%;height:auto;transform:translate(-${ax}%,-${ay}%) rotate(${a.r||0}deg)${a.sy ? ` scale(1,${a.sy})` : ""};transform-origin:${ax}% ${ay}%">`;
+  const ax = (b[0] + b[2]) / 2, ay = slot === "head" ? b[3] - (b[3] - b[1]) * 0.18 : (b[1] + b[3]) / 2;   /* Mützen sitzen etwas über dem Rand auf */
+  return frFitTag(w, art, slot, `left:${a.x}%;top:${a.y + (FR.fitDy[w] || 0)}%;width:${size.toFixed(2)}%;height:auto;transform:translate(-${ax}%,-${ay}%) rotate(${a.r||0}deg)${a.sy ? ` scale(1,${a.sy})` : ""};transform-origin:${ax}% ${ay}%`);
 }
 function frWear(s, wear){
   const out = {behind:"", front:""};
@@ -267,7 +296,9 @@ function frWear(s, wear){
       out.front += frImg(s, FR.wearKey(w), "fr-wear fr-w-" + w) +
         FR.framesOf(s).filter(f => FR.has(s, FR.wearKey(w, f))).map(f => frImg(s, FR.wearKey(w, f), `fr-wear-f fr-wf-${f} fr-w-${w}`)).join("");
     } else if (FR.canFit(s, w)){
-      if (FR.fitSlot[w] === "back") out.behind += frFitImg(s, w); else out.front += frFitImg(s, w);
+      const t = frFitImg(s, w);
+      if (typeof t === "object"){ out.behind += t.behind; out.front += t.front; }
+      else if (FR.fitSlot[w] === "back") out.behind += t; else out.front += t;
     }
   });
   return out;
